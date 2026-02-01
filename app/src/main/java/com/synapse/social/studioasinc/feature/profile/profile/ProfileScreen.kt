@@ -439,6 +439,7 @@ private fun ProfileContent(
         item {
             ProfileHeader(
                 avatar = profile.avatar,
+                status = profile.status,
                 coverImageUrl = profile.coverImageUrl,
                 name = profile.name,
                 username = profile.username,

@@ -64,7 +64,7 @@ data class CreatePostUiState(
     val checkDraft: Boolean = true,
     val currentUserProfile: User? = null,
     // New Fields
-    val selectedLayout: LayoutType = LayoutType.CLASSIC,
+    val selectedLayout: LayoutType = LayoutType.COLUMNS,
     val taggedPeople: List<User> = emptyList(),
     val feeling: FeelingActivity? = null,
     val textBackgroundColor: Long? = null, // ARGB Long or null

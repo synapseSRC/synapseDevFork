@@ -20,7 +20,9 @@ object UserMapper {
             uid = entity.uid,
             username = entity.username,
             email = entity.email,
-            avatar = entity.avatarUrl,
+            avatar = entity.avatarUrl?.let { url ->
+                com.synapse.social.studioasinc.core.network.SupabaseClient.constructAvatarUrl(url)
+            },
             verify = entity.isVerified
         )
     }

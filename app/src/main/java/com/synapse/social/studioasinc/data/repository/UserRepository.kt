@@ -30,7 +30,7 @@ class UserRepository(private val userDao: UserDao) {
                         uid = it.uid,
                         username = it.username,
                         email = it.email,
-                        avatar = it.avatar,
+                        avatar = it.avatar?.let { url -> SupabaseClient.constructAvatarUrl(url) },
                         verify = it.verify
                     )
                     userDao.insertAll(listOf(UserMapper.toEntity(user!!)))
@@ -126,6 +126,9 @@ class UserRepository(private val userDao: UserDao) {
                     limit(limit.toLong())
                 }
                 .decodeList<UserProfile>()
+                .map { profile ->
+                    profile.copy(avatar = profile.avatar?.let { url -> SupabaseClient.constructAvatarUrl(url) })
+                }
 
             android.util.Log.d("UserRepository", "Search found ${users.size} users for query: $query")
             Result.success(users)

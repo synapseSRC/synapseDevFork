@@ -24,6 +24,7 @@ data class UserProfile(
     val followerCount: Int = 0,
     @SerialName("following_count")
     val followingCount: Int = 0,
+    val status: String = "offline",
     @SerialName("joined_date")
     val joinedDate: Long = 0,
     val location: String? = null,

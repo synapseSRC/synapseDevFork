@@ -220,6 +220,7 @@ private fun CoverPlaceholder(
 fun CoverPhotoWithProfile(
     coverImageUrl: String?,
     avatar: String?,
+    status: String? = null,
     scrollOffset: Float = 0f,
     isOwnProfile: Boolean = false,
     hasStory: Boolean = false,
@@ -253,6 +254,7 @@ fun CoverPhotoWithProfile(
             ProfileImageWithRing(
                 avatar = avatar,
                 size = profileImageSize,
+                status = status,
                 hasStory = hasStory,
                 isOwnProfile = isOwnProfile,
                 onClick = onProfileImageClick
@@ -268,6 +270,7 @@ fun CoverPhotoWithProfile(
 fun ProfileImageWithRing(
     avatar: String?,
     size: Dp,
+    status: String? = null,
     hasStory: Boolean = false,
     isOwnProfile: Boolean = false,
     onClick: () -> Unit = {},
@@ -377,27 +380,19 @@ fun ProfileImageWithRing(
             }
         }
 
-        // Camera Button for editing profile picture
-        if (isOwnProfile) {
+        // Active Status Indicator (Green Dot)
+        if (status == "online") {
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .size(36.dp)
+                    .padding(bottom = size * 0.05f, end = size * 0.05f)
+                    .size(size * 0.25f)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.surface)
-                    .padding(2.dp) // Border space
+                    .padding(2.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .clickable { onClick() },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CameraAlt,
-                    contentDescription = "Edit profile photo",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
+                    .background(Color(0xFF4CAF50)) // Material Green 500
+            )
         }
     }
 }
@@ -425,12 +420,14 @@ private fun ProfileImageWithRingPreview() {
             ProfileImageWithRing(
                 avatar = null,
                 size = 80.dp,
+                status = "online",
                 hasStory = true,
                 isOwnProfile = false
             )
             ProfileImageWithRing(
                 avatar = null,
                 size = 80.dp,
+                status = "offline",
                 hasStory = false,
                 isOwnProfile = true
             )

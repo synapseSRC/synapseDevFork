@@ -48,6 +48,7 @@ import com.synapse.social.studioasinc.feature.shared.components.ButtonVariant
 @Composable
 fun ProfileHeader(
     avatar: String?,
+    status: String? = null,
     coverImageUrl: String? = null,
     name: String?,
     username: String,
@@ -108,6 +109,7 @@ fun ProfileHeader(
                 ProfileImageWithRing(
                     avatar = avatar,
                     size = 120.dp,
+                    status = status,
                     hasStory = hasStory,
                     isOwnProfile = isOwnProfile,
                     onClick = onProfileImageClick
@@ -531,6 +533,7 @@ private fun ProfileHeaderPreview() {
     MaterialTheme {
         ProfileHeader(
             avatar = null,
+            status = "online",
             coverImageUrl = null,
             name = "John Doe",
             username = "johndoe",
@@ -557,6 +560,7 @@ private fun ProfileHeaderOtherUserPreview() {
     MaterialTheme {
         ProfileHeader(
             avatar = null,
+            status = "offline",
             coverImageUrl = null,
             name = "Jane Smith",
             username = "janesmith",

@@ -1,0 +1,63 @@
+pluginManagement {
+    repositories {
+        google()
+        maven { url = "https://repo1.maven.org/maven2/" }
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url = "https://jitpack.io" }
+    }
+    plugins {
+        id 'com.android.application' version '8.13.1' apply false
+        id 'com.android.library' version '8.13.1' apply false
+        id 'org.jetbrains.kotlin.android' version '2.1.0' apply false
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        google()
+        maven { url = "https://repo1.maven.org/maven2/" }
+        mavenCentral()
+        maven { url = "https://jitpack.io" }
+
+        // Add flatDir for the app module
+        flatDir {
+            dirs 'app/libs'
+        }
+
+        // Add Node.js distribution for Kotlin/Wasm
+        ivy {
+            name = "Node.js"
+            url = "https://nodejs.org/dist"
+            patternLayout {
+                artifact "v[revision]/[artifact](-v[revision]-[classifier]).[ext]"
+            }
+            metadataSources { artifact() }
+        }
+
+        // Add Yarn distribution for Kotlin/Wasm
+        ivy {
+            name = "Yarn"
+            url = "https://github.com/yarnpkg/yarn/releases/download"
+            patternLayout {
+                artifact "v[revision]/[artifact](-v[revision]).[ext]"
+            }
+            metadataSources { artifact() }
+        }
+
+        // Add Binaryen distribution for Kotlin/Wasm
+        ivy {
+            name = "Binaryen"
+            url = "https://github.com/WebAssembly/binaryen/releases/download"
+            patternLayout {
+                artifact "version_[revision]/[artifact]-version_[revision]-[classifier].[ext]"
+            }
+            metadataSources { artifact() }
+        }
+    }
+}
+
+rootProject.name = "Synapse"
+include ':app'
+include ':shared'

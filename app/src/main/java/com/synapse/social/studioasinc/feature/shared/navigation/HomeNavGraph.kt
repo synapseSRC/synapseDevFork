@@ -95,6 +95,8 @@ fun HomeNavGraph(
         composable("create_reel") {
             LaunchedEffect(Unit) {
                 onNavigateToCreateReel()
+                // Pop create_reel from back stack to prevent navigation loop when returning
+                navController.popBackStack()
             }
         }
     }

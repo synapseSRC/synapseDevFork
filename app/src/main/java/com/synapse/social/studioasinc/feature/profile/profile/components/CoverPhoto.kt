@@ -25,10 +25,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.domain.model.UserStatus
+import com.synapse.social.studioasinc.ui.theme.StatusOnline
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-
-private val STATUS_ONLINE_COLOR = Color(0xFF4CAF50)
 
 /**
  * Cover photo component with parallax scrolling effect.
@@ -394,7 +393,7 @@ fun ProfileImageWithRing(
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(2.dp)
                     .clip(CircleShape)
-                    .background(STATUS_ONLINE_COLOR)
+                    .background(StatusOnline)
             )
         }
     }

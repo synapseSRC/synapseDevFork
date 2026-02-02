@@ -91,9 +91,3 @@ build-and-push.sh
 # Shell scripts in root only
 /*.sh
 /tmp/
-
-# gemini-cli settings
-.gemini/
-
-# GitHub App credentials
-gha-creds-*.json

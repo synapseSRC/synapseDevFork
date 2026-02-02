@@ -492,7 +492,7 @@ class CreatePostViewModel @Inject constructor(
                 locationLongitude = currentState.location?.longitude,
                 locationPlaceId = null,
                 metadata = PostMetadata(
-                    layoutType = "COLUMNS",
+                    layoutType = DEFAULT_LAYOUT_TYPE,
                     taggedPeople = currentState.taggedPeople.ifEmpty { null },
                     feeling = currentState.feeling,
                     backgroundColor = currentState.textBackgroundColor
@@ -673,7 +673,7 @@ class CreatePostViewModel @Inject constructor(
             if (currentState.taggedPeople.isNotEmpty()) {
                 metadataMap["tagged_people"] = currentState.taggedPeople.map { mapOf("uid" to it.uid, "username" to it.username) }
             }
-            metadataMap["layout_type"] = "COLUMNS"
+            metadataMap["layout_type"] = DEFAULT_LAYOUT_TYPE
             currentState.textBackgroundColor?.let { metadataMap["background_color"] = it }
 
             reelRepository.uploadReel(
@@ -696,5 +696,9 @@ class CreatePostViewModel @Inject constructor(
                 _uiState.update { it.copy(isLoading = false, error = "Reel upload failed: ${e.message}") }
             }
         }
+    }
+
+    companion object {
+        private const val DEFAULT_LAYOUT_TYPE = "COLUMNS"
     }
 }

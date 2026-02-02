@@ -20,6 +20,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
 import java.util.UUID
@@ -47,22 +48,20 @@ class EditProfileRepository(private val context: Context) {
             if (result != null) {
                 // Manually mapping JsonObject to UserProfile to ensure all fields are handled correctly
                 val user = UserProfile(
-                    uid = result["uid"]?.toString()?.removeSurrounding("\"") ?: userId,
-                    username = result["username"]?.toString()?.removeSurrounding("\"") ?: "",
-                    displayName = result["display_name"]?.toString()?.removeSurrounding("\"")
-                        ?: result["nickname"]?.toString()?.removeSurrounding("\""),
-                    email = result["email"]?.toString()?.removeSurrounding("\""),
-                    bio = result["bio"]?.toString()?.removeSurrounding("\"")
-                        ?: result["bio"]?.toString()?.removeSurrounding("\""),
-                    avatar = result["avatar"]?.toString()?.removeSurrounding("\"")
-                        ?: result["avatar"]?.toString()?.removeSurrounding("\""),
-                    profileCoverImage = result["profile_cover_image"]?.toString()?.removeSurrounding("\""),
-                    gender = result["gender"]?.toString()?.removeSurrounding("\""),
-                    region = result["region"]?.toString()?.removeSurrounding("\""),
-                    status = UserStatus.fromString(result["status"]?.toString()?.removeSurrounding("\"")),
-                    followersCount = result["followers_count"]?.toString()?.toIntOrNull() ?: 0,
-                    followingCount = result["following_count"]?.toString()?.toIntOrNull() ?: 0,
-                    postsCount = result["posts_count"]?.toString()?.toIntOrNull() ?: 0
+                    uid = result["uid"]?.jsonPrimitive?.contentOrNull ?: userId,
+                    username = result["username"]?.jsonPrimitive?.contentOrNull ?: "",
+                    displayName = result["display_name"]?.jsonPrimitive?.contentOrNull
+                        ?: result["nickname"]?.jsonPrimitive?.contentOrNull,
+                    email = result["email"]?.jsonPrimitive?.contentOrNull,
+                    bio = result["bio"]?.jsonPrimitive?.contentOrNull,
+                    avatar = result["avatar"]?.jsonPrimitive?.contentOrNull,
+                    profileCoverImage = result["profile_cover_image"]?.jsonPrimitive?.contentOrNull,
+                    gender = result["gender"]?.jsonPrimitive?.contentOrNull,
+                    region = result["region"]?.jsonPrimitive?.contentOrNull,
+                    status = UserStatus.fromString(result["status"]?.jsonPrimitive?.contentOrNull),
+                    followersCount = result["followers_count"]?.jsonPrimitive?.intOrNull ?: 0,
+                    followingCount = result["following_count"]?.jsonPrimitive?.intOrNull ?: 0,
+                    postsCount = result["posts_count"]?.jsonPrimitive?.intOrNull ?: 0
                 )
                 emit(Result.success(user))
             } else {

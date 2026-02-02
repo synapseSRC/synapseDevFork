@@ -77,7 +77,7 @@
 			android:name=".PostDetailActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden"
 			android:screenOrientation="portrait"
-			android:windowSoftInputMode="adjustPan"
+			android:windowSoftInputMode="adjustResize"
 			android:parentActivityName=".HomeActivity"
 			android:exported="true">
 			<intent-filter>

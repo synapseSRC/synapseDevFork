@@ -2,7 +2,12 @@ package com.synapse.social.studioasinc.ui.navigation
 
 import android.content.Intent
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
@@ -89,6 +94,20 @@ fun HomeNavGraph(
                  onNavigateBack = { navController.popBackStack() },
                  onNavigateToProfile = onNavigateToProfile
              )
+        }
+
+        composable("create_reel") {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+            LaunchedEffect(Unit) {
+                onNavigateToCreateReel()
+                // Pop create_reel from back stack to prevent navigation loop when returning
+                navController.popBackStack()
+            }
         }
     }
 }

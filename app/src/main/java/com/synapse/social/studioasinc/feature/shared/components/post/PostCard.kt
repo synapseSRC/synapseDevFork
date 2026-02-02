@@ -77,7 +77,8 @@ fun PostCard(
                 onUserClick = onUserClick,
                 onOptionsClick = onOptionsClick,
                 taggedPeople = state.post.metadata?.taggedPeople ?: emptyList(),
-                feeling = state.post.metadata?.feeling
+                feeling = state.post.metadata?.feeling,
+                locationName = state.post.locationName
             )
 
             Column(modifier = Modifier.padding(horizontal = 12.dp)) {

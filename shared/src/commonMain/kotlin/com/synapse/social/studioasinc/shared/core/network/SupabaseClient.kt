@@ -6,7 +6,9 @@ import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.storage.Storage
+import io.github.jan.supabase.annotations.SupabaseInternal
 import io.github.aakira.napier.Napier
+import io.ktor.client.plugins.HttpTimeout
 
 /**
  * Shared Supabase Client
@@ -14,6 +16,7 @@ import io.github.aakira.napier.Napier
 object SupabaseClient {
     private const val TAG = "SupabaseClient"
 
+    @OptIn(SupabaseInternal::class)
     val client by lazy {
         try {
             if (SynapseConfig.SUPABASE_URL.isBlank() || SynapseConfig.SUPABASE_ANON_KEY.isBlank()) {
@@ -36,6 +39,13 @@ object SupabaseClient {
                     }
                 }
                 // HttpEngine is automatically selected by Ktor based on dependencies (OkHttp for Android, Darwin for iOS)
+                httpConfig {
+                    install(HttpTimeout) {
+                        requestTimeoutMillis = 300_000 // 5 minutes
+                        connectTimeoutMillis = 60_000 // 1 minute
+                        socketTimeoutMillis = 300_000 // 5 minutes
+                    }
+                }
             }
         } catch (e: Exception) {
             Napier.e("Failed to initialize Supabase client: ${e.message}", e, tag = TAG)

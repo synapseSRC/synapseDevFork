@@ -1,17 +1,17 @@
 package com.synapse.social.studioasinc.feature.shared.reels
 
-import android.app.Application
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Environment
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.core.media.VideoPlayerManager
 import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
 import com.synapse.social.studioasinc.shared.domain.model.Reel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,10 +30,10 @@ data class ReelsUiState(
 
 @HiltViewModel
 class ReelsViewModel @Inject constructor(
-    application: Application,
+    @ApplicationContext private val context: Context,
     private val videoPlayerManager: VideoPlayerManager,
     private val reelRepository: ReelRepository
-) : AndroidViewModel(application) {
+) : ViewModel() {
     private var currentPage = 0
     private val pageSize = 10
 
@@ -185,7 +185,7 @@ class ReelsViewModel @Inject constructor(
                 .setAllowedOverMetered(true)
                 .setAllowedOverRoaming(true)
 
-            val downloadManager = getApplication<Application>().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             downloadManager.enqueue(request)
         } catch (e: Exception) {
             _uiState.update { it.copy(error = "Download failed: ${e.message}") }
@@ -200,6 +200,6 @@ class ReelsViewModel @Inject constructor(
         }
         val shareIntent = Intent.createChooser(sendIntent, null)
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        getApplication<Application>().startActivity(shareIntent)
+        context.startActivity(shareIntent)
     }
 }

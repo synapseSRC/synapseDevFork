@@ -154,44 +154,42 @@ class ReelRepository {
 
             val uploadData = UploadData(dataChannel, size)
 
-            // Note: withRetry might fail on subsequent attempts if dataChannel is not resettable (e.g. from InputStream)
-            // However, keeping it for general resilience if the initial connection fails before reading.
-            withRetry {
-                val bucket = client.storage.from("reels")
-                bucket.uploadAsFlow(storagePath, uploadData) {
-                    upsert = true
-                }.onEach { status ->
-                    when (status) {
-                        is UploadStatus.Progress -> {
-                            val progress = status.totalBytesSend.toFloat() / status.contentLength.toFloat()
-                            onProgress(progress)
-                        }
-                        is UploadStatus.Success -> {
-                            onProgress(1.0f)
-                        }
+            // Remove withRetry because dataChannel cannot be reset for retries
+            val bucket = client.storage.from("reels")
+            bucket.uploadAsFlow(storagePath, uploadData) {
+                upsert = true
+            }.onEach { status ->
+                when (status) {
+                    is UploadStatus.Progress -> {
+                        val progress = status.totalBytesSend.toFloat() / status.contentLength.toFloat()
+                        onProgress(progress)
                     }
-                }.collect()
+                    is UploadStatus.Success -> {
+                        onProgress(1.0f)
+                    }
+                }
+            }.collect()
 
-                val videoUrl = bucket.publicUrl(storagePath)
-                val reelData = mutableMapOf<String, Any?>(
-                    "creator_id" to currentUser.id,
-                    "video_url" to videoUrl,
-                    "caption" to caption,
-                    "music_track" to musicTrack,
-                    "likes_count" to 0,
-                    "comment_count" to 0,
-                    "share_count" to 0,
-                    "oppose_count" to 0
-                )
+            val videoUrl = bucket.publicUrl(storagePath)
+            val reelData = mutableMapOf<String, Any?>(
+                "creator_id" to currentUser.id,
+                "video_url" to videoUrl,
+                "caption" to caption,
+                "music_track" to musicTrack,
+                "likes_count" to 0,
+                "comment_count" to 0,
+                "share_count" to 0,
+                "oppose_count" to 0
+            )
 
-                locationName?.let { reelData["location_name"] = it }
-                locationAddress?.let { reelData["location_address"] = it }
-                locationLatitude?.let { reelData["location_latitude"] = it }
-                locationLongitude?.let { reelData["location_longitude"] = it }
-                metadata?.let { reelData["metadata"] = it }
+            locationName?.let { reelData["location_name"] = it }
+            locationAddress?.let { reelData["location_address"] = it }
+            locationLatitude?.let { reelData["location_latitude"] = it }
+            locationLongitude?.let { reelData["location_longitude"] = it }
+            metadata?.let { reelData["metadata"] = it }
 
-                client.from("reels").insert(reelData)
-            }
+            client.from("reels").insert(reelData)
+
             Result.success(Unit)
         } catch (e: Exception) {
             Napier.e("Failed to upload reel", e, tag = TAG)

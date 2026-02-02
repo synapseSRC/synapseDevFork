@@ -16,6 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -56,6 +60,7 @@ fun CoverPhoto(
     parallaxFactor: Float = 0.5f,
     modifier: Modifier = Modifier
 ) {
+    val haptic = LocalHapticFeedback.current
     var imageLoaded by remember { mutableStateOf(false) }
 
     // Fade-in animation when image loads
@@ -146,7 +151,10 @@ fun CoverPhoto(
                     .size(36.dp)
                     .clip(CircleShape)
                     .background(Color.White)
-                    .clickable { onEditClick() },
+                    .clickable {
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        onEditClick()
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -278,6 +286,7 @@ fun ProfileImageWithRing(
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val haptic = LocalHapticFeedback.current
     val infiniteTransition = rememberInfiniteTransition(label = "storyRing")
     val shape = CircleShape
 
@@ -311,7 +320,10 @@ fun ProfileImageWithRing(
             .size(size)
             .scale(scale)
             .clip(shape)
-            .clickable(onClick = onClick),
+            .clickable {
+                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                onClick()
+            },
         contentAlignment = Alignment.Center
     ) {
         // Story ring background (if has story)
@@ -394,6 +406,9 @@ fun ProfileImageWithRing(
                     .padding(2.dp)
                     .clip(CircleShape)
                     .background(StatusOnline)
+                    .semantics {
+                        contentDescription = "Online"
+                    }
             )
         }
     }

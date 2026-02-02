@@ -46,6 +46,8 @@ class AuthViewModelTest {
         whenever(authRepository.observeAuthState()).thenReturn(flowOf(false))
         whenever(authRepository.getCurrentUserId()).thenReturn(null)
         whenever(authRepository.getCurrentUserEmail()).thenReturn(null)
+
+        Dispatchers.setMain(UnconfinedTestDispatcher())
     }
 
     @After
@@ -55,14 +57,12 @@ class AuthViewModelTest {
 
     @Test
     fun `initial state should be SignIn`() = runTest {
-        Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
         viewModel = AuthViewModel(authRepository, usernameRepository, sharedPreferences)
         assertTrue(viewModel.uiState.value is AuthUiState.SignIn)
     }
 
     @Test
     fun `onEmailChanged should update email in state`() = runTest {
-        Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
         viewModel = AuthViewModel(authRepository, usernameRepository, sharedPreferences)
 
         val email = "test@example.com"
@@ -74,7 +74,6 @@ class AuthViewModelTest {
 
     @Test
     fun `calculatePasswordStrength should return correct strength`() = runTest {
-        Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
         viewModel = AuthViewModel(authRepository, usernameRepository, sharedPreferences)
 
         assertEquals(PasswordStrength.Weak, viewModel.calculatePasswordStrength("123"))
@@ -84,7 +83,6 @@ class AuthViewModelTest {
 
     @Test
     fun `onSignInClick failure should show error`() = runTest {
-        Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
         viewModel = AuthViewModel(authRepository, usernameRepository, sharedPreferences)
 
         val email = "test@example.com"

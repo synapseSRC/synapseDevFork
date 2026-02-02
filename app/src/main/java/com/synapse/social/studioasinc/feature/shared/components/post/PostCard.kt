@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.domain.model.PollOption
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.ui.settings.PostViewStyle
 

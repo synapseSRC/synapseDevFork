@@ -74,13 +74,9 @@ object TimeUtils {
                 }
                 val timestamp = sdf.parse(isoTimestamp.substringBefore('+').substringBefore('Z'))?.time ?: return "1s"
                 formatTimestamp(timestamp)
-            } catch (e2: java.text.ParseException) {
-                "1s"
-            } catch (e3: Exception) {
+            } catch (e2: Exception) {
                 "1s"
             }
-        } catch (e: Exception) {
-            "1s"
         }
     }
 }

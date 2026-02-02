@@ -607,7 +607,7 @@ private fun ProfileContent(
                                      } catch (e: Exception) {
                                          Toast.makeText(context, "Cannot open link", Toast.LENGTH_SHORT).show()
                                      }
-                                },
+                                 },
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             )
 

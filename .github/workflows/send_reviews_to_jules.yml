@@ -1,8 +1,12 @@
-name: Comment review link and tag Jules
+name: Send reviews to Jules
 
 on:
-  pull_request_review:
-    types: [submitted]
+  pull_request_target:
+    types: [review_submitted]
+
+permissions:
+  pull-requests: write
+  issues: write
 
 jobs:
   comment-review-link:

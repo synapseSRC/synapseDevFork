@@ -9,6 +9,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,7 +21,14 @@ import com.synapse.social.studioasinc.domain.model.User
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.ui.settings.PostViewStyle
 
-// Helper state class for PostCard (can be expanded)
+/**
+ * UI state for the PostCard component.
+ *
+ * Optimization: Annotated with @Stable to enable skippable recompositions in LazyColumn.
+ * This ensures that when a post item's state hasn't changed, the entire card is skipped
+ * during the recomposition phase of the parent list.
+ */
+@Stable
 data class PostCardState(
     val post: Post,
     val user: User, // Add User here as it's needed for Header

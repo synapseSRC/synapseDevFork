@@ -15,12 +15,17 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material3.*
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.border
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -47,6 +52,7 @@ import com.synapse.social.studioasinc.core.util.NumberFormatter
  * - Premium action buttons with icons
  * - Verified badge with subtle animation
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileHeader(
     avatar: String?,
@@ -75,6 +81,7 @@ fun ProfileHeader(
     onStatsClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val haptic = LocalHapticFeedback.current
     var bioExpanded by remember { mutableStateOf(false) }
 
     // Entry animation state
@@ -167,12 +174,18 @@ fun ProfileHeader(
                                     .size(8.dp)
                                     .clip(CircleShape)
                                     .background(Color.Red)
+                                    .semantics {
+                                        contentDescription = "New notifications"
+                                    }
                             )
                         }
                     }
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    StatsRow(
+                        postsCount = postsCount,
+                        followersCount = followersCount,
+                        followingCount = followingCount,
+                        onStatsClick = onStatsClick,
                         modifier = Modifier.padding(top = 2.dp)
                     ) {
                         Text(
@@ -467,6 +480,7 @@ fun AnimatedFollowButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val haptic = LocalHapticFeedback.current
     // Material 3 Expressive colors
     // When following (active state): primary container
     // When not following (action needed): inverse primary or tertiary
@@ -492,7 +506,10 @@ fun AnimatedFollowButton(
     )
 
     Button(
-        onClick = onClick,
+        onClick = {
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            onClick()
+        },
         modifier = modifier.height(44.dp),
         enabled = !isLoading,
         shape = androidx.compose.foundation.shape.RoundedCornerShape(22.dp), // Check M3 Expressive specs (usually larger corner radius for expressive buttons)

@@ -215,6 +215,13 @@ class AuthRepository @Inject constructor(
     }
 
     /**
+     * Sign in with OAuth provider.
+     */
+    suspend fun signInWithOAuth(provider: io.github.jan.supabase.auth.providers.OAuthProvider, redirectUrl: String) {
+        client.auth.signInWith(provider, redirectUrl)
+    }
+
+    /**
      * Update user password. Direct Client call.
      */
     suspend fun updateUserPassword(password: String): Result<Unit> {

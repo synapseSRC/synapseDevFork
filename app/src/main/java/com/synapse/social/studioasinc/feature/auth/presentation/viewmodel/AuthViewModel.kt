@@ -316,8 +316,7 @@ class AuthViewModel @Inject constructor(
                         .putString("email", email)
                         .apply()
 
-                    val currentUser = com.synapse.social.studioasinc.core.network.SupabaseClient.client.auth.currentUserOrNull()
-                    if (currentUser?.emailConfirmedAt == null) {
+                    if (!authRepository.isEmailVerified()) {
                         sharedPreferences.edit()
                             .putString(PREF_KEY_VERIFICATION_EMAIL, email)
                             .apply()
@@ -563,7 +562,7 @@ class AuthViewModel @Inject constructor(
 
             if (provider.equals("GitHub", ignoreCase = true)) {
                 try {
-                    SupabaseClient.client.auth.signInWith(Github, "https://synapseofficial.vercel.app/")
+                    authRepository.signInWithOAuth(Github, "https://synapseofficial.vercel.app/")
                     // The SDK handles opening the browser for us
                 } catch (e: Exception) {
                     val message = "Failed to initiate GitHub sign-in: ${e.message}"
@@ -573,7 +572,7 @@ class AuthViewModel @Inject constructor(
                 }
             } else if (provider.equals("Google", ignoreCase = true)) {
                 try {
-                    SupabaseClient.client.auth.signInWith(Google, "https://synapseofficial.vercel.app/")
+                    authRepository.signInWithOAuth(Google, "https://synapseofficial.vercel.app/")
                     // The SDK handles opening the browser for us
                 } catch (e: Exception) {
                     val message = "Failed to initiate Google sign-in: ${e.message}"

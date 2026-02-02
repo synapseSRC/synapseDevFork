@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.feature.shared.theme.ProfileTheme.formatCount
+import com.synapse.social.studioasinc.ui.components.post.formatCount
 
 /**
  * Enhanced stat item component with better visual hierarchy and accessibility.

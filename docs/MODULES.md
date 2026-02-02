@@ -24,6 +24,7 @@ The entry point for the Android application.
 - **Key Packages:**
     - `ui/`: Design system, themes, common components.
     - `feature/`: Feature-sliced screens (e.g., `auth`, `feed`, `profile`).
+    - `feature/shared/reels/`: Implementation of the Reels feature.
     - `di/`: Hilt modules bridging Android to the Shared Engine.
 
 ### 2. `:shared` (The Engine)

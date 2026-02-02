@@ -34,6 +34,7 @@ import com.synapse.social.studioasinc.domain.model.UserStatus
 import com.synapse.social.studioasinc.R
 import com.synapse.social.studioasinc.feature.shared.components.ExpressiveButton
 import com.synapse.social.studioasinc.feature.shared.components.ButtonVariant
+import com.synapse.social.studioasinc.core.util.NumberFormatter
 
 /**
  * Enhanced Profile Header with cover photo, animated stats, and modern design.
@@ -175,7 +176,7 @@ fun ProfileHeader(
                         modifier = Modifier.padding(top = 2.dp)
                     ) {
                         Text(
-                            text = formatCount(followersCount),
+                            text = NumberFormatter.formatCount(followersCount),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
@@ -192,7 +193,7 @@ fun ProfileHeader(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = formatCount(postsCount),
+                            text = NumberFormatter.formatCount(postsCount),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
@@ -208,7 +209,7 @@ fun ProfileHeader(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = formatCount(followingCount),
+                            text = NumberFormatter.formatCount(followingCount),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,

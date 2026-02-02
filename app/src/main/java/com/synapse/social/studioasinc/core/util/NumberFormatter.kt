@@ -28,13 +28,31 @@ object NumberFormatter {
     }
 
     /**
-     * Format large numbers for display (e.g., 1.2K, 3.5M)
+     * Format large numbers for display (e.g., 1.2K, 3.5M, 1.0B)
      */
     fun formatCount(count: Int): String {
         return when {
-            count < 1000 -> count.toString()
-            count < 1_000_000 -> String.format("%.1fK", count / 1000.0)
-            else -> String.format("%.1fM", count / 1_000_000.0)
+            count >= 1_000_000_000 -> {
+                val formatted = count / 1_000_000_000.0
+                if (formatted == formatted.toLong().toDouble()) {
+                    "${formatted.toLong()}B"
+                } else {
+                    String.format("%.1fB", formatted)
+                }
+            }
+            count >= 1_000_000 -> {
+                val formatted = count / 1_000_000.0
+                if (formatted == formatted.toLong().toDouble()) {
+                    "${formatted.toLong()}M"
+                } else {
+                    String.format("%.1fM", formatted)
+                }
+            }
+            count >= 1_000 -> {
+                val formatted = count / 1_000.0
+                String.format("%.1fK", formatted)
+            }
+            else -> count.toString()
         }
     }
 }

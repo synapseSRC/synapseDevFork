@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.synapse.social.studioasinc.core.util.NumberFormatter
 
 @Composable
 fun StatItem(
@@ -26,7 +27,7 @@ fun StatItem(
             .padding(horizontal = 16.dp, vertical = 12.dp) // MD3: Increased touch target
     ) {
         Text(
-            text = formatCount(count),
+            text = NumberFormatter.formatCount(count),
             style = MaterialTheme.typography.titleLarge, // MD3: Larger title
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface
@@ -76,31 +77,6 @@ fun StatsRow(
     }
 }
 
-fun formatCount(count: Int): String {
-    return when {
-        count >= 1_000_000_000 -> {
-            val formatted = count / 1_000_000_000.0
-            if (formatted == formatted.toLong().toDouble()) {
-                "${formatted.toLong()}B"
-            } else {
-                String.format("%.1fB", formatted)
-            }
-        }
-        count >= 1_000_000 -> {
-            val formatted = count / 1_000_000.0
-            if (formatted == formatted.toLong().toDouble()) {
-                "${formatted.toLong()}M"
-            } else {
-                String.format("%.1fM", formatted)
-            }
-        }
-        count >= 1_000 -> {
-            val formatted = count / 1_000.0
-            String.format("%.1fK", formatted)
-        }
-        else -> count.toString()
-    }
-}
 
 @Preview(showBackground = true)
 @Composable

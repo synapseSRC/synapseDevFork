@@ -88,7 +88,7 @@ class AuthViewModelTest {
         val email = "test@example.com"
         val password = "password123"
         val errorMessage = "Error"
-        whenever(authRepository.signIn(any(), any())).thenReturn(Result.failure(Exception(errorMessage)))
+        whenever(authRepository.signIn(eq(email), eq(password))).thenReturn(Result.failure(Exception(errorMessage)))
 
         viewModel.onSignInClick(email, password)
 

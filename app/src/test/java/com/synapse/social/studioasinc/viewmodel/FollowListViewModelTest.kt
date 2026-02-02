@@ -25,7 +25,7 @@ class FollowListViewModelTest {
     lateinit var followService: SupabaseFollowService
 
     private lateinit var viewModel: FollowListViewModel
-    private val testDispatcher = UnconfinedTestDispatcher()
+    private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setup() {
@@ -48,7 +48,7 @@ class FollowListViewModelTest {
     }
 
     @Test
-    fun `loadUsers success should update state with users`() = runTest(testDispatcher) {
+    fun `loadUsers success should update state with users`() = runTest {
         // Arrange
         val userId = "user123"
         val mockUsers = listOf(
@@ -59,10 +59,9 @@ class FollowListViewModelTest {
 
         // Act
         viewModel.loadUsers(userId, "followers")
+        advanceUntilIdle()
 
-        // Assert Success (since Unconfined runs immediately until completion if getFollowers is immediate or until next suspension)
-        // If getFollowers is immediate (mock returns success), it might finish entirely.
-
+        // Assert Success
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
         assertEquals(2, state.users.size)
@@ -70,7 +69,7 @@ class FollowListViewModelTest {
     }
 
     @Test
-    fun `loadUsers failure should update state with error`() = runTest(testDispatcher) {
+    fun `loadUsers failure should update state with error`() = runTest {
         // Arrange
         val userId = "user123"
         val errorMessage = "Network Error"
@@ -78,6 +77,7 @@ class FollowListViewModelTest {
 
         // Act
         viewModel.loadUsers(userId, "following")
+        advanceUntilIdle()
 
         // Assert Failure
         val state = viewModel.uiState.value
@@ -85,5 +85,21 @@ class FollowListViewModelTest {
         assertTrue(state.users.isEmpty())
         assertNotNull(state.error)
         assertTrue(state.error!!.contains(errorMessage))
+    }
+
+    @Test
+    fun `loadUsers with unknown type should result in empty list and no error`() = runTest(testDispatcher) {
+        // Arrange
+        val userId = "user123"
+
+        // Act
+        viewModel.loadUsers(userId, "some_invalid_type")
+        advanceUntilIdle()
+
+        // Assert
+        val state = viewModel.uiState.value
+        assertFalse(state.isLoading)
+        assertTrue(state.users.isEmpty())
+        assertNull(state.error)
     }
 }

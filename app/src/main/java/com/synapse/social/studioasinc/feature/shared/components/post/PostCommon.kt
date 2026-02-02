@@ -66,7 +66,8 @@ object PostMapper {
             pollOptions = mappedPollOptions,
             userPollVote = post.userPollVote,
             topCommentAuthor = post.latestCommentAuthor,
-            topCommentText = post.latestCommentText
+            topCommentText = post.latestCommentText,
+            formattedTimestamp = com.synapse.social.studioasinc.core.util.TimeUtils.getTimeAgo(post.publishDate ?: "")
         )
     }
 }

@@ -26,29 +26,48 @@ fun SharedPostItem(
         PostMapper.mapToState(post, currentProfile)
     }
 
-    PostCard(
-        state = state,
-        postViewStyle = postViewStyle,
-        onLikeClick = { actions.onLike(post) },
-        onCommentClick = { actions.onComment(post) },
-        onShareClick = { actions.onShare(post) },
-        onBookmarkClick = { actions.onBookmark(post) },
-        onUserClick = { actions.onUserClick(post.authorUid) },
-        onPostClick = { actions.onComment(post) }, // Default to opening details/comments
-        onMediaClick = { index ->
+    /**
+     * Bolt Optimization: Memoize lambdas that capture 'post' and 'actions'.
+     * Since Post is unstable, SharedPostItem will recompose whenever its parent does.
+     * By remembering these lambdas, we ensure PostCard (which is @Stable) is skipped.
+     */
+    val onLikeClick = remember(post, actions) { { actions.onLike(post) } }
+    val onCommentClick = remember(post, actions) { { actions.onComment(post) } }
+    val onShareClick = remember(post, actions) { { actions.onShare(post) } }
+    val onBookmarkClick = remember(post, actions) { { actions.onBookmark(post) } }
+    val onUserClick = remember(post, actions) { { actions.onUserClick(post.authorUid) } }
+    val onPostClick = remember(post, actions) { { actions.onComment(post) } }
+    val onMediaClick = remember(post, actions, postViewStyle) {
+        { index: Int ->
             if (postViewStyle == PostViewStyle.GRID) {
                 actions.onComment(post)
             } else {
                 actions.onMediaClick(index)
             }
-        },
-        onOptionsClick = { actions.onOptionClick(post) },
-        onPollVote = { optionId ->
+        }
+    }
+    val onOptionsClick = remember(post, actions) { { actions.onOptionClick(post) } }
+    val onPollVote = remember(post, actions) {
+        { optionId: String ->
             val index = optionId.toIntOrNull()
             if (index != null) {
                 actions.onPollVote(post, index)
             }
-        },
+        }
+    }
+
+    PostCard(
+        state = state,
+        postViewStyle = postViewStyle,
+        onLikeClick = onLikeClick,
+        onCommentClick = onCommentClick,
+        onShareClick = onShareClick,
+        onBookmarkClick = onBookmarkClick,
+        onUserClick = onUserClick,
+        onPostClick = onPostClick,
+        onMediaClick = onMediaClick,
+        onOptionsClick = onOptionsClick,
+        onPollVote = onPollVote,
         // Optional: Can extend PostActions if reaction picker is needed
         onReactionSelected = null,
         modifier = modifier

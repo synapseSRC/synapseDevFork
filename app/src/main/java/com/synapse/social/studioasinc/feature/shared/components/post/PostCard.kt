@@ -43,7 +43,8 @@ data class PostCardState(
     val pollOptions: List<PollOption>? = null,
     val userPollVote: Int? = null, // Track user's vote for poll
     val topCommentAuthor: String? = null,
-    val topCommentText: String? = null
+    val topCommentText: String? = null,
+    val formattedTimestamp: String = "" // Bolt: Cache formatted time to avoid re-calculating during composition
 )
 
 @Composable
@@ -81,7 +82,7 @@ fun PostCard(
         Column {
             PostHeader(
                 user = state.user,
-                timestamp = com.synapse.social.studioasinc.core.util.TimeUtils.getTimeAgo(state.post.publishDate ?: ""),
+                timestamp = state.formattedTimestamp,
                 onUserClick = onUserClick,
                 onOptionsClick = onOptionsClick,
                 taggedPeople = state.post.metadata?.taggedPeople ?: emptyList(),

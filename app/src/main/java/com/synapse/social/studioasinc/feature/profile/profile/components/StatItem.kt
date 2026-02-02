@@ -45,7 +45,7 @@ fun StatItem(
         label = "statItemScale"
     )
     
-    val formattedCount = formatCount(count)
+    val formattedCount = NumberFormatter.formatCount(count)
     val contentDesc = "$formattedCount $label"
     
     Column(

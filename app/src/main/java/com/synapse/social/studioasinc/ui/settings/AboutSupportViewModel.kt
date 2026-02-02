@@ -95,7 +95,7 @@ class AboutSupportViewModel(
      * Requirements: 9.2
      */
     fun getTermsOfServiceUrl(): String {
-        return "https://synapsesocial.vercel.app/reference/terms/"
+        return URL_TERMS_OF_SERVICE
     }
 
     /**
@@ -105,7 +105,7 @@ class AboutSupportViewModel(
      * Requirements: 9.3
      */
     fun getPrivacyPolicyUrl(): String {
-        return "https://synapsesocial.vercel.app/reference/privacy/"
+        return URL_PRIVACY_POLICY
     }
 
     /**
@@ -126,7 +126,7 @@ class AboutSupportViewModel(
      * Requirements: 9.4
      */
     fun getHelpCenterUrl(): String {
-        return "https://synapsesocial.vercel.app/"
+        return URL_HELP_CENTER
     }
 
     /**
@@ -165,6 +165,12 @@ class AboutSupportViewModel(
      */
     fun getFullVersionString(): String {
         return "${_appVersion.value} (${_buildNumber.value})"
+    }
+
+    companion object {
+        private const val URL_TERMS_OF_SERVICE = "https://synapsesocial.vercel.app/reference/terms/"
+        private const val URL_PRIVACY_POLICY = "https://synapsesocial.vercel.app/reference/privacy/"
+        private const val URL_HELP_CENTER = "https://synapsesocial.vercel.app/"
     }
 
 }

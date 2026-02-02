@@ -17,6 +17,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.synapse.social.studioasinc.R
 
+private object AboutSupportConstants {
+    const val URL_GITHUB_BUG_REPORT = "https://github.com/synapseSRC/synapseApp/issues/new?template=bug_report.md"
+    const val URL_APP_WEBSITE = "https://synapsesocial.vercel.app"
+}
+
 /**
  * About and Support Settings screen.
  *
@@ -150,8 +155,7 @@ fun AboutSupportScreen(
                         subtitle = "Send us feedback or report issues",
                         icon = R.drawable.ic_bug_report_48px,
                         onClick = {
-                            val url = "https://github.com/synapseSRC/synapseApp/issues/new?template=bug_report.md"
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AboutSupportConstants.URL_GITHUB_BUG_REPORT))
                             context.startActivity(intent)
                         }
                     )
@@ -166,8 +170,7 @@ fun AboutSupportScreen(
                         subtitle = "See if a new version is available",
                         icon = R.drawable.ic_download,
                         onClick = {
-                            val url = "https://synapsesocial.vercel.app"
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AboutSupportConstants.URL_APP_WEBSITE))
                             context.startActivity(intent)
                         }
                     )

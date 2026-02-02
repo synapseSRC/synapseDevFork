@@ -1,5 +1,6 @@
 package com.synapse.social.studioasinc.data.model
 
+import com.synapse.social.studioasinc.domain.model.UserStatus
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -24,7 +25,8 @@ data class UserProfile(
     val followerCount: Int = 0,
     @SerialName("following_count")
     val followingCount: Int = 0,
-    val status: String = "offline",
+    @SerialName("status")
+    val status: UserStatus = UserStatus.OFFLINE,
     @SerialName("joined_date")
     val joinedDate: Long = 0,
     val location: String? = null,

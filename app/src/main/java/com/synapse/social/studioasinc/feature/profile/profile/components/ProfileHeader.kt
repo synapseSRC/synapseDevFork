@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.synapse.social.studioasinc.domain.model.UserStatus
 import com.synapse.social.studioasinc.R
 import com.synapse.social.studioasinc.feature.shared.components.ExpressiveButton
 import com.synapse.social.studioasinc.feature.shared.components.ButtonVariant
@@ -48,7 +49,7 @@ import com.synapse.social.studioasinc.feature.shared.components.ButtonVariant
 @Composable
 fun ProfileHeader(
     avatar: String?,
-    status: String? = null,
+    status: UserStatus? = null,
     coverImageUrl: String? = null,
     name: String?,
     username: String,
@@ -533,7 +534,7 @@ private fun ProfileHeaderPreview() {
     MaterialTheme {
         ProfileHeader(
             avatar = null,
-            status = "online",
+            status = UserStatus.ONLINE,
             coverImageUrl = null,
             name = "John Doe",
             username = "johndoe",
@@ -560,7 +561,7 @@ private fun ProfileHeaderOtherUserPreview() {
     MaterialTheme {
         ProfileHeader(
             avatar = null,
-            status = "offline",
+            status = UserStatus.OFFLINE,
             coverImageUrl = null,
             name = "Jane Smith",
             username = "janesmith",

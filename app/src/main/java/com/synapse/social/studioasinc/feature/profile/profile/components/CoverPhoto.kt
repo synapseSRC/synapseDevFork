@@ -24,8 +24,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.synapse.social.studioasinc.domain.model.UserStatus
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
+
+private val STATUS_ONLINE_COLOR = Color(0xFF4CAF50)
 
 /**
  * Cover photo component with parallax scrolling effect.
@@ -220,7 +223,7 @@ private fun CoverPlaceholder(
 fun CoverPhotoWithProfile(
     coverImageUrl: String?,
     avatar: String?,
-    status: String? = null,
+    status: UserStatus? = null,
     scrollOffset: Float = 0f,
     isOwnProfile: Boolean = false,
     hasStory: Boolean = false,
@@ -270,7 +273,7 @@ fun CoverPhotoWithProfile(
 fun ProfileImageWithRing(
     avatar: String?,
     size: Dp,
-    status: String? = null,
+    status: UserStatus? = null,
     hasStory: Boolean = false,
     isOwnProfile: Boolean = false,
     onClick: () -> Unit = {},
@@ -381,7 +384,7 @@ fun ProfileImageWithRing(
         }
 
         // Active Status Indicator (Green Dot)
-        if (status == "online") {
+        if (status == UserStatus.ONLINE) {
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -391,7 +394,7 @@ fun ProfileImageWithRing(
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(2.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFF4CAF50)) // Material Green 500
+                    .background(STATUS_ONLINE_COLOR)
             )
         }
     }
@@ -420,14 +423,14 @@ private fun ProfileImageWithRingPreview() {
             ProfileImageWithRing(
                 avatar = null,
                 size = 80.dp,
-                status = "online",
+                status = UserStatus.ONLINE,
                 hasStory = true,
                 isOwnProfile = false
             )
             ProfileImageWithRing(
                 avatar = null,
                 size = 80.dp,
-                status = "offline",
+                status = UserStatus.OFFLINE,
                 hasStory = false,
                 isOwnProfile = true
             )

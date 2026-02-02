@@ -1,6 +1,7 @@
 package com.synapse.social.studioasinc.data.repository
 
 import com.synapse.social.studioasinc.data.model.UserProfile
+import com.synapse.social.studioasinc.domain.model.UserStatus
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.MediaItem
@@ -126,7 +127,13 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
             avatar = data.getNullableString(KEY_AVATAR)?.let { constructAvatarUrl(it) },
             coverImageUrl = data.getNullableString(KEY_COVER_IMAGE)?.let { constructMediaUrl(it) },
             isVerified = data.getBoolean(KEY_VERIFY),
-            status = data.getString(KEY_STATUS, "offline"),
+            status = data.getNullableString(KEY_STATUS)?.let { statusStr ->
+                try {
+                    UserStatus.valueOf(statusStr.uppercase())
+                } catch (e: Exception) {
+                    if (statusStr.lowercase() == "online") UserStatus.ONLINE else UserStatus.OFFLINE
+                }
+            } ?: UserStatus.OFFLINE,
             isPrivate = data.getBoolean(KEY_IS_PRIVATE),
             postCount = postCount,
             followerCount = data.getInt(KEY_FOLLOWERS_COUNT),

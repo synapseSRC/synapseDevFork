@@ -43,10 +43,6 @@ enum class CompositionType {
     POST, REEL
 }
 
-enum class LayoutType {
-    CLASSIC, COLUMNS, FRAME
-}
-
 data class CreatePostUiState(
     val compositionType: CompositionType = CompositionType.POST,
     val isLoading: Boolean = false,
@@ -64,7 +60,6 @@ data class CreatePostUiState(
     val checkDraft: Boolean = true,
     val currentUserProfile: User? = null,
     // New Fields
-    val selectedLayout: LayoutType = LayoutType.COLUMNS,
     val taggedPeople: List<User> = emptyList(),
     val feeling: FeelingActivity? = null,
     val textBackgroundColor: Long? = null, // ARGB Long or null
@@ -153,15 +148,10 @@ class CreatePostViewModel @Inject constructor(
         if (_uiState.value.isEditMode || !_uiState.value.checkDraft) return
 
         val draftText = prefs.getString("draft_text", null)
-        val draftLayout = prefs.getString("draft_layout", null)
         // Note: Complex objects like taggedPeople/feeling are not persisted in simple prefs for this iteration
 
-        val layout = try {
-            if (draftLayout != null) LayoutType.valueOf(draftLayout) else LayoutType.CLASSIC
-        } catch (e: Exception) { LayoutType.CLASSIC }
-
         if (!draftText.isNullOrEmpty()) {
-             _uiState.update { it.copy(postText = draftText, selectedLayout = layout, checkDraft = false) }
+             _uiState.update { it.copy(postText = draftText, checkDraft = false) }
         } else {
             _uiState.update { it.copy(checkDraft = false) }
         }
@@ -172,13 +162,11 @@ class CreatePostViewModel @Inject constructor(
         if (_uiState.value.isEditMode) return
 
         val text = _uiState.value.postText
-        val layout = _uiState.value.selectedLayout.name
 
-        // Simple draft for text and layout preference
+        // Simple draft for text preference
         if (text.isNotBlank() || _uiState.value.mediaItems.isNotEmpty()) {
             prefs.edit()
                 .putString("draft_text", text)
-                .putString("draft_layout", layout)
                 .apply()
         }
     }
@@ -186,7 +174,6 @@ class CreatePostViewModel @Inject constructor(
     fun clearDraft() {
         prefs.edit()
             .remove("draft_text")
-            .remove("draft_layout")
             .apply()
     }
 
@@ -231,9 +218,6 @@ class CreatePostViewModel @Inject constructor(
                             // Poll and Location mapping is complex if detailed data missing, assuming basic restore
                             pollData = if (it.hasPoll == true) PollData(it.pollQuestion ?: "", it.pollOptions?.map { opt -> opt.text } ?: emptyList(), 24) else null,
                             location = if (it.hasLocation == true) LocationData(it.locationName ?: "", it.locationAddress, it.locationLatitude, it.locationLongitude) else null,
-                            selectedLayout = it.metadata?.layoutType?.let { type ->
-                                try { LayoutType.valueOf(type) } catch (e: Exception) { LayoutType.CLASSIC }
-                            } ?: LayoutType.CLASSIC,
                             taggedPeople = it.metadata?.taggedPeople ?: emptyList(),
                             feeling = it.metadata?.feeling,
                             textBackgroundColor = it.metadata?.backgroundColor
@@ -248,10 +232,6 @@ class CreatePostViewModel @Inject constructor(
 
     fun updateText(text: String) {
         _uiState.update { it.copy(postText = text) }
-    }
-
-    fun setLayout(layout: LayoutType) {
-        _uiState.update { it.copy(selectedLayout = layout) }
     }
 
     fun addTaggedPerson(user: User) {
@@ -512,7 +492,7 @@ class CreatePostViewModel @Inject constructor(
                 locationLongitude = currentState.location?.longitude,
                 locationPlaceId = null,
                 metadata = PostMetadata(
-                    layoutType = currentState.selectedLayout.name,
+                    layoutType = "COLUMNS",
                     taggedPeople = currentState.taggedPeople.ifEmpty { null },
                     feeling = currentState.feeling,
                     backgroundColor = currentState.textBackgroundColor
@@ -693,7 +673,7 @@ class CreatePostViewModel @Inject constructor(
             if (currentState.taggedPeople.isNotEmpty()) {
                 metadataMap["tagged_people"] = currentState.taggedPeople.map { mapOf("uid" to it.uid, "username" to it.username) }
             }
-            metadataMap["layout_type"] = currentState.selectedLayout.name
+            metadataMap["layout_type"] = "COLUMNS"
             currentState.textBackgroundColor?.let { metadataMap["background_color"] = it }
 
             reelRepository.uploadReel(

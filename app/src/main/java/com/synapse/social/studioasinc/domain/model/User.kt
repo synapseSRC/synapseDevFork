@@ -7,6 +7,12 @@ import kotlinx.serialization.Serializable
  * User model for Supabase - matches the actual database schema
  */
 @Serializable
+enum class UserStatus {
+    @SerialName("online") ONLINE,
+    @SerialName("offline") OFFLINE
+}
+
+@Serializable
 data class User(
     val id: String? = null,
     val uid: String,
@@ -30,7 +36,8 @@ data class User(
     val accountType: String = "user",
     val gender: String = "hidden",
     val banned: Boolean = false,
-    val status: String = "offline",
+    @SerialName("status")
+    val status: UserStatus = UserStatus.OFFLINE,
     @SerialName("join_date")
     val joinDate: String? = null,
     @SerialName("one_signal_player_id")
@@ -72,7 +79,9 @@ fun HashMap<String, Any?>.toUser(): User {
         accountType = this["account_type"] as? String ?: "user",
         gender = this["gender"] as? String ?: "hidden",
         banned = this["banned"] as? Boolean ?: false,
-        status = this["status"] as? String ?: "offline",
+        status = (this["status"] as? String)?.let { s ->
+            if (s.lowercase() == "online") UserStatus.ONLINE else UserStatus.OFFLINE
+        } ?: UserStatus.OFFLINE,
         joinDate = this["join_date"] as? String,
         oneSignalPlayerId = this["one_signal_player_id"] as? String,
         lastSeen = this["last_seen"] as? String,

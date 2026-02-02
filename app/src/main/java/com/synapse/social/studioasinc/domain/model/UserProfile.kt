@@ -15,7 +15,7 @@ data class UserProfile(
     @SerialName("followers_count") val followersCount: Int = 0,
     @SerialName("following_count") val followingCount: Int = 0,
     @SerialName("posts_count") val postsCount: Int = 0,
-    val status: String = "offline",
+    @SerialName("status") val status: UserStatus = UserStatus.OFFLINE,
     @SerialName("account_type") val account_type: String = "user",
     val gender: String? = null,
     val region: String? = null,

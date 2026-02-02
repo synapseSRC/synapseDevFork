@@ -50,6 +50,7 @@ import com.synapse.social.studioasinc.feature.shared.components.ButtonVariant
  * - Premium action buttons with icons
  * - Verified badge with subtle animation
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileHeader(
     avatar: String?,
@@ -187,10 +188,12 @@ fun ProfileHeader(
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.clickable {
-                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                onStatsClick("followers")
-                            }
+                            modifier = Modifier
+                                .minimumTouchTargetSize()
+                                .clickable {
+                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                    onStatsClick("followers")
+                                }
                         )
                         Text(
                             text = " followers",
@@ -223,10 +226,12 @@ fun ProfileHeader(
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.clickable {
-                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                onStatsClick("following")
-                            }
+                            modifier = Modifier
+                                .minimumTouchTargetSize()
+                                .clickable {
+                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                    onStatsClick("following")
+                                }
                         )
                         Text(
                             text = " following",

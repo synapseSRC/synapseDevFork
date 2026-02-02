@@ -45,7 +45,7 @@ fun StatItem(
         label = "statItemScale"
     )
     
-    val formattedCount = formatCount(count)
+    val formattedCount = NumberFormatter.formatCount(count)
     val contentDesc = "$formattedCount $label"
     
     Column(
@@ -97,30 +97,35 @@ fun StatsRow(
     followersCount: Int,
     followingCount: Int,
     onStatsClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    content: (@Composable RowScope.() -> Unit)? = null
 ) {
     Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        horizontalArrangement = if (content != null) Arrangement.Start else Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.fillMaxWidth()
     ) {
-        StatItem(
-            count = postsCount,
-            label = "posts",
-            onClick = { onStatsClick("posts") }
-        )
-        
-        StatItem(
-            count = followersCount,
-            label = "followers",
-            onClick = { onStatsClick("followers") }
-        )
-        
-        StatItem(
-            count = followingCount,
-            label = "following",
-            onClick = { onStatsClick("following") }
-        )
+        if (content != null) {
+            content()
+        } else {
+            StatItem(
+                count = postsCount,
+                label = "posts",
+                onClick = { onStatsClick("posts") }
+            )
+
+            StatItem(
+                count = followersCount,
+                label = "followers",
+                onClick = { onStatsClick("followers") }
+            )
+
+            StatItem(
+                count = followingCount,
+                label = "following",
+                onClick = { onStatsClick("following") }
+            )
+        }
     }
 }
 

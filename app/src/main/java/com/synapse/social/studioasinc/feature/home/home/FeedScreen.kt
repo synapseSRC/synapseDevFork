@@ -13,9 +13,9 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
@@ -50,13 +50,13 @@ fun FeedScreen(
     onAddStoryClick: () -> Unit = {},
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val posts = viewModel.posts.collectAsLazyPagingItems()
     var selectedPost by remember { mutableStateOf<Post?>(null) }
 
     // Story tray state
-    val storyTrayState by storyTrayViewModel.storyTrayState.collectAsState()
-    val currentUser by storyTrayViewModel.currentUser.collectAsState()
+    val storyTrayState by storyTrayViewModel.storyTrayState.collectAsStateWithLifecycle()
+    val currentUser by storyTrayViewModel.currentUser.collectAsStateWithLifecycle()
 
     var isUserRefreshing by remember { mutableStateOf(false) }
     val pullToRefreshState = rememberPullToRefreshState()
@@ -66,6 +66,7 @@ fun FeedScreen(
     val currentOnCommentClick by rememberUpdatedState(onCommentClick)
     val currentOnUserClick by rememberUpdatedState(onUserClick)
     val currentOnMediaClick by rememberUpdatedState(onMediaClick)
+    val currentOnStoryClick by rememberUpdatedState(onStoryClick)
 
     /**
      * Bolt Optimization: Cache PostActions to prevent recreation of lambdas for every list item.
@@ -126,19 +127,30 @@ fun FeedScreen(
             ) {
                 // Story Tray at the top
                 item(key = "story_tray") {
+                    /**
+                     * Bolt Optimization: Memoize StoryTray lambdas to make it skippable.
+                     */
+                    val onMyStoryClickMemoized = remember(storyTrayState.myStory) {
+                        {
+                            storyTrayState.myStory?.let { myStory ->
+                                currentOnStoryClick(myStory.user.uid)
+                            }
+                            Unit
+                        }
+                    }
+                    val onStoryClickMemoized = remember {
+                        { storyWithUser: StoryWithUser ->
+                            currentOnStoryClick(storyWithUser.user.uid)
+                        }
+                    }
+
                     StoryTray(
                         currentUser = currentUser,
                         myStory = storyTrayState.myStory,
                         friendStories = storyTrayState.friendStories,
-                        onMyStoryClick = {
-                            storyTrayState.myStory?.let { myStory ->
-                                onStoryClick(myStory.user.uid)
-                            }
-                        },
+                        onMyStoryClick = onMyStoryClickMemoized,
                         onAddStoryClick = onAddStoryClick,
-                        onStoryClick = { storyWithUser ->
-                            onStoryClick(storyWithUser.user.uid)
-                        },
+                        onStoryClick = onStoryClickMemoized,
                         isLoading = storyTrayState.isLoading
                     )
                 }

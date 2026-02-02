@@ -91,3 +91,6 @@ build-and-push.sh
 # Shell scripts in root only
 /*.sh
 /tmp/
+
+.gemini/
+gha-creds-*.json

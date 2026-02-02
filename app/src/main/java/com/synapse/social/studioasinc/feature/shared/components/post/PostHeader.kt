@@ -36,6 +36,7 @@ fun PostHeader(
     onOptionsClick: () -> Unit,
     taggedPeople: List<User> = emptyList(),
     feeling: FeelingActivity? = null,
+    locationName: String? = null,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -100,6 +101,18 @@ fun PostHeader(
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                              append("${taggedPeople.size - 1} others")
                         }
+                    }
+                }
+
+                // Location
+                if (!locationName.isNullOrEmpty()) {
+                    if (feeling == null && taggedPeople.isEmpty()) {
+                        append(" is at ")
+                    } else {
+                        append(" at ")
+                    }
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append(locationName)
                     }
                 }
             }

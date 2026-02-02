@@ -202,7 +202,8 @@ fun CreatePostScreen(
                     privacy = uiState.privacy,
                     onPrivacyClick = { showPrivacySheet = true },
                     taggedPeople = uiState.taggedPeople,
-                    feeling = uiState.feeling
+                    feeling = uiState.feeling,
+                    location = uiState.location
                 )
             }
 
@@ -530,4 +531,3 @@ fun LocationPreviewCard(location: LocationData, onDelete: () -> Unit) {
         }
     }
 }
-

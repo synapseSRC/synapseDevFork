@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.User
+import com.synapse.social.studioasinc.domain.model.PollOption
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.ui.settings.PostViewStyle
 
@@ -77,7 +78,8 @@ fun PostCard(
                 onUserClick = onUserClick,
                 onOptionsClick = onOptionsClick,
                 taggedPeople = state.post.metadata?.taggedPeople ?: emptyList(),
-                feeling = state.post.metadata?.feeling
+                feeling = state.post.metadata?.feeling,
+                locationName = state.post.locationName
             )
 
             Column(modifier = Modifier.padding(horizontal = 12.dp)) {

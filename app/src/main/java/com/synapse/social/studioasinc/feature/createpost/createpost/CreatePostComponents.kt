@@ -38,6 +38,7 @@ import com.synapse.social.studioasinc.domain.model.MediaItem
 import com.synapse.social.studioasinc.domain.model.MediaType
 import com.synapse.social.studioasinc.domain.model.User
 import com.synapse.social.studioasinc.domain.model.FeelingActivity
+import com.synapse.social.studioasinc.domain.model.LocationData
 
 @Composable
 fun UserHeader(
@@ -46,6 +47,7 @@ fun UserHeader(
     onPrivacyClick: () -> Unit,
     taggedPeople: List<User> = emptyList(),
     feeling: FeelingActivity? = null,
+    location: LocationData? = null,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -86,7 +88,7 @@ fun UserHeader(
 
         // Name & Audience Selector
         Column {
-            // Text logic similar to Facebook: "Ashik Ahmed — with HK Hossein and Mohammad Sakib Hasan."
+            // Text logic similar to Facebook: "Ashik Ahmed — with HK Hossein and Mohammad Sakib Hasan at Dhaka, Bangladesh"
             val annotatedText = buildAnnotatedString {
                 // Main User Name
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)) {
@@ -131,6 +133,18 @@ fun UserHeader(
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                              append("${taggedPeople.size - 1} others")
                         }
+                    }
+                }
+
+                // Location
+                if (location != null) {
+                    if (feeling == null && taggedPeople.isEmpty()) {
+                        append(" is at ")
+                    } else {
+                        append(" at ")
+                    }
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append(location.name)
                     }
                 }
             }
@@ -659,5 +673,3 @@ fun FeelingActivitySheet(
          }
     }
 }
-
-

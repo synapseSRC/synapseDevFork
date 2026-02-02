@@ -3,6 +3,7 @@ package com.synapse.social.studioasinc.ui.navigation
 import android.content.Intent
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
@@ -89,6 +90,12 @@ fun HomeNavGraph(
                  onNavigateBack = { navController.popBackStack() },
                  onNavigateToProfile = onNavigateToProfile
              )
+        }
+
+        composable("create_reel") {
+            LaunchedEffect(Unit) {
+                onNavigateToCreateReel()
+            }
         }
     }
 }

@@ -56,13 +56,29 @@ object TimeUtils {
         }
     }
 
+    /**
+     * Bolt Optimization: Using java.time (available in minSdk 26) is significantly faster
+     * than SimpleDateFormat and avoids expensive object allocation on every call.
+     */
     fun getTimeAgo(isoTimestamp: String): String {
+        if (isoTimestamp.isBlank()) return "1s"
         return try {
-            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).apply {
-                timeZone = TimeZone.getTimeZone("UTC")
+            // java.time.OffsetDateTime is thread-safe and more efficient than SimpleDateFormat
+            val odt = java.time.OffsetDateTime.parse(isoTimestamp)
+            formatTimestamp(odt.toInstant().toEpochMilli())
+        } catch (e: java.time.format.DateTimeParseException) {
+            // Fallback for formats that might not be strict ISO
+            try {
+                val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).apply {
+                    timeZone = TimeZone.getTimeZone("UTC")
+                }
+                val timestamp = sdf.parse(isoTimestamp.substringBefore('+').substringBefore('Z'))?.time ?: return "1s"
+                formatTimestamp(timestamp)
+            } catch (e2: java.text.ParseException) {
+                "1s"
+            } catch (e3: Exception) {
+                "1s"
             }
-            val timestamp = sdf.parse(isoTimestamp.substringBefore('+').substringBefore('Z'))?.time ?: return "1s"
-            formatTimestamp(timestamp)
         } catch (e: Exception) {
             "1s"
         }

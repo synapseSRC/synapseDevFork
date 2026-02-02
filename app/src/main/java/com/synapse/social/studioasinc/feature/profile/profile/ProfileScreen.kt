@@ -18,6 +18,7 @@ import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -80,7 +81,7 @@ fun ProfileScreen(
     onNavigateToChat: (String) -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     // Calculate effective ownership state based on View As mode
     // If in View As mode, we simulate NOT being the owner
@@ -595,8 +596,14 @@ private fun ProfileContent(
                                 onCustomizeClick = onCustomizeClick,
                                 onWebsiteClick = { url ->
                                      try {
-                                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                         context.startActivity(intent)
+                                         val uri = Uri.parse(url)
+                                         // Bolt: Security validation to prevent insecure intent redirection
+                                         if (uri.scheme == "http" || uri.scheme == "https") {
+                                             val intent = Intent(Intent.ACTION_VIEW, uri)
+                                             context.startActivity(intent)
+                                         } else {
+                                             Toast.makeText(context, "Invalid link scheme", Toast.LENGTH_SHORT).show()
+                                         }
                                      } catch (e: Exception) {
                                          Toast.makeText(context, "Cannot open link", Toast.LENGTH_SHORT).show()
                                      }

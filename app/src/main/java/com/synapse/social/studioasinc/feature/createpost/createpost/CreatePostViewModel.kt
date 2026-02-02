@@ -13,11 +13,14 @@ import com.synapse.social.studioasinc.domain.model.MediaType
 import com.synapse.social.studioasinc.domain.model.PollOption
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.User
+import com.synapse.social.studioasinc.domain.model.UserProfile
 import com.synapse.social.studioasinc.domain.model.LocationData
 import com.synapse.social.studioasinc.core.util.FileManager
 import com.synapse.social.studioasinc.core.storage.MediaStorageService
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
 import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
+import com.synapse.social.studioasinc.core.network.SupabaseClient
+import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -137,8 +140,35 @@ class CreatePostViewModel @Inject constructor(
     private fun loadCurrentUser() {
         viewModelScope.launch {
             authService.getCurrentUserId()?.let { uid ->
+                // Try to get from Repository first (fast)
                 userRepository.getUserById(uid).onSuccess { user ->
                     _uiState.update { it.copy(currentUserProfile = user) }
+
+                    // Then refresh from network to get latest avatar
+                    try {
+                        val freshUserProfile = SupabaseClient.client.from("users")
+                            .select {
+                                filter { eq("uid", uid) }
+                            }.decodeSingleOrNull<UserProfile>()
+
+                        freshUserProfile?.let { profile ->
+                             val updatedUser = user?.copy(
+                                 avatar = profile.avatar,
+                                 displayName = profile.displayName,
+                                 username = profile.username
+                             ) ?: User(
+                                 uid = profile.uid,
+                                 username = profile.username,
+                                 displayName = profile.displayName,
+                                 avatar = profile.avatar,
+                                 email = profile.email,
+                                 verify = profile.verify
+                             )
+                             _uiState.update { it.copy(currentUserProfile = updatedUser) }
+                        }
+                    } catch (e: Exception) {
+                        android.util.Log.e("CreatePostViewModel", "Failed to fetch fresh user profile", e)
+                    }
                 }
             }
         }

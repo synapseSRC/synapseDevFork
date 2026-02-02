@@ -1,104 +1,126 @@
 package com.synapse.social.studioasinc.ui.profile.components
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.synapse.social.studioasinc.feature.shared.theme.ProfileTheme.formatCount
 
+/**
+ * Enhanced stat item component with better visual hierarchy and accessibility.
+ * Displays a number prominently with a label below, includes proper touch targets
+ * and haptic feedback for better user experience.
+ */
 @Composable
 fun StatItem(
-    label: String,
     count: Int,
+    label: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
+    val haptic = LocalHapticFeedback.current
+    var isPressed by remember { mutableStateOf(false) }
+    
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.95f else 1f,
+        animationSpec = tween(durationMillis = 100),
+        label = "statItemScale"
+    )
+    
+    val formattedCount = formatCount(count)
+    val contentDesc = "$formattedCount $label"
+    
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 12.dp) // MD3: Increased touch target
+            .clip(RoundedCornerShape(8.dp))
+            .clickable(enabled = enabled) {
+                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                onClick()
+            }
+            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .minimumInteractiveComponentSize()
+            .scale(scale)
+            .semantics {
+                contentDescription = contentDesc
+            }
     ) {
         Text(
-            text = formatCount(count),
-            style = MaterialTheme.typography.titleLarge, // MD3: Larger title
+            text = formattedCount,
+            style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            color = if (enabled) {
+                MaterialTheme.colorScheme.onSurface
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            },
+            textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(4.dp)) // MD3: 4dp spacing
+        
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyMedium, // MD3: Body medium for labels
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = MaterialTheme.typography.bodySmall,
+            color = if (enabled) {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+            },
+            textAlign = TextAlign.Center
         )
     }
 }
 
+/**
+ * Row of stat items with consistent spacing and alignment
+ */
 @Composable
 fun StatsRow(
     postsCount: Int,
     followersCount: Int,
     followingCount: Int,
-    onPostsClick: () -> Unit,
-    onFollowersClick: () -> Unit,
-    onFollowingClick: () -> Unit,
+    onStatsClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.fillMaxWidth()
     ) {
         StatItem(
-            label = "Posts",
             count = postsCount,
-            onClick = onPostsClick,
-            modifier = Modifier.weight(1f)
+            label = "posts",
+            onClick = { onStatsClick("posts") }
         )
+        
         StatItem(
-            label = "Followers",
             count = followersCount,
-            onClick = onFollowersClick,
-            modifier = Modifier.weight(1f)
+            label = "followers",
+            onClick = { onStatsClick("followers") }
         )
+        
         StatItem(
-            label = "Following",
             count = followingCount,
-            onClick = onFollowingClick,
-            modifier = Modifier.weight(1f)
+            label = "following",
+            onClick = { onStatsClick("following") }
         )
-    }
-}
-
-fun formatCount(count: Int): String {
-    return when {
-        count >= 1_000_000_000 -> {
-            val formatted = count / 1_000_000_000.0
-            if (formatted == formatted.toLong().toDouble()) {
-                "${formatted.toLong()}B"
-            } else {
-                String.format("%.1fB", formatted)
-            }
-        }
-        count >= 1_000_000 -> {
-            val formatted = count / 1_000_000.0
-            if (formatted == formatted.toLong().toDouble()) {
-                "${formatted.toLong()}M"
-            } else {
-                String.format("%.1fM", formatted)
-            }
-        }
-        count >= 1_000 -> {
-            val formatted = count / 1_000.0
-            String.format("%.1fK", formatted)
-        }
-        else -> count.toString()
     }
 }
 
@@ -106,10 +128,22 @@ fun formatCount(count: Int): String {
 @Composable
 private fun StatItemPreview() {
     MaterialTheme {
-        StatItem(
-            label = "Followers",
-            count = 1,
-            onClick = {}
-        )
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            StatItem(
+                count = 1234,
+                label = "followers",
+                onClick = { }
+            )
+            
+            StatsRow(
+                postsCount = 42,
+                followersCount = 1234,
+                followingCount = 567,
+                onStatsClick = { }
+            )
+        }
     }
 }

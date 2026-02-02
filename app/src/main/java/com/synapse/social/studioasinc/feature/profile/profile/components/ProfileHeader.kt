@@ -180,66 +180,13 @@ fun ProfileHeader(
                         }
                     }
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    StatsRow(
+                        postsCount = postsCount,
+                        followersCount = followersCount,
+                        followingCount = followingCount,
+                        onStatsClick = onStatsClick,
                         modifier = Modifier.padding(top = 2.dp)
-                    ) {
-                        Text(
-                            text = formatCount(followersCount),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier
-                                .minimumInteractiveComponentSize()
-                                .clickable {
-                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                    onStatsClick("followers")
-                                }
-                        )
-                        Text(
-                            text = " followers",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            text = " · ",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            text = formatCount(postsCount),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = " posts",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            text = " · ",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            text = formatCount(followingCount),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier
-                                .minimumInteractiveComponentSize()
-                                .clickable {
-                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                    onStatsClick("following")
-                                }
-                        )
-                        Text(
-                            text = " following",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+                    )
                 }
             }
         }

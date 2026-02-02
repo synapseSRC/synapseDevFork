@@ -39,6 +39,7 @@ import com.synapse.social.studioasinc.domain.model.UserStatus
 import com.synapse.social.studioasinc.R
 import com.synapse.social.studioasinc.feature.shared.components.ExpressiveButton
 import com.synapse.social.studioasinc.feature.shared.components.ButtonVariant
+import com.synapse.social.studioasinc.core.util.NumberFormatter
 
 /**
  * Enhanced Profile Header with cover photo, animated stats, and modern design.
@@ -186,7 +187,53 @@ fun ProfileHeader(
                         followingCount = followingCount,
                         onStatsClick = onStatsClick,
                         modifier = Modifier.padding(top = 2.dp)
-                    )
+                    ) {
+                        Text(
+                            text = NumberFormatter.formatCount(followersCount),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.clickable { onStatsClick("followers") }
+                        )
+                        Text(
+                            text = " followers",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = " · ",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = NumberFormatter.formatCount(postsCount),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = " posts",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = " · ",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = NumberFormatter.formatCount(followingCount),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.clickable { onStatsClick("following") }
+                        )
+                        Text(
+                            text = " following",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
         }

@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.ui.components.post.formatCount
+import com.synapse.social.studioasinc.core.util.NumberFormatter
 
 /**
  * Enhanced stat item component with better visual hierarchy and accessibility.
@@ -64,8 +64,8 @@ fun StatItem(
             }
     ) {
         Text(
-            text = formattedCount,
-            style = MaterialTheme.typography.titleMedium,
+            text = NumberFormatter.formatCount(count),
+            style = MaterialTheme.typography.titleLarge, // MD3: Larger title
             fontWeight = FontWeight.Bold,
             color = if (enabled) {
                 MaterialTheme.colorScheme.onSurface
@@ -123,6 +123,7 @@ fun StatsRow(
         )
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

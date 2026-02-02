@@ -66,7 +66,7 @@ object TimeUtils {
             // java.time.OffsetDateTime is thread-safe and more efficient than SimpleDateFormat
             val odt = java.time.OffsetDateTime.parse(isoTimestamp)
             formatTimestamp(odt.toInstant().toEpochMilli())
-        } catch (e: Exception) {
+        } catch (e: java.time.format.DateTimeParseException) {
             // Fallback for formats that might not be strict ISO
             try {
                 val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).apply {

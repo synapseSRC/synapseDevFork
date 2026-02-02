@@ -596,12 +596,18 @@ private fun ProfileContent(
                                 onCustomizeClick = onCustomizeClick,
                                 onWebsiteClick = { url ->
                                      try {
-                                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                         context.startActivity(intent)
+                                         val uri = Uri.parse(url)
+                                         // Bolt: Security validation to prevent insecure intent redirection
+                                         if (uri.scheme == "http" || uri.scheme == "https") {
+                                             val intent = Intent(Intent.ACTION_VIEW, uri)
+                                             context.startActivity(intent)
+                                         } else {
+                                             Toast.makeText(context, "Invalid link scheme", Toast.LENGTH_SHORT).show()
+                                         }
                                      } catch (e: Exception) {
                                          Toast.makeText(context, "Cannot open link", Toast.LENGTH_SHORT).show()
                                      }
-                                },
+                                 },
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             )
 

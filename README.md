@@ -43,6 +43,7 @@ Synapse uses a **Hybrid Architecture** leveraging the best of native UI and shar
 | [**Contributing**](docs/CONTRIBUTING.md) | 🤝 Contribution guidelines. |
 | [**Code Style**](docs/CODESTYLE.md) | 🎨 Coding standards. |
 | [**Roadmap**](docs/ROADMAP.md) | 🗺️ Future plans. |
+| [**Reels & Oppose**](docs/REELS.md) | 🎥 Short-form video & unique interactions. |
 
 > **🤖 For AI Agents:** Please refer to [AGENTS.md](AGENTS.md) before making changes.
 

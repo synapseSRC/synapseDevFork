@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -418,14 +419,20 @@ private fun ProfileContent(
 
     val context = LocalContext.current
 
+    // Using rememberUpdatedState ensures that the actions object remains stable even if
+    // the parent passes new lambda instances on every recomposition.
+    val currentOnNavigateToUserProfile by rememberUpdatedState(onNavigateToUserProfile)
+    val currentOnOpenMediaViewer by rememberUpdatedState(onOpenMediaViewer)
+    val currentOnShowPostOptions by rememberUpdatedState(onShowPostOptions)
+
     /**
      * Bolt Optimization: Cache PostActions to prevent recreation of lambdas for every list item.
      * Including 'context' in keys ensures that capturing the context is safe across activity recreations.
      * Expected Impact: Reduces frame drops by ~15% on mid-range devices during profile scroll.
      */
-    val actions = remember(context, viewModel, onNavigateToUserProfile, onOpenMediaViewer, onShowPostOptions) {
+    val actions = remember(context, viewModel) {
         PostActions(
-            onUserClick = { userId -> onNavigateToUserProfile(userId) },
+            onUserClick = { userId -> currentOnNavigateToUserProfile(userId) },
             onLike = { post -> viewModel.toggleLike(post.id) },
             onComment = { post ->
                 val intent = Intent(context, PostDetailActivity::class.java).apply {
@@ -442,7 +449,7 @@ private fun ProfileContent(
                 context.startActivity(Intent.createChooser(intent, "Share Post"))
             },
             onBookmark = { post -> viewModel.toggleSave(post.id) },
-            onOptionClick = { post -> onShowPostOptions(post) },
+            onOptionClick = { post -> currentOnShowPostOptions(post) },
             onMediaClick = { index ->
                 // This will be overridden in the call to SharedPostItem if needed,
                 // but we provide a default that works for general cases.

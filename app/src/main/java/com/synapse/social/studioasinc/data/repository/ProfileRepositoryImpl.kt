@@ -1,6 +1,7 @@
 package com.synapse.social.studioasinc.data.repository
 
 import com.synapse.social.studioasinc.data.model.UserProfile
+import com.synapse.social.studioasinc.domain.model.UserStatus
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.MediaItem
@@ -43,6 +44,7 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
         const val KEY_AVATAR = "avatar"
         const val KEY_COVER_IMAGE = "profile_cover_image"
         const val KEY_VERIFY = "verify"
+        const val KEY_STATUS = "status"
         const val KEY_IS_PRIVATE = "is_private"
         const val KEY_POSTS_COUNT = "posts_count"
         const val KEY_FOLLOWERS_COUNT = "followers_count"
@@ -125,6 +127,7 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
             avatar = data.getNullableString(KEY_AVATAR)?.let { constructAvatarUrl(it) },
             coverImageUrl = data.getNullableString(KEY_COVER_IMAGE)?.let { constructMediaUrl(it) },
             isVerified = data.getBoolean(KEY_VERIFY),
+            status = UserStatus.fromString(data.getNullableString(KEY_STATUS)),
             isPrivate = data.getBoolean(KEY_IS_PRIVATE),
             postCount = postCount,
             followerCount = data.getInt(KEY_FOLLOWERS_COUNT),

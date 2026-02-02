@@ -56,6 +56,7 @@ fun CreatePostScreen(
 
     val cropImage = rememberLauncherForActivityResult(contract = CropImageContract()) { result ->
         if (result.isSuccessful) {
+             // TODO: Implement explicit Save / Discard / Cancel controls for the crop screen
              editingMediaIndex?.let { index ->
                  result.uriContent?.let { uri ->
                      viewModel.updateMediaItem(index, uri)
@@ -251,15 +252,6 @@ fun CreatePostScreen(
                 }
             }
 
-            // Layout Selector (Visible if media items present)
-            if (uiState.mediaItems.isNotEmpty()) {
-                item {
-                    LayoutSelector(
-                        selectedLayout = uiState.selectedLayout,
-                        onLayoutSelected = { viewModel.setLayout(it) }
-                    )
-                }
-            }
 
             // Attachments
             item {
@@ -267,7 +259,6 @@ fun CreatePostScreen(
                  if (uiState.mediaItems.isNotEmpty()) {
                      MediaPreviewGrid(
                          mediaItems = uiState.mediaItems,
-                         layout = uiState.selectedLayout,
                          onRemove = { viewModel.removeMedia(it) },
                          onEdit = { index ->
                              val item = uiState.mediaItems[index]

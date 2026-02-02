@@ -6,6 +6,7 @@ import com.synapse.social.studioasinc.data.local.database.CommentDao
 import com.synapse.social.studioasinc.data.local.database.CommentEntity
 import com.synapse.social.studioasinc.data.repository.CommentMapper
 import com.synapse.social.studioasinc.domain.model.*
+import com.synapse.social.studioasinc.domain.model.UserStatus
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import io.github.jan.supabase.functions.functions
@@ -459,7 +460,7 @@ class CommentRepository(private val commentDao: CommentDao) {
                 followersCount = userData["followers_count"]?.jsonPrimitive?.intOrNull ?: 0,
                 followingCount = userData["following_count"]?.jsonPrimitive?.intOrNull ?: 0,
                 postsCount = userData["posts_count"]?.jsonPrimitive?.intOrNull ?: 0,
-                status = userData["status"]?.jsonPrimitive?.contentOrNull ?: "offline",
+                status = UserStatus.fromString(userData["status"]?.jsonPrimitive?.contentOrNull),
                 account_type = userData["account_type"]?.jsonPrimitive?.contentOrNull ?: "user",
                 verify = userData["verify"]?.jsonPrimitive?.booleanOrNull ?: false,
                 banned = userData["banned"]?.jsonPrimitive?.booleanOrNull ?: false

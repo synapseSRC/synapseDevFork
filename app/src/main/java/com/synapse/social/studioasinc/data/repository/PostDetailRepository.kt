@@ -3,6 +3,7 @@ package com.synapse.social.studioasinc.data.repository
 import android.util.Log
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.domain.model.*
+import com.synapse.social.studioasinc.domain.model.UserStatus
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
@@ -224,7 +225,7 @@ class PostDetailRepository {
                 followersCount = userData["followers_count"]?.jsonPrimitive?.intOrNull ?: 0,
                 followingCount = userData["following_count"]?.jsonPrimitive?.intOrNull ?: 0,
                 postsCount = userData["posts_count"]?.jsonPrimitive?.intOrNull ?: 0,
-                status = userData["status"]?.jsonPrimitive?.contentOrNull ?: "offline",
+                status = UserStatus.fromString(userData["status"]?.jsonPrimitive?.contentOrNull),
                 account_type = userData["account_type"]?.jsonPrimitive?.contentOrNull ?: "user",
                 verify = userData["verify"]?.jsonPrimitive?.booleanOrNull ?: false,
                 banned = userData["banned"]?.jsonPrimitive?.booleanOrNull ?: false

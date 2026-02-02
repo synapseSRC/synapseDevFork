@@ -1,5 +1,6 @@
 package com.synapse.social.studioasinc.data.repository
 
+import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.local.database.UserEntity
 import com.synapse.social.studioasinc.domain.model.User
 
@@ -20,7 +21,9 @@ object UserMapper {
             uid = entity.uid,
             username = entity.username,
             email = entity.email,
-            avatar = entity.avatarUrl,
+            avatar = entity.avatarUrl?.let { url ->
+                SupabaseClient.constructAvatarUrl(url)
+            },
             verify = entity.isVerified
         )
     }

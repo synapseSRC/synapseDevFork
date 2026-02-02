@@ -24,6 +24,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.synapse.social.studioasinc.domain.model.UserStatus
+import com.synapse.social.studioasinc.ui.theme.StatusOnline
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 
@@ -220,6 +222,7 @@ private fun CoverPlaceholder(
 fun CoverPhotoWithProfile(
     coverImageUrl: String?,
     avatar: String?,
+    status: UserStatus? = null,
     scrollOffset: Float = 0f,
     isOwnProfile: Boolean = false,
     hasStory: Boolean = false,
@@ -253,6 +256,7 @@ fun CoverPhotoWithProfile(
             ProfileImageWithRing(
                 avatar = avatar,
                 size = profileImageSize,
+                status = status,
                 hasStory = hasStory,
                 isOwnProfile = isOwnProfile,
                 onClick = onProfileImageClick
@@ -268,6 +272,7 @@ fun CoverPhotoWithProfile(
 fun ProfileImageWithRing(
     avatar: String?,
     size: Dp,
+    status: UserStatus? = null,
     hasStory: Boolean = false,
     isOwnProfile: Boolean = false,
     onClick: () -> Unit = {},
@@ -377,27 +382,19 @@ fun ProfileImageWithRing(
             }
         }
 
-        // Camera Button for editing profile picture
-        if (isOwnProfile) {
+        // Active Status Indicator (Green Dot)
+        if (status == UserStatus.ONLINE) {
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .size(36.dp)
+                    .padding(bottom = size * 0.05f, end = size * 0.05f)
+                    .size(size * 0.25f)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.surface)
-                    .padding(2.dp) // Border space
+                    .padding(2.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .clickable { onClick() },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CameraAlt,
-                    contentDescription = "Edit profile photo",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
+                    .background(StatusOnline)
+            )
         }
     }
 }
@@ -425,12 +422,14 @@ private fun ProfileImageWithRingPreview() {
             ProfileImageWithRing(
                 avatar = null,
                 size = 80.dp,
+                status = UserStatus.ONLINE,
                 hasStory = true,
                 isOwnProfile = false
             )
             ProfileImageWithRing(
                 avatar = null,
                 size = 80.dp,
+                status = UserStatus.OFFLINE,
                 hasStory = false,
                 isOwnProfile = true
             )

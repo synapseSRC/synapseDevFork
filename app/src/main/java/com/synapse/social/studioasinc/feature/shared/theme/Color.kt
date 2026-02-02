@@ -70,3 +70,6 @@ val DarkShadow = Color(0xFF000000)
 val DarkSurfaceTint = Color(0xFFD0BCFF)
 val DarkOutlineVariant = Color(0xFF49454F)
 val DarkScrim = Color(0xFF000000)
+
+// Status Colors
+val StatusOnline = Color(0xFF4CAF50)

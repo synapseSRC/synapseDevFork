@@ -335,54 +335,22 @@ fun PollCreationSheet(
 @Composable
 fun MediaPreviewGrid(
     mediaItems: List<MediaItem>,
-    layout: LayoutType,
     onRemove: (Int) -> Unit,
     onEdit: (Int) -> Unit
 ) {
     if (mediaItems.isEmpty()) return
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        when (layout) {
-            LayoutType.CLASSIC -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = 100.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier
-                        .heightIn(max = 300.dp)
-                        .fillMaxWidth()
-                ) {
-                    itemsIndexed(mediaItems) { index, item ->
-                         MediaItemView(item, onDelete = { onRemove(index) }, onEdit = { onEdit(index) })
-                    }
-                }
-            }
-            LayoutType.COLUMNS -> {
-                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                     mediaItems.forEachIndexed { index, item ->
-                         Box(modifier = Modifier.fillMaxWidth().height(250.dp)) {
-                             MediaItemView(item, onDelete = { onRemove(index) }, onEdit = { onEdit(index) })
-                         }
-                     }
-                 }
-            }
-            LayoutType.FRAME -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(16.dp, MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp))
-                        .padding(16.dp)
-                ) {
-                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                         mediaItems.forEachIndexed { index, item ->
-                             Box(modifier = Modifier.fillMaxWidth().height(200.dp)) {
-                                 MediaItemView(item, onDelete = { onRemove(index) }, onEdit = { onEdit(index) })
-                             }
-                         }
-                     }
-                }
+        mediaItems.forEachIndexed { index, item ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp) // Increased height for better column view
+            ) {
+                MediaItemView(item, onDelete = { onRemove(index) }, onEdit = { onEdit(index) })
             }
         }
     }
@@ -395,67 +363,78 @@ fun MediaItemView(
     onEdit: () -> Unit
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+        modifier = Modifier.fillMaxSize()
     ) {
-        AsyncImage(
-            model = item.url,
-            contentDescription = "Attached Media",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
+        // Main Content Container (with clipping and background)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 10.dp, end = 10.dp) // Room for the overlap of X button
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+        ) {
+            AsyncImage(
+                model = item.url,
+                contentDescription = "Attached Media",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
 
-        if (item.type == MediaType.VIDEO) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.2f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    Icons.Default.PlayCircle,
-                    contentDescription = "Video",
-                    tint = Color.White,
-                    modifier = Modifier.size(32.dp)
-                )
+            if (item.type == MediaType.VIDEO) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Default.PlayCircle,
+                        contentDescription = "Video",
+                        tint = Color.White,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
+
+            // Edit Button Overlay (UI Hook)
+            if (item.type == MediaType.IMAGE) {
+                Button(
+                    onClick = onEdit,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(8.dp)
+                        .height(28.dp),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Black.copy(alpha = 0.6f),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(12.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("Edit", style = MaterialTheme.typography.labelSmall)
+                }
             }
         }
 
-        IconButton(
+        // Close Button (Outside the clipped box to prevent clipping and improve reach)
+        Surface(
             onClick = onDelete,
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(4.dp)
-                .size(24.dp)
-                .background(Color.Black.copy(alpha = 0.5f), CircleShape)
+                .size(32.dp),
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 4.dp,
+            shadowElevation = 2.dp
         ) {
-            Icon(
-                Icons.Default.Close,
-                contentDescription = "Remove",
-                tint = Color.White,
-                modifier = Modifier.size(16.dp)
-            )
-        }
-
-        // Edit Button Overlay (UI Hook)
-        if (item.type == MediaType.IMAGE) {
-            Button(
-                onClick = onEdit,
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(8.dp)
-                    .height(28.dp),
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Black.copy(alpha = 0.6f),
-                    contentColor = Color.White
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    Icons.Default.Close,
+                    contentDescription = "Remove",
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(20.dp)
                 )
-            ) {
-                Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(12.dp))
-                Spacer(modifier = Modifier.width(4.dp))
-                Text("Edit", style = MaterialTheme.typography.labelSmall)
             }
         }
     }
@@ -545,40 +524,6 @@ fun AddToPostSheet(
 // =========================================================================
 // NEW COMPONENTS (Refactored)
 // =========================================================================
-
-@Composable
-fun LayoutSelector(
-    selectedLayout: LayoutType,
-    onLayoutSelected: (LayoutType) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        LayoutType.values().forEach { layout ->
-            FilterChip(
-                selected = selectedLayout == layout,
-                onClick = { onLayoutSelected(layout) },
-                label = { Text(layout.name.lowercase().capitalize()) },
-                leadingIcon = {
-                    Icon(
-                        imageVector = when(layout) {
-                            LayoutType.CLASSIC -> Icons.Default.GridView
-                            LayoutType.COLUMNS -> Icons.Default.ViewAgenda
-                            LayoutType.FRAME -> Icons.Default.CropSquare
-                        },
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
-                    )
-                },
-                shape = RoundedCornerShape(8.dp)
-            )
-        }
-    }
-}
 
 @Composable
 fun StickyBottomActionArea(
@@ -716,6 +661,3 @@ fun FeelingActivitySheet(
 }
 
 
-fun String.capitalize(): String {
-    return this.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-}

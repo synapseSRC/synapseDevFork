@@ -9,7 +9,16 @@ import kotlinx.serialization.Serializable
 @Serializable
 enum class UserStatus {
     @SerialName("online") ONLINE,
-    @SerialName("offline") OFFLINE
+    @SerialName("offline") OFFLINE;
+
+    companion object {
+        fun fromString(status: String?): UserStatus {
+            return when (status?.lowercase()) {
+                "online" -> ONLINE
+                else -> OFFLINE
+            }
+        }
+    }
 }
 
 @Serializable
@@ -79,9 +88,7 @@ fun HashMap<String, Any?>.toUser(): User {
         accountType = this["account_type"] as? String ?: "user",
         gender = this["gender"] as? String ?: "hidden",
         banned = this["banned"] as? Boolean ?: false,
-        status = (this["status"] as? String)?.let { s ->
-            if (s.lowercase() == "online") UserStatus.ONLINE else UserStatus.OFFLINE
-        } ?: UserStatus.OFFLINE,
+        status = UserStatus.fromString(this["status"] as? String),
         joinDate = this["join_date"] as? String,
         oneSignalPlayerId = this["one_signal_player_id"] as? String,
         lastSeen = this["last_seen"] as? String,

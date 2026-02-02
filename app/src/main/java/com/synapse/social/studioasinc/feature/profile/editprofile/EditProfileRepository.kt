@@ -6,6 +6,7 @@ import com.synapse.social.studioasinc.core.storage.MediaStorageService
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
 import com.synapse.social.studioasinc.domain.model.UserProfile
+import com.synapse.social.studioasinc.domain.model.UserStatus
 import com.synapse.social.studioasinc.presentation.editprofile.photohistory.HistoryItem
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
@@ -58,7 +59,7 @@ class EditProfileRepository(private val context: Context) {
                     profileCoverImage = result["profile_cover_image"]?.toString()?.removeSurrounding("\""),
                     gender = result["gender"]?.toString()?.removeSurrounding("\""),
                     region = result["region"]?.toString()?.removeSurrounding("\""),
-                    status = result["status"]?.toString()?.removeSurrounding("\"") ?: "offline",
+                    status = UserStatus.fromString(result["status"]?.toString()?.removeSurrounding("\"")),
                     followersCount = result["followers_count"]?.toString()?.toIntOrNull() ?: 0,
                     followingCount = result["following_count"]?.toString()?.toIntOrNull() ?: 0,
                     postsCount = result["posts_count"]?.toString()?.toIntOrNull() ?: 0

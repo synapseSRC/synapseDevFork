@@ -127,13 +127,7 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
             avatar = data.getNullableString(KEY_AVATAR)?.let { constructAvatarUrl(it) },
             coverImageUrl = data.getNullableString(KEY_COVER_IMAGE)?.let { constructMediaUrl(it) },
             isVerified = data.getBoolean(KEY_VERIFY),
-            status = data.getNullableString(KEY_STATUS)?.let { statusStr ->
-                try {
-                    UserStatus.valueOf(statusStr.uppercase())
-                } catch (e: Exception) {
-                    if (statusStr.lowercase() == "online") UserStatus.ONLINE else UserStatus.OFFLINE
-                }
-            } ?: UserStatus.OFFLINE,
+            status = UserStatus.fromString(data.getNullableString(KEY_STATUS)),
             isPrivate = data.getBoolean(KEY_IS_PRIVATE),
             postCount = postCount,
             followerCount = data.getInt(KEY_FOLLOWERS_COUNT),

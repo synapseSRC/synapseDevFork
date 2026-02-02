@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material3.*
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.border
@@ -189,7 +190,7 @@ fun ProfileHeader(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier
-                                .minimumTouchTargetSize()
+                                .minimumInteractiveComponentSize()
                                 .clickable {
                                     haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                     onStatsClick("followers")
@@ -227,7 +228,7 @@ fun ProfileHeader(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier
-                                .minimumTouchTargetSize()
+                                .minimumInteractiveComponentSize()
                                 .clickable {
                                     haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                     onStatsClick("following")

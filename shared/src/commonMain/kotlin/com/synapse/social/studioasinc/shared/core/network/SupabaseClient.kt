@@ -6,6 +6,7 @@ import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.storage.Storage
+import io.github.jan.supabase.annotations.SupabaseInternal
 import io.github.aakira.napier.Napier
 import io.ktor.client.plugins.HttpTimeout
 
@@ -15,6 +16,7 @@ import io.ktor.client.plugins.HttpTimeout
 object SupabaseClient {
     private const val TAG = "SupabaseClient"
 
+    @OptIn(SupabaseInternal::class)
     val client by lazy {
         try {
             if (SynapseConfig.SUPABASE_URL.isBlank() || SynapseConfig.SUPABASE_ANON_KEY.isBlank()) {

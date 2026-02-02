@@ -1,5 +1,6 @@
 package com.synapse.social.studioasinc.ui.components.post
 
+import androidx.compose.runtime.Stable
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.domain.model.User
@@ -96,7 +97,11 @@ object PostEventBus {
 
 /**
  * Interface to standardize actions passed from UI to ViewModel.
+ *
+ * Optimization: Annotated with @Stable to allow Compose to skip recomposition
+ * when the actions instance remains identical, significantly improving list performance.
  */
+@Stable
 data class PostActions(
     val onLike: (Post) -> Unit,
     val onComment: (Post) -> Unit,

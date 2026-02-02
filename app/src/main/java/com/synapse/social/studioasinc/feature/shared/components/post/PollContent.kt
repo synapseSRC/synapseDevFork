@@ -29,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +50,11 @@ import kotlin.math.roundToInt
 /**
  * Data class representing a poll option for UI rendering.
  * Used in both PostCard (Feed) and PostDetailScreen.
+ *
+ * Optimization: Annotated with @Stable to ensure nested poll items are skippable
+ * during recomposition, reducing UI thread load on busy screens.
  */
+@Stable
 data class PollOption(
     val id: String,
     val text: String,

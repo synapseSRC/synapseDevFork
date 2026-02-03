@@ -208,6 +208,7 @@ class ReelRepository {
         fileName: String,
         caption: String,
         musicTrack: String,
+        thumbnailUrl: String? = null,
         locationName: String? = null,
         locationAddress: String? = null,
         locationLatitude: Double? = null,
@@ -222,6 +223,7 @@ class ReelRepository {
             val uploadData = UploadData(dataChannel, size)
 
             // Remove withRetry because dataChannel cannot be reset for retries
+            Napier.d("Starting video upload to storage: $storagePath (size: $size bytes)", tag = TAG)
             val bucket = client.storage.from("reels")
             bucket.uploadAsFlow(storagePath, uploadData) {
                 upsert = true
@@ -236,11 +238,13 @@ class ReelRepository {
                     }
                 }
             }.collect()
+            Napier.d("Video upload completed successfully", tag = TAG)
 
             val videoUrl = bucket.publicUrl(storagePath)
             val reelData = mutableMapOf<String, Any?>(
                 "creator_id" to currentUser.id,
                 "video_url" to videoUrl,
+                "thumbnail_url" to thumbnailUrl,
                 "caption" to caption,
                 "music_track" to musicTrack,
                 "likes_count" to 0,
@@ -259,8 +263,13 @@ class ReelRepository {
 
             Result.success(Unit)
         } catch (e: Exception) {
-            Napier.e("Failed to upload reel", e, tag = TAG)
-            Result.failure(e)
+                        val errorMessage = when {
+                e.message?.contains("PGRST") == true -> "A database error occurred while processing the reel."
+                e.message?.contains("Storage") == true || e.message?.contains("upload") == true -> "A storage error occurred during upload."
+                else -> "An unknown error occurred during reel upload."
+            }
+            Napier.e("Failed to upload reel: $errorMessage", e, tag = TAG)
+            Result.failure(Exception(errorMessage, e))
         }
     }
 

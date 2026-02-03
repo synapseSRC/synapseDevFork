@@ -14,7 +14,7 @@ Build a high-performance, memory-safe "Engine" in Kotlin (LLVM) that handles bus
 | **Networking** | Ktor + Supabase-kt | 🟡 Pending Migration |
 | **Database** | Room Multiplatform + SQLCipher | 🔴 Pending Refactor |
 | **DI** | Koin (Shared Engine) + Hilt (Android UI) | 🔴 Pending Setup |
-| **Security/E2EE** | Double Ratchet (Signal Protocol) | 🔴 Research Phase |
+| **Security/E2EE** | Double Ratchet (Signal Protocol) | 🟡 Implementation Phase (Android) |
 | **Settings** | Multiplatform Settings (Keychain/EncryptedPrefs) | 🔴 Pending Setup |
 | **Backend** | Supabase (Scalable to 100M+ users) | 🟢 Approved |
 
@@ -46,7 +46,7 @@ Build a high-performance, memory-safe "Engine" in Kotlin (LLVM) that handles bus
 - [x] Refactor Room Database to `commonMain` (Code implemented in `SharedDatabase.kt`).
 - [ ] Enable KSP for Room KMP (Blocked by Kotlin/KSP version mismatch in environment).
 - [ ] Implement Encrypted SQLite drivers for iOS/Android.
-- [ ] **E2EE Identity:** Generate/Store device-specific identity keys on first run.
+- [x] **E2EE Identity:** Generate/Store device-specific identity keys on first run. (Android implemented)
 - [ ] Implement E2EE Metadata encryption for media.
 
 ### Phase 4: Multi-Platform UI Implementation (Native Luxury)
@@ -68,3 +68,4 @@ Build a high-performance, memory-safe "Engine" in Kotlin (LLVM) that handles bus
 - **2026-01-18:** Initial Roadmap created. Architecture strategy finalized (WhatsApp-style: Shared KMP Engine + Native UIs).
 - **2026-01-18:** Scalability strategy for 100M+ users finalized (Sharding + Edge Functions).
 - **2026-01-18:** **Phase 1 & 2 Complete.** Shared Engine created (`:shared`) with Auth, Network, and Config. Android & iOS targets compiling successfully. Room KMP code implemented but KSP disabled due to environment limits.
+- **2025-05-25:** **E2EE Implementation Started.** `SignalProtocolManager` and `AndroidSignalStore` implemented using `libsignal`. X3DH key bundle exchange logic added to `SignalRepository`. Initial security documentation created in `docs/SECURITY_E2EE.md`.

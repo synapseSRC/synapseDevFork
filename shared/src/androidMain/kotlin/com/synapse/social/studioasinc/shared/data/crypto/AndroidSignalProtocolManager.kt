@@ -18,6 +18,15 @@ import org.whispersystems.libsignal.state.SignedPreKeyRecord
 import org.whispersystems.libsignal.util.KeyHelper
 import org.whispersystems.libsignal.ecc.Curve
 
+/**
+ * Android implementation of [SignalProtocolManager] using the `libsignal-android` library.
+ *
+ * This implementation handles protocol operations using the Signal reference implementation
+ * and manages secure storage via [AndroidSignalStore], which leverages EncryptedSharedPreferences.
+ *
+ * @param context Android context for initializing secure storage.
+ * @param deviceId The ID of the current device for this user (defaults to 1).
+ */
 class AndroidSignalProtocolManager(context: Context, private val deviceId: Int = 1) : SignalProtocolManager {
 
     private val store = AndroidSignalStore(context)

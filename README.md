@@ -21,7 +21,7 @@
 - **Cross-Platform Core**: Logic shared between Android, iOS (planned), and Web via Kotlin Multiplatform.
 - **Modern UI**: 100% Jetpack Compose for Android.
 - **Secure Backend**: Powered by Supabase (Auth, Database, Storage, Edge Functions).
-- **Privacy First**: Planned End-to-End Encryption.
+- **Privacy First**: End-to-End Encryption (Active Development).
 
 ## 🏗️ Architecture
 
@@ -44,6 +44,7 @@ Synapse uses a **Hybrid Architecture** leveraging the best of native UI and shar
 | [**Code Style**](docs/CODESTYLE.md) | 🎨 Coding standards. |
 | [**Roadmap**](docs/ROADMAP.md) | 🗺️ Future plans. |
 | [**Reels & Oppose**](docs/REELS.md) | 🎥 Short-form video & unique interactions. |
+| [**E2EE Security**](docs/SECURITY_E2EE.md) | 🔐 Signal Protocol & encryption details. |
 
 > **🤖 For AI Agents:** Please refer to [AGENTS.md](AGENTS.md) before making changes.
 

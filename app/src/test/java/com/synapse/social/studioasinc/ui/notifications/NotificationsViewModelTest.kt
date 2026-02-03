@@ -54,6 +54,7 @@ class NotificationsViewModelTest {
         assertFalse(state.isLoading)
         assertEquals(1, state.notifications.size)
         assertEquals("1", state.notifications[0].id)
+        assertEquals("Body", state.notifications[0].message)
     }
 
     @Test
@@ -81,6 +82,44 @@ class NotificationsViewModelTest {
         val state = viewModel.uiState.value
         assertTrue(state.notifications.isEmpty())
         assertFalse(state.isLoading)
+    }
+
+    @Test
+    fun `initialization when user is not logged in should not load notifications`() = runTest {
+        // Arrange
+        whenever(authRepository.getCurrentUserId()).thenReturn(null)
+
+        // Act
+        viewModel = NotificationsViewModel(authRepository, notificationRepository)
+
+        // Assert
+        verify(notificationRepository, never()).fetchNotifications(any(), any())
+        val state = viewModel.uiState.value
+        assertTrue(state.notifications.isEmpty())
+        assertFalse(state.isLoading)
+        assertEquals(0, state.unreadCount)
+    }
+
+    @Test
+    fun `markAsRead failure should revert optimistic update`() = runTest {
+        // Arrange: Initial state with one unread notification
+        val notifications = listOf(createFakeNotificationDto("1", isRead = false))
+        whenever(notificationRepository.fetchNotifications(any(), any())).thenReturn(notifications)
+        whenever(notificationRepository.markAsRead(any(), any())).thenThrow(RuntimeException("API error"))
+
+        viewModel = NotificationsViewModel(authRepository, notificationRepository)
+
+        // Act: Mark as read, which will fail and trigger a revert
+        viewModel.markAsRead("1")
+
+        // Assert: The state is reverted back to unread.
+        val finalState = viewModel.uiState.value
+        assertEquals(1, finalState.unreadCount)
+        assertFalse(finalState.notifications.first().isRead)
+
+        // Verify that fetch was called twice (init + revert) and markAsRead was attempted.
+        verify(notificationRepository, times(2)).fetchNotifications(eq("test-user-id"), any())
+        verify(notificationRepository).markAsRead("test-user-id", "1")
     }
 
     @Test

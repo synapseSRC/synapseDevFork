@@ -264,9 +264,9 @@ class ReelRepository {
             Result.success(Unit)
         } catch (e: Exception) {
                         val errorMessage = when {
-                e.message?.contains("PGRST") == true -> "Database error: ${e.message}"
-                e.message?.contains("Storage") == true || e.message?.contains("upload") == true -> "Storage error: ${e.message}"
-                else -> e.message ?: "Unknown error during reel upload"
+                e.message?.contains("PGRST") == true -> "A database error occurred while processing the reel."
+                e.message?.contains("Storage") == true || e.message?.contains("upload") == true -> "A storage error occurred during upload."
+                else -> "An unknown error occurred during reel upload."
             }
             Napier.e("Failed to upload reel: $errorMessage", e, tag = TAG)
             Result.failure(Exception(errorMessage, e))

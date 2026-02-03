@@ -93,7 +93,7 @@ class MediaStorageService @Inject constructor(
                     e is java.net.SocketTimeoutException -> "Upload timed out"
                     e.message?.contains("403") == true -> "Permission denied by storage provider"
                     e.message?.contains("413") == true -> "File too large for this provider"
-                    else -> e.message ?: "Unknown storage error"
+                    else -> "An unexpected storage error occurred. Please try again."
                 }
                 callback.onError("Upload failed: $errorMessage")
                 }

@@ -36,7 +36,7 @@ class MediaFacade @Inject constructor(
 
         val processed = processedResult.getOrNull()!!
 
-        return uploadFile(processed.file, type, onProgress)
+        return uploadFile(processed.file, processed.mimeType, type, onProgress)
     }
 
     /**
@@ -52,11 +52,12 @@ class MediaFacade @Inject constructor(
 
         val processed = processedResult.getOrNull()!!
 
-        return uploadFile(processed.file, type, onProgress)
+        return uploadFile(processed.file, processed.mimeType, type, onProgress)
     }
 
     private suspend fun uploadFile(
         file: java.io.File,
+        mimeType: String,
         type: MediaUploadType,
         onProgress: ((Float) -> Unit)? = null
     ): Result<MediaUploadResult> = suspendCancellableCoroutine { continuation ->
@@ -82,7 +83,7 @@ class MediaFacade @Inject constructor(
                         url = url,
                         fileName = file.name,
                         fileSize = file.length(),
-                        mimeType = if (url.endsWith(".mp4")) "video/mp4" else "image/jpeg",
+                        mimeType = mimeType,
                         publicId = publicId
                     )))
                 }

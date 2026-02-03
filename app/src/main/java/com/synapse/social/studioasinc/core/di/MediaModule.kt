@@ -58,8 +58,9 @@ object MediaModule {
     @Singleton
     fun provideMediaStorageService(
         @ApplicationContext context: Context,
-        appSettingsManager: AppSettingsManager
-    ): MediaStorageService = MediaStorageService(context, appSettingsManager)
+        appSettingsManager: AppSettingsManager,
+        imageCompressor: ImageCompressor
+    ): MediaStorageService = MediaStorageService(context, appSettingsManager, imageCompressor)
 
     @Provides
     @Singleton

@@ -758,7 +758,7 @@ class CreatePostViewModel @Inject constructor(
     }
     private suspend fun uploadThumbnail(file: java.io.File): String? = kotlinx.coroutines.suspendCancellableCoroutine { continuation ->
         viewModelScope.launch {
-            mediaStorageService.uploadFile(file.absolutePath, "reels", object : MediaStorageService.UploadCallback {
+            mediaStorageService.uploadFile(file.absolutePath, "reels", object : MediaStorageCallback {
                 override fun onProgress(percent: Int) {}
                 override fun onSuccess(url: String, publicId: String) {
                     if (continuation.isActive) {

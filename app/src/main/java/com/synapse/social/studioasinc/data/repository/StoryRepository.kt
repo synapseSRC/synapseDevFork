@@ -82,7 +82,7 @@ class StoryRepositoryImpl @Inject constructor(
     private val imageCompressor: ImageCompressor
 ) : StoryRepository {
     private val client = SupabaseClient.client
-    private val mediaStorageService = MediaStorageService(context, appSettingsManager)
+    private val mediaStorageService = MediaStorageService(context, appSettingsManager, imageCompressor)
 
     companion object {
         private const val TABLE_STORIES = "stories"

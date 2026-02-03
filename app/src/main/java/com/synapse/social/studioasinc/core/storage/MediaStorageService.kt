@@ -88,7 +88,14 @@ class MediaStorageService @Inject constructor(
                     android.util.Log.w("MediaStorageService", "Provider $providerName failed, falling back to default: ${e.message}")
                     uploadWithDefaultProvider(fileToUpload, mediaType, config, callback)
                 } else {
-                    callback.onError("Upload failed: ${e.message}")
+                    val errorMessage = when {
+                    e is java.net.UnknownHostException || e is java.net.ConnectException -> "Network error: Check your connection"
+                    e is java.net.SocketTimeoutException -> "Upload timed out"
+                    e.message?.contains("403") == true -> "Permission denied by storage provider"
+                    e.message?.contains("413") == true -> "File too large for this provider"
+                    else -> e.message ?: "Unknown storage error"
+                }
+                callback.onError("Upload failed: $errorMessage")
                 }
             }
         } finally {

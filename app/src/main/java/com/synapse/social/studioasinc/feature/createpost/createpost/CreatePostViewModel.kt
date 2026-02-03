@@ -18,6 +18,7 @@ import com.synapse.social.studioasinc.domain.model.LocationData
 import com.synapse.social.studioasinc.core.util.FileManager
 import com.synapse.social.studioasinc.core.storage.MediaStorageService
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
+import com.synapse.social.studioasinc.core.media.processing.ThumbnailGenerator
 import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import io.github.jan.supabase.postgrest.from
@@ -99,6 +100,7 @@ class CreatePostViewModel @Inject constructor(
 
     private val authService = SupabaseAuthenticationService()
     private val prefs = application.getSharedPreferences("create_post_draft", Context.MODE_PRIVATE)
+    private val thumbnailGenerator = ThumbnailGenerator(application)
     private val mediaStorageService = MediaStorageService(application, appSettingsManager, imageCompressor)
 
     private val _uiState = MutableStateFlow(CreatePostUiState())
@@ -695,6 +697,18 @@ class CreatePostViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, uploadProgress = 0f) }
 
+            // Generate and Upload Thumbnail
+            val thumbnailResult = thumbnailGenerator.generateVideoThumbnail(Uri.fromFile(file))
+            val thumbnailUrl = if (thumbnailResult.isSuccess) {
+                val thumbnailFile = thumbnailResult.getOrThrow()
+                val uploadedUrl = uploadThumbnail(thumbnailFile)
+                thumbnailFile.delete()
+                uploadedUrl
+            } else {
+                android.util.Log.w("CreatePost", "Thumbnail generation failed: ${thumbnailResult.exceptionOrNull()?.message}")
+                null
+            }
+
             val fileName = "reel_${System.currentTimeMillis()}.mp4"
             val channel = file.inputStream().toByteReadChannel()
 
@@ -711,7 +725,8 @@ class CreatePostViewModel @Inject constructor(
                 size = file.length(),
                 fileName = fileName,
                 caption = currentState.postText,
-                musicTrack = "Original Audio", // Default for now
+                musicTrack = "Original Audio",
+                thumbnailUrl = thumbnailUrl,
                 locationName = currentState.location?.name,
                 locationAddress = currentState.location?.address,
                 locationLatitude = currentState.location?.latitude,
@@ -723,6 +738,7 @@ class CreatePostViewModel @Inject constructor(
             ).onSuccess {
                 _uiState.update { it.copy(isLoading = false, isPostCreated = true) }
             }.onFailure { e ->
+                android.util.Log.e("CreatePost", "Reel upload failed: ${e.message}", e)
                 _uiState.update { it.copy(isLoading = false, error = "Reel upload failed: ${e.message}") }
             }
         }
@@ -730,5 +746,18 @@ class CreatePostViewModel @Inject constructor(
 
     companion object {
         private const val DEFAULT_LAYOUT_TYPE = "COLUMNS"
+    }
+    private suspend fun uploadThumbnail(file: java.io.File): String? {
+        var resultUrl: String? = null
+        mediaStorageService.uploadFile(file.absolutePath, "reels", object : MediaStorageService.UploadCallback {
+            override fun onProgress(percent: Int) {}
+            override fun onSuccess(url: String, publicId: String) {
+                resultUrl = url
+            }
+            override fun onError(error: String) {
+                android.util.Log.e("CreatePost", "Thumbnail upload failed: $error")
+            }
+        })
+        return resultUrl
     }
 }

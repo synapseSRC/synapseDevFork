@@ -45,7 +45,7 @@ class NotificationsViewModelTest {
     @Test
     fun `initialization should load notifications`() = runTest {
         val notifications = listOf(createFakeNotificationDto("1"))
-        whenever(notificationRepository.fetchNotifications(any(), any())).thenReturn(notifications)
+        whenever(notificationRepository.fetchNotifications(eq("test-user-id"), any())).thenReturn(notifications)
 
         viewModel = NotificationsViewModel(authRepository, notificationRepository)
 
@@ -63,7 +63,7 @@ class NotificationsViewModelTest {
             createFakeNotificationDto("1", isRead = false),
             createFakeNotificationDto("2", isRead = true)
         )
-        whenever(notificationRepository.fetchNotifications(any(), any())).thenReturn(notifications)
+        whenever(notificationRepository.fetchNotifications(eq("test-user-id"), any())).thenReturn(notifications)
 
         viewModel = NotificationsViewModel(authRepository, notificationRepository)
 
@@ -75,7 +75,7 @@ class NotificationsViewModelTest {
 
     @Test
     fun `loadNotifications failure should handle error gracefully`() = runTest {
-        whenever(notificationRepository.fetchNotifications(any(), any())).thenThrow(RuntimeException("Network error"))
+        whenever(notificationRepository.fetchNotifications(eq("test-user-id"), any())).thenThrow(RuntimeException("Network error"))
 
         viewModel = NotificationsViewModel(authRepository, notificationRepository)
 
@@ -104,8 +104,8 @@ class NotificationsViewModelTest {
     fun `markAsRead failure should revert optimistic update`() = runTest {
         // Arrange: Initial state with one unread notification
         val notifications = listOf(createFakeNotificationDto("1", isRead = false))
-        whenever(notificationRepository.fetchNotifications(any(), any())).thenReturn(notifications)
-        whenever(notificationRepository.markAsRead(any(), any())).thenThrow(RuntimeException("API error"))
+        whenever(notificationRepository.fetchNotifications(eq("test-user-id"), any())).thenReturn(notifications)
+        whenever(notificationRepository.markAsRead(eq("test-user-id"), eq("1"))).thenThrow(RuntimeException("API error"))
 
         viewModel = NotificationsViewModel(authRepository, notificationRepository)
 
@@ -128,7 +128,7 @@ class NotificationsViewModelTest {
         val notificationDto = createFakeNotificationDto("1").copy(
             body = buildJsonObject { put("fr", "Le corps du message") }
         )
-        whenever(notificationRepository.fetchNotifications(any(), any())).thenReturn(listOf(notificationDto))
+        whenever(notificationRepository.fetchNotifications(eq("test-user-id"), any())).thenReturn(listOf(notificationDto))
 
         viewModel = NotificationsViewModel(authRepository, notificationRepository)
 
@@ -139,7 +139,7 @@ class NotificationsViewModelTest {
     @Test
     fun `markAsRead should perform optimistic update and call repository`() = runTest {
         val notifications = listOf(createFakeNotificationDto("1", isRead = false))
-        whenever(notificationRepository.fetchNotifications(any(), any())).thenReturn(notifications)
+        whenever(notificationRepository.fetchNotifications(eq("test-user-id"), any())).thenReturn(notifications)
 
         viewModel = NotificationsViewModel(authRepository, notificationRepository)
 
@@ -151,12 +151,12 @@ class NotificationsViewModelTest {
         assertEquals(0, state.unreadCount)
 
         // Verify repository call
-        verify(notificationRepository).markAsRead("test-user-id", "1")
+        verify(notificationRepository).markAsRead(eq("test-user-id"), eq("1"))
     }
 
     @Test
     fun `refresh should trigger reload`() = runTest {
-        whenever(notificationRepository.fetchNotifications(any(), any())).thenReturn(emptyList())
+        whenever(notificationRepository.fetchNotifications(eq("test-user-id"), any())).thenReturn(emptyList())
 
         viewModel = NotificationsViewModel(authRepository, notificationRepository)
         clearInvocations(notificationRepository)

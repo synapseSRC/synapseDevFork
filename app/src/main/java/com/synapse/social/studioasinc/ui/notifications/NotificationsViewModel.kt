@@ -90,9 +90,10 @@ class NotificationsViewModel @Inject constructor(
                         val updatedList = state.notifications.toMutableList().apply {
                             this[targetIndex] = this[targetIndex].copy(isRead = isRead)
                         }
+                        val newUnreadCount = if (isRead) state.unreadCount - 1 else state.unreadCount + 1
                         state.copy(
                             notifications = updatedList,
-                            unreadCount = updatedList.count { !it.isRead }
+                            unreadCount = newUnreadCount.coerceAtLeast(0)
                         )
                     }
                 }

@@ -166,6 +166,26 @@ class NotificationsViewModelTest {
         verify(notificationRepository).fetchNotifications(eq("test-user-id"), any())
     }
 
+    @Test
+    fun `markAsRead on an already read notification should not perform any action`() = runTest {
+        // Arrange: Initial state with one read notification
+        val notifications = listOf(createFakeNotificationDto("1", isRead = true))
+        whenever(notificationRepository.fetchNotifications(eq("test-user-id"), any())).thenReturn(notifications)
+
+        viewModel = NotificationsViewModel(authRepository, notificationRepository)
+        val initialState = viewModel.uiState.value
+
+        // Clear invocations from the initial load to isolate the test action
+        clearInvocations(notificationRepository)
+
+        // Act
+        viewModel.markAsRead("1")
+
+        // Assert: State should be unchanged and no network call should be made
+        assertEquals(initialState, viewModel.uiState.value)
+        verify(notificationRepository, never()).markAsRead(any(), any())
+    }
+
     private fun createFakeNotificationDto(
         id: String,
         isRead: Boolean = false

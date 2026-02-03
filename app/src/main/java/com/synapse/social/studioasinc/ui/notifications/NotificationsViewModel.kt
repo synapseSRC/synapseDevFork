@@ -79,6 +79,11 @@ class NotificationsViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = authRepository.getCurrentUserId() ?: return@launch
 
+            // Exit early if the notification is already marked as read or not found.
+            if (_uiState.value.notifications.find { it.id == notificationId }?.isRead == true) {
+                return@launch
+            }
+
             // Helper to update the read state of a notification to avoid duplicating logic.
             val updateReadState = { isRead: Boolean ->
                 _uiState.update { state ->

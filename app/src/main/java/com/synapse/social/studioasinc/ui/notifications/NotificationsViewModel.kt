@@ -81,13 +81,18 @@ class NotificationsViewModel @Inject constructor(
 
             // Optimistic update
             _uiState.update { state ->
-                val updatedList = state.notifications.map {
-                    if (it.id == notificationId) it.copy(isRead = true) else it
+                val notification = state.notifications.find { it.id == notificationId }
+                if (notification != null && !notification.isRead) {
+                    val updatedList = state.notifications.map {
+                        if (it.id == notificationId) it.copy(isRead = true) else it
+                    }
+                    state.copy(
+                        notifications = updatedList,
+                        unreadCount = updatedList.count { !it.isRead }
+                    )
+                } else {
+                    state
                 }
-                state.copy(
-                    notifications = updatedList,
-                    unreadCount = updatedList.count { !it.isRead }
-                )
             }
 
             try {
@@ -96,13 +101,18 @@ class NotificationsViewModel @Inject constructor(
                 android.util.Log.e("NotificationsViewModel", "Failed to mark as read", e)
                 // Local revert
                 _uiState.update { state ->
-                    val revertedList = state.notifications.map {
-                        if (it.id == notificationId) it.copy(isRead = false) else it
+                    val notification = state.notifications.find { it.id == notificationId }
+                    if (notification != null && notification.isRead) {
+                        val revertedList = state.notifications.map {
+                            if (it.id == notificationId) it.copy(isRead = false) else it
+                        }
+                        state.copy(
+                            notifications = revertedList,
+                            unreadCount = revertedList.count { !it.isRead }
+                        )
+                    } else {
+                        state
                     }
-                    state.copy(
-                        notifications = revertedList,
-                        unreadCount = revertedList.count { !it.isRead }
-                    )
                 }
             }
         }

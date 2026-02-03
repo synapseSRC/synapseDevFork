@@ -42,7 +42,7 @@ object MediaUploadManager {
         val imageCompressor = ImageCompressor(context)
         val storageService = MediaStorageService(context, appSettingsManager, imageCompressor)
         val config = MediaConfig()
-        val imageProcessor = ImageProcessor(context, ImageCompressor(context), config)
+        val imageProcessor = ImageProcessor(context, imageCompressor, config)
         val videoProcessor = VideoProcessor(context, ThumbnailGenerator(context), config)
         val facade = MediaFacade(storageService, imageProcessor, videoProcessor, config)
         val coordinator = MediaUploadCoordinator(facade)

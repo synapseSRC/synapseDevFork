@@ -183,11 +183,7 @@ class AndroidSignalStore(context: Context) : SignalProtocolStore {
         val allPrefs = prefs.all
         val editor = prefs.edit()
         val prefix = if (name != null) "session_${name}_" else "session_"
-        for (key in allPrefs.keys) {
-            if (key.startsWith(prefix)) {
-                editor.remove(key)
-            }
-        }
+        allPrefs.keys.filter { it.startsWith(prefix) }.forEach { editor.remove(it) }
         editor.commitOrThrow("Failed to delete all sessions")
     }
 

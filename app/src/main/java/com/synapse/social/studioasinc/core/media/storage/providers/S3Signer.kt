@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.core.storage.providers
+package com.synapse.social.studioasinc.core.media.storage.providers
 
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest

@@ -1,8 +1,8 @@
-package com.synapse.social.studioasinc.core.storage.providers
+package com.synapse.social.studioasinc.core.media.storage.providers
 
 import android.webkit.MimeTypeMap
-import com.synapse.social.studioasinc.core.storage.MediaStorageService
-import com.synapse.social.studioasinc.core.storage.MediaUploadStrategy
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageCallback
+import com.synapse.social.studioasinc.core.media.storage.ProviderStrategy
 import com.synapse.social.studioasinc.data.local.database.StorageConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,7 +14,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.TimeZone
 
-class R2Provider : MediaUploadStrategy {
+class R2Provider : ProviderStrategy {
 
     companion object {
         private const val CONNECT_TIMEOUT_MS = 30000
@@ -26,7 +26,7 @@ class R2Provider : MediaUploadStrategy {
         file: File,
         config: StorageConfig,
         bucketName: String?,
-        callback: MediaStorageService.UploadCallback
+        callback: MediaStorageCallback
     ) = withContext(Dispatchers.IO) {
 
         val accountId = config.r2Config.accountId

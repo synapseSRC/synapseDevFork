@@ -2,7 +2,8 @@ package com.synapse.social.studioasinc.presentation.editprofile
 
 import android.content.Context
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
-import com.synapse.social.studioasinc.core.storage.MediaStorageService
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageService
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageCallback
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
 import com.synapse.social.studioasinc.domain.model.UserProfile
@@ -31,7 +32,7 @@ class EditProfileRepository(private val context: Context) {
     private val client = SupabaseClient.client
     private val appSettingsManager = AppSettingsManager.getInstance(context)
     private val imageCompressor = ImageCompressor(context)
-    private val mediaStorageService = MediaStorageService(context, appSettingsManager, imageCompressor)
+    private val mediaStorageService = MediaStorageService(context, appSettingsManager)
 
     suspend fun getCurrentUserId(): String? {
         return client.auth.currentUserOrNull()?.id
@@ -140,7 +141,7 @@ class EditProfileRepository(private val context: Context) {
 
     private suspend fun uploadFile(filePath: String, bucketName: String): Result<String> = suspendCancellableCoroutine { continuation ->
         kotlinx.coroutines.CoroutineScope(Dispatchers.IO).launch {
-            mediaStorageService.uploadFile(filePath, bucketName, object : MediaStorageService.UploadCallback {
+            mediaStorageService.uploadFile(filePath, bucketName, object : MediaStorageCallback {
                 override fun onProgress(percent: Int) {
                     // Progress callback
                 }

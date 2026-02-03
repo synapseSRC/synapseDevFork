@@ -16,8 +16,10 @@ import com.synapse.social.studioasinc.domain.model.User
 import com.synapse.social.studioasinc.domain.model.UserProfile
 import com.synapse.social.studioasinc.domain.model.LocationData
 import com.synapse.social.studioasinc.core.util.FileManager
-import com.synapse.social.studioasinc.core.storage.MediaStorageService
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageService
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageCallback
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
+import com.synapse.social.studioasinc.core.media.processing.ThumbnailGenerator
 import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import io.github.jan.supabase.postgrest.from
@@ -99,6 +101,7 @@ class CreatePostViewModel @Inject constructor(
 
     private val authService = SupabaseAuthenticationService()
     private val prefs = application.getSharedPreferences("create_post_draft", Context.MODE_PRIVATE)
+    private val thumbnailGenerator = ThumbnailGenerator(application)
     private val mediaStorageService = MediaStorageService(application, appSettingsManager, imageCompressor)
 
     private val _uiState = MutableStateFlow(CreatePostUiState())
@@ -566,7 +569,7 @@ class CreatePostViewModel @Inject constructor(
 
                     val uploadedUrl = kotlinx.coroutines.suspendCancellableCoroutine<String?> { continuation ->
                         kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-                            mediaStorageService.uploadFile(filePath, null, object : MediaStorageService.UploadCallback {
+                            mediaStorageService.uploadFile(filePath, null, object : MediaStorageCallback {
                                 override fun onProgress(percent: Int) {
                                     val itemProgress = (percent / 100f) / totalItems
                                     val baseProgress = completedItems.toFloat() / totalItems
@@ -695,40 +698,80 @@ class CreatePostViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, uploadProgress = 0f) }
 
+            // Generate and Upload Thumbnail
+            val thumbnailResult = thumbnailGenerator.generateVideoThumbnail(Uri.fromFile(file))
+            val thumbnailUrl = if (thumbnailResult.isSuccess) {
+                val thumbnailFile = thumbnailResult.getOrThrow()
+                val uploadedUrl = uploadThumbnail(thumbnailFile)
+                thumbnailFile.delete()
+                uploadedUrl
+            } else {
+                android.util.Log.w("CreatePost", "Thumbnail generation failed: ${thumbnailResult.exceptionOrNull()?.message}")
+                null
+            }
+
             val fileName = "reel_${System.currentTimeMillis()}.mp4"
             val channel = file.inputStream().toByteReadChannel()
 
-            val metadataMap = mutableMapOf<String, Any?>()
-            currentState.feeling?.let { metadataMap["feeling"] = mapOf("emoji" to it.emoji, "text" to it.text, "type" to it.type.name) }
-            if (currentState.taggedPeople.isNotEmpty()) {
-                metadataMap["tagged_people"] = currentState.taggedPeople.map { mapOf("uid" to it.uid, "username" to it.username) }
-            }
-            metadataMap["layout_type"] = DEFAULT_LAYOUT_TYPE
-            currentState.textBackgroundColor?.let { metadataMap["background_color"] = it }
-
-            reelRepository.uploadReel(
-                dataChannel = channel,
-                size = file.length(),
-                fileName = fileName,
-                caption = currentState.postText,
-                musicTrack = "Original Audio", // Default for now
-                locationName = currentState.location?.name,
-                locationAddress = currentState.location?.address,
-                locationLatitude = currentState.location?.latitude,
-                locationLongitude = currentState.location?.longitude,
-                metadata = metadataMap,
-                onProgress = { progress ->
-                    _uiState.update { it.copy(uploadProgress = progress) }
+            try {
+                val metadataMap = mutableMapOf<String, Any?>()
+                currentState.feeling?.let { metadataMap["feeling"] = mapOf("emoji" to it.emoji, "text" to it.text, "type" to it.type.name) }
+                if (currentState.taggedPeople.isNotEmpty()) {
+                    metadataMap["tagged_people"] = currentState.taggedPeople.map { mapOf("uid" to it.uid, "username" to it.username) }
                 }
-            ).onSuccess {
-                _uiState.update { it.copy(isLoading = false, isPostCreated = true) }
-            }.onFailure { e ->
-                _uiState.update { it.copy(isLoading = false, error = "Reel upload failed: ${e.message}") }
+                metadataMap["layout_type"] = DEFAULT_LAYOUT_TYPE
+                currentState.textBackgroundColor?.let { metadataMap["background_color"] = it }
+
+                reelRepository.uploadReel(
+                    dataChannel = channel,
+                    size = file.length(),
+                    fileName = fileName,
+                    caption = currentState.postText,
+                    musicTrack = "Original Audio",
+                    thumbnailUrl = thumbnailUrl,
+                    locationName = currentState.location?.name,
+                    locationAddress = currentState.location?.address,
+                    locationLatitude = currentState.location?.latitude,
+                    locationLongitude = currentState.location?.longitude,
+                    metadata = metadataMap,
+                    onProgress = { progress ->
+                        _uiState.update { it.copy(uploadProgress = progress) }
+                    }
+                ).onSuccess {
+                    _uiState.update { it.copy(isLoading = false, isPostCreated = true) }
+                }.onFailure { e ->
+                    android.util.Log.e("CreatePost", "Reel upload failed: ${e.message}", e)
+                    _uiState.update { it.copy(isLoading = false, error = "Reel upload failed: ${e.message}") }
+                }
+            } finally {
+                try {
+                    channel.cancel(null)
+                } catch (e: Exception) {
+                    // Ignore channel cancellation errors
+                }
             }
         }
     }
 
     companion object {
         private const val DEFAULT_LAYOUT_TYPE = "COLUMNS"
+    }
+    private suspend fun uploadThumbnail(file: java.io.File): String? = kotlinx.coroutines.suspendCancellableCoroutine { continuation ->
+        viewModelScope.launch {
+            mediaStorageService.uploadFile(file.absolutePath, "reels", object : MediaStorageService.UploadCallback {
+                override fun onProgress(percent: Int) {}
+                override fun onSuccess(url: String, publicId: String) {
+                    if (continuation.isActive) {
+                        continuation.resume(url)
+                    }
+                }
+                override fun onError(error: String) {
+                    android.util.Log.e("CreatePost", "Thumbnail upload failed: $error")
+                    if (continuation.isActive) {
+                        continuation.resume(null)
+                    }
+                }
+            })
+        }
     }
 }

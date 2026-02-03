@@ -1,31 +1,23 @@
-/*
- * ImageUploader - Refactored to use MediaStorageService
- * Copyright (c) 2025 Ashik (StudioAs Inc.)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.synapse.social.studioasinc.core.storage
 
 import android.content.Context
-import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageCallback
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageService
 import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
- * ImageUploader - Refactored to use MediaStorageService
- * Maintains backward compatibility while delegating to the unified storage service
+ * @deprecated Use MediaFacade.uploadImage() instead.
  */
+@Deprecated(
+    message = "Use MediaFacade instead",
+    replaceWith = ReplaceWith(
+        "mediaFacade.uploadImage(uri, MediaUploadType.POST)",
+        "com.synapse.social.studioasinc.core.media.MediaFacade"
+    )
+)
 object ImageUploader {
 
     interface UploadCallback {
@@ -34,22 +26,19 @@ object ImageUploader {
     }
 
     /**
-     * Upload an image using the configured storage provider with fallback to default
+     * Upload an image using the configured storage provider.
+     * @deprecated Use MediaFacade.uploadImage instead
      */
     fun uploadImage(context: Context, filePath: String, callback: UploadCallback) {
         val appSettingsManager = AppSettingsManager.getInstance(context)
-        val imageCompressor = ImageCompressor(context)
-        val mediaStorageService = MediaStorageService(context, appSettingsManager, imageCompressor)
+        val mediaStorageService = MediaStorageService(context, appSettingsManager)
 
         CoroutineScope(Dispatchers.IO).launch {
-            // Explicitly pass arguments to match: suspend fun uploadFile(filePath: String, bucketName: String? = null, callback: UploadCallback)
             mediaStorageService.uploadFile(
                 filePath = filePath,
                 bucketName = null,
-                callback = object : MediaStorageService.UploadCallback {
-                    override fun onProgress(percent: Int) {
-                        // Progress not exposed in legacy interface
-                    }
+                callback = object : MediaStorageCallback {
+                    override fun onProgress(percent: Int) {}
 
                     override fun onSuccess(url: String, publicId: String) {
                         callback.onUploadComplete(url)

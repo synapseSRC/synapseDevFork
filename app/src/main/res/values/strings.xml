@@ -1025,4 +1025,6 @@ Please explain the following message from %3$s in detail, considering the contex
     <string name="report_available_message">Your report will be ready in about 3 days. You\'ll have a few weeks to download it after it\'s available.</string>
     <string name="request_account_report_success">Request sent. Your report will be ready in a few days.</string>
     <string name="request_channels_report_success">Request sent. Your report will be ready in a few days.</string>
+    <string name="oppose_post_with_count">Oppose post, %1$d opposes</string>
+    <string name="oppose_post_opposed">Remove oppose, %1$d opposes</string>
 </resources>

@@ -79,41 +79,34 @@ class NotificationsViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = authRepository.getCurrentUserId() ?: return@launch
 
-            // Optimistic update
-            _uiState.update { state ->
-                val notification = state.notifications.find { it.id == notificationId }
-                if (notification != null && !notification.isRead) {
-                    val updatedList = state.notifications.map {
-                        if (it.id == notificationId) it.copy(isRead = true) else it
+            // Helper to update the read state of a notification to avoid duplicating logic.
+            val updateReadState = { isRead: Boolean ->
+                _uiState.update { state ->
+                    val targetIndex = state.notifications.indexOfFirst { it.id == notificationId }
+
+                    if (targetIndex == -1 || state.notifications[targetIndex].isRead == isRead) {
+                        state // Notification not found or already in the desired state.
+                    } else {
+                        val updatedList = state.notifications.toMutableList().apply {
+                            this[targetIndex] = this[targetIndex].copy(isRead = isRead)
+                        }
+                        state.copy(
+                            notifications = updatedList,
+                            unreadCount = updatedList.count { !it.isRead }
+                        )
                     }
-                    state.copy(
-                        notifications = updatedList,
-                        unreadCount = updatedList.count { !it.isRead }
-                    )
-                } else {
-                    state
                 }
             }
+
+            // Optimistic update
+            updateReadState(true)
 
             try {
                 notificationRepository.markAsRead(userId, notificationId)
             } catch (e: Exception) {
                 android.util.Log.e("NotificationsViewModel", "Failed to mark as read", e)
-                // Local revert
-                _uiState.update { state ->
-                    val notification = state.notifications.find { it.id == notificationId }
-                    if (notification != null && notification.isRead) {
-                        val revertedList = state.notifications.map {
-                            if (it.id == notificationId) it.copy(isRead = false) else it
-                        }
-                        state.copy(
-                            notifications = revertedList,
-                            unreadCount = revertedList.count { !it.isRead }
-                        )
-                    } else {
-                        state
-                    }
-                }
+                // Revert on failure
+                updateReadState(false)
             }
         }
     }

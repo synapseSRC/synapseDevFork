@@ -6,15 +6,15 @@ import com.synapse.social.studioasinc.data.repository.UsernameRepository
 import com.synapse.social.studioasinc.feature.auth.ui.models.AuthNavigationEvent
 import com.synapse.social.studioasinc.feature.auth.ui.models.AuthUiState
 import com.synapse.social.studioasinc.feature.auth.ui.models.PasswordStrength
-import kotlinx.coroutines.Dispatchers
+import com.synapse.social.studioasinc.util.MainCoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -27,6 +27,9 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
 class AuthViewModelTest {
+
+    @get:Rule
+    val mainCoroutineRule = MainCoroutineRule()
 
     @Mock lateinit var authRepository: AuthRepository
     @Mock lateinit var usernameRepository: UsernameRepository
@@ -46,13 +49,6 @@ class AuthViewModelTest {
         whenever(authRepository.observeAuthState()).thenReturn(flowOf(false))
         whenever(authRepository.getCurrentUserId()).thenReturn(null)
         whenever(authRepository.getCurrentUserEmail()).thenReturn(null)
-
-        Dispatchers.setMain(UnconfinedTestDispatcher())
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
     }
 
     @Test

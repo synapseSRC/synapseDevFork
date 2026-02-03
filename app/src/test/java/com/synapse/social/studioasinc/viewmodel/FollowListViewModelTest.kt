@@ -2,12 +2,12 @@ package com.synapse.social.studioasinc.viewmodel
 
 import com.synapse.social.studioasinc.data.remote.services.SupabaseFollowService
 import com.synapse.social.studioasinc.domain.model.User
-import kotlinx.coroutines.Dispatchers
+import com.synapse.social.studioasinc.util.MainCoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
-import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -21,22 +21,18 @@ import org.robolectric.annotation.Config
 @Config(manifest = Config.NONE)
 class FollowListViewModelTest {
 
+    @get:Rule
+    val mainCoroutineRule = MainCoroutineRule(StandardTestDispatcher())
+
     @Mock
     lateinit var followService: SupabaseFollowService
 
     private lateinit var viewModel: FollowListViewModel
-    private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
-        Dispatchers.setMain(testDispatcher)
         viewModel = FollowListViewModel(followService)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
     }
 
     @Test
@@ -88,7 +84,7 @@ class FollowListViewModelTest {
     }
 
     @Test
-    fun `loadUsers with unknown type should result in empty list and no error`() = runTest(testDispatcher) {
+    fun `loadUsers with unknown type should result in empty list and no error`() = runTest(mainCoroutineRule.testDispatcher) {
         // Arrange
         val userId = "user123"
 

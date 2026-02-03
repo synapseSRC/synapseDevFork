@@ -4,16 +4,16 @@ import com.synapse.social.studioasinc.data.repository.AuthRepository
 import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
 import com.synapse.social.studioasinc.shared.data.model.NotificationDto
 import com.synapse.social.studioasinc.shared.data.model.NotificationActorDto
-import kotlinx.coroutines.Dispatchers
+import com.synapse.social.studioasinc.util.MainCoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -27,23 +27,19 @@ import org.robolectric.annotation.Config
 @Config(manifest = Config.NONE)
 class NotificationsViewModelTest {
 
+    @get:Rule
+    val mainCoroutineRule = MainCoroutineRule()
+
     @Mock lateinit var authRepository: AuthRepository
     @Mock lateinit var notificationRepository: NotificationRepository
 
     private lateinit var viewModel: NotificationsViewModel
-    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
-        Dispatchers.setMain(testDispatcher)
 
         whenever(authRepository.getCurrentUserId()).thenReturn("test-user-id")
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
     }
 
     @Test

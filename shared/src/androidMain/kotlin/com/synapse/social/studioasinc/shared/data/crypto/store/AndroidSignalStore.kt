@@ -180,7 +180,15 @@ class AndroidSignalStore(context: Context) : SignalProtocolStore {
     }
 
     override fun deleteAllSessions(name: String?) {
-        // Implementation needed for full cleanup if required
+        val allPrefs = prefs.all
+        val editor = prefs.edit()
+        val prefix = if (name != null) "session_${name}_" else "session_"
+        for (key in allPrefs.keys) {
+            if (key.startsWith(prefix)) {
+                editor.remove(key)
+            }
+        }
+        editor.commitOrThrow("Failed to delete all sessions")
     }
 
     // Additional helper to get/set last signed prekey ID

@@ -31,7 +31,8 @@ object ImageUploader {
      */
     fun uploadImage(context: Context, filePath: String, callback: UploadCallback) {
         val appSettingsManager = AppSettingsManager.getInstance(context)
-        val mediaStorageService = MediaStorageService(context, appSettingsManager)
+        val imageCompressor = com.synapse.social.studioasinc.core.media.processing.ImageCompressor(context)
+        val mediaStorageService = MediaStorageService(context, appSettingsManager, imageCompressor)
 
         CoroutineScope(Dispatchers.IO).launch {
             mediaStorageService.uploadFile(

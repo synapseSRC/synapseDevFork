@@ -53,6 +53,7 @@ create or replace function claim_one_time_pre_key(target_user_id text)
 returns jsonb
 language plpgsql
 security definer
+set search_path = public
 as $$
 declare
   pre_key_record record;
@@ -76,3 +77,7 @@ begin
   return to_jsonb(pre_key_record);
 end;
 $$;
+
+-- Restrict access to authenticated users
+revoke all on function claim_one_time_pre_key(text) from public;
+grant execute on function claim_one_time_pre_key(text) to authenticated;

@@ -32,7 +32,7 @@ class EditProfileRepository(private val context: Context) {
     private val client = SupabaseClient.client
     private val appSettingsManager = AppSettingsManager.getInstance(context)
     private val imageCompressor = ImageCompressor(context)
-    private val mediaStorageService = MediaStorageService(context, appSettingsManager)
+    private val mediaStorageService = MediaStorageService(context, appSettingsManager, imageCompressor)
 
     suspend fun getCurrentUserId(): String? {
         return client.auth.currentUserOrNull()?.id

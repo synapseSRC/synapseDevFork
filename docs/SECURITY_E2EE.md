@@ -43,8 +43,13 @@ repository.uploadIdentityKeys(userId, keys = keys)
 
 ```kotlin
 val bundle = repository.fetchPreKeyBundle(recipientId)
-manager.processPreKeyBundle(recipientId, bundle)
-val encrypted = manager.encryptMessage(recipientId, "Hello Synapse!".toByteArray())
+if (bundle != null) {
+    manager.processPreKeyBundle(recipientId, bundle)
+    val encrypted = manager.encryptMessage(recipientId, "Hello Synapse!".toByteArray())
+    // ... send encrypted message
+} else {
+    // Handle case where recipient has no pre-key bundle (e.g., show an error)
+}
 ```
 
 ### Decrypting a Message

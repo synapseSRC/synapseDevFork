@@ -28,11 +28,12 @@ import java.util.UUID
 import kotlin.coroutines.resume
 
 class EditProfileRepository(private val context: Context) {
+    private val applicationContext = context.applicationContext
 
     private val client = SupabaseClient.client
-    private val appSettingsManager = AppSettingsManager.getInstance(context)
-    private val imageCompressor = ImageCompressor(context)
-    private val mediaStorageService = MediaStorageService(context, appSettingsManager, imageCompressor)
+    private val appSettingsManager = AppSettingsManager.getInstance(applicationContext)
+    private val imageCompressor = ImageCompressor(applicationContext)
+    private val mediaStorageService = MediaStorageService(applicationContext, appSettingsManager, imageCompressor)
 
     suspend fun getCurrentUserId(): String? {
         return client.auth.currentUserOrNull()?.id

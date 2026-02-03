@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.SharedPreferencesSettings
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageService
 import com.synapse.social.studioasinc.data.local.auth.TokenManager
 import com.synapse.social.studioasinc.shared.data.auth.TokenManager as SharedTokenManager
 import com.synapse.social.studioasinc.data.local.database.PostDao
@@ -122,10 +123,9 @@ object RepositoryModule {
     @Singleton
     fun provideStoryRepository(
         @ApplicationContext context: Context,
-        appSettingsManager: AppSettingsManager,
-        imageCompressor: ImageCompressor
+        mediaStorageService: MediaStorageService
     ): StoryRepository {
-        return StoryRepositoryImpl(context, appSettingsManager, imageCompressor)
+        return StoryRepositoryImpl(context, mediaStorageService)
     }
 
     @Provides

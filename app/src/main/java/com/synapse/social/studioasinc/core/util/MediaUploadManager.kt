@@ -38,12 +38,13 @@ object MediaUploadManager {
         onComplete: (List<MediaItem>) -> Unit,
         onError: (String) -> Unit
     ) {
-        val appSettingsManager = AppSettingsManager.getInstance(context)
-        val imageCompressor = ImageCompressor(context)
-        val storageService = MediaStorageService(context, appSettingsManager, imageCompressor)
+        val applicationContext = context.applicationContext
+        val appSettingsManager = AppSettingsManager.getInstance(applicationContext)
+        val imageCompressor = ImageCompressor(applicationContext)
+        val storageService = MediaStorageService(applicationContext, appSettingsManager, imageCompressor)
         val config = MediaConfig()
-        val imageProcessor = ImageProcessor(context, imageCompressor, config)
-        val videoProcessor = VideoProcessor(context, ThumbnailGenerator(context), config)
+        val imageProcessor = ImageProcessor(applicationContext, imageCompressor, config)
+        val videoProcessor = VideoProcessor(applicationContext, ThumbnailGenerator(applicationContext), config)
         val facade = MediaFacade(storageService, imageProcessor, videoProcessor, config)
         val coordinator = MediaUploadCoordinator(facade)
 

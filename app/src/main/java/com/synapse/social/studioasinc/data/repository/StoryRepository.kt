@@ -78,11 +78,9 @@ interface StoryRepository {
 
 class StoryRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: android.content.Context,
-    private val appSettingsManager: AppSettingsManager,
-    private val imageCompressor: ImageCompressor
+    private val mediaStorageService: MediaStorageService
 ) : StoryRepository {
     private val client = SupabaseClient.client
-    private val mediaStorageService = MediaStorageService(context, appSettingsManager, imageCompressor)
 
     companion object {
         private const val TABLE_STORIES = "stories"

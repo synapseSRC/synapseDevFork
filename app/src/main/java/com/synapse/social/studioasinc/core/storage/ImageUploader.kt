@@ -31,9 +31,10 @@ object ImageUploader {
      * @deprecated Use MediaFacade.uploadImage instead
      */
     fun uploadImage(context: Context, filePath: String, callback: UploadCallback) {
-        val appSettingsManager = AppSettingsManager.getInstance(context)
-        val imageCompressor = ImageCompressor(context)
-        val mediaStorageService = MediaStorageService(context, appSettingsManager, imageCompressor)
+        val applicationContext = context.applicationContext
+        val appSettingsManager = AppSettingsManager.getInstance(applicationContext)
+        val imageCompressor = ImageCompressor(applicationContext)
+        val mediaStorageService = MediaStorageService(applicationContext, appSettingsManager, imageCompressor)
 
         CoroutineScope(Dispatchers.IO).launch {
             mediaStorageService.uploadFile(

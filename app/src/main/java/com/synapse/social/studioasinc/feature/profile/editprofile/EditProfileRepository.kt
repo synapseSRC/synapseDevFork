@@ -1,8 +1,8 @@
 package com.synapse.social.studioasinc.feature.profile.editprofile
 
+import com.synapse.social.studioasinc.core.config.Constants
 import com.synapse.social.studioasinc.core.media.storage.MediaStorageService
 import com.synapse.social.studioasinc.core.media.storage.MediaStorageCallback
-import com.synapse.social.studioasinc.core.network.SupabaseClient as LegacySupabaseClient
 import com.synapse.social.studioasinc.domain.model.UserProfile
 import com.synapse.social.studioasinc.domain.model.UserStatus
 import com.synapse.social.studioasinc.feature.profile.editprofile.photohistory.HistoryItem
@@ -128,11 +128,11 @@ class EditProfileRepository @Inject constructor(
     }
 
     suspend fun uploadAvatar(userId: String, imagePath: String): Result<String> {
-        return uploadFile(imagePath, LegacySupabaseClient.BUCKET_USER_AVATARS)
+        return uploadFile(imagePath, Constants.BUCKET_USER_AVATARS)
     }
 
     suspend fun uploadCover(userId: String, imagePath: String): Result<String> {
-        return uploadFile(imagePath, LegacySupabaseClient.BUCKET_USER_COVERS)
+        return uploadFile(imagePath, Constants.BUCKET_USER_COVERS)
     }
 
     private suspend fun uploadFile(filePath: String, bucketName: String): Result<String> = suspendCancellableCoroutine { continuation ->

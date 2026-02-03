@@ -2,6 +2,7 @@ package com.synapse.social.studioasinc.data.remote.services
 
 import android.content.Context
 import android.net.Uri
+import com.synapse.social.studioasinc.core.config.Constants
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +37,7 @@ class SupabaseStorageService {
      * @return Public URL of uploaded image
      */
     suspend fun uploadAvatar(userId: String, filePath: String): Result<String> {
-        return uploadImage(SupabaseClient.BUCKET_USER_AVATARS, userId, filePath)
+        return uploadImage(Constants.BUCKET_USER_AVATARS, userId, filePath)
     }
 
     /**
@@ -46,7 +47,7 @@ class SupabaseStorageService {
      * @return Public URL of uploaded image
      */
     suspend fun uploadCover(userId: String, filePath: String): Result<String> {
-        return uploadImage(SupabaseClient.BUCKET_USER_COVERS, userId, filePath)
+        return uploadImage(Constants.BUCKET_USER_COVERS, userId, filePath)
     }
 
     /**
@@ -56,7 +57,7 @@ class SupabaseStorageService {
      * @return Public URL of uploaded image
      */
     suspend fun uploadPostImage(userId: String, filePath: String): Result<String> {
-        return uploadImage(SupabaseClient.BUCKET_POST_MEDIA, userId, filePath)
+        return uploadImage(Constants.BUCKET_POST_MEDIA, userId, filePath)
     }
 
     /**

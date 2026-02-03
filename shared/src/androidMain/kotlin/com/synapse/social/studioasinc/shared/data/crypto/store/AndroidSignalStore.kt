@@ -184,7 +184,7 @@ class AndroidSignalStore(context: Context) : SignalProtocolStore {
         val editor = prefs.edit()
         val prefix = if (name != null) "session_${name}_" else "session_"
         allPrefs.keys.filter { it.startsWith(prefix) }.forEach { editor.remove(it) }
-        editor.commitOrThrow("Failed to delete all sessions")
+        editor.apply()
     }
 
     // Additional helper to get/set last signed prekey ID

@@ -3,6 +3,7 @@ package com.synapse.social.studioasinc.data.paging
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.synapse.social.studioasinc.core.config.Constants
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.repository.ReactionRepository
 import com.synapse.social.studioasinc.domain.model.Post
@@ -50,7 +51,7 @@ class PostPagingSource(
                 val userData = jsonElement["users"]?.jsonObject
                 post.username = userData?.get("username")?.jsonPrimitive?.contentOrNull
                 post.avatarUrl = userData?.get("avatar")?.jsonPrimitive?.contentOrNull?.let { avatarPath ->
-                    SupabaseClient.constructStorageUrl(SupabaseClient.BUCKET_USER_AVATARS, avatarPath)
+                    SupabaseClient.constructStorageUrl(Constants.BUCKET_USER_AVATARS, avatarPath)
                 }
                 post.isVerified = userData?.get("verify")?.jsonPrimitive?.booleanOrNull ?: false
 

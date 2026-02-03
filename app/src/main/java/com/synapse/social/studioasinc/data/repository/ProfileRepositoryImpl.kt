@@ -2,6 +2,7 @@ package com.synapse.social.studioasinc.data.repository
 
 import com.synapse.social.studioasinc.data.model.UserProfile
 import com.synapse.social.studioasinc.domain.model.UserStatus
+import com.synapse.social.studioasinc.core.config.Constants
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.MediaItem
@@ -90,9 +91,9 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
         }
     }
 
-    private fun constructMediaUrl(storagePath: String): String = SupabaseClient.constructStorageUrl(SupabaseClient.BUCKET_POST_MEDIA, storagePath)
+    private fun constructMediaUrl(storagePath: String): String = SupabaseClient.constructStorageUrl(Constants.BUCKET_POST_MEDIA, storagePath)
 
-    private fun constructAvatarUrl(storagePath: String): String = SupabaseClient.constructStorageUrl(SupabaseClient.BUCKET_USER_AVATARS, storagePath)
+    private fun constructAvatarUrl(storagePath: String): String = SupabaseClient.constructStorageUrl(Constants.BUCKET_USER_AVATARS, storagePath)
 
     private fun JsonObject.getString(key: String, default: String = ""): String =
         this[key]?.jsonPrimitive?.contentOrNull ?: default

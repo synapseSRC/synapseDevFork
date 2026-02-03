@@ -34,6 +34,7 @@ object ImageUploader {
 
     private var cachedEntryPoint: ImageUploaderEntryPoint? = null
 
+    @Synchronized
     private fun getEntryPoint(context: Context): ImageUploaderEntryPoint {
         return cachedEntryPoint ?: EntryPointAccessors.fromApplication(
             context.applicationContext,

@@ -39,6 +39,7 @@ object MediaUploadManager {
 
     private var cachedEntryPoint: MediaUploadManagerEntryPoint? = null
 
+    @Synchronized
     private fun getEntryPoint(context: Context): MediaUploadManagerEntryPoint {
         return cachedEntryPoint ?: EntryPointAccessors.fromApplication(
             context.applicationContext,

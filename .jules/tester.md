@@ -36,3 +36,23 @@ ViewModels were entirely untested, representing a risk for UI state management r
 - Established a repeatable pattern for ViewModel testing.
 - Verified initial state, validation, and error handling for Auth and Follower flows.
 - Improved production code quality by enforcing dependency injection and removing direct framework client access.
+
+## 2025-05-24: High-Value Testing Gap - NotificationsViewModel
+
+### Coverage Gap Identified
+`NotificationsViewModel` was untested and contains complex state management, including optimistic updates for marking notifications as read and handling i18n mapping from `NotificationDto`.
+
+### Testing Approach
+- Implemented unit tests in `app/src/test/java/.../ui/notifications/NotificationsViewModelTest.kt`.
+- Mocked both `AuthRepository` (app layer) and `NotificationRepository` (shared layer).
+- Verified:
+  - Automatic data loading on initialization.
+  - Correct mapping of `NotificationDto` (i18n body) to `UiNotification`.
+  - Loading state management and unread count calculation.
+  - Optimistic UI updates in `markAsRead` followed by repository verification.
+  - Refresh functionality.
+
+### Impact
+- Increased test coverage for the notification feature.
+- Verified that complex mapping logic for internationalized notification bodies works as expected.
+- Ensured that optimistic updates don't leave the UI in an inconsistent state on success.

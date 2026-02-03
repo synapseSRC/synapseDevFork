@@ -20,12 +20,12 @@ import com.synapse.social.studioasinc.ui.postdetail.PostDetailScreen
 import com.synapse.social.studioasinc.ui.createpost.CreatePostScreen
 import com.synapse.social.studioasinc.ui.createpost.CreatePostViewModel
 import com.synapse.social.studioasinc.ui.settings.SettingsScreen
-import com.synapse.social.studioasinc.presentation.editprofile.EditProfileScreen
-import com.synapse.social.studioasinc.presentation.editprofile.EditProfileViewModel
-import com.synapse.social.studioasinc.presentation.editprofile.EditProfileEvent
+import com.synapse.social.studioasinc.feature.profile.editprofile.EditProfileScreen
+import com.synapse.social.studioasinc.feature.profile.editprofile.EditProfileViewModel
+import com.synapse.social.studioasinc.feature.profile.editprofile.EditProfileEvent
 import com.synapse.social.studioasinc.feature.profile.editprofile.RegionSelectionScreen
-import com.synapse.social.studioasinc.presentation.editprofile.photohistory.PhotoHistoryScreen
-import com.synapse.social.studioasinc.presentation.editprofile.photohistory.PhotoType
+import com.synapse.social.studioasinc.feature.profile.editprofile.photohistory.PhotoHistoryScreen
+import com.synapse.social.studioasinc.feature.profile.editprofile.photohistory.PhotoType
 import com.synapse.social.studioasinc.compose.FollowListScreen
 import com.synapse.social.studioasinc.feature.stories.viewer.StoryViewerScreen
 import com.synapse.social.studioasinc.feature.stories.viewer.StoryViewerViewModel

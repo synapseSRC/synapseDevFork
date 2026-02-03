@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.presentation.editprofile.components
+package com.synapse.social.studioasinc.feature.profile.editprofile.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -28,7 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.presentation.editprofile.Gender
+import com.synapse.social.studioasinc.feature.profile.editprofile.Gender
 import com.synapse.social.studioasinc.ui.settings.SettingsColors
 import com.synapse.social.studioasinc.ui.settings.SettingsShapes
 

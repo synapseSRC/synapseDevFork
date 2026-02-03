@@ -1,14 +1,15 @@
-package com.synapse.social.studioasinc.presentation.editprofile.photohistory
+package com.synapse.social.studioasinc.feature.profile.editprofile.photohistory
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.presentation.editprofile.EditProfileRepository
+import com.synapse.social.studioasinc.feature.profile.editprofile.EditProfileRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class PhotoHistoryUiState(
     val isLoading: Boolean = true,
@@ -24,9 +25,11 @@ sealed class PhotoHistoryEvent {
     data class DeleteItem(val item: HistoryItem) : PhotoHistoryEvent()
 }
 
-class PhotoHistoryViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class PhotoHistoryViewModel @Inject constructor(
+    private val repository: EditProfileRepository
+) : ViewModel() {
 
-    private val repository = EditProfileRepository(application.applicationContext)
     private val _uiState = MutableStateFlow(PhotoHistoryUiState())
     val uiState: StateFlow<PhotoHistoryUiState> = _uiState.asStateFlow()
 
@@ -49,9 +52,6 @@ class PhotoHistoryViewModel(application: Application) : AndroidViewModel(applica
 
             // Load current profile to know which one is selected
             val profileResult = repository.getUserProfile(userId)
-            // This is a flow, so we collect it. But we also need history.
-            // Let's launch a separate coroutine or combine.
-            // For simplicity, I'll launch separate collection for profile updates.
 
             // First fetch history
             val historyFlow = when (type) {
@@ -64,7 +64,6 @@ class PhotoHistoryViewModel(application: Application) : AndroidViewModel(applica
                     onSuccess = { items ->
                         _uiState.update { it.copy(items = items) }
                         // After loading history, check current profile to mark selected
-                        // We could subscribe to profile changes, but for now just fetching once is enough as this screen is short lived
                         fetchCurrentProfile(userId, type)
                     },
                     onFailure = { error ->
@@ -97,8 +96,6 @@ class PhotoHistoryViewModel(application: Application) : AndroidViewModel(applica
             val userId = repository.getCurrentUserId() ?: return@launch
             val type = _uiState.value.photoType
 
-            // If already current, maybe deselect?
-            // The legacy code toggles: if already current, sets to "null".
             val isCurrent = item.imageUrl == _uiState.value.currentPhotoUrl
             val newUrl = if (isCurrent) "null" else item.imageUrl
 
@@ -112,14 +109,6 @@ class PhotoHistoryViewModel(application: Application) : AndroidViewModel(applica
 
             result.fold(
                 onSuccess = {
-                     // Refetch profile to update UI
-                     // But we can just update local state optimistically or wait for flow if we were observing
-                     // Since we are not continuously observing profile changes in this VM (only one-shot), let's manually update state
-                     // However, passing "null" string to server usually results in null in DB?
-                     // Legacy code sent "null" string: mapOf("avatar" to "null"). Supabase might treat it as string "null" or null?
-                     // Legacy code: currentAvatarUri = "null".
-                     // So I'll assume it returns "null" or real null.
-
                      val displayedUrl = if (newUrl == "null") null else newUrl
                      _uiState.update { it.copy(currentPhotoUrl = displayedUrl) }
                 },

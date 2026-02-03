@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.presentation.editprofile.photohistory
+package com.synapse.social.studioasinc.feature.profile.editprofile.photohistory
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
@@ -29,7 +29,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
 import com.synapse.social.studioasinc.ui.settings.SettingsSpacing
@@ -37,12 +37,12 @@ import com.synapse.social.studioasinc.ui.settings.SettingsSpacing
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun PhotoHistoryScreen(
-    viewModel: PhotoHistoryViewModel = viewModel(),
+    viewModel: PhotoHistoryViewModel = hiltViewModel(),
     type: PhotoType,
     onNavigateBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     // Load data on start
     LaunchedEffect(type) {
@@ -119,7 +119,6 @@ fun PhotoHistoryScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // Enhanced Empty State with Pulse Animation
-                    // Since Lottie is not available, we simulate a "breathing" or "pulsing" effect
                     val infiniteTransition = rememberInfiniteTransition()
                     val scale by infiniteTransition.animateFloat(
                         initialValue = 1f,
@@ -189,8 +188,6 @@ fun PhotoHistoryScreen(
                     }
                 }
             }
-
-            // Error Snackbar or Banner could go here
         }
     }
 }
@@ -204,7 +201,7 @@ fun PhotoHistoryItem(
     onClick: () -> Unit,
     onLongClick: () -> Unit
 ) {
-    Card(
+    Surface(
         shape = RoundedCornerShape(12.dp),
         modifier = modifier
             .aspectRatio(1f)
@@ -212,7 +209,7 @@ fun PhotoHistoryItem(
                 onClick = onClick,
                 onLongClick = onLongClick
             ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        tonalElevation = 2.dp
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             AsyncImage(
@@ -223,16 +220,15 @@ fun PhotoHistoryItem(
             )
 
             // Selection Indicator
-            androidx.compose.animation.AnimatedVisibility(
+            AnimatedVisibility(
                 visible = isSelected,
                 enter = fadeIn(),
-                exit = fadeOut(),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.4f))
+                exit = fadeOut()
             ) {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.4f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(

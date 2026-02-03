@@ -11,6 +11,10 @@ import com.synapse.social.studioasinc.core.media.storage.MediaStorageService
 import com.synapse.social.studioasinc.core.media.storage.MediaUploadCoordinator
 import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
 import com.synapse.social.studioasinc.domain.model.MediaItem
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,6 +31,21 @@ import kotlinx.coroutines.launch
 )
 object MediaUploadManager {
 
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface MediaUploadManagerEntryPoint {
+        fun mediaUploadCoordinator(): MediaUploadCoordinator
+    }
+
+    private var cachedEntryPoint: MediaUploadManagerEntryPoint? = null
+
+    private fun getEntryPoint(context: Context): MediaUploadManagerEntryPoint {
+        return cachedEntryPoint ?: EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            MediaUploadManagerEntryPoint::class.java
+        ).also { cachedEntryPoint = it }
+    }
+
     /**
      * Uploads multiple media items.
      * @deprecated Use MediaUploadCoordinator instead
@@ -38,14 +57,8 @@ object MediaUploadManager {
         onComplete: (List<MediaItem>) -> Unit,
         onError: (String) -> Unit
     ) {
-        val appSettingsManager = AppSettingsManager.getInstance(context)
-        val imageCompressor = ImageCompressor(context)
-        val storageService = MediaStorageService(context, appSettingsManager, imageCompressor)
-        val config = MediaConfig()
-        val imageProcessor = ImageProcessor(context, imageCompressor, config)
-        val videoProcessor = VideoProcessor(context, ThumbnailGenerator(context), config)
-        val facade = MediaFacade(storageService, imageProcessor, videoProcessor, config)
-        val coordinator = MediaUploadCoordinator(facade)
+        val entryPoint = getEntryPoint(context)
+        val coordinator = entryPoint.mediaUploadCoordinator()
 
         CoroutineScope(Dispatchers.IO).launch {
             coordinator.uploadMultipleMedia(mediaItems, onProgress, onComplete, onError)

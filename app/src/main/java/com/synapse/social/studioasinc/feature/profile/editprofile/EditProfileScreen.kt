@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.presentation.editprofile
+package com.synapse.social.studioasinc.feature.profile.editprofile
 
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -39,9 +39,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.presentation.editprofile.components.GenderSelector
-import com.synapse.social.studioasinc.presentation.editprofile.components.ProfileFormFields
-import com.synapse.social.studioasinc.presentation.editprofile.components.ProfileImageSection
+import com.synapse.social.studioasinc.feature.profile.editprofile.components.GenderSelector
+import com.synapse.social.studioasinc.feature.profile.editprofile.components.ProfileFormFields
+import com.synapse.social.studioasinc.feature.profile.editprofile.components.ProfileImageSection
 import com.synapse.social.studioasinc.ui.settings.SettingsCard
 import com.synapse.social.studioasinc.ui.settings.SettingsNavigationItem
 import com.synapse.social.studioasinc.ui.settings.SettingsSpacing
@@ -209,7 +209,7 @@ fun EditProfileScreen(
                             SettingsNavigationItem(
                                 title = "Region",
                                 subtitle = uiState.selectedRegion ?: "Not set",
-                                icon = R.drawable.ic_location, // Need to verify if this exists or use fallback
+                                icon = R.drawable.ic_location,
                                 onClick = {
                                     onNavigateToRegionSelection(uiState.selectedRegion ?: "")
                                 }

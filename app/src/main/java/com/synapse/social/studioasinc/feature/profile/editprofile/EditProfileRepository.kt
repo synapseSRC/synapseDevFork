@@ -1,14 +1,12 @@
-package com.synapse.social.studioasinc.presentation.editprofile
+package com.synapse.social.studioasinc.feature.profile.editprofile
 
-import android.content.Context
-import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
 import com.synapse.social.studioasinc.core.media.storage.MediaStorageService
 import com.synapse.social.studioasinc.core.media.storage.MediaStorageCallback
-import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
+import com.synapse.social.studioasinc.core.network.SupabaseClient as LegacySupabaseClient
 import com.synapse.social.studioasinc.domain.model.UserProfile
 import com.synapse.social.studioasinc.domain.model.UserStatus
-import com.synapse.social.studioasinc.presentation.editprofile.photohistory.HistoryItem
+import com.synapse.social.studioasinc.feature.profile.editprofile.photohistory.HistoryItem
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
@@ -23,16 +21,14 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.longOrNull
 import java.util.UUID
+import javax.inject.Inject
 import kotlin.coroutines.resume
 
-class EditProfileRepository(private val context: Context) {
-
-    private val client = SupabaseClient.client
-    private val appSettingsManager = AppSettingsManager.getInstance(context)
-    private val imageCompressor = ImageCompressor(context)
-    private val mediaStorageService = MediaStorageService(context, appSettingsManager, imageCompressor)
+class EditProfileRepository @Inject constructor(
+    private val client: SupabaseClient,
+    private val mediaStorageService: MediaStorageService
+) {
 
     suspend fun getCurrentUserId(): String? {
         return client.auth.currentUserOrNull()?.id
@@ -132,11 +128,11 @@ class EditProfileRepository(private val context: Context) {
     }
 
     suspend fun uploadAvatar(userId: String, imagePath: String): Result<String> {
-        return uploadFile(imagePath, SupabaseClient.BUCKET_USER_AVATARS)
+        return uploadFile(imagePath, LegacySupabaseClient.BUCKET_USER_AVATARS)
     }
 
     suspend fun uploadCover(userId: String, imagePath: String): Result<String> {
-        return uploadFile(imagePath, SupabaseClient.BUCKET_USER_COVERS)
+        return uploadFile(imagePath, LegacySupabaseClient.BUCKET_USER_COVERS)
     }
 
     private suspend fun uploadFile(filePath: String, bucketName: String): Result<String> = suspendCancellableCoroutine { continuation ->

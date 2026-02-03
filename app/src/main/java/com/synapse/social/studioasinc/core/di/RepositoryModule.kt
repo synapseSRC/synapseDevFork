@@ -21,12 +21,14 @@ import com.synapse.social.studioasinc.data.repository.PostInteractionRepository
 import com.synapse.social.studioasinc.data.repository.ProfileActionRepository
 import com.synapse.social.studioasinc.data.repository.StoryRepository
 import com.synapse.social.studioasinc.data.repository.StoryRepositoryImpl
+import com.synapse.social.studioasinc.feature.profile.editprofile.EditProfileRepository
 import com.synapse.social.studioasinc.data.repository.SearchRepository
 import com.synapse.social.studioasinc.data.repository.SearchRepositoryImpl
 import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
 import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
 import com.synapse.social.studioasinc.data.local.database.UserDao
 import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -122,10 +124,18 @@ object RepositoryModule {
     @Singleton
     fun provideStoryRepository(
         @ApplicationContext context: Context,
-        appSettingsManager: AppSettingsManager,
-        imageCompressor: ImageCompressor
+        mediaStorageService: MediaStorageService
     ): StoryRepository {
-        return StoryRepositoryImpl(context, appSettingsManager, imageCompressor)
+        return StoryRepositoryImpl(context, mediaStorageService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEditProfileRepository(
+        client: SupabaseClientType,
+        mediaStorageService: MediaStorageService
+    ): EditProfileRepository {
+        return EditProfileRepository(client, mediaStorageService)
     }
 
     @Provides

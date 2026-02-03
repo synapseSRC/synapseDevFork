@@ -1,10 +1,12 @@
-package com.synapse.social.studioasinc.presentation.editprofile
+package com.synapse.social.studioasinc.feature.profile.editprofile
 
-import android.app.Application
+import android.content.Context
 import android.net.Uri
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.core.util.FileManager
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,13 +18,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
-import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class EditProfileViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
-
-    private val repository = EditProfileRepository(application.applicationContext)
+class EditProfileViewModel @Inject constructor(
+    private val repository: EditProfileRepository,
+    @ApplicationContext private val context: Context
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EditProfileUiState())
     val uiState: StateFlow<EditProfileUiState> = _uiState.asStateFlow()
@@ -69,17 +71,6 @@ class EditProfileViewModel @Inject constructor(application: Application) : Andro
         }
     }
 
-    // Helper to parse gender. The UserProfile model doesn't have 'gender' field.
-    // ProfileEditActivity used `user["gender"]`.
-    // I should probably add gender to UserProfile or handle it separately.
-    // Given I cannot easily change UserProfile, I'll assume it's part of the profile map in repository or add it to my local state logic.
-    // But repository returned UserProfile.
-    // I'll stick to what I have, but realize 'gender' might be missing in UserProfile.
-    // The activity used: val gender = user["gender"]?.toString() ?: "hidden"
-    // I will assume for now 'status' is not gender.
-    // I might need to update UserProfile or fetch raw JSON to get gender.
-    // The repository method getUserProfile manually maps JSON to UserProfile. I can add gender there if I modify UserProfile, or just fetch it.
-    // For now I'll default to Hidden if not found.
     private fun parseGender(genderStr: String?): Gender {
         return when (genderStr?.lowercase()) {
             "male" -> Gender.Male
@@ -214,7 +205,6 @@ class EditProfileViewModel @Inject constructor(application: Application) : Andro
 
         viewModelScope.launch {
             try {
-                val context = getApplication<Application>()
                 android.util.Log.d("EditProfile", "Processing avatar URI: $uri")
 
                 // Try to convert URI to file path
@@ -330,7 +320,6 @@ class EditProfileViewModel @Inject constructor(application: Application) : Andro
 
         viewModelScope.launch {
             try {
-                val context = getApplication<Application>()
                 android.util.Log.d("EditProfile", "Processing cover URI: $uri")
 
                 // Try to convert URI to file path

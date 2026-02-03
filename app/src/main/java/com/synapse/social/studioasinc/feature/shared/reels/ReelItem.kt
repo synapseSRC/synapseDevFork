@@ -182,11 +182,10 @@ fun ReelItem(
                     .background(Color.Black.copy(alpha = 0.4f), shape = MaterialTheme.shapes.medium)
                     .padding(16.dp)
             ) {
-                IconButton(
+                HapticIconButton(
                     onClick = {
                         if (videoState.isPlaying) videoViewModel.pause() else videoViewModel.play()
                         showControls = true
-                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                     }
                 ) {
                     Icon(
@@ -201,10 +200,9 @@ fun ReelItem(
 
         // Mute Toggle (Top Right)
         if (showControls && !isLongPressing) {
-            IconButton(
+            HapticIconButton(
                 onClick = {
                     videoViewModel.toggleMute()
-                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -230,9 +228,8 @@ fun ReelItem(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                IconButton(onClick = {
+                HapticIconButton(onClick = {
                     onLikeClick()
-                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 }) {
                     Icon(
                         imageVector = if (reel.isLikedByCurrentUser) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
@@ -246,22 +243,23 @@ fun ReelItem(
                 Text(text = "${reel.likesCount}", color = Color.White)
                 Spacer(modifier = Modifier.size(16.dp))
 
-                IconButton(onClick = {
+                HapticIconButton(onClick = {
                     onOpposeClick()
-                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 }) {
                     Icon(
                         imageVector = if (reel.isOpposedByCurrentUser) Icons.Default.ThumbDown else Icons.Outlined.ThumbDown,
-                        contentDescription = "Oppose",
+                        contentDescription = if (reel.isOpposedByCurrentUser)
+                            stringResource(R.string.oppose_post_opposed, reel.opposeCount)
+                        else
+                            stringResource(R.string.oppose_post_with_count, reel.opposeCount),
                         tint = if (reel.isOpposedByCurrentUser) Color.Red else Color.White
                     )
                 }
                 Text(text = "${reel.opposeCount}", color = Color.White)
                 Spacer(modifier = Modifier.size(16.dp))
 
-                IconButton(onClick = {
+                HapticIconButton(onClick = {
                     onCommentClick()
-                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.Comment,
@@ -272,9 +270,8 @@ fun ReelItem(
                 Text(text = "${reel.commentCount}", color = Color.White)
                 Spacer(modifier = Modifier.size(16.dp))
 
-                IconButton(onClick = {
+                HapticIconButton(onClick = {
                     onShareClick()
-                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 }) {
                     Icon(
                         imageVector = Icons.Outlined.Share,
@@ -285,9 +282,8 @@ fun ReelItem(
                 Text(text = "${reel.shareCount}", color = Color.White)
                 Spacer(modifier = Modifier.size(16.dp))
 
-                IconButton(onClick = {
+                HapticIconButton(onClick = {
                     onMoreClick()
-                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 }) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
@@ -380,4 +376,23 @@ fun ReelItem(
             )
         }
     }
+}
+
+@Composable
+private fun HapticIconButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    content: @Composable () -> Unit
+) {
+    val haptic = LocalHapticFeedback.current
+    IconButton(
+        onClick = {
+            onClick()
+            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        },
+        modifier = modifier,
+        enabled = enabled,
+        content = content
+    )
 }

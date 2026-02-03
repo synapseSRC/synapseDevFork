@@ -117,9 +117,23 @@ class NotificationsViewModelTest {
         assertEquals(1, finalState.unreadCount)
         assertFalse(finalState.notifications.first().isRead)
 
-        // Verify that fetch was called twice (init + revert) and markAsRead was attempted.
-        verify(notificationRepository, times(2)).fetchNotifications(eq("test-user-id"), any())
+        // Verify that fetch was called only once (init) and markAsRead was attempted.
+        // Second call (times(2)) would happen if loadNotifications() was called on failure.
+        verify(notificationRepository, times(1)).fetchNotifications(eq("test-user-id"), any())
         verify(notificationRepository).markAsRead("test-user-id", "1")
+    }
+
+    @Test
+    fun `initialization uses fallback message when 'en' locale is missing`() = runTest {
+        val notificationDto = createFakeNotificationDto("1").copy(
+            body = buildJsonObject { put("fr", "Le corps du message") }
+        )
+        whenever(notificationRepository.fetchNotifications(any(), any())).thenReturn(listOf(notificationDto))
+
+        viewModel = NotificationsViewModel(authRepository, notificationRepository)
+
+        val state = viewModel.uiState.value
+        assertEquals("New notification", state.notifications.first().message)
     }
 
     @Test

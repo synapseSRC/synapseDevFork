@@ -27,7 +27,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.synapse.social.studioasinc.R
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.ui.PlayerView
@@ -106,6 +108,7 @@ fun ReelItem(
                             delay(500)
                             isLongPressing = true
                             videoViewModel.pause()
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         }
                         try {
                             awaitRelease()
@@ -183,6 +186,7 @@ fun ReelItem(
                     onClick = {
                         if (videoState.isPlaying) videoViewModel.pause() else videoViewModel.play()
                         showControls = true
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                     }
                 ) {
                     Icon(
@@ -198,7 +202,10 @@ fun ReelItem(
         // Mute Toggle (Top Right)
         if (showControls && !isLongPressing) {
             IconButton(
-                onClick = { videoViewModel.toggleMute() },
+                onClick = {
+                    videoViewModel.toggleMute()
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(top = 48.dp, end = 16.dp)
@@ -223,17 +230,26 @@ fun ReelItem(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                IconButton(onClick = onLikeClick) {
+                IconButton(onClick = {
+                    onLikeClick()
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                }) {
                     Icon(
                         imageVector = if (reel.isLikedByCurrentUser) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "Like",
+                        contentDescription = if (reel.isLikedByCurrentUser)
+                            stringResource(R.string.like_post_liked, reel.likesCount)
+                        else
+                            stringResource(R.string.like_post_with_count, reel.likesCount),
                         tint = if (reel.isLikedByCurrentUser) Color.Red else Color.White
                     )
                 }
                 Text(text = "${reel.likesCount}", color = Color.White)
                 Spacer(modifier = Modifier.size(16.dp))
 
-                IconButton(onClick = onOpposeClick) {
+                IconButton(onClick = {
+                    onOpposeClick()
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                }) {
                     Icon(
                         imageVector = if (reel.isOpposedByCurrentUser) Icons.Default.ThumbDown else Icons.Outlined.ThumbDown,
                         contentDescription = "Oppose",
@@ -243,30 +259,39 @@ fun ReelItem(
                 Text(text = "${reel.opposeCount}", color = Color.White)
                 Spacer(modifier = Modifier.size(16.dp))
 
-                IconButton(onClick = onCommentClick) {
+                IconButton(onClick = {
+                    onCommentClick()
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.Comment,
-                        contentDescription = "Comment",
+                        contentDescription = stringResource(R.string.comment_on_post_with_count, reel.commentCount),
                         tint = Color.White
                     )
                 }
                 Text(text = "${reel.commentCount}", color = Color.White)
                 Spacer(modifier = Modifier.size(16.dp))
 
-                IconButton(onClick = onShareClick) {
+                IconButton(onClick = {
+                    onShareClick()
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                }) {
                     Icon(
                         imageVector = Icons.Outlined.Share,
-                        contentDescription = "Share",
+                        contentDescription = stringResource(R.string.share_post),
                         tint = Color.White
                     )
                 }
                 Text(text = "${reel.shareCount}", color = Color.White)
                 Spacer(modifier = Modifier.size(16.dp))
 
-                IconButton(onClick = onMoreClick) {
+                IconButton(onClick = {
+                    onMoreClick()
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                }) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
-                        contentDescription = "More",
+                        contentDescription = stringResource(R.string.more_options),
                         tint = Color.White
                     )
                 }
@@ -292,9 +317,12 @@ fun ReelItem(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         CircularAvatar(
                             imageUrl = reel.creatorAvatarUrl,
-                            contentDescription = null,
+                            contentDescription = stringResource(R.string.author_avatar),
                             size = 32.dp,
-                            onClick = onUserClick
+                            onClick = {
+                                onUserClick()
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            }
                         )
                         Spacer(modifier = Modifier.size(8.dp))
                         Column {

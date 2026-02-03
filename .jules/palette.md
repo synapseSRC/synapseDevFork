@@ -1,0 +1,3 @@
+## 2025-05-15 - [Tactile Feedback & Accessibility in Reels]
+**Learning:** Adding haptic feedback to core interactions (Like, Oppose) significantly improves the perceived responsiveness of the application, especially for unique features like 'Oppose'. Furthermore, using localized strings with state-aware counts (e.g., 'Like post, 5 likes' vs 'Unlike post, 5 likes') provides much better context for TalkBack users compared to static labels.
+**Action:** Always prefer state-aware accessible strings for toggle buttons and add light haptic feedback (TextHandleMove) to high-frequency interaction points.

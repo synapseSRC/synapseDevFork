@@ -79,22 +79,40 @@ class NotificationsViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = authRepository.getCurrentUserId() ?: return@launch
 
-            // Optimistic update
-            _uiState.update { state ->
-                val updatedList = state.notifications.map {
-                    if (it.id == notificationId) it.copy(isRead = true) else it
-                }
-                state.copy(
-                    notifications = updatedList,
-                    unreadCount = updatedList.count { !it.isRead }
-                )
+            // Exit early if the notification is already marked as read or not found.
+            if (!_uiState.value.notifications.any { it.id == notificationId && !it.isRead }) {
+                return@launch
             }
+
+            // Helper to update the read state of a notification to avoid duplicating logic.
+            val updateReadState = { isRead: Boolean ->
+                _uiState.update { state ->
+                    val targetIndex = state.notifications.indexOfFirst { it.id == notificationId }
+
+                    if (targetIndex == -1 || state.notifications[targetIndex].isRead == isRead) {
+                        state // Notification not found or already in the desired state.
+                    } else {
+                        val updatedList = state.notifications.toMutableList().apply {
+                            this[targetIndex] = this[targetIndex].copy(isRead = isRead)
+                        }
+                        val newUnreadCount = if (isRead) state.unreadCount - 1 else state.unreadCount + 1
+                        state.copy(
+                            notifications = updatedList,
+                            unreadCount = newUnreadCount.coerceAtLeast(0)
+                        )
+                    }
+                }
+            }
+
+            // Optimistic update
+            updateReadState(true)
 
             try {
                 notificationRepository.markAsRead(userId, notificationId)
             } catch (e: Exception) {
                 android.util.Log.e("NotificationsViewModel", "Failed to mark as read", e)
-                loadNotifications() // Revert on failure
+                // Revert on failure
+                updateReadState(false)
             }
         }
     }

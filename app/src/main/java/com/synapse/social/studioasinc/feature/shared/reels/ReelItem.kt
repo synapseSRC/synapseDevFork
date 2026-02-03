@@ -228,9 +228,12 @@ fun ReelItem(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                HapticIconButton(onClick = {
-                    onLikeClick()
-                }) {
+                HapticIconButton(
+                    onClick = {
+                        onLikeClick()
+                    },
+                    hapticType = HapticFeedbackType.LongPress
+                ) {
                     Icon(
                         imageVector = if (reel.isLikedByCurrentUser) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = if (reel.isLikedByCurrentUser)
@@ -326,7 +329,10 @@ fun ReelItem(
                                 text = reel.creatorUsername ?: "Unknown",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = Color.White,
-                                modifier = Modifier.clickable(onClick = onUserClick)
+                                modifier = Modifier.clickable {
+                                    onUserClick()
+                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                }
                             )
                             reel.locationName?.let { location ->
                                 Text(
@@ -383,13 +389,14 @@ private fun HapticIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    hapticType: HapticFeedbackType = HapticFeedbackType.TextHandleMove,
     content: @Composable () -> Unit
 ) {
     val haptic = LocalHapticFeedback.current
     IconButton(
         onClick = {
             onClick()
-            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            haptic.performHapticFeedback(hapticType)
         },
         modifier = modifier,
         enabled = enabled,

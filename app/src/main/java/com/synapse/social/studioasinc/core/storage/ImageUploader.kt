@@ -3,6 +3,7 @@ package com.synapse.social.studioasinc.core.storage
 import android.content.Context
 import com.synapse.social.studioasinc.core.media.storage.MediaStorageCallback
 import com.synapse.social.studioasinc.core.media.storage.MediaStorageService
+import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
 import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +32,8 @@ object ImageUploader {
      */
     fun uploadImage(context: Context, filePath: String, callback: UploadCallback) {
         val appSettingsManager = AppSettingsManager.getInstance(context)
-        val mediaStorageService = MediaStorageService(context, appSettingsManager)
+        val imageCompressor = ImageCompressor(context)
+        val mediaStorageService = MediaStorageService(context, appSettingsManager, imageCompressor)
 
         CoroutineScope(Dispatchers.IO).launch {
             mediaStorageService.uploadFile(

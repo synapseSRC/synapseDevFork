@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.core.util
+package com.synapse.social.studioasinc.core.media.cache
 
 import android.content.Context
 import android.util.Log

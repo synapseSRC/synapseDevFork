@@ -1,9 +1,9 @@
-package com.synapse.social.studioasinc.core.storage.providers
+package com.synapse.social.studioasinc.core.media.storage.providers
 
 import android.webkit.MimeTypeMap
 import com.synapse.social.studioasinc.BuildConfig
-import com.synapse.social.studioasinc.core.storage.MediaStorageService
-import com.synapse.social.studioasinc.core.storage.MediaUploadStrategy
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageCallback
+import com.synapse.social.studioasinc.core.media.storage.ProviderStrategy
 import com.synapse.social.studioasinc.data.local.database.StorageConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,7 +17,7 @@ import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 
-class CloudinaryProvider : MediaUploadStrategy {
+class CloudinaryProvider : ProviderStrategy {
 
     companion object {
         private const val CONNECT_TIMEOUT_MS = 30000
@@ -31,7 +31,7 @@ class CloudinaryProvider : MediaUploadStrategy {
         file: File,
         config: StorageConfig,
         bucketName: String?,
-        callback: MediaStorageService.UploadCallback
+        callback: MediaStorageCallback
     ) = withContext(Dispatchers.IO) {
 
         // Use custom credentials ONLY if ALL are provided, otherwise use defaults

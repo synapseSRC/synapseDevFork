@@ -1,7 +1,7 @@
-package com.synapse.social.studioasinc.core.storage.providers
+package com.synapse.social.studioasinc.core.media.storage.providers
 
-import com.synapse.social.studioasinc.core.storage.MediaStorageService
-import com.synapse.social.studioasinc.core.storage.MediaUploadStrategy
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageCallback
+import com.synapse.social.studioasinc.core.media.storage.ProviderStrategy
 import com.synapse.social.studioasinc.data.local.database.StorageConfig
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.storage.Storage
@@ -10,13 +10,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class SupabaseProvider : MediaUploadStrategy {
+class SupabaseProvider : ProviderStrategy {
 
     override suspend fun upload(
         file: File,
         config: StorageConfig,
         bucketName: String?,
-        callback: MediaStorageService.UploadCallback
+        callback: MediaStorageCallback
     ) {
         val url = config.supabaseConfig.url
         val apiKey = config.supabaseConfig.apiKey

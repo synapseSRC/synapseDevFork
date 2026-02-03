@@ -3,7 +3,8 @@ package com.synapse.social.studioasinc.data.repository
 import android.net.Uri
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
 import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.core.storage.MediaStorageService
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageService
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageCallback
 import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
 import com.synapse.social.studioasinc.data.model.StoryCreateRequest
 import com.synapse.social.studioasinc.domain.model.Story
@@ -81,7 +82,7 @@ class StoryRepositoryImpl @Inject constructor(
     private val imageCompressor: ImageCompressor
 ) : StoryRepository {
     private val client = SupabaseClient.client
-    private val mediaStorageService = MediaStorageService(context, appSettingsManager, imageCompressor)
+    private val mediaStorageService = MediaStorageService(context, appSettingsManager)
 
     companion object {
         private const val TABLE_STORIES = "stories"
@@ -272,7 +273,7 @@ class StoryRepositoryImpl @Inject constructor(
         // Upload media using MediaStorageService (same as Post Composition)
         val mediaUrl = kotlinx.coroutines.suspendCancellableCoroutine<String?> { continuation ->
             kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-                mediaStorageService.uploadFile(filePath, null, object : MediaStorageService.UploadCallback {
+                mediaStorageService.uploadFile(filePath, null, object : MediaStorageCallback {
                     override fun onProgress(percent: Int) {
                         // Progress can be handled by caller if needed
                     }

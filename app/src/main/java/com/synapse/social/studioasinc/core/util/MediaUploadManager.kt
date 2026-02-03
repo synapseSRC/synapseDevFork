@@ -1,107 +1,53 @@
 package com.synapse.social.studioasinc.core.util
 
 import android.content.Context
-import android.net.Uri
-import com.synapse.social.studioasinc.core.util.FileManager
-import com.synapse.social.studioasinc.core.storage.ImageUploader
+import com.synapse.social.studioasinc.core.media.MediaConfig
+import com.synapse.social.studioasinc.core.media.MediaFacade
+import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
+import com.synapse.social.studioasinc.core.media.processing.ImageProcessor
+import com.synapse.social.studioasinc.core.media.processing.ThumbnailGenerator
+import com.synapse.social.studioasinc.core.media.processing.VideoProcessor
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageService
+import com.synapse.social.studioasinc.core.media.storage.MediaUploadCoordinator
+import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
 import com.synapse.social.studioasinc.domain.model.MediaItem
-import com.synapse.social.studioasinc.domain.model.MediaType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.util.*
-import kotlin.coroutines.resume
+import kotlinx.coroutines.launch
 
 /**
- * Manager for uploading media files to ImgBB
+ * @deprecated Use MediaUploadCoordinator instead.
  */
+@Deprecated(
+    message = "Use MediaUploadCoordinator instead",
+    replaceWith = ReplaceWith(
+        "mediaUploadCoordinator.uploadMultipleMedia(mediaItems, onProgress, onComplete, onError)",
+        "com.synapse.social.studioasinc.core.media.storage.MediaUploadCoordinator"
+    )
+)
 object MediaUploadManager {
 
     /**
-     * Uploads multiple media items to ImgBB
+     * Uploads multiple media items.
+     * @deprecated Use MediaUploadCoordinator instead
      */
-    suspend fun uploadMultipleMedia(
+    fun uploadMultipleMedia(
         context: Context,
         mediaItems: List<MediaItem>,
         onProgress: (Float) -> Unit,
         onComplete: (List<MediaItem>) -> Unit,
         onError: (String) -> Unit
     ) {
-        withContext(Dispatchers.IO) {
-            try {
-                val uploadedItems = mutableListOf<MediaItem>()
+        val appSettingsManager = AppSettingsManager.getInstance(context)
+        val storageService = MediaStorageService(context, appSettingsManager)
+        val config = MediaConfig()
+        val imageProcessor = ImageProcessor(context, ImageCompressor(context), config)
+        val videoProcessor = VideoProcessor(context, ThumbnailGenerator(context), config)
+        val facade = MediaFacade(storageService, imageProcessor, videoProcessor, config)
+        val coordinator = MediaUploadCoordinator(facade)
 
-                mediaItems.forEachIndexed { index, mediaItem ->
-                    if (mediaItem.type == MediaType.IMAGE) {
-                        try {
-                            val filePath = getFilePathFromUri(context, mediaItem.url)
-                            if (filePath != null) {
-                                val imgbbUrl = uploadToImgBB(context, filePath)
-                                val uploadedItem = mediaItem.copy(
-                                    id = UUID.randomUUID().toString(),
-                                    url = imgbbUrl,
-                                    mimeType = "image/jpeg"
-                                )
-                                uploadedItems.add(uploadedItem)
-                                android.util.Log.d("MediaUpload", "Uploaded image: $imgbbUrl")
-                            } else {
-                                android.util.Log.w("MediaUpload", "Cannot get file path: ${mediaItem.url}")
-                                uploadedItems.add(mediaItem)
-                            }
-                        } catch (e: Exception) {
-                            android.util.Log.w("MediaUpload", "Failed to upload ${mediaItem.url}: ${e.message}")
-                            uploadedItems.add(mediaItem)
-                        }
-                    } else {
-                        // Videos not supported by ImgBB, keep original URL
-                        uploadedItems.add(mediaItem)
-                    }
-
-                    val progress = (index + 1).toFloat() / mediaItems.size
-                    withContext(Dispatchers.Main) {
-                        onProgress(progress)
-                    }
-                }
-
-                withContext(Dispatchers.Main) {
-                    onComplete(uploadedItems)
-                }
-            } catch (e: Exception) {
-                android.util.Log.e("MediaUpload", "Media upload failed", e)
-                withContext(Dispatchers.Main) {
-                    onError(e.message ?: "Upload failed")
-                }
-            }
-        }
-    }
-
-    private suspend fun uploadToImgBB(context: Context, filePath: String): String = suspendCancellableCoroutine { continuation ->
-        ImageUploader.uploadImage(context, filePath, object : ImageUploader.UploadCallback {
-            override fun onUploadComplete(imageUrl: String) {
-                continuation.resume(imageUrl)
-            }
-
-            override fun onUploadError(errorMessage: String) {
-                continuation.cancel(Exception(errorMessage))
-            }
-        })
-    }
-
-    private fun getFilePathFromUri(context: Context, uriString: String): String? {
-        return try {
-            val uri = Uri.parse(uriString)
-            when {
-                uri.scheme == "content" -> FileManager.getPathFromUri(context, uri)
-                uri.scheme == "file" -> uri.path
-                else -> {
-                    val file = File(uriString)
-                    if (file.exists()) file.absolutePath else null
-                }
-            }
-        } catch (e: Exception) {
-            android.util.Log.e("MediaUpload", "Error getting file path", e)
-            null
+        CoroutineScope(Dispatchers.IO).launch {
+            coordinator.uploadMultipleMedia(mediaItems, onProgress, onComplete, onError)
         }
     }
 }

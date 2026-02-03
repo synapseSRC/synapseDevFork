@@ -16,7 +16,8 @@ import com.synapse.social.studioasinc.domain.model.User
 import com.synapse.social.studioasinc.domain.model.UserProfile
 import com.synapse.social.studioasinc.domain.model.LocationData
 import com.synapse.social.studioasinc.core.util.FileManager
-import com.synapse.social.studioasinc.core.storage.MediaStorageService
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageService
+import com.synapse.social.studioasinc.core.media.storage.MediaStorageCallback
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
 import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
 import com.synapse.social.studioasinc.core.network.SupabaseClient
@@ -99,7 +100,7 @@ class CreatePostViewModel @Inject constructor(
 
     private val authService = SupabaseAuthenticationService()
     private val prefs = application.getSharedPreferences("create_post_draft", Context.MODE_PRIVATE)
-    private val mediaStorageService = MediaStorageService(application, appSettingsManager, imageCompressor)
+    private val mediaStorageService = MediaStorageService(application, appSettingsManager)
 
     private val _uiState = MutableStateFlow(CreatePostUiState())
     val uiState: StateFlow<CreatePostUiState> = _uiState.asStateFlow()
@@ -566,7 +567,7 @@ class CreatePostViewModel @Inject constructor(
 
                     val uploadedUrl = kotlinx.coroutines.suspendCancellableCoroutine<String?> { continuation ->
                         kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-                            mediaStorageService.uploadFile(filePath, null, object : MediaStorageService.UploadCallback {
+                            mediaStorageService.uploadFile(filePath, null, object : MediaStorageCallback {
                                 override fun onProgress(percent: Int) {
                                     val itemProgress = (percent / 100f) / totalItems
                                     val baseProgress = completedItems.toFloat() / totalItems

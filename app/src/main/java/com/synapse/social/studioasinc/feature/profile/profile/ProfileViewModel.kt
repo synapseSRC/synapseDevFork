@@ -19,11 +19,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.ui.components.post.PostCardState
-import com.synapse.social.studioasinc.ui.components.post.PollOption
-import com.synapse.social.studioasinc.ui.components.post.PostEventBus
-import com.synapse.social.studioasinc.ui.components.post.PostEvent
-import com.synapse.social.studioasinc.ui.components.post.PostMapper
+import com.synapse.social.studioasinc.feature.shared.components.post.PostCardState
+import com.synapse.social.studioasinc.feature.shared.components.post.PollOption
+import com.synapse.social.studioasinc.feature.shared.components.post.PostEventBus
+import com.synapse.social.studioasinc.feature.shared.components.post.PostEvent
+import com.synapse.social.studioasinc.feature.shared.components.post.PostMapper
 
 data class ProfileScreenState(
     val profileState: ProfileUiState = ProfileUiState.Loading,

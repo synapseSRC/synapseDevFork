@@ -12,13 +12,13 @@ import com.synapse.social.studioasinc.data.local.database.AppDatabase
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.ui.components.post.PostCardState
+import com.synapse.social.studioasinc.feature.shared.components.post.PostCardState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import com.synapse.social.studioasinc.core.util.ScrollPositionState
-import com.synapse.social.studioasinc.ui.components.post.PostEventBus
-import com.synapse.social.studioasinc.ui.components.post.PostEvent
-import com.synapse.social.studioasinc.ui.components.post.PostMapper
+import com.synapse.social.studioasinc.feature.shared.components.post.PostEventBus
+import com.synapse.social.studioasinc.feature.shared.components.post.PostEvent
+import com.synapse.social.studioasinc.feature.shared.components.post.PostMapper
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

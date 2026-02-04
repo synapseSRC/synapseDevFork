@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.compose.components
+package com.synapse.social.studioasinc.feature.shared.components.compose.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -49,7 +50,7 @@ fun UserListItem(
                     .data(user.avatar)
                     .crossfade(true)
                     .build(),
-                contentDescription = "Profile picture",
+                contentDescription = stringResource(R.string.author_avatar),
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape),

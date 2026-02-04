@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.compose.components
+package com.synapse.social.studioasinc.feature.shared.components.compose.components
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.*

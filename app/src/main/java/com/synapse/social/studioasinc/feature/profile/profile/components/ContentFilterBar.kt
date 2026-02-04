@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.profile.components
+package com.synapse.social.studioasinc.feature.profile.profile.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -7,9 +7,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.ui.profile.ProfileContentFilter
+import com.synapse.social.studioasinc.feature.profile.profile.ProfileContentFilter
+import com.synapse.social.studioasinc.feature.shared.theme.Spacing
 
 /**
  * Content filter bar using pill-shaped chips aligned to the left.
@@ -27,8 +29,8 @@ fun ContentFilterBar(
         color = MaterialTheme.colorScheme.surface
     ) {
         LazyRow(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(horizontal = Spacing.Medium, vertical = Spacing.SmallMedium),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.SmallMedium),
             verticalAlignment = Alignment.CenterVertically
         ) {
             items(ProfileContentFilter.values()) { filter ->
@@ -40,7 +42,8 @@ fun ContentFilterBar(
                             text = getFilterLabel(filter),
                             style = MaterialTheme.typography.labelLarge
                         )
-                    }
+                    },
+                    shape = CircleShape // Pill shape for expressive design
                 )
             }
         }
@@ -62,10 +65,9 @@ private fun getFilterLabel(filter: ProfileContentFilter): String {
 @Composable
 private fun ContentFilterBarPreview() {
     MaterialTheme {
-        var selected by remember { mutableStateOf(ProfileContentFilter.POSTS) }
         ContentFilterBar(
-            selectedFilter = selected,
-            onFilterSelected = { selected = it }
+            selectedFilter = ProfileContentFilter.POSTS,
+            onFilterSelected = {}
         )
     }
 }

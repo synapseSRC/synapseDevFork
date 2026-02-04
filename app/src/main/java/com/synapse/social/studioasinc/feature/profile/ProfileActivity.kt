@@ -24,10 +24,10 @@ import com.synapse.social.studioasinc.core.network.SupabaseClient
 // TODO: Re-implement chat feature - chat service import
 // import com.synapse.social.studioasinc.data.remote.services.SupabaseChatService
 import com.synapse.social.studioasinc.data.repository.AuthRepository
-import com.synapse.social.studioasinc.ui.profile.ProfileScreen
-import com.synapse.social.studioasinc.ui.profile.ProfileViewModel
+import com.synapse.social.studioasinc.feature.profile.profile.ProfileScreen
+import com.synapse.social.studioasinc.feature.profile.profile.ProfileViewModel
 import com.synapse.social.studioasinc.ui.settings.AppearanceViewModel
-import com.synapse.social.studioasinc.ui.theme.SynapseTheme
+import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 // TODO: Re-implement chat feature - chat activity import
 // import com.synapse.social.studioasinc.ui.chat.ChatActivity
 import androidx.activity.enableEdgeToEdge
@@ -46,7 +46,7 @@ import kotlinx.coroutines.runBlocking
  * startActivity(intent)
  * ```
  *
- * @deprecated Use [com.synapse.social.studioasinc.ui.profile.ProfileScreen] within [MainActivity] navigation graph instead.
+ * @deprecated Use [com.synapse.social.studioasinc.feature.profile.profile.ProfileScreen] within [MainActivity] navigation graph instead.
  */
 @Deprecated("Use ProfileScreen within MainActivity navigation graph instead")
 @AndroidEntryPoint

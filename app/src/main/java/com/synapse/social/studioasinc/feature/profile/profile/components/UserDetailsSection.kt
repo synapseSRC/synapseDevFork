@@ -1,11 +1,10 @@
-package com.synapse.social.studioasinc.ui.profile.components
+package com.synapse.social.studioasinc.feature.profile.profile.components
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -16,12 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.synapse.social.studioasinc.feature.shared.theme.Spacing
 import kotlinx.coroutines.delay
 
 data class UserDetails(
@@ -42,16 +42,6 @@ data class LinkedAccount(
     val username: String
 )
 
-/**
- * Enhanced User Details Section with modern card design and animations.
- *
- * Features:
- * - Modern card with subtle shadow
- * - Animated expand/collapse
- * - Two-column grid layout for details
- * - Staggered item animations
- * - Quick action buttons
- */
 @Composable
 fun UserDetailsSection(
     details: UserDetails,
@@ -62,110 +52,95 @@ fun UserDetailsSection(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    // Check if there are any details to show
     val hasDetails = listOfNotNull(
         details.location,
-        details.joinedDate,
         details.work,
         details.education,
         details.website,
+        details.joinedDate,
         details.birthday,
         details.relationshipStatus,
         details.gender,
         details.pronouns
-    ).any { it.isNotBlank() } || details.linkedAccounts.isNotEmpty()
+    ).any { !it.isNullOrBlank() } || details.linkedAccounts.isNotEmpty()
 
-    if (!hasDetails && !isOwnProfile) return
-
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.6f)
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = Spacing.Small)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Header row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "About",
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
+            Text(
+                text = "About",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
 
-                if (hasDetails) {
-                    ExpandCollapseButton(
-                        expanded = expanded,
-                        onClick = { expanded = !expanded }
-                    )
-                }
+            if (hasDetails) {
+                ExpandCollapseButton(
+                    expanded = expanded,
+                    onClick = { expanded = !expanded }
+                )
             }
+        }
 
-            // Collapsed summary (visible when not expanded)
-            if (!expanded && hasDetails) {
-                Spacer(modifier = Modifier.height(6.dp))
-                CollapsedSummary(details = details)
-            }
+        Spacer(modifier = Modifier.height(Spacing.Small))
 
-            // Expanded content
-            AnimatedVisibility(
-                visible = expanded,
-                enter = fadeIn(animationSpec = tween(200)) + expandVertically(
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateContentSize(
                     animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        dampingRatio = Spring.DampingRatioLowBouncy,
                         stiffness = Spring.StiffnessLow
                     )
-                ),
-                exit = fadeOut(animationSpec = tween(100)) + shrinkVertically()
-            ) {
-                Column {
-                    Spacer(modifier = Modifier.height(12.dp))
-
+                )
+        ) {
+            if (hasDetails) {
+                if (!expanded) {
+                    CollapsedSummary(details = details)
+                } else {
                     ExpandedDetailsContent(
                         details = details,
                         onWebsiteClick = onWebsiteClick
                     )
 
                     if (isOwnProfile) {
-                        Spacer(modifier = Modifier.height(12.dp))
-                        OutlinedButton(
+                        Spacer(modifier = Modifier.height(Spacing.Medium))
+                        Button(
                             onClick = onCustomizeClick,
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp)
+                            modifier = Modifier.fillMaxWidth().height(48.dp),
+                            shape = MaterialTheme.shapes.medium,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Edit,
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp)
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(Spacing.Small))
                             Text("Edit Details")
                         }
                     }
                 }
             }
 
-            // Empty state for own profile
             if (!hasDetails && isOwnProfile) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(Spacing.Small))
                 EmptyDetailsState(onAddClick = onCustomizeClick)
             }
         }
     }
 }
 
-/**
- * Animated expand/collapse button with rotation.
- */
 @Composable
 private fun ExpandCollapseButton(
     expanded: Boolean,
@@ -180,42 +155,39 @@ private fun ExpandCollapseButton(
         label = "expandRotation"
     )
 
-    TextButton(onClick = onClick) {
+    TextButton(
+        onClick = onClick,
+        modifier = Modifier.minimumInteractiveComponentSize()
+    ) {
         Text(if (expanded) "Less" else "More")
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(Spacing.ExtraSmall))
         Icon(
             imageVector = Icons.Default.KeyboardArrowDown,
             contentDescription = if (expanded) "Collapse" else "Expand",
             modifier = Modifier
-                .size(18.dp)
+                .size(20.dp)
                 .rotate(rotation)
         )
     }
 }
 
-/**
- * Collapsed summary showing truncated text.
- */
 @Composable
 private fun CollapsedSummary(details: UserDetails) {
     val summaryText = buildString {
-        details.work?.let { append(it) }
-        details.location?.let {
+        details.work?.takeIf { it.isNotBlank() }?.let { append(it) }
+        details.location?.takeIf { it.isNotBlank() }?.let {
             if (isNotEmpty()) append(" • ")
             append(it)
         }
-        details.joinedDate?.let {
-            if (it.isNotBlank()) {
-                if (isNotEmpty()) append(" • ")
-                append("Joined $it")
-            }
+        details.joinedDate?.takeIf { it.isNotBlank() }?.let {
+            if (isNotEmpty()) append(" • ")
+            append("Joined $it")
         }
 
-        // If summary is still empty check other fields
         if (isEmpty()) {
-            details.website?.let { append(it) }
+            details.website?.takeIf { it.isNotBlank() }?.let { append(it) }
             if (isEmpty()) {
-                details.relationshipStatus?.let { append(it) }
+                details.relationshipStatus?.takeIf { it.isNotBlank() }?.let { append(it) }
             }
             if (isEmpty()) {
                  if (details.linkedAccounts.isNotEmpty()) {
@@ -232,45 +204,42 @@ private fun CollapsedSummary(details: UserDetails) {
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         maxLines = 2,
-        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis
     )
 }
 
-/**
- * Full expanded details content.
- */
 @Composable
 private fun ExpandedDetailsContent(
     details: UserDetails,
     onWebsiteClick: (String) -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        val detailItems = buildList {
-            details.location?.let {
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)) {
+        val detailItems = buildList<Triple<ImageVector, String, String>> {
+            details.location?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.LocationOn, "Location", it))
             }
-            details.work?.let {
+            details.work?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.Work, "Work", it))
             }
-            details.education?.let {
+            details.education?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.School, "Education", it))
             }
-            details.website?.let {
+            details.website?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.Link, "Website", it))
             }
-            details.joinedDate?.let {
+            details.joinedDate?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.CalendarToday, "Joined", it))
             }
-            details.birthday?.let {
+            details.birthday?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.Cake, "Birthday", it))
             }
-            details.relationshipStatus?.let {
+            details.relationshipStatus?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.Favorite, "Relationship", it))
             }
-            details.gender?.let {
+            details.gender?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.Person, "Gender", it))
             }
-            details.pronouns?.let {
+            details.pronouns?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.Badge, "Pronouns", it))
             }
         }
@@ -286,19 +255,18 @@ private fun ExpandedDetailsContent(
             )
         }
 
-        // Linked accounts section
         if (details.linkedAccounts.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(Spacing.SmallMedium))
             Text(
                 text = "Linked Accounts",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier.padding(horizontal = Spacing.Small)
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Spacing.Small))
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(horizontal = 8.dp)
+                horizontalArrangement = Arrangement.spacedBy(Spacing.Small),
+                modifier = Modifier.padding(horizontal = Spacing.Small)
             ) {
                 details.linkedAccounts.forEach { account ->
                     LinkedAccountChip(account = account)
@@ -308,9 +276,6 @@ private fun ExpandedDetailsContent(
     }
 }
 
-/**
- * Simple detail item without nested card background.
- */
 @Composable
 private fun SimpleDetailItem(
     icon: ImageVector,
@@ -341,13 +306,13 @@ private fun SimpleDetailItem(
             .then(
                 if (isClickable && onClick != null) {
                     Modifier
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(MaterialTheme.shapes.small)
                         .clickable { onClick() }
                 } else {
                     Modifier
                 }
             )
-            .padding(vertical = 8.dp, horizontal = 8.dp),
+            .padding(vertical = Spacing.Small, horizontal = Spacing.Small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -356,12 +321,13 @@ private fun SimpleDetailItem(
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(20.dp)
         )
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(Spacing.Medium))
         Column {
             Text(
                 text = value,
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (isClickable) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                fontWeight = if (isClickable) FontWeight.SemiBold else FontWeight.Normal
             )
             Text(
                 text = label,
@@ -372,9 +338,6 @@ private fun SimpleDetailItem(
     }
 }
 
-/**
- * Chip for linked social accounts.
- */
 @Composable
 private fun LinkedAccountChip(account: LinkedAccount) {
     AssistChip(
@@ -390,9 +353,6 @@ private fun LinkedAccountChip(account: LinkedAccount) {
     )
 }
 
-/**
- * Get icon for social platform.
- */
 private fun getPlatformIcon(platform: String): ImageVector {
     return when (platform.lowercase()) {
         "twitter", "x" -> Icons.Default.AlternateEmail
@@ -405,9 +365,6 @@ private fun getPlatformIcon(platform: String): ImageVector {
     }
 }
 
-/**
- * Empty state when user hasn't added any details.
- */
 @Composable
 private fun EmptyDetailsState(onAddClick: () -> Unit) {
     Column(
@@ -419,14 +376,17 @@ private fun EmptyDetailsState(onAddClick: () -> Unit) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        TextButton(onClick = onAddClick) {
+        Spacer(modifier = Modifier.height(Spacing.Small))
+        TextButton(
+            onClick = onAddClick,
+            modifier = Modifier.minimumInteractiveComponentSize()
+        ) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = null,
                 modifier = Modifier.size(18.dp)
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(Spacing.ExtraSmall))
             Text("Add Details")
         }
     }
@@ -440,24 +400,10 @@ private fun UserDetailsSectionPreview() {
             details = UserDetails(
                 location = "San Francisco, CA",
                 joinedDate = "January 2024",
-                work = "Software Engineer at Tech Co",
+                work = "Software Engineer",
                 education = "Stanford University",
-                website = "https://example.com",
-                pronouns = "they/them"
+                website = "https://example.com"
             ),
-            isOwnProfile = true,
-            onCustomizeClick = {},
-            onWebsiteClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun UserDetailsSectionEmptyPreview() {
-    MaterialTheme {
-        UserDetailsSection(
-            details = UserDetails(),
             isOwnProfile = true,
             onCustomizeClick = {},
             onWebsiteClick = {}

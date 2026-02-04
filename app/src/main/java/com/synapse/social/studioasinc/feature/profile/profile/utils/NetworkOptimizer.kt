@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.profile.utils
+package com.synapse.social.studioasinc.feature.profile.profile.utils
 
 import kotlinx.coroutines.delay
 import kotlin.math.min

@@ -1,18 +1,15 @@
-package com.synapse.social.studioasinc.ui.profile.components
+package com.synapse.social.studioasinc.feature.profile.profile.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.contentDescription
@@ -22,12 +19,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.core.util.NumberFormatter
+import com.synapse.social.studioasinc.feature.shared.theme.Spacing
 
-/**
- * Enhanced stat item component with better visual hierarchy and accessibility.
- * Displays a number prominently with a label below, includes proper touch targets
- * and haptic feedback for better user experience.
- */
 @Composable
 fun StatItem(
     count: Int,
@@ -51,22 +44,22 @@ fun StatItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
+            .clip(MaterialTheme.shapes.medium)
             .clickable(enabled = enabled) {
                 haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 onClick()
             }
-            .padding(horizontal = 12.dp, vertical = 8.dp)
-            .minimumInteractiveComponentSize()
+            .padding(horizontal = Spacing.SmallMedium, vertical = Spacing.Small)
+            .minimumInteractiveComponentSize() // Ensures 48dp touch target
             .scale(scale)
             .semantics {
                 contentDescription = contentDesc
             }
     ) {
         Text(
-            text = NumberFormatter.formatCount(count),
-            style = MaterialTheme.typography.titleLarge, // MD3: Larger title
-            fontWeight = FontWeight.Bold,
+            text = formattedCount,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.ExtraBold, // Emphasized
             color = if (enabled) {
                 MaterialTheme.colorScheme.onSurface
             } else {
@@ -77,7 +70,7 @@ fun StatItem(
         
         Text(
             text = label,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.labelMedium,
             color = if (enabled) {
                 MaterialTheme.colorScheme.onSurfaceVariant
             } else {
@@ -88,9 +81,6 @@ fun StatItem(
     }
 }
 
-/**
- * Row of stat items with consistent spacing and alignment
- */
 @Composable
 fun StatsRow(
     postsCount: Int,
@@ -101,7 +91,7 @@ fun StatsRow(
     content: (@Composable RowScope.() -> Unit)? = null
 ) {
     Row(
-        horizontalArrangement = if (content != null) Arrangement.Start else Arrangement.SpaceEvenly,
+        horizontalArrangement = if (content != null) Arrangement.Start else Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.fillMaxWidth()
     ) {
@@ -110,45 +100,45 @@ fun StatsRow(
         } else {
             StatItem(
                 count = postsCount,
-                label = "posts",
-                onClick = { onStatsClick("posts") }
+                label = "Posts",
+                onClick = { onStatsClick("posts") },
+                modifier = Modifier.weight(1f)
             )
 
             StatItem(
                 count = followersCount,
-                label = "followers",
-                onClick = { onStatsClick("followers") }
+                label = "Followers",
+                onClick = { onStatsClick("followers") },
+                modifier = Modifier.weight(1f)
             )
 
             StatItem(
                 count = followingCount,
-                label = "following",
-                onClick = { onStatsClick("following") }
+                label = "Following",
+                onClick = { onStatsClick("following") },
+                modifier = Modifier.weight(1f)
             )
         }
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 private fun StatItemPreview() {
     MaterialTheme {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        Row(
+            modifier = Modifier.padding(Spacing.Medium),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
             StatItem(
                 count = 1234,
-                label = "followers",
+                label = "Followers",
                 onClick = { }
             )
-            
-            StatsRow(
-                postsCount = 42,
-                followersCount = 1234,
-                followingCount = 567,
-                onStatsClick = { }
+            StatItem(
+                count = 567,
+                label = "Following",
+                onClick = { }
             )
         }
     }

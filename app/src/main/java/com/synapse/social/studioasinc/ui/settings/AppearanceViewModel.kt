@@ -97,7 +97,7 @@ class AppearanceViewModel(
             try {
                 settingsRepository.setThemeMode(mode)
                 // Apply theme app-wide
-                com.synapse.social.studioasinc.ui.theme.ThemeManager.applyThemeMode(mode)
+                com.synapse.social.studioasinc.feature.shared.theme.ThemeManager.applyThemeMode(mode)
                 android.util.Log.d("AppearanceViewModel", "Theme mode set to: $mode")
             } catch (e: Exception) {
                 android.util.Log.e("AppearanceViewModel", "Failed to set theme mode", e)

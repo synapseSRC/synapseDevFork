@@ -23,7 +23,7 @@ import com.synapse.social.studioasinc.AuthActivity
 import com.synapse.social.studioasinc.feature.profile.ProfileEditActivity
 import com.synapse.social.studioasinc.ui.settings.AppearanceViewModel
 import com.synapse.social.studioasinc.ui.settings.SettingsNavHost
-import com.synapse.social.studioasinc.ui.theme.SynapseTheme
+import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

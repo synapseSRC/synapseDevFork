@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.theme
+package com.synapse.social.studioasinc.feature.shared.theme
 
 import androidx.compose.ui.graphics.Color
 

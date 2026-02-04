@@ -12,7 +12,7 @@ import com.synapse.social.studioasinc.data.repository.AuthRepository
 // TODO: Re-implement chat functionality
 // import com.synapse.social.studioasinc.ui.chat.ChatActivity
 // import com.synapse.social.studioasinc.data.remote.services.SupabaseChatService
-import com.synapse.social.studioasinc.ui.theme.SynapseTheme
+import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 import kotlinx.coroutines.launch
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

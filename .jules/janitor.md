@@ -49,3 +49,7 @@ Legacy View-based components (`FollowButton`) and early Compose prototypes (`Pol
 ### Prevention Strategy
 - Implement a "Migration Complete" checklist that requires deleting the legacy implementation once a feature has been fully moved to Compose or a newer architecture.
 - Periodic cleanup of the `legacy` packages should be scheduled after major feature refactors.
+- **Automated Checks**: Integrate static analysis tools into the CI pipeline to proactively detect unused code.
+    - Configure stricter **Android Lint** rules (e.g., `UnusedResources`, `UnusedIds`) to fail the build or issue high-priority warnings.
+    - Consider using dedicated tools like **ucd** (Unused Code Detector) to identify public components and functions with no active call sites.
+    - Monitor deprecation warnings in CI to ensure older patterns are phased out rather than lingering indefinitely.

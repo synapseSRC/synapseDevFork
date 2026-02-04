@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.presentation.editprofile.photohistory
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile.photohistory
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
@@ -31,8 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
-import com.synapse.social.studioasinc.ui.settings.SettingsSpacing
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.ExpressiveLoadingIndicator
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.SettingsSpacing
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable

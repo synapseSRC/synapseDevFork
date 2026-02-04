@@ -1,15 +1,15 @@
-package com.synapse.social.studioasinc.feature.stories.creator
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.stories.creator
 
 import android.net.Uri
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.data.repository.PostRepository
-import com.synapse.social.studioasinc.data.repository.StoryRepository
-import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.StoryMediaType
-import com.synapse.social.studioasinc.domain.model.StoryPrivacy
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.PostRepository
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.StoryRepository
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.Post
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.StoryMediaType
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.StoryPrivacy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.Job

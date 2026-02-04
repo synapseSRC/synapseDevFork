@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.inbox.models
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.models
 
 /**
  * UI model for displaying a chat item in the inbox list.

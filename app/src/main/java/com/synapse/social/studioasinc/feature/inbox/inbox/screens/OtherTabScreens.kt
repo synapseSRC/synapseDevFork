@@ -1,12 +1,12 @@
-package com.synapse.social.studioasinc.ui.inbox.screens
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.screens
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.synapse.social.studioasinc.ui.inbox.components.InboxEmptyState
-import com.synapse.social.studioasinc.ui.inbox.models.EmptyStateType
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.components.InboxEmptyState
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.models.EmptyStateType
 
 @Composable
 fun CallsTabScreen(

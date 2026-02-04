@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.inbox.components
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.components
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -20,8 +20,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.ui.inbox.theme.InboxDimens
-import com.synapse.social.studioasinc.ui.inbox.theme.InboxShapes
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.theme.InboxDimens
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.theme.InboxShapes
 
 /**
  * Animated expandable search bar for inbox.

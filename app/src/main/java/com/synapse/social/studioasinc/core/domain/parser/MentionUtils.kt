@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.core.domain.parser
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.domain.parser
 
 import android.content.Context
 import android.content.Intent
@@ -9,12 +9,12 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.synapse.social.studioasinc.ProfileActivity
-import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.data.remote.services.SupabaseDatabaseService
-import com.synapse.social.studioasinc.NotificationHelper
-import com.synapse.social.studioasinc.core.config.NotificationConfig
-import com.synapse.social.studioasinc.data.local.database.AppDatabase
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.ProfileActivity
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.R
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.remote.services.SupabaseDatabaseService
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.util.NotificationHelper
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.config.NotificationConfig
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,7 +46,7 @@ object MentionUtils {
                         // Use Supabase to find user by username
                         CoroutineScope(Dispatchers.IO).launch {
                             try {
-                                val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+                                val userRepository = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
                                 val userResult = userRepository.getUserByUsername(username)
 
                                 userResult.fold(
@@ -112,7 +112,7 @@ object MentionUtils {
         // Send notifications using Supabase
         coroutineScope.launch(Dispatchers.IO) {
             try {
-                val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+                val userRepository = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
 
                 for (username in mentionedUsernames) {
                     val userResult = userRepository.getUserByUsername(username)
@@ -144,8 +144,8 @@ object MentionUtils {
         contentType: String
     ) {
         try {
-            val authService = com.synapse.social.studioasinc.data.remote.services.SupabaseAuthenticationService()
-            val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+            val authService = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.remote.services.SupabaseAuthenticationService()
+            val userRepository = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
 
             val currentUser = authService.getCurrentUser()
             if (currentUser == null || currentUser.id == mentionedUid) {

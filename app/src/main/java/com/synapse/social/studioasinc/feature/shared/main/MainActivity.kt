@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.main
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.main
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -39,15 +39,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import com.synapse.social.studioasinc.data.local.database.AppDatabase
-import com.synapse.social.studioasinc.data.repository.AuthRepository
-import com.synapse.social.studioasinc.data.repository.UserRepository
-import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
-import com.synapse.social.studioasinc.ui.navigation.AppNavigation
-import com.synapse.social.studioasinc.ui.navigation.AppDestination
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database.AppDatabase
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.AuthRepository
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.UserRepository
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.theme.SynapseTheme
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.navigation.AppNavigation
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.navigation.AppDestination
 import androidx.navigation.compose.rememberNavController
-import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.core.network.SupabaseClient
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.R
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
     lateinit var authRepository: AuthRepository
 
     @Inject
-    lateinit var reelUploadManager: com.synapse.social.studioasinc.feature.shared.reels.ReelUploadManager
+    lateinit var reelUploadManager: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.reels.ReelUploadManager
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -73,15 +73,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val settingsRepository = com.synapse.social.studioasinc.data.repository.SettingsRepositoryImpl.getInstance(this@MainActivity)
+            val settingsRepository = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.SettingsRepositoryImpl.getInstance(this@MainActivity)
             val appearanceSettings by settingsRepository.appearanceSettings.collectAsState(
-                initial = com.synapse.social.studioasinc.ui.settings.AppearanceSettings()
+                initial = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.AppearanceSettings()
             )
 
             val darkTheme = when (appearanceSettings.themeMode) {
-                com.synapse.social.studioasinc.ui.settings.ThemeMode.LIGHT -> false
-                com.synapse.social.studioasinc.ui.settings.ThemeMode.DARK -> true
-                com.synapse.social.studioasinc.ui.settings.ThemeMode.SYSTEM ->
+                com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode.LIGHT -> false
+                com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode.DARK -> true
+                com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode.SYSTEM ->
                     androidx.compose.foundation.isSystemInDarkTheme()
             }
 

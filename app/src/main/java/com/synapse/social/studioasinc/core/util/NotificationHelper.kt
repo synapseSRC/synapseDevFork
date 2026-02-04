@@ -1,9 +1,9 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.util.core.util
 
 import android.util.Log
-import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.data.remote.services.SupabaseDatabaseService
-import com.synapse.social.studioasinc.core.config.NotificationConfig
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.remote.services.SupabaseDatabaseService
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.config.NotificationConfig
 import io.github.jan.supabase.functions.functions
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.buildJsonObject

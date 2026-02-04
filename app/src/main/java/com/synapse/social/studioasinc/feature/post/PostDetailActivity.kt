@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.post.feature.post
 
 import android.content.Context
 import android.content.Intent
@@ -6,8 +6,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import com.synapse.social.studioasinc.ui.postdetail.PostDetailScreen
-import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.postdetail.PostDetailScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.theme.SynapseTheme
 
 class PostDetailActivity : AppCompatActivity() {
 

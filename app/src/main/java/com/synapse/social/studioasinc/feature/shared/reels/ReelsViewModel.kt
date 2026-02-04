@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.reels
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.reels
 
 import android.app.DownloadManager
 import android.content.Context
@@ -7,9 +7,9 @@ import android.net.Uri
 import android.os.Environment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.core.media.VideoPlayerManager
-import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
-import com.synapse.social.studioasinc.shared.domain.model.Reel
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.media.VideoPlayerManager
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.shared.data.repository.ReelRepository
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.shared.domain.model.Reel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow

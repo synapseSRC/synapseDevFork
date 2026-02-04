@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.core.storage.providers
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.storage.providers
 
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest

@@ -1,6 +1,6 @@
-package com.synapse.social.studioasinc.data.repository
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository
 
-import com.synapse.social.studioasinc.domain.model.LocationData
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.LocationData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -29,7 +29,7 @@ class LocationRepository @Inject constructor() {
             val url = URL(urlString)
             val connection = (url.openConnection() as HttpURLConnection).apply {
                 requestMethod = "GET"
-                setRequestProperty("User-Agent", "SynapseSocial/1.0 (com.synapse.social.studioasinc)")
+                setRequestProperty("User-Agent", "SynapseSocial/1.0 (com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost)")
                 connectTimeout = CONNECT_TIMEOUT
                 readTimeout = READ_TIMEOUT
             }

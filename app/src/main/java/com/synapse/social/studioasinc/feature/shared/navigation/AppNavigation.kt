@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.navigation
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -8,34 +8,34 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.synapse.social.studioasinc.core.network.SupabaseClient
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient
 import io.github.jan.supabase.auth.auth
-import com.synapse.social.studioasinc.feature.auth.ui.AuthScreen
-import com.synapse.social.studioasinc.ui.home.HomeScreen
-import com.synapse.social.studioasinc.feature.profile.profile.ProfileScreen
-import com.synapse.social.studioasinc.ui.inbox.InboxScreen
-import com.synapse.social.studioasinc.ui.search.SearchScreen
-import com.synapse.social.studioasinc.ui.search.SearchViewModel
-import com.synapse.social.studioasinc.feature.post.postdetail.PostDetailScreen
-import com.synapse.social.studioasinc.ui.createpost.CreatePostScreen
-import com.synapse.social.studioasinc.ui.createpost.CreatePostViewModel
-import com.synapse.social.studioasinc.ui.settings.SettingsScreen
-import com.synapse.social.studioasinc.presentation.editprofile.EditProfileScreen
-import com.synapse.social.studioasinc.presentation.editprofile.EditProfileViewModel
-import com.synapse.social.studioasinc.presentation.editprofile.EditProfileEvent
-import com.synapse.social.studioasinc.feature.profile.editprofile.RegionSelectionScreen
-import com.synapse.social.studioasinc.presentation.editprofile.photohistory.PhotoHistoryScreen
-import com.synapse.social.studioasinc.presentation.editprofile.photohistory.PhotoType
-import com.synapse.social.studioasinc.compose.FollowListScreen
-import com.synapse.social.studioasinc.feature.stories.viewer.StoryViewerScreen
-import com.synapse.social.studioasinc.feature.stories.viewer.StoryViewerViewModel
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.AuthScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.home.home.HomeScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.ProfileScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.InboxScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.search.search.SearchScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.search.search.SearchViewModel
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.post.postdetail.PostDetailScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.createpost.createpost.CreatePostScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.createpost.createpost.CreatePostViewModel
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.SettingsScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile.EditProfileScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile.EditProfileViewModel
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile.EditProfileEvent
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile.RegionSelectionScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile.photohistory.PhotoHistoryScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile.photohistory.PhotoType
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.compose.FollowListScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.stories.viewer.StoryViewerScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.stories.viewer.StoryViewerViewModel
 import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun AppNavigation(
     navController: NavHostController,
     startDestination: String = AppDestination.Auth.route,
-    reelUploadManager: com.synapse.social.studioasinc.feature.shared.reels.ReelUploadManager,
+    reelUploadManager: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.reels.ReelUploadManager,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -45,7 +45,7 @@ fun AppNavigation(
     ) {
         // Auth
         composable(AppDestination.Auth.route) {
-            val viewModel: com.synapse.social.studioasinc.feature.auth.presentation.viewmodel.AuthViewModel = hiltViewModel()
+            val viewModel: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.presentation.viewmodel.AuthViewModel = hiltViewModel()
             AuthScreen(
                 viewModel = viewModel,
                 onNavigateToMain = {
@@ -93,7 +93,7 @@ fun AppNavigation(
             val userId = backStackEntry.arguments?.getString("userId") ?: return@composable
             val currentUserId = SupabaseClient.client.auth.currentUserOrNull()?.id ?: return@composable
             val targetUserId = if (userId == "me") currentUserId else userId
-            val viewModel: com.synapse.social.studioasinc.feature.profile.profile.ProfileViewModel = hiltViewModel()
+            val viewModel: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.ProfileViewModel = hiltViewModel()
             ProfileScreen(
                 userId = targetUserId,
                 currentUserId = currentUserId,
@@ -203,7 +203,7 @@ fun AppNavigation(
 
         // Settings
         composable(AppDestination.Settings.route) {
-            com.synapse.social.studioasinc.ui.settings.SettingsNavHost(
+            com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.SettingsNavHost(
                 onBackClick = { navController.popBackStack() },
                 onNavigateToProfileEdit = {
                     navController.navigate(AppDestination.EditProfile.route)

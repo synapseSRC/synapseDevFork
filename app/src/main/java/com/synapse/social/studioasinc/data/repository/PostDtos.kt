@@ -1,10 +1,10 @@
-package com.synapse.social.studioasinc.data.repository
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository
 
-import com.synapse.social.studioasinc.domain.model.MediaItem
-import com.synapse.social.studioasinc.domain.model.MediaType
-import com.synapse.social.studioasinc.domain.model.PollOption
-import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.PostMetadata
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.MediaItem
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.MediaType
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.PollOption
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.Post
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.PostMetadata
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

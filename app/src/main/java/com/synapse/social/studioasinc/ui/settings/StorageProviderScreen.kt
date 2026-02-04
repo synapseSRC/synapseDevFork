@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.settings
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
@@ -20,7 +20,7 @@ import androidx.compose.material.icons.automirrored.outlined.Help
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.ExpressiveLoadingIndicator
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -35,7 +35,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.data.local.database.StorageConfig
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database.StorageConfig
 import kotlinx.coroutines.delay
 
 // Provider data class for cleaner code

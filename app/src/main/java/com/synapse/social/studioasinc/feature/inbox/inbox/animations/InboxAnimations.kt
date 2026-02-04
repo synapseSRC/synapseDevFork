@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.inbox.animations
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.animations
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -10,7 +10,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.IntOffset
-import com.synapse.social.studioasinc.ui.inbox.theme.InboxAnimations as AnimSpecs
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.theme.InboxAnimations as AnimSpecs
 
 /**
  * Staggered entrance animation for list items.

@@ -1,9 +1,9 @@
-package com.synapse.social.studioasinc.feature.shared.theme
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.theme
 
 import android.app.Activity
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
-import com.synapse.social.studioasinc.ui.settings.ThemeMode
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode
 
 /**
  * Manages app-wide theme application for both XML and Compose layouts.

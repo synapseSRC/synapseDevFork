@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.reels.components
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.reels.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons

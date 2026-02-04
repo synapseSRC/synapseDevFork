@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.profile.editprofile
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

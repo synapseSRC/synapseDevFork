@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.styling
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.theme.styling
 
 import android.content.Context
 import android.content.Intent
@@ -12,7 +12,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
-import com.synapse.social.studioasinc.R
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.R
 import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
@@ -22,7 +22,7 @@ import io.noties.markwon.ext.tasklist.TaskListPlugin
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.latex.JLatexMathPlugin
 import io.noties.markwon.html.HtmlPlugin
-import com.synapse.social.studioasinc.core.util.CoilImagesPlugin
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.util.CoilImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.LinkResolver
 import coil.imageLoader
@@ -102,7 +102,7 @@ class MarkdownRenderer private constructor(private val markwon: Markwon) {
                 val span = if (symbol == "@") object : ClickableSpan() {
                     override fun onClick(widget: View) {
                         val ctx = widget.context
-                        ctx.startActivity(Intent(ctx, com.synapse.social.studioasinc.ProfileActivity::class.java).putExtra("username", full.substring(1)))
+                        ctx.startActivity(Intent(ctx, com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.ProfileActivity::class.java).putExtra("username", full.substring(1)))
                     }
                     override fun updateDrawState(ds: TextPaint) {
                         ds.color = Color.parseColor("#445E91")

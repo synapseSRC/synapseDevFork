@@ -1,10 +1,10 @@
-package com.synapse.social.studioasinc.core.util
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.util
 
 import android.content.Context
 import android.util.Log
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
-import com.synapse.social.studioasinc.R
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.R
 import java.io.IOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException

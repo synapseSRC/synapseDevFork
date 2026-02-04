@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.settings
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.settings
 
 import android.content.Intent
 import android.os.Build
@@ -16,14 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import javax.inject.Inject
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.synapse.social.studioasinc.data.repository.AuthRepository
-import com.synapse.social.studioasinc.AuthActivity
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.AuthRepository
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.AuthActivity
 // TODO: Re-implement chat privacy settings
-// import com.synapse.social.studioasinc.ChatPrivacySettingsActivity
-import com.synapse.social.studioasinc.feature.profile.ProfileEditActivity
-import com.synapse.social.studioasinc.ui.settings.AppearanceViewModel
-import com.synapse.social.studioasinc.ui.settings.SettingsNavHost
-import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
+// import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ChatPrivacySettingsActivity
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.ProfileEditActivity
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.AppearanceViewModel
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.SettingsNavHost
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.theme.SynapseTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -56,9 +56,9 @@ class SettingsActivity : ComponentActivity() {
 
                 // Determine dark theme based on settings
                 val darkTheme = when (appearanceSettings.themeMode) {
-                    com.synapse.social.studioasinc.ui.settings.ThemeMode.LIGHT -> false
-                    com.synapse.social.studioasinc.ui.settings.ThemeMode.DARK -> true
-                    com.synapse.social.studioasinc.ui.settings.ThemeMode.SYSTEM ->
+                    com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode.LIGHT -> false
+                    com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode.DARK -> true
+                    com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode.SYSTEM ->
                         androidx.compose.foundation.isSystemInDarkTheme()
                 }
 

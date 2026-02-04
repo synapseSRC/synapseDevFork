@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.domain.model.models
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.models
 
 /**
  * Represents metadata information about a media file.

@@ -1,13 +1,13 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.createpost.feature.createpost
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.synapse.social.studioasinc.ui.createpost.CreatePostScreen
-import com.synapse.social.studioasinc.ui.createpost.CreatePostViewModel
-import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.createpost.createpost.CreatePostScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.createpost.createpost.CreatePostViewModel
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.theme.SynapseTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

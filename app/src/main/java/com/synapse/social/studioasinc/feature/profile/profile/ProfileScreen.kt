@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.profile.profile
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile
 
 import android.content.Intent
 import android.net.Uri
@@ -25,21 +25,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.synapse.social.studioasinc.BuildConfig
-import com.synapse.social.studioasinc.PostDetailActivity
-import com.synapse.social.studioasinc.ui.components.EmptyState
-import com.synapse.social.studioasinc.ui.components.ErrorState
-import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
-import com.synapse.social.studioasinc.ui.components.MediaViewer
-import com.synapse.social.studioasinc.ui.components.post.PostActions
-import com.synapse.social.studioasinc.ui.components.post.PostCard
-import com.synapse.social.studioasinc.ui.components.post.PostCardState
-import com.synapse.social.studioasinc.ui.components.post.PostOptionsBottomSheet
-import com.synapse.social.studioasinc.ui.components.post.SharedPostItem
-import com.synapse.social.studioasinc.feature.profile.profile.animations.crossfadeContent
-import com.synapse.social.studioasinc.feature.profile.profile.components.*
-import com.synapse.social.studioasinc.feature.profile.profile.components.UserSearchDialog
-import com.synapse.social.studioasinc.domain.model.Post
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.BuildConfig
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.post.PostDetailActivity
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.EmptyState
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.ErrorState
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.ExpressiveLoadingIndicator
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.MediaViewer
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PostActions
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PostCard
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PostCardState
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PostOptionsBottomSheet
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.SharedPostItem
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.animations.crossfadeContent
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.components.*
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.components.UserSearchDialog
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.Post
 import kotlinx.coroutines.delay
 
 /**
@@ -392,7 +392,7 @@ fun ProfileScreen(
 @Composable
 private fun ProfileContent(
     state: ProfileScreenState,
-    profile: com.synapse.social.studioasinc.data.model.UserProfile,
+    profile: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.model.UserProfile,
     listState: androidx.compose.foundation.lazy.LazyListState,
     scrollProgress: Float,
     viewModel: ProfileViewModel,
@@ -664,7 +664,7 @@ private fun ProfileContent(
 
         // Posts items - added directly to parent LazyColumn
         if (state.contentFilter == ProfileContentFilter.POSTS && state.posts.isNotEmpty()) {
-            val posts = state.posts.filterIsInstance<com.synapse.social.studioasinc.domain.model.Post>()
+            val posts = state.posts.filterIsInstance<com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.Post>()
             items(posts, key = { it.id }) { post ->
                 // Context for profile actions
                 val currentProfile = (state.profileState as? ProfileUiState.Success)?.profile
@@ -701,8 +701,8 @@ private fun ProfileContent(
  */
 @Composable
 private fun AnimatedPostCard(
-    post: com.synapse.social.studioasinc.domain.model.Post,
-    currentProfile: com.synapse.social.studioasinc.data.model.UserProfile?,
+    post: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.Post,
+    currentProfile: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.model.UserProfile?,
     actions: PostActions
 ) {
     var visible by remember { mutableStateOf(false) }

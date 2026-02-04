@@ -1,15 +1,15 @@
-package com.synapse.social.studioasinc.data.repository
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository
 
-import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.data.local.database.PostDao
-import com.synapse.social.studioasinc.data.local.database.PostEntity
-import com.synapse.social.studioasinc.data.repository.PostMapper
-import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.PollOption
-import com.synapse.social.studioasinc.domain.model.ReactionType
-import com.synapse.social.studioasinc.domain.model.UserReaction
-import com.synapse.social.studioasinc.domain.model.MediaItem
-import com.synapse.social.studioasinc.domain.model.MediaType
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database.PostDao
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database.PostEntity
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.PostMapper
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.Post
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.PollOption
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ReactionType
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.UserReaction
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.MediaItem
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.MediaType
 import io.github.jan.supabase.functions.functions
 import io.github.jan.supabase.postgrest.from
 import io.ktor.client.statement.bodyAsText
@@ -24,7 +24,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.synapse.social.studioasinc.data.paging.PostPagingSource
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.paging.PostPagingSource
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
@@ -593,7 +593,7 @@ class PostRepository @Inject constructor(
     ) {
         try {
             // Extract mentions from the post content
-            val mentionedUsers = com.synapse.social.studioasinc.core.domain.parser.MentionParser.extractMentions(content)
+            val mentionedUsers = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.domain.parser.MentionParser.extractMentions(content)
 
             // Process mentions if any exist
             if (mentionedUsers.isNotEmpty()) {

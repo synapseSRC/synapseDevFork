@@ -1,6 +1,6 @@
-package com.synapse.social.studioasinc.domain.model
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model
 
-import com.synapse.social.studioasinc.R
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.R
 import kotlinx.serialization.Serializable
 
 /**

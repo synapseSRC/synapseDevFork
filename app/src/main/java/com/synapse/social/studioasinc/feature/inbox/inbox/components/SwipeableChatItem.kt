@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.inbox.components
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.components
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -24,9 +24,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.ui.inbox.theme.InboxColors
-import com.synapse.social.studioasinc.ui.inbox.theme.InboxDimens
-import com.synapse.social.studioasinc.ui.inbox.theme.InboxShapes
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.theme.InboxColors
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.theme.InboxDimens
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.theme.InboxShapes
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch

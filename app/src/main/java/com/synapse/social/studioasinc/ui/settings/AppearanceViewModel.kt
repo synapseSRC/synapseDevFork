@@ -1,10 +1,10 @@
-package com.synapse.social.studioasinc.ui.settings
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings
 
 import android.app.Application
 import android.os.Build
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.data.repository.SettingsRepositoryImpl
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.SettingsRepositoryImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -97,7 +97,7 @@ class AppearanceViewModel(
             try {
                 settingsRepository.setThemeMode(mode)
                 // Apply theme app-wide
-                com.synapse.social.studioasinc.feature.shared.theme.ThemeManager.applyThemeMode(mode)
+                com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.theme.ThemeManager.applyThemeMode(mode)
                 android.util.Log.d("AppearanceViewModel", "Theme mode set to: $mode")
             } catch (e: Exception) {
                 android.util.Log.e("AppearanceViewModel", "Failed to set theme mode", e)

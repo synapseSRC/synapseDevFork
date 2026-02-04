@@ -1,7 +1,7 @@
-package com.synapse.social.studioasinc.data.repository
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository
 
-import com.synapse.social.studioasinc.data.local.auth.TokenManager
-import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.auth.TokenManager
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.shared.data.repository.AuthRepository as SharedAuthRepository
 import io.github.jan.supabase.auth.providers.OAuthProvider
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.Flow

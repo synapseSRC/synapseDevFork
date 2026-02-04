@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.auth.ui.util
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

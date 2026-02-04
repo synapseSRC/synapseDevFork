@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.components.post
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.synapse.social.studioasinc.domain.model.ReactionType
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ReactionType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

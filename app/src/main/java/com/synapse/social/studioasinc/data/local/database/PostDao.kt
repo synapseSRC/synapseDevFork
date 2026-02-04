@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.data.local.database
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow

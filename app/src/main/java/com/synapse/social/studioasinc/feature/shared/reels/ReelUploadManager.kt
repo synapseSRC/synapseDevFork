@@ -1,9 +1,9 @@
-package com.synapse.social.studioasinc.feature.shared.reels
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.reels
 
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
-import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.shared.data.repository.ReelRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.utils.io.jvm.javaio.toByteReadChannel
 import kotlinx.coroutines.CoroutineScope

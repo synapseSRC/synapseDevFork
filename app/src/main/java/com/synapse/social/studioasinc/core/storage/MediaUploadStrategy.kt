@@ -1,6 +1,6 @@
-package com.synapse.social.studioasinc.core.storage
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.storage
 
-import com.synapse.social.studioasinc.data.local.database.StorageConfig
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database.StorageConfig
 import java.io.File
 
 /**

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.components.post
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -16,10 +16,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.domain.model.ReactionType
-import com.synapse.social.studioasinc.ui.settings.PostViewStyle
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.Post
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.User
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ReactionType
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.PostViewStyle
 
 /**
  * UI state for the PostCard component.

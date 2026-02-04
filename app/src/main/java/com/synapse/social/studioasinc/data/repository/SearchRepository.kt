@@ -1,6 +1,6 @@
-package com.synapse.social.studioasinc.data.repository
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository
 
-import com.synapse.social.studioasinc.domain.model.SearchResult
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.SearchResult
 
 interface SearchRepository {
     suspend fun searchUsers(query: String, limit: Int = 20): Result<List<SearchResult.User>>

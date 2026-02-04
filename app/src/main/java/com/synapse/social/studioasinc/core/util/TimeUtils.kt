@@ -1,8 +1,8 @@
-package com.synapse.social.studioasinc.core.util
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.util
 
 import android.content.Context
 import android.widget.TextView
-import com.synapse.social.studioasinc.R
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.R
 import java.text.SimpleDateFormat
 import java.util.*
 

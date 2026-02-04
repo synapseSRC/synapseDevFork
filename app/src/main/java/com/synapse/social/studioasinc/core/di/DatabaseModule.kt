@@ -1,10 +1,10 @@
-package com.synapse.social.studioasinc.core.di
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.di
 
 import android.content.Context
-import com.synapse.social.studioasinc.data.local.database.AppDatabase
-import com.synapse.social.studioasinc.data.local.database.PostDao
-import com.synapse.social.studioasinc.data.local.database.UserDao
-import com.synapse.social.studioasinc.data.local.database.CommentDao
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database.AppDatabase
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database.PostDao
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database.UserDao
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database.CommentDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

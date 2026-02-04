@@ -1,8 +1,8 @@
-package com.synapse.social.studioasinc.data.repository
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository
 
 import android.util.Log
-import com.synapse.social.studioasinc.domain.model.*
-import com.synapse.social.studioasinc.domain.model.UserStatus
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.*
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.UserStatus
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
@@ -23,7 +23,7 @@ import javax.inject.Inject
  * Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3
  */
 class PostDetailRepository @Inject constructor(
-    private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client,
+    private val client: SupabaseClient = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient.client,
     private val reactionRepository: ReactionRepository = ReactionRepository()
 ) {
 

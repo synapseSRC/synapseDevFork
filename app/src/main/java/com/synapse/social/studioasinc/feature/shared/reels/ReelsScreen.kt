@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.reels
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.reels
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,10 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.synapse.social.studioasinc.feature.shared.reels.components.CommentsBottomSheet
-import com.synapse.social.studioasinc.feature.shared.reels.components.MoreActionsBottomSheet
-import com.synapse.social.studioasinc.feature.shared.reels.components.ShareBottomSheet
-import com.synapse.social.studioasinc.ui.components.ShimmerBox
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.reels.components.CommentsBottomSheet
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.reels.components.MoreActionsBottomSheet
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.reels.components.ShareBottomSheet
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.ShimmerBox
 
 @Composable
 fun ReelsScreen(

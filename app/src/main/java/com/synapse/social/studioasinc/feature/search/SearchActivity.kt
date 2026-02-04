@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.search.feature.search
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,11 +10,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.synapse.social.studioasinc.ui.search.SearchScreen
-import com.synapse.social.studioasinc.ui.search.SearchViewModel
-import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.search.search.SearchScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.search.search.SearchViewModel
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.theme.SynapseTheme
 // TODO: Re-implement chat functionality
-// import com.synapse.social.studioasinc.ui.chat.ChatActivity
+// import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.chat.ChatActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

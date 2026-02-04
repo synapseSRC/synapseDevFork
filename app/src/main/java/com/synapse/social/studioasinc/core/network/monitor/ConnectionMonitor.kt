@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.core.network.monitor
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.monitor
 
 import android.content.Context
 import android.net.ConnectivityManager

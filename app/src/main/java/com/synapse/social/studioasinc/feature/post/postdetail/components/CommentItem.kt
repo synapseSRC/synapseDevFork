@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.post.postdetail.components
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.post.postdetail.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -21,11 +21,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.domain.model.CommentWithUser
-import com.synapse.social.studioasinc.domain.model.ReactionType
-import com.synapse.social.studioasinc.ui.components.CircularAvatar
-import com.synapse.social.studioasinc.core.util.TimeUtils
-import com.synapse.social.studioasinc.ui.components.mentions.MentionTextFormatter
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.CommentWithUser
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ReactionType
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.CircularAvatar
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.util.TimeUtils
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.mentions.MentionTextFormatter
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.runtime.*
 

@@ -1,12 +1,12 @@
-package com.synapse.social.studioasinc.ui.settings
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings
 
 import android.app.Application
 import androidx.biometric.BiometricManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.data.repository.SettingsRepositoryImpl
-import com.synapse.social.studioasinc.core.util.BiometricChecker
-import com.synapse.social.studioasinc.core.util.BiometricCheckerImpl
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.SettingsRepositoryImpl
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.util.BiometricChecker
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.util.BiometricCheckerImpl
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.user.UserInfo
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -165,7 +165,7 @@ class PrivacySecurityViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val supabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
+                val supabaseClient = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient.client
                 val currentUser = supabaseClient.auth.currentUserOrNull()
 
                 if (currentUser?.email != null) {

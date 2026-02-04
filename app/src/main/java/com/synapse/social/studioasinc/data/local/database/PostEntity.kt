@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.data.local.database
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -6,10 +6,10 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.synapse.social.studioasinc.domain.model.MediaItem
-import com.synapse.social.studioasinc.domain.model.PollOption
-import com.synapse.social.studioasinc.domain.model.PostMetadata
-import com.synapse.social.studioasinc.domain.model.ReactionType
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.MediaItem
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.PollOption
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.PostMetadata
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ReactionType
 
 @Entity(tableName = "posts")
 data class PostEntity(

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.components
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.R
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.theme.SynapseTheme
 
 @Composable
 fun VerifiedBadge(

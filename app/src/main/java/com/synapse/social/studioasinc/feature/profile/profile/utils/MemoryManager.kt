@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.profile.profile.utils
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.utils
 
 import android.content.ComponentCallbacks2
 import kotlinx.coroutines.flow.MutableStateFlow

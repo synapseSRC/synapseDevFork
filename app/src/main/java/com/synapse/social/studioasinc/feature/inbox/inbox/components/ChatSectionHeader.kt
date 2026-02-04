@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.inbox.components
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.ui.inbox.theme.InboxDimens
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.theme.InboxDimens
 
 /**
  * Sticky section header for chat list grouping.

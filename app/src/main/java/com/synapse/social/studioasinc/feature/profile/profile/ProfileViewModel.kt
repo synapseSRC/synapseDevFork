@@ -1,29 +1,29 @@
-package com.synapse.social.studioasinc.feature.profile.profile
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.data.model.UserProfile
-import com.synapse.social.studioasinc.domain.usecase.profile.*
-import com.synapse.social.studioasinc.domain.usecase.post.*
-import com.synapse.social.studioasinc.domain.usecase.story.HasActiveStoryUseCase
-import com.synapse.social.studioasinc.feature.profile.profile.components.ViewAsMode
-import com.synapse.social.studioasinc.feature.profile.profile.components.FollowingUser
-import com.synapse.social.studioasinc.feature.profile.profile.utils.MemoryManager
-import com.synapse.social.studioasinc.feature.profile.profile.utils.NetworkOptimizer
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.model.UserProfile
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.usecase.profile.*
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.usecase.post.*
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.usecase.story.HasActiveStoryUseCase
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.components.ViewAsMode
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.components.FollowingUser
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.utils.MemoryManager
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.utils.NetworkOptimizer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.ui.components.post.PostCardState
-import com.synapse.social.studioasinc.ui.components.post.PollOption
-import com.synapse.social.studioasinc.ui.components.post.PostEventBus
-import com.synapse.social.studioasinc.ui.components.post.PostEvent
-import com.synapse.social.studioasinc.ui.components.post.PostMapper
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.Post
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.User
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PostCardState
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PollOption
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PostEventBus
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PostEvent
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PostMapper
 
 data class ProfileScreenState(
     val profileState: ProfileUiState = ProfileUiState.Loading,
@@ -50,7 +50,7 @@ data class ProfileScreenState(
     val viewAsUserName: String? = null,
     val hasStory: Boolean = false,
     val isFollowLoading: Boolean = false,
-    val searchResults: List<com.synapse.social.studioasinc.domain.model.User> = emptyList(),
+    val searchResults: List<com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.User> = emptyList(),
     val isSearching: Boolean = false,
     val isRefreshing: Boolean = false
 )
@@ -250,13 +250,13 @@ class ProfileViewModel @Inject constructor(
         _state.update { it.copy(showMoreMenu = !it.showMoreMenu) }
     }
 
-    private val reactionRepository = com.synapse.social.studioasinc.data.repository.ReactionRepository()
+    private val reactionRepository = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.ReactionRepository()
 
     fun toggleLike(postId: String) {
-         reactToPost(postId, com.synapse.social.studioasinc.domain.model.ReactionType.LIKE)
+         reactToPost(postId, com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ReactionType.LIKE)
     }
 
-    fun reactToPost(postId: String, reactionType: com.synapse.social.studioasinc.domain.model.ReactionType) {
+    fun reactToPost(postId: String, reactionType: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ReactionType) {
         // Find the post to toggle
         val post = _state.value.posts.filterIsInstance<Post>().find { it.id == postId } ?: return
         val currentReaction = post.userReaction // Unified source
@@ -399,7 +399,7 @@ class ProfileViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val pollRepository = com.synapse.social.studioasinc.data.repository.PollRepository()
+                val pollRepository = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.PollRepository()
                 pollRepository.submitVote(postId, optionIndex)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -464,7 +464,7 @@ class ProfileViewModel @Inject constructor(
             try {
                 // Use IO dispatcher if the manager call is blocking or for safety
                 val results = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-                    com.synapse.social.studioasinc.UserProfileManager.searchUsers(query)
+                    com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.UserProfileManager.searchUsers(query)
                 }
                 _state.update { it.copy(searchResults = results, isSearching = false) }
             } catch (e: Exception) {

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.settings
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -14,7 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.synapse.social.studioasinc.data.repository.SettingsRepositoryImpl
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.SettingsRepositoryImpl
 import androidx.hilt.navigation.compose.hiltViewModel
 
 /**
@@ -174,7 +174,7 @@ fun SettingsNavHost(
         composable(route = SettingsDestination.ROUTE_CHAT_THEME) {
             // TODO: Implement chat customization when chat feature is ready
             /*
-            com.synapse.social.studioasinc.ui.chat.theme.ChatCustomizationScreen(
+            com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.chat.theme.ChatCustomizationScreen(
                 onBackClick = { navController.popBackStack() }
             )
             */
@@ -188,7 +188,7 @@ fun SettingsNavHost(
         composable(route = SettingsDestination.ROUTE_CHAT_WALLPAPER) {
             // TODO: Implement chat wallpaper when chat feature is ready
             /*
-            com.synapse.social.studioasinc.ui.chat.wallpaper.ChatWallpaperScreen(
+            com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.chat.wallpaper.ChatWallpaperScreen(
                 onBackClick = { navController.popBackStack() }
             )
             */
@@ -202,8 +202,8 @@ fun SettingsNavHost(
         composable(route = SettingsDestination.ROUTE_CHAT_HISTORY_DELETION) {
             // TODO: Implement chat history deletion when chat feature is ready
             /*
-            val viewModel: com.synapse.social.studioasinc.ui.deletion.ChatHistoryDeletionViewModel = hiltViewModel()
-            com.synapse.social.studioasinc.ui.deletion.ChatHistoryDeletionScreen(
+            val viewModel: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.deletion.ChatHistoryDeletionViewModel = hiltViewModel()
+            com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.deletion.ChatHistoryDeletionScreen(
                 viewModel = viewModel,
                 onBackClick = {
                     navController.popBackStack()

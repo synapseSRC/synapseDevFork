@@ -1,8 +1,8 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.util.core.util
 
-import com.synapse.social.studioasinc.data.remote.services.SupabaseDatabaseService
-import com.synapse.social.studioasinc.data.remote.services.SupabaseAuthenticationService
-import com.synapse.social.studioasinc.domain.model.User
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.remote.services.SupabaseDatabaseService
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.remote.services.SupabaseAuthenticationService
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.User
 import io.github.jan.supabase.postgrest.query.filter.PostgrestFilterBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

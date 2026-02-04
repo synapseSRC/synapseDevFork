@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.inbox.components
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.components
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -15,7 +15,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.ui.inbox.models.EmptyStateType
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.models.EmptyStateType
 
 /**
  * Beautiful empty state component for inbox tabs.

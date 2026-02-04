@@ -9,7 +9,7 @@
  * All rights reserved.
  */
 
-package com.synapse.social.studioasinc.core.config
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.config
 
 /**
  * Configuration constants for Cloudinary image/video service.

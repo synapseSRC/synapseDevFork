@@ -1,7 +1,7 @@
-package com.synapse.social.studioasinc.data.remote.services
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.remote.services
 
-import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.data.remote.services.interfaces.IDatabaseService
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.remote.services.interfaces.IDatabaseService
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.Dispatchers
@@ -485,7 +485,7 @@ class SupabaseDatabaseService : IDatabaseService {
      */
     suspend fun searchMedia(
         query: String,
-        mediaType: com.synapse.social.studioasinc.domain.model.SearchResult.MediaType? = null,
+        mediaType: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.SearchResult.MediaType? = null,
         limit: Int = 20
     ): Result<List<Map<String, Any?>>> {
         return withContext(Dispatchers.IO) {
@@ -503,7 +503,7 @@ class SupabaseDatabaseService : IDatabaseService {
 
                         // Filter by media presence
                         when (mediaType) {
-                            com.synapse.social.studioasinc.domain.model.SearchResult.MediaType.PHOTO -> {
+                            com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.SearchResult.MediaType.PHOTO -> {
                                 // Check for image in media_items (JSONB) or post_image (legacy/primary)
                                 or {
                                     // Note: JSONB filtering is limited in Supabase-kt DSL without custom raw query support
@@ -514,7 +514,7 @@ class SupabaseDatabaseService : IDatabaseService {
                                     // ideally we would check media_items->0->type == 'IMAGE'
                                 }
                             }
-                            com.synapse.social.studioasinc.domain.model.SearchResult.MediaType.VIDEO -> {
+                            com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.SearchResult.MediaType.VIDEO -> {
                                 // Check for video presence (assumes we might check post_type or similar)
                                 // or if media_items has video
                                 eq("post_type", "VIDEO")

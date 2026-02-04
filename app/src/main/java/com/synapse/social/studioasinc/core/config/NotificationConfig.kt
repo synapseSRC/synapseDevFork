@@ -1,6 +1,6 @@
-package com.synapse.social.studioasinc.core.config
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.config
 
-import com.synapse.social.studioasinc.BuildConfig
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.BuildConfig
 
 /**
  * Configuration class for notification system settings.

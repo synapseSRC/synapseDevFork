@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.auth.ui
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
@@ -13,11 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.synapse.social.studioasinc.feature.auth.ui.components.LoadingOverlay
-import com.synapse.social.studioasinc.feature.auth.ui.models.AuthNavigationEvent
-import com.synapse.social.studioasinc.feature.auth.ui.models.AuthUiState
-import com.synapse.social.studioasinc.feature.auth.ui.util.AnimationUtil
-import com.synapse.social.studioasinc.feature.auth.presentation.viewmodel.AuthViewModel
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.components.LoadingOverlay
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.models.AuthNavigationEvent
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.models.AuthUiState
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.util.AnimationUtil
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.presentation.viewmodel.AuthViewModel
 
 @Composable
 fun AuthScreen(

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.presentation.editprofile.components
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -36,17 +36,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
-import com.synapse.social.studioasinc.core.util.ImageLoader
-import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.ui.settings.SettingsColors
-import com.synapse.social.studioasinc.ui.settings.SettingsShapes
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.util.ImageLoader
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.R
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.SettingsColors
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.SettingsShapes
 
 @Composable
 fun ProfileImageSection(
     coverUrl: String?,
     avatarUrl: String?,
-    avatarUploadState: com.synapse.social.studioasinc.presentation.editprofile.UploadState,
-    coverUploadState: com.synapse.social.studioasinc.presentation.editprofile.UploadState,
+    avatarUploadState: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile.UploadState,
+    coverUploadState: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile.UploadState,
     onCoverClick: () -> Unit,
     onAvatarClick: () -> Unit,
     onRetryAvatarUpload: () -> Unit,
@@ -84,7 +84,7 @@ fun ProfileImageSection(
 
                     // Upload state overlay for cover
                     when (coverUploadState) {
-                        is com.synapse.social.studioasinc.presentation.editprofile.UploadState.Uploading -> {
+                        is com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile.UploadState.Uploading -> {
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -97,7 +97,7 @@ fun ProfileImageSection(
                                 )
                             }
                         }
-                        is com.synapse.social.studioasinc.presentation.editprofile.UploadState.Error -> {
+                        is com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile.UploadState.Error -> {
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -181,7 +181,7 @@ fun ProfileImageSection(
 
                     // Upload state overlay for avatar
                     when (avatarUploadState) {
-                        is com.synapse.social.studioasinc.presentation.editprofile.UploadState.Uploading -> {
+                        is com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile.UploadState.Uploading -> {
                             Box(
                                 modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.6f)),
                                 contentAlignment = Alignment.Center
@@ -193,7 +193,7 @@ fun ProfileImageSection(
                                 )
                             }
                         }
-                        is com.synapse.social.studioasinc.presentation.editprofile.UploadState.Error -> {
+                        is com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile.UploadState.Error -> {
                             Box(
                                 modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.6f)),
                                 contentAlignment = Alignment.Center

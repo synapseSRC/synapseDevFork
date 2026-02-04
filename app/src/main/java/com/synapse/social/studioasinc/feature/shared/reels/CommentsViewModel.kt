@@ -1,9 +1,9 @@
-package com.synapse.social.studioasinc.feature.shared.reels
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.reels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
-import com.synapse.social.studioasinc.shared.domain.model.ReelComment
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.shared.data.repository.ReelRepository
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.shared.domain.model.ReelComment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +24,7 @@ data class CommentsUiState(
 class CommentsViewModel @Inject constructor(
     private val reelRepository: ReelRepository
 ) : ViewModel() {
-    private val client = com.synapse.social.studioasinc.shared.core.network.SupabaseClient.client
+    private val client = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.shared.core.network.SupabaseClient.client
 
     private val _uiState = MutableStateFlow(CommentsUiState())
     val uiState: StateFlow<CommentsUiState> = _uiState.asStateFlow()

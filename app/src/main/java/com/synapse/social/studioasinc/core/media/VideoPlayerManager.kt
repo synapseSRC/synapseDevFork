@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.core.media
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.media
 
 import android.content.Context
 import android.net.Uri

@@ -1,8 +1,8 @@
-package com.synapse.social.studioasinc.data.remote.services
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.remote.services
 
 import android.content.Context
 import android.util.Log
-import com.synapse.social.studioasinc.BuildConfig
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.BuildConfig
 
 /**
  * Authentication configuration data class for authentication settings

@@ -1,8 +1,8 @@
-package com.synapse.social.studioasinc.core.network
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network
 
 import android.util.Log
-import com.synapse.social.studioasinc.BuildConfig
-import com.synapse.social.studioasinc.shared.core.network.SupabaseClient as SharedSupabaseClient
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.BuildConfig
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.shared.core.network.SupabaseClient as SharedSupabaseClient
 import java.net.URL
 import java.net.MalformedURLException
 

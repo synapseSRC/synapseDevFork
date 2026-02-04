@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.inbox.components
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.components
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -14,8 +14,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.ui.inbox.theme.InboxColors
-import com.synapse.social.studioasinc.ui.inbox.theme.InboxDimens
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.theme.InboxColors
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.theme.InboxDimens
 
 /**
  * Online status indicator with optional pulse animation.
@@ -214,10 +214,10 @@ private fun AvatarImage(
             modifier = modifier.clip(CircleShape),
             contentScale = androidx.compose.ui.layout.ContentScale.Crop,
             placeholder = coil.compose.rememberAsyncImagePainter(
-                model = com.synapse.social.studioasinc.R.drawable.avatar
+                model = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.R.drawable.avatar
             ),
             error = coil.compose.rememberAsyncImagePainter(
-                model = com.synapse.social.studioasinc.R.drawable.avatar
+                model = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.R.drawable.avatar
             )
         )
     } else {

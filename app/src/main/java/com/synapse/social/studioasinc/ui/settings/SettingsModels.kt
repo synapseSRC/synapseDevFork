@@ -1,9 +1,9 @@
-package com.synapse.social.studioasinc.ui.settings
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings
 
 import androidx.annotation.DrawableRes
-import com.synapse.social.studioasinc.domain.model.ChatThemePreset
-import com.synapse.social.studioasinc.domain.model.ChatWallpaper
-import com.synapse.social.studioasinc.domain.model.WallpaperType
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ChatThemePreset
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ChatWallpaper
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.WallpaperType
 
 /**
  * Data models and enums for the Settings feature.

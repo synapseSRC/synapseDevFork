@@ -1,11 +1,11 @@
-package com.synapse.social.studioasinc.feature.post.postdetail.navigation
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.post.postdetail.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.synapse.social.studioasinc.feature.post.postdetail.PostDetailScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.post.postdetail.PostDetailScreen
 
 const val postDetailRoute = "post_detail/{postId}"
 

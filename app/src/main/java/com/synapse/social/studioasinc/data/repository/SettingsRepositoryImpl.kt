@@ -1,20 +1,20 @@
-package com.synapse.social.studioasinc.data.repository
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository
 
 import android.content.Context
 import android.util.Log
-import com.synapse.social.studioasinc.data.local.database.SettingsDataStore
-import com.synapse.social.studioasinc.ui.settings.AppearanceSettings
-import com.synapse.social.studioasinc.ui.settings.ChatSettings
-import com.synapse.social.studioasinc.ui.settings.ContentVisibility
-import com.synapse.social.studioasinc.ui.settings.FontScale
-import com.synapse.social.studioasinc.ui.settings.MediaAutoDownload
-import com.synapse.social.studioasinc.ui.settings.NotificationCategory
-import com.synapse.social.studioasinc.ui.settings.NotificationPreferences
-import com.synapse.social.studioasinc.ui.settings.PrivacySettings
-import com.synapse.social.studioasinc.ui.settings.ProfileVisibility
-import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.data.model.AppUpdateInfo
-import com.synapse.social.studioasinc.ui.settings.ThemeMode
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database.SettingsDataStore
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.AppearanceSettings
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ChatSettings
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ContentVisibility
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.FontScale
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaAutoDownload
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.NotificationCategory
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.NotificationPreferences
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.PrivacySettings
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ProfileVisibility
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.model.AppUpdateInfo
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.flow.Flow
@@ -80,7 +80,7 @@ class SettingsRepositoryImpl private constructor(
         settingsDataStore.setFontScale(scale)
     }
 
-    override suspend fun setPostViewStyle(style: com.synapse.social.studioasinc.ui.settings.PostViewStyle) {
+    override suspend fun setPostViewStyle(style: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.PostViewStyle) {
         settingsDataStore.setPostViewStyle(style)
     }
 
@@ -157,11 +157,11 @@ class SettingsRepositoryImpl private constructor(
         settingsDataStore.setChatFontScale(scale)
     }
 
-    override suspend fun setChatThemePreset(preset: com.synapse.social.studioasinc.domain.model.ChatThemePreset) {
+    override suspend fun setChatThemePreset(preset: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ChatThemePreset) {
         settingsDataStore.setChatThemePreset(preset)
     }
 
-    override suspend fun setChatWallpaper(wallpaper: com.synapse.social.studioasinc.domain.model.ChatWallpaper) {
+    override suspend fun setChatWallpaper(wallpaper: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ChatWallpaper) {
         settingsDataStore.setChatWallpaper(wallpaper)
     }
 
@@ -171,9 +171,9 @@ class SettingsRepositoryImpl private constructor(
     // Requirements: 7.2
     // ========================================================================
 
-    override val mediaUploadQuality: Flow<com.synapse.social.studioasinc.ui.settings.MediaUploadQuality> = settingsDataStore.mediaUploadQuality
+    override val mediaUploadQuality: Flow<com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaUploadQuality> = settingsDataStore.mediaUploadQuality
 
-    override suspend fun setMediaUploadQuality(quality: com.synapse.social.studioasinc.ui.settings.MediaUploadQuality) {
+    override suspend fun setMediaUploadQuality(quality: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaUploadQuality) {
         settingsDataStore.setMediaUploadQuality(quality)
     }
 
@@ -183,11 +183,11 @@ class SettingsRepositoryImpl private constructor(
         settingsDataStore.setUseLessDataCalls(enabled)
     }
 
-    override val autoDownloadRules: Flow<com.synapse.social.studioasinc.ui.settings.AutoDownloadRules> = settingsDataStore.autoDownloadRules
+    override val autoDownloadRules: Flow<com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.AutoDownloadRules> = settingsDataStore.autoDownloadRules
 
     override suspend fun setAutoDownloadRule(
         networkType: String,
-        mediaTypes: Set<com.synapse.social.studioasinc.ui.settings.MediaType>
+        mediaTypes: Set<com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaType>
     ) {
         settingsDataStore.setAutoDownloadRule(networkType, mediaTypes)
     }

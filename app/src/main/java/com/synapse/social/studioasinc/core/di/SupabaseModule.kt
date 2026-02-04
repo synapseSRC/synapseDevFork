@@ -1,6 +1,6 @@
-package com.synapse.social.studioasinc.core.di
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.di
 
-import com.synapse.social.studioasinc.core.network.SupabaseClient
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

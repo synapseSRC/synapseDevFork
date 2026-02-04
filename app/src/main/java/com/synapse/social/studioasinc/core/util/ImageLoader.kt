@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.core.util
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.util
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -8,8 +8,8 @@ import coil.imageLoader
 import coil.load
 import coil.request.ImageRequest
 import coil.request.Disposable
-import com.synapse.social.studioasinc.BuildConfig
-import com.synapse.social.studioasinc.R
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.BuildConfig
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.R
 
 /**
  * Utility class for loading images with retry logic and proper authentication.

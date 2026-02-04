@@ -1,11 +1,11 @@
-package com.synapse.social.studioasinc.data.repository
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository
 
 import android.util.Log
-import com.synapse.social.studioasinc.data.local.database.CommentDao
-import com.synapse.social.studioasinc.data.local.database.CommentEntity
-import com.synapse.social.studioasinc.data.repository.CommentMapper
-import com.synapse.social.studioasinc.domain.model.*
-import com.synapse.social.studioasinc.domain.model.UserStatus
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database.CommentDao
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database.CommentEntity
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.CommentMapper
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.*
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.UserStatus
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class CommentRepository @Inject constructor(
     private val commentDao: CommentDao,
-    private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client,
+    private val client: SupabaseClient = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient.client,
     private val reactionRepository: ReactionRepository = ReactionRepository()
 ) {
 
@@ -557,7 +557,7 @@ class CommentRepository @Inject constructor(
     ) {
         try {
             // Extract mentions from the comment content
-            val mentionedUsers = com.synapse.social.studioasinc.core.domain.parser.MentionParser.extractMentions(content)
+            val mentionedUsers = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.domain.parser.MentionParser.extractMentions(content)
 
             // Process mentions if any exist
             if (mentionedUsers.isNotEmpty()) {

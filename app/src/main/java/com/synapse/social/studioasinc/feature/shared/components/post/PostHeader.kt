@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.components.post
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -22,11 +22,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.domain.model.FeelingActivity
-import com.synapse.social.studioasinc.ui.components.CircularAvatar
-import com.synapse.social.studioasinc.ui.components.GenderBadge
-import com.synapse.social.studioasinc.ui.components.VerifiedBadge
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.User
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.FeelingActivity
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.CircularAvatar
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.GenderBadge
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.VerifiedBadge
 
 @Composable
 fun PostHeader(

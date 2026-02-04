@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.home
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.home.home
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -6,19 +6,19 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.synapse.social.studioasinc.data.repository.AuthRepository
-import com.synapse.social.studioasinc.data.repository.PostRepository
-import com.synapse.social.studioasinc.data.local.database.AppDatabase
-import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.ReactionType
-import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.ui.components.post.PostCardState
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.AuthRepository
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.PostRepository
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database.AppDatabase
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.Post
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ReactionType
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.User
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PostCardState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import com.synapse.social.studioasinc.core.util.ScrollPositionState
-import com.synapse.social.studioasinc.ui.components.post.PostEventBus
-import com.synapse.social.studioasinc.ui.components.post.PostEvent
-import com.synapse.social.studioasinc.ui.components.post.PostMapper
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.util.ScrollPositionState
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PostEventBus
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PostEvent
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PostMapper
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,8 +29,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.map
 
-import com.synapse.social.studioasinc.data.repository.SettingsRepository
-import com.synapse.social.studioasinc.ui.settings.PostViewStyle
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.SettingsRepository
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.PostViewStyle
 
 data class FeedUiState(
     val isLoading: Boolean = false,
@@ -110,7 +110,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private val reactionRepository: com.synapse.social.studioasinc.data.repository.ReactionRepository = com.synapse.social.studioasinc.data.repository.ReactionRepository()
+    private val reactionRepository: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.ReactionRepository = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.ReactionRepository()
 
     fun likePost(post: Post) {
         performReaction(post, ReactionType.LIKE)
@@ -202,7 +202,7 @@ class FeedViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val pollRepository = com.synapse.social.studioasinc.data.repository.PollRepository()
+                val pollRepository = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.PollRepository()
                 pollRepository.submitVote(post.id, optionIndex)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -231,7 +231,7 @@ class FeedViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val pollRepository = com.synapse.social.studioasinc.data.repository.PollRepository()
+                val pollRepository = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.PollRepository()
                 pollRepository.revokeVote(post.id)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -245,7 +245,7 @@ class FeedViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 // Using direct Supabase client call for bookmarks as fallback
-                val client = com.synapse.social.studioasinc.core.network.SupabaseClient.client
+                val client = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient.client
                 val currentUserId = authRepository.getCurrentUserId()
                 if (currentUserId != null) {
                     client.from("bookmarks").insert(mapOf(

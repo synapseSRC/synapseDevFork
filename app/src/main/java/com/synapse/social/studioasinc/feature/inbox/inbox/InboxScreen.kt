@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.inbox
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
@@ -19,13 +19,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.synapse.social.studioasinc.ui.inbox.models.InboxAction
-import com.synapse.social.studioasinc.ui.inbox.models.InboxUiState
-import com.synapse.social.studioasinc.ui.inbox.components.*
-import com.synapse.social.studioasinc.ui.inbox.screens.CallsTabScreen
-import com.synapse.social.studioasinc.ui.inbox.screens.ChatsTabScreen
-import com.synapse.social.studioasinc.ui.inbox.screens.ContactsTabScreen
-import com.synapse.social.studioasinc.ui.inbox.theme.InboxTheme
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.models.InboxAction
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.models.InboxUiState
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.components.*
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.screens.CallsTabScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.screens.ChatsTabScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.screens.ContactsTabScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.theme.InboxTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -253,7 +253,7 @@ fun InboxScreen(
                     val chatsState = if (isSearchActive) {
                         val filtered = viewModel.filteredChats.collectAsState().value
                         uiState.let {
-                            if (it is com.synapse.social.studioasinc.ui.inbox.models.InboxUiState.Success) {
+                            if (it is com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.models.InboxUiState.Success) {
                                 it.copy(chats = filtered, pinnedChats = emptyList())
                             } else it
                         }

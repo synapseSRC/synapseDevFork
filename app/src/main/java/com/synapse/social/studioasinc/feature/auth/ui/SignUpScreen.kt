@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.auth.ui
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,14 +26,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.feature.auth.ui.components.AuthButton
-import com.synapse.social.studioasinc.feature.auth.ui.components.AuthTextField
-import com.synapse.social.studioasinc.feature.auth.ui.components.ErrorCard
-import com.synapse.social.studioasinc.feature.auth.ui.components.OAuthButton
-import com.synapse.social.studioasinc.feature.auth.ui.components.PasswordStrengthIndicator
-import com.synapse.social.studioasinc.feature.auth.ui.models.AuthUiState
-import com.synapse.social.studioasinc.feature.auth.ui.util.WindowWidthSizeClass
-import com.synapse.social.studioasinc.feature.auth.ui.util.calculateWindowSizeClass
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.components.AuthButton
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.components.AuthTextField
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.components.ErrorCard
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.components.OAuthButton
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.components.PasswordStrengthIndicator
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.models.AuthUiState
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.util.WindowWidthSizeClass
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.util.calculateWindowSizeClass
 
 @Composable
 fun SignUpScreen(

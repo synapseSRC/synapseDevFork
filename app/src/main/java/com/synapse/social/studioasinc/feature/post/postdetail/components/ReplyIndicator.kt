@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.post.postdetail.components
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.post.postdetail.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.domain.model.CommentWithUser
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.CommentWithUser
 
 @Composable
 fun ReplyIndicator(

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.feature.auth
 
 import android.content.Intent
 import android.net.Uri
@@ -8,14 +8,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.ViewModel
-import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.feature.shared.main.MainActivity
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.main.MainActivity
 import androidx.lifecycle.ViewModelProvider
-import com.synapse.social.studioasinc.data.repository.AuthRepository
-import com.synapse.social.studioasinc.data.repository.UsernameRepository
-import com.synapse.social.studioasinc.feature.auth.ui.AuthScreen
-import com.synapse.social.studioasinc.feature.auth.presentation.viewmodel.AuthViewModel
-import com.synapse.social.studioasinc.feature.shared.theme.AuthTheme
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.AuthRepository
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.UsernameRepository
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.AuthScreen
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.presentation.viewmodel.AuthViewModel
+import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.theme.AuthTheme
 import androidx.activity.enableEdgeToEdge
 import dagger.hilt.android.AndroidEntryPoint
 

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.theme
+package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

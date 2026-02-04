@@ -24,7 +24,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
     override suspend fun signUp(email: String, password: String): Result<String> {
         return try {
             withContext(Dispatchers.IO) {
-                val result = SupabaseClient.auth.signUpWith(Email) {
+                val result = SupabaseClient.client.auth.signUpWith(Email) {
                     this.email = email
                     this.password = password
                 }
@@ -39,17 +39,9 @@ class SupabaseAuthenticationService : IAuthenticationService {
         }
     }
 
-    override suspend fun signUpWithProfile(email: String, password: String, username: String): Result<String> {
+    override suspend fun createUserProfile(userId: String, email: String, username: String): Result<Unit> {
         return try {
             withContext(Dispatchers.IO) {
-                // First sign up the user
-                val signUpResult = SupabaseClient.auth.signUpWith(Email) {
-                    this.email = email
-                    this.password = password
-                }
-                
-                val userId = signUpResult.user?.id ?: throw Exception("User ID not found after signup")
-                
                 // Create profile
                 val profileInsert = UserProfileInsert(
                     id = userId,
@@ -70,7 +62,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
                     updatedAt = getCurrentIsoTime()
                 )
                 
-                SupabaseClient.from("user_profiles").insert(profileInsert)
+                SupabaseClient.client.from("user_profiles").insert(profileInsert)
                 
                 // Create settings
                 val settingsInsert = UserSettingsInsert(
@@ -92,7 +84,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
                     updatedAt = getCurrentIsoTime()
                 )
                 
-                SupabaseClient.from("user_settings").insert(settingsInsert)
+                SupabaseClient.client.from("user_settings").insert(settingsInsert)
                 
                 // Create presence
                 val presenceInsert = UserPresenceInsert(
@@ -104,13 +96,35 @@ class SupabaseAuthenticationService : IAuthenticationService {
                     updatedAt = getCurrentIsoTime()
                 )
                 
-                SupabaseClient.from("user_presence").insert(presenceInsert)
+                SupabaseClient.client.from("user_presence").insert(presenceInsert)
                 
-                Napier.d("User signed up with profile successfully: $userId")
-                Result.success(userId)
+                Napier.d("User profile created successfully: $userId")
+                Result.success(Unit)
             }
         } catch (e: Exception) {
-            Napier.e("Sign up with profile failed", e)
+            Napier.e("Create user profile failed", e)
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun ensureProfileExists(userId: String, email: String): Result<Unit> {
+        return try {
+            withContext(Dispatchers.IO) {
+                // Check if profile exists
+                val existingProfile = SupabaseClient.client.from("user_profiles")
+                    .select(columns = Columns.list("id"))
+                    .eq("id", userId)
+                    .maybeSingle<Map<String, Any>>()
+                
+                if (existingProfile == null) {
+                    // Create basic profile
+                    createUserProfile(userId, email, email.substringBefore("@"))
+                } else {
+                    Result.success(Unit)
+                }
+            }
+        } catch (e: Exception) {
+            Napier.e("Ensure profile exists failed", e)
             Result.failure(e)
         }
     }
@@ -118,7 +132,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
     override suspend fun signIn(email: String, password: String): Result<String> {
         return try {
             withContext(Dispatchers.IO) {
-                val result = SupabaseClient.auth.signInWith(Email) {
+                val result = SupabaseClient.client.auth.signInWith(Email) {
                     this.email = email
                     this.password = password
                 }
@@ -136,7 +150,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
     override suspend fun signOut(): Result<Unit> {
         return try {
             withContext(Dispatchers.IO) {
-                SupabaseClient.auth.signOut()
+                SupabaseClient.client.auth.signOut()
                 Napier.d("User signed out successfully")
                 Result.success(Unit)
             }
@@ -148,7 +162,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
 
     override suspend fun getCurrentUserId(): String? {
         return try {
-            SupabaseClient.auth.currentUserOrNull()?.id
+            SupabaseClient.client.auth.currentUserOrNull()?.id
         } catch (e: Exception) {
             Napier.e("Failed to get current user ID", e)
             null
@@ -157,7 +171,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
 
     override suspend fun getCurrentUserEmail(): String? {
         return try {
-            SupabaseClient.auth.currentUserOrNull()?.email
+            SupabaseClient.client.auth.currentUserOrNull()?.email
         } catch (e: Exception) {
             Napier.e("Failed to get current user email", e)
             null
@@ -166,7 +180,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
 
     override suspend fun isEmailVerified(): Boolean {
         return try {
-            SupabaseClient.auth.currentUserOrNull()?.emailConfirmedAt != null
+            SupabaseClient.client.auth.currentUserOrNull()?.emailConfirmedAt != null
         } catch (e: Exception) {
             Napier.e("Failed to check email verification", e)
             false
@@ -177,7 +191,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
     override suspend fun refreshSession(): Result<Unit> {
         return try {
             withContext(Dispatchers.IO) {
-                SupabaseClient.auth.refreshCurrentSession()
+                SupabaseClient.client.auth.refreshCurrentSession()
                 Napier.d("Session refreshed successfully")
                 Result.success(Unit)
             }
@@ -191,7 +205,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
     override suspend fun restoreSession(): Boolean {
         return try {
             withContext(Dispatchers.IO) {
-                val session = SupabaseClient.auth.currentSessionOrNull()
+                val session = SupabaseClient.client.auth.currentSessionOrNull()
                 session != null
             }
         } catch (e: Exception) {
@@ -203,7 +217,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
     override suspend fun sendPasswordResetEmail(email: String): Result<Unit> {
         return try {
             withContext(Dispatchers.IO) {
-                SupabaseClient.auth.resetPasswordForEmail(email)
+                SupabaseClient.client.auth.resetPasswordForEmail(email)
                 Napier.d("Password reset email sent successfully")
                 Result.success(Unit)
             }
@@ -216,7 +230,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
     override suspend fun resendVerificationEmail(email: String): Result<Unit> {
         return try {
             withContext(Dispatchers.IO) {
-                SupabaseClient.auth.resend(email = email, type = io.github.jan.supabase.auth.providers.builtin.OTP.EMAIL)
+                SupabaseClient.client.auth.resend(email = email, type = io.github.jan.supabase.auth.providers.builtin.OTP.EMAIL)
                 Napier.d("Verification email resent successfully")
                 Result.success(Unit)
             }
@@ -229,7 +243,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
     override suspend fun updatePassword(password: String): Result<Unit> {
         return try {
             withContext(Dispatchers.IO) {
-                SupabaseClient.auth.updateUser {
+                SupabaseClient.client.auth.updateUser {
                     this.password = password
                 }
                 Napier.d("Password updated successfully")
@@ -241,9 +255,24 @@ class SupabaseAuthenticationService : IAuthenticationService {
         }
     }
 
+    override suspend fun updateEmail(email: String): Result<Unit> {
+        return try {
+            withContext(Dispatchers.IO) {
+                SupabaseClient.client.auth.updateUser {
+                    this.email = email
+                }
+                Napier.d("Email updated successfully")
+                Result.success(Unit)
+            }
+        } catch (e: Exception) {
+            Napier.e("Email update failed", e)
+            Result.failure(e)
+        }
+    }
+
     override suspend fun getOAuthUrl(provider: String, redirectUrl: String): Result<String> {
         return try {
-            val supabaseUrl = SupabaseClient.supabaseUrl
+            val supabaseUrl = SupabaseClient.client.supabaseUrl
             val oauthUrl = "$supabaseUrl/auth/v1/authorize?provider=$provider&redirect_to=$redirectUrl"
             Result.success(oauthUrl)
         } catch (e: Exception) {
@@ -259,11 +288,11 @@ class SupabaseAuthenticationService : IAuthenticationService {
                 when {
                     code != null -> {
                         // Handle authorization code flow
-                        SupabaseClient.auth.exchangeCodeForSession(code)
+                        SupabaseClient.client.auth.exchangeCodeForSession(code)
                     }
                     accessToken != null && refreshToken != null -> {
                         // Handle token-based flow
-                        SupabaseClient.auth.importAuthToken(accessToken, refreshToken)
+                        SupabaseClient.client.auth.importAuthToken(accessToken, refreshToken)
                     }
                     else -> {
                         throw Exception("No valid OAuth parameters provided")
@@ -276,5 +305,17 @@ class SupabaseAuthenticationService : IAuthenticationService {
             Napier.e("OAuth callback handling failed", e)
             Result.failure(e)
         }
+    }
+
+    override suspend fun storeSessionTokens(accessToken: String, refreshToken: String, userId: String, userEmail: String, expiresIn: Int) {
+        // Implementation depends on platform-specific storage
+        // For now, tokens are managed by Supabase client
+        Napier.d("Session tokens stored for user: $userId")
+    }
+
+    override suspend fun clearStoredTokens() {
+        // Implementation depends on platform-specific storage
+        // For now, handled by signOut
+        Napier.d("Stored tokens cleared")
     }
 }

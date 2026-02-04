@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.animations
+package com.synapse.social.studioasinc.feature.profile.profile.animations
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*

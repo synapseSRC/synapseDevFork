@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.utils
+package com.synapse.social.studioasinc.feature.profile.profile.utils
 
 import kotlinx.coroutines.delay
 import kotlin.math.min

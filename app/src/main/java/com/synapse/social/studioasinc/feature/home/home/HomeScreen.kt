@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.home.home
+package com.synapse.social.studioasinc.feature.home.home
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
@@ -43,15 +43,15 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.R
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.navigation.HomeDestinations
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.navigation.HomeNavGraph
+import com.synapse.social.studioasinc.feature.shared.navigation.HomeDestinations
+import com.synapse.social.studioasinc.feature.shared.navigation.HomeNavGraph
 import androidx.compose.ui.unit.dp
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.serialization.json.JsonObject
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.reels.ReelUploadManager
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.reels.components.UploadProgressOverlay
+import com.synapse.social.studioasinc.feature.shared.reels.ReelUploadManager
+import com.synapse.social.studioasinc.feature.shared.reels.components.UploadProgressOverlay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,13 +80,13 @@ fun HomeScreen(
     )
 
     // Fetch user profile logic
-    val currentUser = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient.client.auth.currentUserOrNull()
+    val currentUser = com.synapse.social.studioasinc.core.network.SupabaseClient.client.auth.currentUserOrNull()
     var userAvatarUrl by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         if (currentUser != null) {
             try {
-                val result = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient.client.from("users")
+                val result = com.synapse.social.studioasinc.core.network.SupabaseClient.client.from("users")
                     .select(columns = Columns.raw("avatar")) {
                         filter {
                             eq("uid", currentUser.id)
@@ -139,7 +139,7 @@ fun HomeScreen(
 
                             // Profile - tertiary action with proper spacing
                             if (userAvatarUrl != null) {
-                                com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.CircularAvatar(
+                                com.synapse.social.studioasinc.feature.shared.components.CircularAvatar(
                                     imageUrl = userAvatarUrl,
                                     contentDescription = stringResource(R.string.profile),
                                     size = 28.dp,

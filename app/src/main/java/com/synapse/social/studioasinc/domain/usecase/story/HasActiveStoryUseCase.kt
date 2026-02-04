@@ -1,6 +1,6 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.usecase.story
+package com.synapse.social.studioasinc.domain.usecase.story
 
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.StoryRepository
+import com.synapse.social.studioasinc.data.repository.StoryRepository
 import javax.inject.Inject
 
 class HasActiveStoryUseCase @Inject constructor(

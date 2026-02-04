@@ -1,16 +1,16 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository
+package com.synapse.social.studioasinc.data.repository
 
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.AppearanceSettings
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ChatSettings
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ContentVisibility
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.FontScale
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaAutoDownload
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.NotificationCategory
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.NotificationPreferences
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.PrivacySettings
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ProfileVisibility
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.model.AppUpdateInfo
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode
+import com.synapse.social.studioasinc.ui.settings.AppearanceSettings
+import com.synapse.social.studioasinc.ui.settings.ChatSettings
+import com.synapse.social.studioasinc.ui.settings.ContentVisibility
+import com.synapse.social.studioasinc.ui.settings.FontScale
+import com.synapse.social.studioasinc.ui.settings.MediaAutoDownload
+import com.synapse.social.studioasinc.ui.settings.NotificationCategory
+import com.synapse.social.studioasinc.ui.settings.NotificationPreferences
+import com.synapse.social.studioasinc.ui.settings.PrivacySettings
+import com.synapse.social.studioasinc.ui.settings.ProfileVisibility
+import com.synapse.social.studioasinc.data.model.AppUpdateInfo
+import com.synapse.social.studioasinc.ui.settings.ThemeMode
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -72,7 +72,7 @@ interface SettingsRepository {
      * Sets the post view style (Swipe or Grid).
      * @param style The post view style to apply
      */
-    suspend fun setPostViewStyle(style: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.PostViewStyle)
+    suspend fun setPostViewStyle(style: com.synapse.social.studioasinc.ui.settings.PostViewStyle)
 
     /**
      * Flow of the current language code.
@@ -197,13 +197,13 @@ interface SettingsRepository {
      * Sets the chat theme preset.
      * @param preset The theme preset to apply
      */
-    suspend fun setChatThemePreset(preset: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ChatThemePreset)
+    suspend fun setChatThemePreset(preset: com.synapse.social.studioasinc.domain.model.ChatThemePreset)
 
     /**
      * Sets the chat wallpaper.
      * @param wallpaper The wallpaper configuration to apply
      */
-    suspend fun setChatWallpaper(wallpaper: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ChatWallpaper)
+    suspend fun setChatWallpaper(wallpaper: com.synapse.social.studioasinc.domain.model.ChatWallpaper)
 
     // ========================================================================
     // Storage and Cache Management
@@ -212,12 +212,12 @@ interface SettingsRepository {
     /**
      * Flow of media upload quality.
      */
-    val mediaUploadQuality: Flow<com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaUploadQuality>
+    val mediaUploadQuality: Flow<com.synapse.social.studioasinc.ui.settings.MediaUploadQuality>
 
     /**
      * Sets media upload quality.
      */
-    suspend fun setMediaUploadQuality(quality: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaUploadQuality)
+    suspend fun setMediaUploadQuality(quality: com.synapse.social.studioasinc.ui.settings.MediaUploadQuality)
 
     /**
      * Flow of use less data for calls setting.
@@ -232,14 +232,14 @@ interface SettingsRepository {
     /**
      * Flow of auto-download rules.
      */
-    val autoDownloadRules: Flow<com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.AutoDownloadRules>
+    val autoDownloadRules: Flow<com.synapse.social.studioasinc.ui.settings.AutoDownloadRules>
 
     /**
      * Sets auto-download rules for a specific network type.
      */
     suspend fun setAutoDownloadRule(
         networkType: String,
-        mediaTypes: Set<com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaType>
+        mediaTypes: Set<com.synapse.social.studioasinc.ui.settings.MediaType>
     )
 
     /**

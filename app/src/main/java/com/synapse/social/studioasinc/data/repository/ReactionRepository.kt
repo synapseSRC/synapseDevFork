@@ -1,8 +1,8 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository
+package com.synapse.social.studioasinc.data.repository
 
 import android.util.Log
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.CommentReaction
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ReactionType
+import com.synapse.social.studioasinc.domain.model.CommentReaction
+import com.synapse.social.studioasinc.domain.model.ReactionType
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
@@ -19,7 +19,7 @@ import javax.inject.Inject
  * Requirements: 3.2, 3.3, 3.4, 3.5, 6.2, 6.3, 6.4
  */
 class ReactionRepository @Inject constructor(
-    private val client: SupabaseClient = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient.client
+    private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
 ) {
 
     companion object {
@@ -160,7 +160,7 @@ class ReactionRepository @Inject constructor(
      * Batch fetch reactions for multiple posts to avoid N+1 queries.
      * Efficiently populates a list of posts with their reaction summaries and current user status.
      */
-    suspend fun populatePostReactions(posts: List<com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.Post>): List<com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.Post> = withContext(Dispatchers.IO) {
+    suspend fun populatePostReactions(posts: List<com.synapse.social.studioasinc.domain.model.Post>): List<com.synapse.social.studioasinc.domain.model.Post> = withContext(Dispatchers.IO) {
         if (posts.isEmpty()) return@withContext posts
 
         try {

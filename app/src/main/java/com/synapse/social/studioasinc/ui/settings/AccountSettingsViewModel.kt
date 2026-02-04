@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings
+package com.synapse.social.studioasinc.ui.settings
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -66,7 +66,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
             _isLoading.value = true
             try {
                 // Fetch identities from the database view for the most up-to-date information
-                val supabaseClient = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient.client
+                val supabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
 
                 // We use the 'user_identities' view which is filtered to only show the current user's identities
                 val identities = supabaseClient.from("user_identities")
@@ -101,7 +101,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
             _isLoading.value = true
             _error.value = null
             try {
-                val supabaseClient = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient.client
+                val supabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
 
                 when (provider) {
                     SocialProvider.GOOGLE -> {
@@ -138,7 +138,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
             _isLoading.value = true
             _error.value = null
             try {
-                val supabaseClient = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient.client
+                val supabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
                 val currentUser = supabaseClient.auth.currentUserOrNull()
 
                 if (currentUser != null) {
@@ -211,7 +211,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
                 }
 
                 // Get current user email
-                val supabaseClient = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient.client
+                val supabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
                 val currentUser = supabaseClient.auth.currentUserOrNull()
                 val currentEmail = currentUser?.email
 
@@ -304,7 +304,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
                 }
 
                 // Get current user email
-                val supabaseClient = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient.client
+                val supabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
                 val currentUser = supabaseClient.auth.currentUserOrNull()
                 val email = currentUser?.email
 
@@ -406,7 +406,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
 
                 android.util.Log.d("AccountSettingsViewModel", "Deleting account")
 
-                val supabaseClient = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient.client
+                val supabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
 
                 // Call Edge Function to delete user
                 supabaseClient.functions.invoke(function = "delete-account")

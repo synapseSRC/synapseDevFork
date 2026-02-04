@@ -1,7 +1,7 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.editprofile
+package com.synapse.social.studioasinc.feature.profile.editprofile
 
 import android.net.Uri
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.UserProfile
+import com.synapse.social.studioasinc.domain.model.UserProfile
 import kotlinx.serialization.Serializable
 
 data class EditProfileUiState(

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.local.database
+package com.synapse.social.studioasinc.data.local.database
 
 import android.content.Context
 import android.util.Log
@@ -10,19 +10,19 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.AppearanceSettings
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ChatSettings
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ContentVisibility
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.FontScale
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaAutoDownload
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.NotificationCategory
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.NotificationPreferences
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.PrivacySettings
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ProfileVisibility
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ChatThemePreset
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ChatWallpaper
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.WallpaperType
+import com.synapse.social.studioasinc.ui.settings.AppearanceSettings
+import com.synapse.social.studioasinc.ui.settings.ChatSettings
+import com.synapse.social.studioasinc.ui.settings.ContentVisibility
+import com.synapse.social.studioasinc.ui.settings.FontScale
+import com.synapse.social.studioasinc.ui.settings.MediaAutoDownload
+import com.synapse.social.studioasinc.ui.settings.NotificationCategory
+import com.synapse.social.studioasinc.ui.settings.NotificationPreferences
+import com.synapse.social.studioasinc.ui.settings.PrivacySettings
+import com.synapse.social.studioasinc.ui.settings.ProfileVisibility
+import com.synapse.social.studioasinc.ui.settings.ThemeMode
+import com.synapse.social.studioasinc.domain.model.ChatThemePreset
+import com.synapse.social.studioasinc.domain.model.ChatWallpaper
+import com.synapse.social.studioasinc.domain.model.WallpaperType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -228,9 +228,9 @@ class SettingsDataStore private constructor(private val context: Context) {
                 runCatching { FontScale.valueOf(value) }.getOrDefault(DEFAULT_FONT_SCALE)
             } ?: DEFAULT_FONT_SCALE,
             postViewStyle = preferences[KEY_POST_VIEW_STYLE]?.let { value ->
-                runCatching { com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.PostViewStyle.valueOf(value) }
-                    .getOrDefault(com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.PostViewStyle.SWIPE)
-            } ?: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.PostViewStyle.SWIPE
+                runCatching { com.synapse.social.studioasinc.ui.settings.PostViewStyle.valueOf(value) }
+                    .getOrDefault(com.synapse.social.studioasinc.ui.settings.PostViewStyle.SWIPE)
+            } ?: com.synapse.social.studioasinc.ui.settings.PostViewStyle.SWIPE
         )
     }
 
@@ -264,7 +264,7 @@ class SettingsDataStore private constructor(private val context: Context) {
     /**
      * Sets post view style.
      */
-    suspend fun setPostViewStyle(style: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.PostViewStyle) {
+    suspend fun setPostViewStyle(style: com.synapse.social.studioasinc.ui.settings.PostViewStyle) {
         dataStore.edit { preferences ->
             preferences[KEY_POST_VIEW_STYLE] = style.name
         }
@@ -519,17 +519,17 @@ class SettingsDataStore private constructor(private val context: Context) {
     /**
      * Flow of media upload quality.
      */
-    val mediaUploadQuality: Flow<com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaUploadQuality> = safePreferencesFlow().map { preferences ->
+    val mediaUploadQuality: Flow<com.synapse.social.studioasinc.ui.settings.MediaUploadQuality> = safePreferencesFlow().map { preferences ->
         preferences[KEY_MEDIA_UPLOAD_QUALITY]?.let { value ->
-            runCatching { com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaUploadQuality.valueOf(value) }
-                .getOrDefault(com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaUploadQuality.STANDARD)
-        } ?: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaUploadQuality.STANDARD
+            runCatching { com.synapse.social.studioasinc.ui.settings.MediaUploadQuality.valueOf(value) }
+                .getOrDefault(com.synapse.social.studioasinc.ui.settings.MediaUploadQuality.STANDARD)
+        } ?: com.synapse.social.studioasinc.ui.settings.MediaUploadQuality.STANDARD
     }
 
     /**
      * Sets media upload quality.
      */
-    suspend fun setMediaUploadQuality(quality: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaUploadQuality) {
+    suspend fun setMediaUploadQuality(quality: com.synapse.social.studioasinc.ui.settings.MediaUploadQuality) {
         dataStore.edit { preferences ->
             preferences[KEY_MEDIA_UPLOAD_QUALITY] = quality.name
         }
@@ -554,18 +554,18 @@ class SettingsDataStore private constructor(private val context: Context) {
     /**
      * Flow of auto-download rules.
      */
-    val autoDownloadRules: Flow<com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.AutoDownloadRules> = safePreferencesFlow().map { preferences ->
-        com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.AutoDownloadRules(
+    val autoDownloadRules: Flow<com.synapse.social.studioasinc.ui.settings.AutoDownloadRules> = safePreferencesFlow().map { preferences ->
+        com.synapse.social.studioasinc.ui.settings.AutoDownloadRules(
             mobileData = preferences[KEY_AUTO_DOWNLOAD_MOBILE]?.mapNotNull {
-                runCatching { com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaType.valueOf(it) }.getOrNull()
-            }?.toSet() ?: setOf(com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaType.PHOTO),
+                runCatching { com.synapse.social.studioasinc.ui.settings.MediaType.valueOf(it) }.getOrNull()
+            }?.toSet() ?: setOf(com.synapse.social.studioasinc.ui.settings.MediaType.PHOTO),
 
             wifi = preferences[KEY_AUTO_DOWNLOAD_WIFI]?.mapNotNull {
-                runCatching { com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaType.valueOf(it) }.getOrNull()
-            }?.toSet() ?: com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaType.values().toSet(),
+                runCatching { com.synapse.social.studioasinc.ui.settings.MediaType.valueOf(it) }.getOrNull()
+            }?.toSet() ?: com.synapse.social.studioasinc.ui.settings.MediaType.values().toSet(),
 
             roaming = preferences[KEY_AUTO_DOWNLOAD_ROAMING]?.mapNotNull {
-                runCatching { com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaType.valueOf(it) }.getOrNull()
+                runCatching { com.synapse.social.studioasinc.ui.settings.MediaType.valueOf(it) }.getOrNull()
             }?.toSet() ?: emptySet()
         )
     }
@@ -575,7 +575,7 @@ class SettingsDataStore private constructor(private val context: Context) {
      */
     suspend fun setAutoDownloadRule(
         networkType: String, // "mobile", "wifi", "roaming"
-        mediaTypes: Set<com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaType>
+        mediaTypes: Set<com.synapse.social.studioasinc.ui.settings.MediaType>
     ) {
         dataStore.edit { preferences ->
             val key = when (networkType) {
@@ -834,10 +834,10 @@ class SettingsDataStore private constructor(private val context: Context) {
             preferences[KEY_DATA_SAVER_ENABLED] = DEFAULT_DATA_SAVER_ENABLED
 
             // Storage and Data
-            preferences[KEY_MEDIA_UPLOAD_QUALITY] = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaUploadQuality.STANDARD.name
+            preferences[KEY_MEDIA_UPLOAD_QUALITY] = com.synapse.social.studioasinc.ui.settings.MediaUploadQuality.STANDARD.name
             preferences[KEY_USE_LESS_DATA_CALLS] = false
-            preferences[KEY_AUTO_DOWNLOAD_MOBILE] = setOf(com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaType.PHOTO.name)
-            preferences[KEY_AUTO_DOWNLOAD_WIFI] = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.MediaType.values().map { it.name }.toSet()
+            preferences[KEY_AUTO_DOWNLOAD_MOBILE] = setOf(com.synapse.social.studioasinc.ui.settings.MediaType.PHOTO.name)
+            preferences[KEY_AUTO_DOWNLOAD_WIFI] = com.synapse.social.studioasinc.ui.settings.MediaType.values().map { it.name }.toSet()
             preferences[KEY_AUTO_DOWNLOAD_ROAMING] = emptySet()
 
             // Request Account Info

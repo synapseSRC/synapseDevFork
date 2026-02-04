@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.stories.viewer
+package com.synapse.social.studioasinc.feature.stories.viewer
 
 import android.view.ViewGroup
 import androidx.annotation.OptIn
@@ -27,9 +27,9 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.Story
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.StoryMediaType
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.User
+import com.synapse.social.studioasinc.domain.model.Story
+import com.synapse.social.studioasinc.domain.model.StoryMediaType
+import com.synapse.social.studioasinc.domain.model.User
 import kotlinx.coroutines.delay
 
 @OptIn(UnstableApi::class)

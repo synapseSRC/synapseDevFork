@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.navigation
+package com.synapse.social.studioasinc.feature.shared.navigation
 
 import android.content.Intent
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,11 +15,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.home.home.FeedScreen
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.reels.ReelsScreen
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.notifications.NotificationsScreen
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.post.postdetail.PostDetailScreen
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.stories.creator.StoryCreatorActivity
+import com.synapse.social.studioasinc.feature.home.home.FeedScreen
+import com.synapse.social.studioasinc.feature.shared.reels.ReelsScreen
+import com.synapse.social.studioasinc.ui.notifications.NotificationsScreen
+import com.synapse.social.studioasinc.feature.post.postdetail.PostDetailScreen
+import com.synapse.social.studioasinc.feature.stories.creator.StoryCreatorActivity
 
 sealed class HomeDestinations(val route: String) {
     object Feed : HomeDestinations("feed")

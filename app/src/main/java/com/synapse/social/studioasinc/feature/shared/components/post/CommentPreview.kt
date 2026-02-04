@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post
+package com.synapse.social.studioasinc.feature.shared.components.post
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

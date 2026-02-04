@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.models
+package com.synapse.social.studioasinc.feature.auth.ui.models
 
 /**
  * Sealed class representing navigation events in the authentication flow.

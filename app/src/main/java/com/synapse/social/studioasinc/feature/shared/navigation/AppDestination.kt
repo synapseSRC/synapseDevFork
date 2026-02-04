@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.navigation
+package com.synapse.social.studioasinc.feature.shared.navigation
 
 sealed class AppDestination(val route: String) {
     object Auth : AppDestination("auth")

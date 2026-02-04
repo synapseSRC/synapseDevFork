@@ -1,7 +1,7 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.remote.services.interfaces
+package com.synapse.social.studioasinc.data.remote.services.interfaces
 
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.remote.services.User
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.remote.services.AuthResult
+import com.synapse.social.studioasinc.data.remote.services.User
+import com.synapse.social.studioasinc.data.remote.services.AuthResult
 
 /**
  * Authentication Service Interface

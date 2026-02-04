@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.reels
+package com.synapse.social.studioasinc.feature.shared.reels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

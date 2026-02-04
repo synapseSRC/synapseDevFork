@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.auth.ui.components
+package com.synapse.social.studioasinc.feature.auth.ui.components
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button

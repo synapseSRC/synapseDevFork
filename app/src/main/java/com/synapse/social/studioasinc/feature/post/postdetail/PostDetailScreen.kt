@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.post.postdetail
+package com.synapse.social.studioasinc.feature.post.postdetail
 
 import android.content.Intent
 import androidx.compose.foundation.layout.*
@@ -18,18 +18,18 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.CommentAction
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.ReactionType
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.CommentWithUser
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.post.postdetail.components.*
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.ExpressiveLoadingIndicator
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PostInteractionBar
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PollContent
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PollOption
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.PostOptionsBottomSheet
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.ReactionPicker
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.User as HomeUser
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.MediaViewer
+import com.synapse.social.studioasinc.domain.model.CommentAction
+import com.synapse.social.studioasinc.domain.model.ReactionType
+import com.synapse.social.studioasinc.domain.model.CommentWithUser
+import com.synapse.social.studioasinc.feature.post.postdetail.components.*
+import com.synapse.social.studioasinc.feature.shared.components.ExpressiveLoadingIndicator
+import com.synapse.social.studioasinc.feature.shared.components.post.PostInteractionBar
+import com.synapse.social.studioasinc.feature.shared.components.post.PollContent
+import com.synapse.social.studioasinc.feature.shared.components.post.PollOption
+import com.synapse.social.studioasinc.feature.shared.components.post.PostOptionsBottomSheet
+import com.synapse.social.studioasinc.feature.shared.components.post.ReactionPicker
+import com.synapse.social.studioasinc.domain.model.User as HomeUser
+import com.synapse.social.studioasinc.feature.shared.components.MediaViewer
 import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Brush
 
@@ -222,7 +222,7 @@ fun PostDetailScreen(
                                  )
                                  PostDetailHeader(
                                      user = homeUser,
-                                     timestamp = com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.util.TimeUtils.getTimeAgo(postDetail.post.publishDate ?: ""),
+                                     timestamp = com.synapse.social.studioasinc.core.util.TimeUtils.getTimeAgo(postDetail.post.publishDate ?: ""),
                                      onUserClick = { onNavigateToProfile(author.uid) },
                                      onOptionsClick = { showPostOptions = true }
                                  )

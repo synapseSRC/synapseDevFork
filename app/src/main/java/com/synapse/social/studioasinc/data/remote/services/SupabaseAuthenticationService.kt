@@ -1,7 +1,7 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.remote.services
+package com.synapse.social.studioasinc.data.remote.services
 
 import android.content.Context
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient
+import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.onesignal.OneSignal
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.OtpType
@@ -196,7 +196,7 @@ enum class RecoveryAction {
  * Supabase Authentication Service
  * Handles user authentication using Supabase Auth with configurable settings
  */
-class SupabaseAuthenticationService : com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.remote.services.interfaces.IAuthenticationService {
+class SupabaseAuthenticationService : com.synapse.social.studioasinc.data.remote.services.interfaces.IAuthenticationService {
 
     private val context: Context
     private val client = SupabaseClient.client

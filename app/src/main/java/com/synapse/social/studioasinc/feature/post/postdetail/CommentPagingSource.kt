@@ -1,9 +1,9 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.post.postdetail
+package com.synapse.social.studioasinc.feature.post.postdetail
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.CommentRepository
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.CommentWithUser
+import com.synapse.social.studioasinc.data.repository.CommentRepository
+import com.synapse.social.studioasinc.domain.model.CommentWithUser
 
 class CommentPagingSource(
     private val repository: CommentRepository,

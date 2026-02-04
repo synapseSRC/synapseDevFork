@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.util
+package com.synapse.social.studioasinc.core.util
 
 import io.github.jan.supabase.postgrest.query.filter.PostgrestFilterBuilder as SupabasePostgrestFilterBuilder
 

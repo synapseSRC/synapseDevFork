@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.components
+package com.synapse.social.studioasinc.feature.profile.profile.components
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size

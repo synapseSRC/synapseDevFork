@@ -1,8 +1,8 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.post.postdetail.components
+package com.synapse.social.studioasinc.feature.post.postdetail.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.post.MediaContent
+import com.synapse.social.studioasinc.feature.shared.components.post.MediaContent
 
 @Composable
 fun MediaPager(

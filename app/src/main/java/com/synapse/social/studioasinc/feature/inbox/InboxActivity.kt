@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.feature.inbox
+package com.synapse.social.studioasinc.feature.inbox
 
 import android.content.Context
 import android.content.Intent
@@ -17,17 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.InboxScreen
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.AppearanceViewModel
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.theme.SynapseTheme
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.ui.animation.ActivityTransitions
+import com.synapse.social.studioasinc.feature.inbox.inbox.InboxScreen
+import com.synapse.social.studioasinc.ui.settings.AppearanceViewModel
+import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
+import com.synapse.social.studioasinc.core.ui.animation.ActivityTransitions
 import androidx.activity.enableEdgeToEdge
 
 /**
  * Activity for the Inbox screen.
  * Built with Jetpack Compose.
  *
- * @deprecated Use [com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.InboxScreen] within [MainActivity] navigation graph instead.
+ * @deprecated Use [com.synapse.social.studioasinc.feature.inbox.inbox.InboxScreen] within [MainActivity] navigation graph instead.
  */
 @Deprecated("Use InboxScreen within MainActivity navigation graph instead")
 @AndroidEntryPoint
@@ -45,9 +45,9 @@ class InboxActivity : ComponentActivity() {
 
             // Determine dark theme based on settings
             val darkTheme = when (appearanceSettings.themeMode) {
-                com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode.LIGHT -> false
-                com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode.DARK -> true
-                com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode.SYSTEM ->
+                com.synapse.social.studioasinc.ui.settings.ThemeMode.LIGHT -> false
+                com.synapse.social.studioasinc.ui.settings.ThemeMode.DARK -> true
+                com.synapse.social.studioasinc.ui.settings.ThemeMode.SYSTEM ->
                     isSystemInDarkTheme()
             }
 

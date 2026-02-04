@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.feature.profile
+package com.synapse.social.studioasinc.feature.profile
 
 import android.app.ProgressDialog
 import android.content.Intent
@@ -18,16 +18,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.ProfileEditActivity
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.settings.SettingsActivity
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.network.SupabaseClient
+import com.synapse.social.studioasinc.feature.profile.ProfileEditActivity
+import com.synapse.social.studioasinc.feature.settings.SettingsActivity
+import com.synapse.social.studioasinc.core.network.SupabaseClient
 // TODO: Re-implement chat feature - chat service import
-// import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.remote.services.SupabaseChatService
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.data.repository.AuthRepository
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.ProfileScreen
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.ProfileViewModel
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.AppearanceViewModel
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.theme.SynapseTheme
+// import com.synapse.social.studioasinc.data.remote.services.SupabaseChatService
+import com.synapse.social.studioasinc.data.repository.AuthRepository
+import com.synapse.social.studioasinc.feature.profile.profile.ProfileScreen
+import com.synapse.social.studioasinc.feature.profile.profile.ProfileViewModel
+import com.synapse.social.studioasinc.ui.settings.AppearanceViewModel
+import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 // TODO: Re-implement chat feature - chat activity import
 // import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.chat.ChatActivity
 import androidx.activity.enableEdgeToEdge
@@ -46,7 +46,7 @@ import kotlinx.coroutines.runBlocking
  * startActivity(intent)
  * ```
  *
- * @deprecated Use [com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.profile.profile.ProfileScreen] within [MainActivity] navigation graph instead.
+ * @deprecated Use [com.synapse.social.studioasinc.feature.profile.profile.ProfileScreen] within [MainActivity] navigation graph instead.
  */
 @Deprecated("Use ProfileScreen within MainActivity navigation graph instead")
 @AndroidEntryPoint
@@ -86,9 +86,9 @@ class ProfileActivity : ComponentActivity() {
 
             // Determine dark theme based on settings
             val darkTheme = when (appearanceSettings.themeMode) {
-                com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode.LIGHT -> false
-                com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode.DARK -> true
-                com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.ui.settings.ThemeMode.SYSTEM ->
+                com.synapse.social.studioasinc.ui.settings.ThemeMode.LIGHT -> false
+                com.synapse.social.studioasinc.ui.settings.ThemeMode.DARK -> true
+                com.synapse.social.studioasinc.ui.settings.ThemeMode.SYSTEM ->
                     isSystemInDarkTheme()
             }
 

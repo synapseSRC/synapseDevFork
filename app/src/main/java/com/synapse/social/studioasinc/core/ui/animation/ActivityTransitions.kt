@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.ui.animation
+package com.synapse.social.studioasinc.core.ui.animation
 
 import android.app.Activity
 import android.content.Context

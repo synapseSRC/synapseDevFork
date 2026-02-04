@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.settings.legacy
+package com.synapse.social.studioasinc.feature.settings.legacy
 
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from

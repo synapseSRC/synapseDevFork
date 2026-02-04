@@ -35,7 +35,7 @@
 			android:name="com.onesignal.NotificationOpened.DEFAULT"
 			android:value="DISABLE" />
 		<activity
-			android:name=".ui.main.MainActivity"
+			android:name=".feature.shared.main.MainActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
 			android:supportsPictureInPicture="true"
@@ -49,7 +49,7 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:name=".HomeActivity"
+			android:name=".feature.home.HomeActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
 			android:supportsPictureInPicture="true"
@@ -66,7 +66,7 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:name=".SearchActivity"
+			android:name=".feature.search.SearchActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
 			android:supportsPictureInPicture="true"
@@ -74,7 +74,7 @@
 			android:windowSoftInputMode="stateHidden" />
 
 		<activity
-			android:name=".PostDetailActivity"
+			android:name=".feature.post.PostDetailActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden"
 			android:screenOrientation="portrait"
 			android:windowSoftInputMode="adjustResize"
@@ -88,7 +88,7 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:name=".ProfileActivity"
+			android:name=".feature.profile.ProfileActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
 			android:supportsPictureInPicture="true"
@@ -113,7 +113,7 @@
 			android:screenOrientation="portrait"
 			android:windowSoftInputMode="stateHidden" />
 		<activity
-			android:name=".FollowListActivity"
+			android:name=".feature.shared.components.FollowListActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
 			android:supportsPictureInPicture="true"
@@ -121,7 +121,7 @@
 			android:windowSoftInputMode="stateHidden" />
 
 		<activity
-			android:name=".CreatePostActivity"
+			android:name=".feature.createpost.CreatePostActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
 			android:supportsPictureInPicture="true"
@@ -147,7 +147,7 @@
 			android:windowSoftInputMode="adjustResize" />
 
 		<activity
-			android:name=".AuthActivity"
+			android:name=".feature.auth.AuthActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
 			android:supportsPictureInPicture="true"
@@ -185,14 +185,14 @@
 			android:screenOrientation="portrait"
 			android:windowSoftInputMode="stateHidden" />
 		<activity
-			android:name=".ActivityLogActivity"
+			android:name=".feature.shared.components.ActivityLogActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
 			android:supportsPictureInPicture="true"
 			android:screenOrientation="portrait"
 			android:windowSoftInputMode="stateHidden" />
 		<activity
-			android:name=".InboxActivity"
+			android:name=".feature.inbox.InboxActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
 			android:supportsPictureInPicture="true"
@@ -224,12 +224,7 @@
 			android:name="org.apache.http.legacy"
 			android:required="false" />
 
-		<!-- Background Deletion Service -->
-		<service
 			android:name=".data.repository.deletion.BackgroundDeletionService"
-			android:enabled="true"
-			android:exported="false"
-			android:foregroundServiceType="dataSync" />
 
 <provider
   android:name="androidx.core.content.FileProvider"

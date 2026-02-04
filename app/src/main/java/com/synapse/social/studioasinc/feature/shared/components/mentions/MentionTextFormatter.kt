@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.components.mentions
+package com.synapse.social.studioasinc.feature.shared.components.mentions
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString

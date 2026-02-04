@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.core.media.processing
+package com.synapse.social.studioasinc.core.media.processing
 
 import android.content.Context
 import android.graphics.Bitmap

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.stories.creator
+package com.synapse.social.studioasinc.feature.stories.creator
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -36,10 +36,10 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import android.annotation.SuppressLint
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.Post
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.StoryMediaType
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.StoryPrivacy
-import com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.shared.theme.SynapseTheme
+import com.synapse.social.studioasinc.domain.model.Post
+import com.synapse.social.studioasinc.domain.model.StoryMediaType
+import com.synapse.social.studioasinc.domain.model.StoryPrivacy
+import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -717,7 +717,7 @@ private fun SharedPostView(post: Post) {
             }
 
             // Image if available (first one)
-            val firstMedia = post.mediaItems?.firstOrNull { it.type == com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.domain.model.MediaType.IMAGE }
+            val firstMedia = post.mediaItems?.firstOrNull { it.type == com.synapse.social.studioasinc.domain.model.MediaType.IMAGE }
             if (firstMedia != null) {
                  AsyncImage(
                     model = firstMedia.url,

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.feature.shared.components.feature.search.feature.post.feature.auth.feature.home.domain.model.feature.profile.core.util.feature.inbox.feature.createpost.feature.inbox.inbox.theme
+package com.synapse.social.studioasinc.feature.inbox.inbox.theme
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.shape.CircleShape

@@ -74,7 +74,7 @@
 			android:windowSoftInputMode="stateHidden" />
 
 		<activity
-			android:name=".PostDetailActivity"
+			android:name=".feature.post.PostDetailActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden"
 			android:screenOrientation="portrait"
 			android:windowSoftInputMode="adjustResize"
@@ -113,7 +113,7 @@
 			android:screenOrientation="portrait"
 			android:windowSoftInputMode="stateHidden" />
 		<activity
-			android:name=".FollowListActivity"
+			android:name=".feature.shared.components.FollowListActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
 			android:supportsPictureInPicture="true"

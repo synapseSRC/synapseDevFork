@@ -1,17 +1,19 @@
 package com.synapse.social.studioasinc.data.repository
 
-import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.local.database.UserDao
 import com.synapse.social.studioasinc.domain.model.User
 import com.synapse.social.studioasinc.domain.model.UserProfile
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class UserRepository(private val userDao: UserDao) {
-
-    private val client = SupabaseClient.client
+class UserRepository @Inject constructor(
+    private val userDao: UserDao,
+    private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
+) {
 
     suspend fun getUserById(userId: String): Result<User?> {
         return try {

@@ -1,18 +1,20 @@
 package com.synapse.social.studioasinc.data.repository
 
 import android.util.Log
-import com.synapse.social.studioasinc.core.network.SupabaseClient
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import javax.inject.Inject
 
 /**
  * Repository for reporting posts.
  * Requirement: 10.3
  */
-class ReportRepository {
-    private val client = SupabaseClient.client
+class ReportRepository @Inject constructor(
+    private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
+) {
 
     @Serializable
     private data class PostReport(

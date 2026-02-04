@@ -7,26 +7,11 @@ import com.russhwolf.settings.SharedPreferencesSettings
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
 import com.synapse.social.studioasinc.data.local.auth.TokenManager
 import com.synapse.social.studioasinc.shared.data.auth.TokenManager as SharedTokenManager
-import com.synapse.social.studioasinc.data.local.database.PostDao
-import com.synapse.social.studioasinc.data.repository.PostRepository
-import com.synapse.social.studioasinc.data.repository.AuthRepository
+import com.synapse.social.studioasinc.data.repository.*
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
-import com.synapse.social.studioasinc.data.repository.SettingsRepository
-import com.synapse.social.studioasinc.data.repository.SettingsRepositoryImpl
-import com.synapse.social.studioasinc.data.repository.UserRepository
-import com.synapse.social.studioasinc.data.repository.UsernameRepository
-import com.synapse.social.studioasinc.data.repository.ProfileRepository
-import com.synapse.social.studioasinc.data.repository.ProfileRepositoryImpl
-import com.synapse.social.studioasinc.data.repository.PostInteractionRepository
-import com.synapse.social.studioasinc.data.repository.ProfileActionRepository
-import com.synapse.social.studioasinc.data.repository.StoryRepository
-import com.synapse.social.studioasinc.data.repository.StoryRepositoryImpl
-import com.synapse.social.studioasinc.data.repository.SearchRepository
-import com.synapse.social.studioasinc.data.repository.SearchRepositoryImpl
 import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
 import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
-import com.synapse.social.studioasinc.data.local.database.UserDao
-import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
+import com.synapse.social.studioasinc.data.local.database.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -75,8 +60,8 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideUserRepository(userDao: UserDao): UserRepository {
-        return UserRepository(userDao)
+    fun provideUserRepository(userDao: UserDao, client: SupabaseClientType): UserRepository {
+        return UserRepository(userDao, client)
     }
 
     @Provides
@@ -116,6 +101,55 @@ object RepositoryModule {
     @Singleton
     fun provideProfileActionRepository(): ProfileActionRepository {
         return ProfileActionRepository()
+    }
+
+    @Provides
+    @Singleton
+    fun provideReactionRepository(client: SupabaseClientType): ReactionRepository {
+        return ReactionRepository(client)
+    }
+
+    @Provides
+    @Singleton
+    fun providePostDetailRepository(
+        client: SupabaseClientType,
+        reactionRepository: ReactionRepository
+    ): PostDetailRepository {
+        return PostDetailRepository(client, reactionRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCommentRepository(
+        client: SupabaseClientType,
+        commentDao: CommentDao,
+        reactionRepository: ReactionRepository
+    ): CommentRepository {
+        return CommentRepository(client, commentDao, reactionRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun providePollRepository(client: SupabaseClientType): PollRepository {
+        return PollRepository(client)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBookmarkRepository(client: SupabaseClientType): BookmarkRepository {
+        return BookmarkRepository(client)
+    }
+
+    @Provides
+    @Singleton
+    fun provideReshareRepository(client: SupabaseClientType): ReshareRepository {
+        return ReshareRepository(client)
+    }
+
+    @Provides
+    @Singleton
+    fun provideReportRepository(client: SupabaseClientType): ReportRepository {
+        return ReportRepository(client)
     }
 
     @Provides

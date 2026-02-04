@@ -1,12 +1,12 @@
 package com.synapse.social.studioasinc.data.repository
 
 import android.util.Log
-import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.local.database.CommentDao
 import com.synapse.social.studioasinc.data.local.database.CommentEntity
 import com.synapse.social.studioasinc.data.repository.CommentMapper
 import com.synapse.social.studioasinc.domain.model.*
 import com.synapse.social.studioasinc.domain.model.UserStatus
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import io.github.jan.supabase.functions.functions
@@ -22,11 +22,13 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
+import javax.inject.Inject
 
-class CommentRepository(private val commentDao: CommentDao) {
-
-    private val client = SupabaseClient.client
-    private val reactionRepository = com.synapse.social.studioasinc.data.repository.ReactionRepository()
+class CommentRepository @Inject constructor(
+    private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client,
+    private val commentDao: CommentDao,
+    private val reactionRepository: ReactionRepository = ReactionRepository()
+) {
 
     companion object {
         private const val TAG = "CommentRepository"
@@ -154,10 +156,6 @@ class CommentRepository(private val commentDao: CommentDao) {
         parentCommentId: String? = null
     ): Result<CommentWithUser> = withContext(Dispatchers.IO) {
         try {
-            if (!SupabaseClient.isConfigured()) {
-                return@withContext Result.failure(Exception("Supabase not configured"))
-            }
-
             val currentUser = client.auth.currentUserOrNull()
             if (currentUser == null) {
                 return@withContext Result.failure(Exception("User must be authenticated to comment"))
@@ -245,10 +243,6 @@ class CommentRepository(private val commentDao: CommentDao) {
 
     suspend fun deleteComment(commentId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            if (!SupabaseClient.isConfigured()) {
-                return@withContext Result.failure(Exception("Supabase not configured"))
-            }
-
             val currentUser = client.auth.currentUserOrNull()
             if (currentUser == null) {
                 return@withContext Result.failure(Exception("User must be authenticated to delete comment"))
@@ -299,10 +293,6 @@ class CommentRepository(private val commentDao: CommentDao) {
 
     suspend fun editComment(commentId: String, content: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            if (!SupabaseClient.isConfigured()) {
-                return@withContext Result.failure(Exception("Supabase not configured"))
-            }
-
             val currentUser = client.auth.currentUserOrNull()
             if (currentUser == null) {
                 return@withContext Result.failure(Exception("User must be authenticated to edit comment"))

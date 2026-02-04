@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.data.repository.AuthRepository
 import com.synapse.social.studioasinc.data.repository.UserRepository
@@ -15,6 +15,7 @@ import com.synapse.social.studioasinc.ui.navigation.AppDestination
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,12 +25,14 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.inject.Inject
 
-class MainViewModel(
-    application: Application,
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val application: Application,
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     companion object {
         private val gson = Gson()
@@ -79,7 +82,7 @@ class MainViewModel(
                 )
 
                 val currentVersionCode = try {
-                    getApplication<Application>().packageManager.getPackageInfo(getApplication<Application>().packageName, 0).versionCode
+                    application.packageManager.getPackageInfo(application.packageName, 0).versionCode
                 } catch (e: PackageManager.NameNotFoundException) {
                     _updateState.value = UpdateState.Error("Version check failed: ${e.message}")
                     return@launch
@@ -173,7 +176,7 @@ class MainViewModel(
     }
 
     private fun isNetworkAvailable(): Boolean {
-        val connectivityManager = getApplication<Application>().getSystemService(ConnectivityManager::class.java)
+        val connectivityManager = application.getSystemService(ConnectivityManager::class.java)
         val network = connectivityManager.activeNetwork ?: return false
         val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)

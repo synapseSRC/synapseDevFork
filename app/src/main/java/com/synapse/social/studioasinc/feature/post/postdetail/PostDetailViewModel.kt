@@ -1,34 +1,36 @@
 package com.synapse.social.studioasinc.ui.postdetail
 
-import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.synapse.social.studioasinc.data.local.database.AppDatabase
 import com.synapse.social.studioasinc.data.repository.*
 import com.synapse.social.studioasinc.domain.model.*
-import kotlinx.coroutines.Job
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import com.synapse.social.studioasinc.core.network.SupabaseClient
-import io.github.jan.supabase.auth.auth
+import javax.inject.Inject
 
-class PostDetailViewModel(application: Application) : AndroidViewModel(application) {
-    private val postDetailRepository = PostDetailRepository()
-    private val commentRepository = CommentRepository(AppDatabase.getDatabase(application).commentDao())
-    private val reactionRepository = ReactionRepository()
-    private val pollRepository = PollRepository()
-    private val bookmarkRepository = BookmarkRepository()
-    private val reshareRepository = ReshareRepository()
-    private val reportRepository = ReportRepository()
-    private val userRepository = UserRepository(AppDatabase.getDatabase(application).userDao())
+@HiltViewModel
+class PostDetailViewModel @Inject constructor(
+    private val postDetailRepository: PostDetailRepository,
+    private val commentRepository: CommentRepository,
+    private val reactionRepository: ReactionRepository,
+    private val pollRepository: PollRepository,
+    private val bookmarkRepository: BookmarkRepository,
+    private val reshareRepository: ReshareRepository,
+    private val reportRepository: ReportRepository,
+    private val userRepository: UserRepository,
+    private val client: SupabaseClient
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PostDetailUiState())
     val uiState: StateFlow<PostDetailUiState> = _uiState.asStateFlow()
@@ -39,7 +41,7 @@ class PostDetailViewModel(application: Application) : AndroidViewModel(applicati
     private var currentPostId: String? = null
 
     init {
-        val currentUser = SupabaseClient.client.auth.currentUserOrNull()
+        val currentUser = client.auth.currentUserOrNull()
         _uiState.update { it.copy(currentUserId = currentUser?.id) }
     }
 
@@ -47,7 +49,6 @@ class PostDetailViewModel(application: Application) : AndroidViewModel(applicati
         // Only initialize pager if it's a new post or flow is empty
         if (currentPostId != postId) {
             currentPostId = postId
-            val pagingSource = CommentPagingSource(commentRepository, postId)
             val flow = Pager(
                 PagingConfig(pageSize = 20)
             ) {

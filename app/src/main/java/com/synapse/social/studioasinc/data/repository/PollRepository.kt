@@ -1,15 +1,16 @@
 package com.synapse.social.studioasinc.data.repository
 
 import android.util.Log
-import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.domain.model.PollOption
 import com.synapse.social.studioasinc.domain.model.PollOptionResult
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.Instant
+import javax.inject.Inject
 
 /**
  * Repository for poll operations.
@@ -17,8 +18,9 @@ import java.time.Instant
  *
  * Requirements: 7.1, 7.2, 7.3, 7.4, 7.5
  */
-class PollRepository {
-    private val client = SupabaseClient.client
+class PollRepository @Inject constructor(
+    private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
+) {
 
     @Serializable
     private data class PollVote(
@@ -152,7 +154,7 @@ class PollRepository {
         // Get all votes
         val votes = client.from("poll_votes")
             .select(Columns.list("option_index")) {
-                filter { eq("post_id", postId) }
+                filter { eq("id", postId) }
             }
             .decodeList<PollVote>()
 

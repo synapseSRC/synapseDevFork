@@ -39,7 +39,7 @@ import android.annotation.SuppressLint
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.StoryMediaType
 import com.synapse.social.studioasinc.domain.model.StoryPrivacy
-import com.synapse.social.studioasinc.ui.theme.SynapseTheme
+import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.profile
+package com.synapse.social.studioasinc.feature.profile.profile
 
 import com.synapse.social.studioasinc.data.model.UserProfile
 

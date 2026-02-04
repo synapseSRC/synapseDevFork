@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.profile
+package com.synapse.social.studioasinc.feature.profile.profile
 
 enum class ProfileContentFilter(val displayName: String) {
     PHOTOS("Photos"),

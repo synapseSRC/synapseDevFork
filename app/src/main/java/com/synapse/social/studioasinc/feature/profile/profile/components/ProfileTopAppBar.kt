@@ -1,10 +1,9 @@
-package com.synapse.social.studioasinc.ui.profile.components
+package com.synapse.social.studioasinc.feature.profile.profile.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
@@ -26,12 +25,6 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Enhanced Profile Top App Bar with scroll-based visibility.
- *
- * Features:
- * - Transparent when at top, solid when scrolled
- * - Username appears on scroll
- * - Smooth color and alpha transitions
- * - Scale animation on icons
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,20 +35,14 @@ fun ProfileTopAppBar(
     onMoreClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor by animateColorAsState(
+    val containerColor by animateColorAsState(
         targetValue = if (scrollProgress > 0.5f) {
             MaterialTheme.colorScheme.surface
         } else {
-            Color.Transparent
+            MaterialTheme.colorScheme.surface.copy(alpha = 0f)
         },
         animationSpec = tween(durationMillis = 200),
         label = "backgroundColor"
-    )
-
-    val elevation by animateDpAsState(
-        targetValue = if (scrollProgress > 0.5f) 4.dp else 0.dp,
-        animationSpec = tween(durationMillis = 200),
-        label = "elevation"
     )
 
     val titleAlpha by animateFloatAsState(
@@ -68,7 +55,7 @@ fun ProfileTopAppBar(
         targetValue = if (scrollProgress > 0.5f) {
             MaterialTheme.colorScheme.onSurface
         } else {
-            Color.White
+            MaterialTheme.colorScheme.onSecondaryContainer // Better contrast on cover
         },
         animationSpec = tween(durationMillis = 200),
         label = "iconTint"
@@ -108,15 +95,16 @@ fun ProfileTopAppBar(
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = backgroundColor
+            containerColor = containerColor,
+            scrolledContainerColor = MaterialTheme.colorScheme.surface,
+            navigationIconContentColor = iconTint,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            actionIconContentColor = iconTint
         ),
         modifier = modifier
     )
 }
 
-/**
- * Icon button with press animation.
- */
 @Composable
 private fun AnimatedIconButton(
     onClick: () -> Unit,
@@ -157,19 +145,6 @@ private fun ProfileTopAppBarPreview() {
         ProfileTopAppBar(
             displayName = "John Doe",
             scrollProgress = 0.7f,
-            onBackClick = {},
-            onMoreClick = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun ProfileTopAppBarTransparentPreview() {
-    MaterialTheme {
-        ProfileTopAppBar(
-            displayName = "John Doe",
-            scrollProgress = 0f,
             onBackClick = {},
             onMoreClick = {}
         )

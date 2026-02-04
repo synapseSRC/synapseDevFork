@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.theme
+package com.synapse.social.studioasinc.feature.shared.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography

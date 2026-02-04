@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.synapse.social.studioasinc.ui.search.SearchScreen
 import com.synapse.social.studioasinc.ui.search.SearchViewModel
-import com.synapse.social.studioasinc.ui.theme.SynapseTheme
+import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 // TODO: Re-implement chat functionality
 // import com.synapse.social.studioasinc.ui.chat.ChatActivity
 import dagger.hilt.android.AndroidEntryPoint

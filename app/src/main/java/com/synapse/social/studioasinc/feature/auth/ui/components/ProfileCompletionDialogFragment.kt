@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.DialogFragment
 import com.synapse.social.studioasinc.feature.profile.ProfileEditActivity
-import com.synapse.social.studioasinc.ui.theme.AuthTheme
+import com.synapse.social.studioasinc.feature.shared.theme.AuthTheme
 
 class ProfileCompletionDialogFragment : DialogFragment() {
 

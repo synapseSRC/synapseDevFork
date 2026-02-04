@@ -1,11 +1,10 @@
-package com.synapse.social.studioasinc.ui.profile.components
+package com.synapse.social.studioasinc.feature.profile.profile.components
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Person
@@ -13,164 +12,85 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.res.stringResource
+import com.synapse.social.studioasinc.R
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.domain.model.UserStatus
-import com.synapse.social.studioasinc.ui.theme.StatusOnline
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
+import com.synapse.social.studioasinc.feature.shared.theme.Spacing
+import com.synapse.social.studioasinc.feature.shared.theme.StatusOnline
+import com.synapse.social.studioasinc.domain.model.UserStatus
 
-/**
- * Cover photo component with parallax scrolling effect.
- *
- * Features:
- * - Parallax movement based on scroll offset
- * - Gradient overlay for better text readability
- * - Edit button overlay for own profile
- * - Smooth fade-in animation on load
- * - Placeholder with gradient background
- *
- * @param coverImageUrl URL of the cover image, null shows placeholder
- * @param scrollOffset Current scroll offset for parallax calculation (0f to 1f)
- * @param isOwnProfile Whether this is the current user's profile
- * @param onEditClick Callback when edit button is clicked
- * @param height Height of the cover photo section
- * @param parallaxFactor How much the image moves relative to scroll (0.5f = half speed)
- */
 @Composable
 fun CoverPhoto(
     coverImageUrl: String?,
     scrollOffset: Float = 0f,
     isOwnProfile: Boolean = false,
     onEditClick: () -> Unit = {},
-    height: Dp = 200.dp,
-    parallaxFactor: Float = 0.5f,
-    modifier: Modifier = Modifier
+    onCoverClick: () -> Unit = {},
+    height: Dp = 200.dp
 ) {
     val haptic = LocalHapticFeedback.current
-    var imageLoaded by remember { mutableStateOf(false) }
-
-    // Fade-in animation when image loads
-    val alpha by animateFloatAsState(
-        targetValue = if (imageLoaded || coverImageUrl == null) 1f else 0f,
-        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing),
-        label = "coverFadeIn"
-    )
-
-    val density = LocalDensity.current
-    val heightPx = with(density) { height.toPx() }
-
-    // Calculate parallax offset based on height
-    // Using direct scrollOffset for immediate response without spring lag
-    val parallaxOffset = scrollOffset * heightPx * parallaxFactor
-
-    // Depth-based scale effect: zoom in slightly as user scrolls
-    val depthScale = 1.1f + (scrollOffset * 0.15f).coerceIn(0f, 0.2f)
-
-    // Dynamic blur based on scroll
-    val blurRadius = (scrollOffset * 12).coerceIn(0f, 15f)
-
-    // Vignette intensity increases with scroll
-    val vignetteAlpha = (0.3f + scrollOffset * 0.4f).coerceIn(0.3f, 0.7f)
 
     Box(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .height(height)
+            .graphicsLayer {
+                translationY = scrollOffset * 0.5f
+                alpha = 1f - (scrollOffset / height.toPx()).coerceIn(0f, 1f)
+            }
+            .clickable(enabled = coverImageUrl != null) { onCoverClick() }
     ) {
-        // Cover Image or Placeholder
         if (coverImageUrl != null) {
             AsyncImage(
                 model = coverImageUrl,
                 contentDescription = "Cover photo",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .graphicsLayer {
-                        translationY = parallaxOffset
-                        // Enhanced depth-based zoom for immersive parallax
-                        scaleX = depthScale
-                        scaleY = depthScale
-                    }
-                    .blur(
-                        radius = blurRadius.dp,
-                        edgeTreatment = androidx.compose.ui.draw.BlurredEdgeTreatment.Unbounded
-                    )
-                    .graphicsLayer { this.alpha = alpha },
-                contentScale = ContentScale.Crop,
-                onState = { state ->
-                    imageLoaded = state is AsyncImagePainter.State.Success
-                }
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
         } else {
-            // Gradient placeholder when no cover image
-            CoverPlaceholder(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .graphicsLayer {
-                        translationY = parallaxOffset * 0.5f
-                    }
-            )
+            CoverPlaceholder(modifier = Modifier.fillMaxSize())
         }
 
-        // Enhanced gradient overlay with vignette effect
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            Color.Black.copy(alpha = vignetteAlpha * 0.3f),
-                            Color.Black.copy(alpha = vignetteAlpha)
-                        ),
-                        startY = 0f,
-                        endY = Float.POSITIVE_INFINITY
-                    )
-                )
-        )
-
-        // Camera Button for editing cover
         if (isOwnProfile) {
-            Box(
+            Surface(
+                onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    onEditClick()
+                },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(12.dp)
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .background(Color.White)
-                    .clickable {
-                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        onEditClick()
-                    },
-                contentAlignment = Alignment.Center
+                    .padding(Spacing.SmallMedium)
+                    .size(48.dp),
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                tonalElevation = 4.dp
             ) {
-                Icon(
-                    imageVector = Icons.Default.CameraAlt,
-                    contentDescription = "Edit cover photo",
-                    tint = Color.Black,
-                    modifier = Modifier.size(20.dp)
-                )
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Default.CameraAlt,
+                        contentDescription = "Edit cover photo",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
         }
     }
 }
 
-/**
- * Animated gradient placeholder for cover photo.
- */
 @Composable
 private fun CoverPlaceholder(
     modifier: Modifier = Modifier
@@ -210,7 +130,6 @@ private fun CoverPlaceholder(
             ),
         contentAlignment = Alignment.Center
     ) {
-        // Subtle icon indicating no cover set
         Icon(
             imageVector = Icons.Default.Person,
             contentDescription = null,
@@ -222,10 +141,6 @@ private fun CoverPlaceholder(
     }
 }
 
-/**
- * Cover photo with overlay profile image.
- * Combines cover photo with profile picture that overlaps the cover.
- */
 @Composable
 fun CoverPhotoWithProfile(
     coverImageUrl: String?,
@@ -236,8 +151,9 @@ fun CoverPhotoWithProfile(
     hasStory: Boolean = false,
     onCoverEditClick: () -> Unit = {},
     onProfileImageClick: () -> Unit = {},
-    coverHeight: Dp = 180.dp,
-    profileImageSize: Dp = 110.dp,
+    onCoverClick: () -> Unit = {},
+    coverHeight: Dp = 200.dp,
+    profileImageSize: Dp = 120.dp,
     modifier: Modifier = Modifier
 ) {
     val profileImageOffset = profileImageSize / 2
@@ -245,20 +161,19 @@ fun CoverPhotoWithProfile(
     Box(
         modifier = modifier.fillMaxWidth()
     ) {
-        // Cover Photo
         CoverPhoto(
             coverImageUrl = coverImageUrl,
             scrollOffset = scrollOffset,
             isOwnProfile = isOwnProfile,
             onEditClick = onCoverEditClick,
+            onCoverClick = onCoverClick,
             height = coverHeight
         )
 
-        // Profile Image overlapping cover
         Box(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(start = 16.dp)
+                .padding(start = Spacing.Medium)
                 .offset(y = profileImageOffset)
         ) {
             ProfileImageWithRing(
@@ -273,9 +188,6 @@ fun CoverPhotoWithProfile(
     }
 }
 
-/**
- * Profile image with animated story ring.
- */
 @Composable
 fun ProfileImageWithRing(
     avatar: String?,
@@ -290,7 +202,6 @@ fun ProfileImageWithRing(
     val infiniteTransition = rememberInfiniteTransition(label = "storyRing")
     val shape = CircleShape
 
-    // Pulsing animation for story ring
     val scale by infiniteTransition.animateFloat(
         initialValue = 1f,
         targetValue = if (hasStory) 1.03f else 1f,
@@ -301,7 +212,6 @@ fun ProfileImageWithRing(
         label = "storyPulse"
     )
 
-    // Rotating gradient for story ring
     val rotation by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 360f,
@@ -321,23 +231,21 @@ fun ProfileImageWithRing(
             .scale(scale)
             .clip(shape)
             .clickable {
-                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 onClick()
             },
         contentAlignment = Alignment.Center
     ) {
-        // Story ring background (if has story)
         if (hasStory) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(shape) // Clip the outer container to the shape
+                    .clip(shape)
             ) {
-                // Rotating gradient inside the clipped shape
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .scale(1.4f) // Scale up to ensure corners are covered during rotation
+                        .scale(1.4f)
                         .graphicsLayer { rotationZ = rotation }
                         .background(
                             brush = Brush.sweepGradient(
@@ -353,7 +261,6 @@ fun ProfileImageWithRing(
             }
         }
 
-        // White/surface background ring
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -362,7 +269,6 @@ fun ProfileImageWithRing(
                 .background(MaterialTheme.colorScheme.surface)
         )
 
-        // Profile image
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -372,12 +278,11 @@ fun ProfileImageWithRing(
             if (avatar != null) {
                 AsyncImage(
                     model = avatar,
-                    contentDescription = "Profile picture",
+                    contentDescription = stringResource(R.string.author_avatar),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
             } else {
-                // Placeholder
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -394,7 +299,6 @@ fun ProfileImageWithRing(
             }
         }
 
-        // Active Status Indicator (Green Dot)
         if (status == UserStatus.ONLINE) {
             Box(
                 modifier = Modifier
@@ -410,60 +314,6 @@ fun ProfileImageWithRing(
                         contentDescription = "Online"
                     }
             )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CoverPhotoPreview() {
-    MaterialTheme {
-        CoverPhoto(
-            coverImageUrl = null,
-            isOwnProfile = true,
-            onEditClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ProfileImageWithRingPreview() {
-    MaterialTheme {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            ProfileImageWithRing(
-                avatar = null,
-                size = 80.dp,
-                status = UserStatus.ONLINE,
-                hasStory = true,
-                isOwnProfile = false
-            )
-            ProfileImageWithRing(
-                avatar = null,
-                size = 80.dp,
-                status = UserStatus.OFFLINE,
-                hasStory = false,
-                isOwnProfile = true
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CoverPhotoWithProfilePreview() {
-    MaterialTheme {
-        Column {
-            CoverPhotoWithProfile(
-                coverImageUrl = null,
-                avatar = null,
-                isOwnProfile = true,
-                hasStory = true
-            )
-            Spacer(modifier = Modifier.height(60.dp))
         }
     }
 }

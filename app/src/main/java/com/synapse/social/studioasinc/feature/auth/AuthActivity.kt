@@ -15,7 +15,7 @@ import com.synapse.social.studioasinc.data.repository.AuthRepository
 import com.synapse.social.studioasinc.data.repository.UsernameRepository
 import com.synapse.social.studioasinc.feature.auth.ui.AuthScreen
 import com.synapse.social.studioasinc.feature.auth.presentation.viewmodel.AuthViewModel
-import com.synapse.social.studioasinc.ui.theme.AuthTheme
+import com.synapse.social.studioasinc.feature.shared.theme.AuthTheme
 import androidx.activity.enableEdgeToEdge
 import dagger.hilt.android.AndroidEntryPoint
 

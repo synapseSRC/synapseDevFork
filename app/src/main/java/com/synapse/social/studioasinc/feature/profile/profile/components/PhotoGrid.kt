@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.profile.components
+package com.synapse.social.studioasinc.feature.profile.profile.components
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background

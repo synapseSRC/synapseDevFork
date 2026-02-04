@@ -3,9 +3,11 @@ package com.synapse.social.studioasinc.shared.data.repository
 import com.synapse.social.studioasinc.shared.core.network.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.auth.providers.OAuthProvider
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 import io.github.aakira.napier.Napier
+import kotlin.time.ExperimentalTime
 
 /**
  * Shared Authentication Repository
@@ -85,6 +87,7 @@ class AuthRepository {
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     suspend fun isEmailVerified(): Boolean {
         return try {
             SupabaseClient.client.auth.currentUserOrNull()?.emailConfirmedAt != null
@@ -178,6 +181,19 @@ class AuthRepository {
             }
         } catch (e: Exception) {
             Napier.e("OAuth callback failed", e, tag = TAG)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun signInWithOAuth(provider: OAuthProvider, redirectUrl: String): Result<Unit> {
+        return try {
+            withContext(Dispatchers.IO) {
+                SupabaseClient.client.auth.signInWith(provider)
+                Napier.d("OAuth sign-in initiated for ${provider.name}", tag = TAG)
+                Result.success(Unit)
+            }
+        } catch (e: Exception) {
+            Napier.e("OAuth sign-in failed", e, tag = TAG)
             Result.failure(e)
         }
     }

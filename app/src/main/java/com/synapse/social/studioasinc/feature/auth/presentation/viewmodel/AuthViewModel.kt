@@ -390,7 +390,11 @@ class AuthViewModel @Inject constructor(
         } else {
             // Assume OAuth login or Magic Link
             viewModelScope.launch {
-                val result = authRepository.handleOAuthCallback(uri)
+                val result = authRepository.handleOAuthCallback(
+                    code = uri.getQueryParameter("code"),
+                    accessToken = uri.getQueryParameter("access_token"),
+                    refreshToken = uri.getQueryParameter("refresh_token")
+                )
                 result.fold(
                     onSuccess = {
                         _uiState.value = AuthUiState.Success("Authenticated successfully")
@@ -582,7 +586,7 @@ class AuthViewModel @Inject constructor(
                 }
             } else {
                 // Fallback for other providers using manual URL construction
-                val result = authRepository.getOAuthUrl(provider)
+                val result = authRepository.getOAuthUrl(provider, Constants.SUPABASE_REDIRECT_URL)
                 result.fold(
                     onSuccess = { url ->
                         _navigationEvent.emit(AuthNavigationEvent.OpenUrl(url))

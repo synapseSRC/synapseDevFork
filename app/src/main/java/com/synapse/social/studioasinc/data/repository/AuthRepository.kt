@@ -2,6 +2,7 @@ package com.synapse.social.studioasinc.data.repository
 
 import com.synapse.social.studioasinc.data.local.auth.TokenManager
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
+import io.github.jan.supabase.auth.providers.OAuthProvider
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -98,6 +99,10 @@ class AuthRepository @Inject constructor(
 
     suspend fun handleOAuthCallback(code: String?, accessToken: String?, refreshToken: String?): Result<Unit> {
         return sharedAuthRepository.handleOAuthCallback(code, accessToken, refreshToken)
+    }
+
+    suspend fun signInWithOAuth(provider: OAuthProvider, redirectUrl: String): Result<Unit> {
+        return sharedAuthRepository.signInWithOAuth(provider, redirectUrl)
     }
 
     // Legacy compatibility methods

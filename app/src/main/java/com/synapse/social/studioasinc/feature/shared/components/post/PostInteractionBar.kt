@@ -117,7 +117,10 @@ fun PostInteractionBar(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.Comment,
-                        contentDescription = "Comment",
+                        contentDescription = stringResource(
+                            R.string.comment_on_post_with_count,
+                            commentCount
+                        ),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp)
                     )
@@ -139,7 +142,7 @@ fun PostInteractionBar(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Share,
-                        contentDescription = "Share",
+                        contentDescription = stringResource(R.string.share_post),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp)
                     )
@@ -152,7 +155,9 @@ fun PostInteractionBar(
             ) {
                 Icon(
                     imageVector = if (isBookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
-                    contentDescription = if (isBookmarked) "Unbookmark" else "Bookmark",
+                    contentDescription = stringResource(
+                        if (isBookmarked) R.string.unsave_post else R.string.save_post
+                    ),
                     tint = if (isBookmarked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(20.dp)
                 )

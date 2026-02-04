@@ -1,7 +1,9 @@
 package com.synapse.social.studioasinc.ui.notifications
 
 import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
+import com.synapse.social.studioasinc.core.util.TimeUtils
 import com.synapse.social.studioasinc.data.repository.AuthRepository
 import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,6 +16,7 @@ import javax.inject.Inject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 
+@Immutable
 data class NotificationsUiState(
     val notifications: List<UiNotification> = emptyList(),
     val isLoading: Boolean = false,
@@ -48,7 +51,7 @@ class NotificationsViewModel @Inject constructor(
                             actorName = dto.actor?.displayName ?: "User",
                             actorAvatar = dto.actor?.avatar,
                             message = dto.body["en"]?.jsonPrimitive?.contentOrNull ?: "New notification",
-                            timestamp = dto.createdAt,
+                            timestamp = TimeUtils.getTimeAgo(dto.createdAt),
                             isRead = dto.isRead,
                             targetId = dto.data?.get("target_id")?.jsonPrimitive?.contentOrNull
                         )
@@ -98,12 +101,21 @@ class NotificationsViewModel @Inject constructor(
 
     private fun setNotificationReadState(notificationId: String, isRead: Boolean) {
         _uiState.update { state ->
-            val updatedList = state.notifications.map {
-                if (it.id == notificationId) it.copy(isRead = isRead) else it
+            val index = state.notifications.indexOfFirst { it.id == notificationId }
+            if (index == -1 || state.notifications[index].isRead == isRead) return@update state
+
+            val updatedList = state.notifications.toMutableList()
+            updatedList[index] = updatedList[index].copy(isRead = isRead)
+
+            val newUnreadCount = if (isRead) {
+                (state.unreadCount - 1).coerceAtLeast(0)
+            } else {
+                state.unreadCount + 1
             }
+
             state.copy(
                 notifications = updatedList,
-                unreadCount = updatedList.count { !it.isRead }
+                unreadCount = newUnreadCount
             )
         }
     }

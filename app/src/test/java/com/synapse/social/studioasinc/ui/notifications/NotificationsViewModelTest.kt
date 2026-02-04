@@ -171,14 +171,17 @@ class NotificationsViewModelTest {
         val notificationId = "notif1"
         whenever(authRepository.getCurrentUserId()).thenReturn(userId)
         val mockNotifications = listOf(createMockNotificationDto(notificationId, "like", isRead = false))
-        whenever(notificationRepository.fetchNotifications(userId)).thenReturn(mockNotifications)
+
+        // Define sequence of behaviors for fetchNotifications
+        whenever(notificationRepository.fetchNotifications(userId))
+            .thenReturn(mockNotifications) // For initial load
+            .thenThrow(RuntimeException("Revert failed")) // For reload on failure
 
         createViewModel()
         advanceUntilIdle()
 
-        // Mock both failures
+        // Mock the primary failure for the test
         whenever(notificationRepository.markAsRead(userId, notificationId)).thenThrow(RuntimeException("Update failed"))
-        whenever(notificationRepository.fetchNotifications(userId)).thenThrow(RuntimeException("Revert failed"))
 
         // Act
         viewModel.markAsRead(notificationId)

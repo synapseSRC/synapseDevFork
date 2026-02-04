@@ -9,6 +9,7 @@ import io.github.aakira.napier.Napier
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.builtin.OtpType
+import kotlin.time.ExperimentalTime
 import io.github.jan.supabase.auth.user.UserSession
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
@@ -156,6 +157,7 @@ class SupabaseAuthenticationService(
         }
     }
     
+    @OptIn(ExperimentalTime::class)
     override suspend fun restoreSession(): Boolean {
         return try {
             if (client.auth.currentSessionOrNull() != null) return true
@@ -182,6 +184,7 @@ class SupabaseAuthenticationService(
         }
     }
     
+    @OptIn(ExperimentalTime::class)
     override suspend fun refreshSession(): Result<Unit> {
         return try {
             client.auth.refreshCurrentSession()
@@ -239,7 +242,7 @@ class SupabaseAuthenticationService(
     
     override suspend fun getOAuthUrl(provider: String, redirectUrl: String): Result<String> {
         return try {
-            val supabaseUrl = SupabaseClient.getUrl()
+            val supabaseUrl = SupabaseClient.url
             val baseUrl = if (supabaseUrl.endsWith("/")) supabaseUrl.dropLast(1) else supabaseUrl
             
             val providerName = when(provider.lowercase()) {
@@ -256,6 +259,7 @@ class SupabaseAuthenticationService(
         }
     }
     
+    @OptIn(ExperimentalTime::class)
     override suspend fun handleOAuthCallback(code: String?, accessToken: String?, refreshToken: String?): Result<Unit> {
         return try {
             when {

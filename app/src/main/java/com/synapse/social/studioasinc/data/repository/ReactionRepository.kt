@@ -1,15 +1,16 @@
 package com.synapse.social.studioasinc.data.repository
 
 import android.util.Log
-import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.domain.model.CommentReaction
 import com.synapse.social.studioasinc.domain.model.ReactionType
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
+import javax.inject.Inject
 
 /**
  * Repository for handling post and comment reactions.
@@ -17,9 +18,9 @@ import kotlinx.serialization.json.*
  *
  * Requirements: 3.2, 3.3, 3.4, 3.5, 6.2, 6.3, 6.4
  */
-class ReactionRepository {
-
-    private val client = SupabaseClient.client
+class ReactionRepository @Inject constructor(
+    private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
+) {
 
     companion object {
         private const val TAG = "ReactionRepository"
@@ -43,10 +44,6 @@ class ReactionRepository {
         reactionType: ReactionType
     ): Result<ReactionToggleResult> = withContext(Dispatchers.IO) {
         try {
-            if (!SupabaseClient.isConfigured()) {
-                return@withContext Result.failure(Exception("Supabase not configured"))
-            }
-
             val currentUser = client.auth.currentUserOrNull()
                 ?: return@withContext Result.failure(Exception("User must be authenticated to react"))
 

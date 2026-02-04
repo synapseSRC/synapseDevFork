@@ -18,7 +18,7 @@ import androidx.navigation.compose.composable
 import com.synapse.social.studioasinc.ui.home.FeedScreen
 import com.synapse.social.studioasinc.feature.shared.reels.ReelsScreen
 import com.synapse.social.studioasinc.ui.notifications.NotificationsScreen
-import com.synapse.social.studioasinc.ui.postdetail.PostDetailScreen
+import com.synapse.social.studioasinc.feature.post.postdetail.PostDetailScreen
 import com.synapse.social.studioasinc.feature.stories.creator.StoryCreatorActivity
 
 sealed class HomeDestinations(val route: String) {

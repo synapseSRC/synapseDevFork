@@ -16,7 +16,7 @@ import com.synapse.social.studioasinc.feature.profile.profile.ProfileScreen
 import com.synapse.social.studioasinc.ui.inbox.InboxScreen
 import com.synapse.social.studioasinc.ui.search.SearchScreen
 import com.synapse.social.studioasinc.ui.search.SearchViewModel
-import com.synapse.social.studioasinc.ui.postdetail.PostDetailScreen
+import com.synapse.social.studioasinc.feature.post.postdetail.PostDetailScreen
 import com.synapse.social.studioasinc.ui.createpost.CreatePostScreen
 import com.synapse.social.studioasinc.ui.createpost.CreatePostViewModel
 import com.synapse.social.studioasinc.ui.settings.SettingsScreen

@@ -4,6 +4,7 @@ import android.content.Context
 import com.synapse.social.studioasinc.data.local.database.AppDatabase
 import com.synapse.social.studioasinc.data.local.database.PostDao
 import com.synapse.social.studioasinc.data.local.database.UserDao
+import com.synapse.social.studioasinc.data.local.database.CommentDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,5 +30,10 @@ object DatabaseModule {
     @Provides
     fun provideUserDao(database: AppDatabase): UserDao {
         return database.userDao()
+    }
+
+    @Provides
+    fun provideCommentDao(database: AppDatabase): CommentDao {
+        return database.commentDao()
     }
 }

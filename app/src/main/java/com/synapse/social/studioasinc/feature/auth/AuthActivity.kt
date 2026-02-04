@@ -9,7 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.ViewModel
 import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.ui.main.MainActivity
+import com.synapse.social.studioasinc.feature.shared.main.MainActivity
 import androidx.lifecycle.ViewModelProvider
 import com.synapse.social.studioasinc.data.repository.AuthRepository
 import com.synapse.social.studioasinc.data.repository.UsernameRepository

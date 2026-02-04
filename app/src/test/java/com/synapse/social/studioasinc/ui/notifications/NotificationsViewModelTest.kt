@@ -18,7 +18,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.mockito.kotlin.*
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -37,6 +38,9 @@ class NotificationsViewModelTest {
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule(testDispatcher)
 
+    @get:Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
     @Mock
     lateinit var authRepository: AuthRepository
 
@@ -44,11 +48,6 @@ class NotificationsViewModelTest {
     lateinit var notificationRepository: NotificationRepository
 
     private lateinit var viewModel: NotificationsViewModel
-
-    @Before
-    fun setup() {
-        MockitoAnnotations.openMocks(this)
-    }
 
     private fun createViewModel() {
         viewModel = NotificationsViewModel(authRepository, notificationRepository)
@@ -163,6 +162,59 @@ class NotificationsViewModelTest {
         advanceUntilIdle() // Complete the flow (including failure and revert)
 
         // Assert - verify fetchNotifications was called again to revert (once in init, once in revert)
+        verify(notificationRepository, times(2)).fetchNotifications(userId)
+    }
+
+    @Test
+    fun `markAsRead failure followed by reload failure should handle gracefully`() = runTest(testDispatcher) {
+        // Arrange
+        val userId = "user123"
+        val notificationId = "notif1"
+        whenever(authRepository.getCurrentUserId()).thenReturn(userId)
+        val mockNotifications = listOf(createMockNotificationDto(notificationId, "like", isRead = false))
+        whenever(notificationRepository.fetchNotifications(userId)).thenReturn(mockNotifications)
+
+        createViewModel()
+        advanceUntilIdle()
+
+        // Mock both failures
+        whenever(notificationRepository.markAsRead(userId, notificationId)).thenThrow(RuntimeException("Update failed"))
+        whenever(notificationRepository.fetchNotifications(userId)).thenThrow(RuntimeException("Revert failed"))
+
+        // Act
+        viewModel.markAsRead(notificationId)
+        runCurrent() // Apply optimistic update
+        advanceUntilIdle() // Fail repo call and fail reload
+
+        // Assert
+        val state = viewModel.uiState.value
+        assertFalse("Loading should be false after all attempts", state.isLoading)
+
+        // Strengthening assertion: In current implementation, the state REMAINS isRead = true
+        // if reload fails, because there's no manual rollback in markAsRead catch.
+        // This confirms the limitation/edge case identified in review.
+        val notif = state.notifications.first { it.id == notificationId }
+        assertFalse("UI state should be reverted even if reload fails", notif.isRead)
+
+        verify(notificationRepository, times(2)).fetchNotifications(userId)
+    }
+
+    @Test
+    fun `refresh should trigger reload of notifications`() = runTest(testDispatcher) {
+        // Arrange
+        val userId = "user123"
+        whenever(authRepository.getCurrentUserId()).thenReturn(userId)
+        whenever(notificationRepository.fetchNotifications(userId)).thenReturn(emptyList())
+
+        createViewModel()
+        advanceUntilIdle()
+        verify(notificationRepository, times(1)).fetchNotifications(userId)
+
+        // Act
+        viewModel.refresh()
+        advanceUntilIdle()
+
+        // Assert
         verify(notificationRepository, times(2)).fetchNotifications(userId)
     }
 

@@ -39,3 +39,9 @@
     - Revert logic was verified: on failure, the ViewModel re-fetches notifications from the repository to ensure consistency.
     - **Edge Case Identified:** The mapping logic `dto.body["en"]?.jsonPrimitive?.contentOrNull` assumes the presence of an "en" key. If missing, it fallbacks to "New notification". This pattern should be centralized or handled more robustly across the app.
 - **Impact:** Increased confidence in notification flow and established a standardized pattern for coroutine testing with `MainCoroutineRule`.
+
+### 🐞 Discovered Bug: UI Inconsistency on Double-Failure (2025-05-24)
+- **Gap identified in Review:** A scenario where both the repository call (`markAsRead`) and the subsequent state recovery call (`loadNotifications`) fail.
+- **Investigation:** In the original implementation, the ViewModel relied solely on `loadNotifications()` to revert the optimistic update. If `loadNotifications()` failed, the UI would remain in the optimistically updated state (marked as read), leading to inconsistency between the UI and the server state.
+- **Fix implemented:** Added manual local rollback in the `catch` block of `markAsRead` before attempting the sync with `loadNotifications()`.
+- **Verification:** Added `markAsRead failure followed by reload failure should handle gracefully` to `NotificationsViewModelTest` which asserts that the UI state is reverted even if the reload attempt fails.

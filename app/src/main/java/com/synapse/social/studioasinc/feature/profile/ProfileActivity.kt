@@ -26,6 +26,7 @@ import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.repository.AuthRepository
 import com.synapse.social.studioasinc.feature.profile.profile.ProfileScreen
 import com.synapse.social.studioasinc.feature.profile.profile.ProfileViewModel
+import com.synapse.social.studioasinc.feature.shared.components.FollowListActivity
 import com.synapse.social.studioasinc.ui.settings.AppearanceViewModel
 import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 // TODO: Re-implement chat feature - chat activity import

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.components.post
+package com.synapse.social.studioasinc.feature.shared.components.post
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding

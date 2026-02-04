@@ -26,7 +26,7 @@ import com.synapse.social.studioasinc.presentation.editprofile.EditProfileEvent
 import com.synapse.social.studioasinc.feature.profile.editprofile.RegionSelectionScreen
 import com.synapse.social.studioasinc.presentation.editprofile.photohistory.PhotoHistoryScreen
 import com.synapse.social.studioasinc.presentation.editprofile.photohistory.PhotoType
-import com.synapse.social.studioasinc.compose.FollowListScreen
+import com.synapse.social.studioasinc.feature.shared.components.compose.FollowListScreen
 import com.synapse.social.studioasinc.feature.stories.viewer.StoryViewerScreen
 import com.synapse.social.studioasinc.feature.stories.viewer.StoryViewerViewModel
 import androidx.compose.runtime.LaunchedEffect

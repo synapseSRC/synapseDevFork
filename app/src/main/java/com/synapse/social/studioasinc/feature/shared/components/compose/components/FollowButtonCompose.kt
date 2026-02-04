@@ -1,8 +1,10 @@
-package com.synapse.social.studioasinc.compose.components
+package com.synapse.social.studioasinc.feature.shared.components.compose.components
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -19,6 +21,7 @@ fun FollowButtonCompose(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var lastClickTime by remember { mutableLongStateOf(0L) }
+    val haptic = LocalHapticFeedback.current
 
     LaunchedEffect(targetUserId) {
         viewModel.initialize(targetUserId)

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.components.post
+package com.synapse.social.studioasinc.feature.shared.components.post
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -29,8 +29,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.synapse.social.studioasinc.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -47,6 +51,8 @@ fun PostInteractionBar(
     onReactionLongPress: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
+    val haptic = LocalHapticFeedback.current
+
     Column(modifier = modifier.fillMaxWidth()) {
         HorizontalDivider(
             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
@@ -74,13 +80,19 @@ fun PostInteractionBar(
                         )
                         .combinedClickable(
                             onClick = onLikeClick,
-                            onLongClick = { onReactionLongPress?.invoke() }
+                            onLongClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onReactionLongPress?.invoke()
+                            }
                         )
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Icon(
                         imageVector = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = if (isLiked) "Unlike" else "Like",
+                        contentDescription = stringResource(
+                            if (isLiked) R.string.like_post_liked else R.string.like_post_with_count,
+                            likeCount
+                        ),
                         tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp)
                     )

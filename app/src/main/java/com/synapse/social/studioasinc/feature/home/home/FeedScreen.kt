@@ -29,9 +29,9 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.StoryWithUser
-import com.synapse.social.studioasinc.ui.components.post.PostActions
-import com.synapse.social.studioasinc.ui.components.post.SharedPostItem
-import com.synapse.social.studioasinc.ui.components.post.PostOptionsBottomSheet
+import com.synapse.social.studioasinc.feature.shared.components.post.PostActions
+import com.synapse.social.studioasinc.feature.shared.components.post.SharedPostItem
+import com.synapse.social.studioasinc.feature.shared.components.post.PostOptionsBottomSheet
 import com.synapse.social.studioasinc.ui.components.ExpressivePullToRefreshIndicator
 import com.synapse.social.studioasinc.feature.stories.tray.StoryTray
 import com.synapse.social.studioasinc.feature.stories.tray.StoryTrayViewModel

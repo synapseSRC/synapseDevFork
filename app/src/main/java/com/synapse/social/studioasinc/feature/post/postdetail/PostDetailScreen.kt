@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.postdetail
+package com.synapse.social.studioasinc.feature.post.postdetail
 
 import android.content.Intent
 import androidx.compose.foundation.layout.*
@@ -16,12 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.synapse.social.studioasinc.domain.model.CommentAction
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.domain.model.CommentWithUser
-import com.synapse.social.studioasinc.ui.postdetail.components.*
+import com.synapse.social.studioasinc.feature.post.postdetail.components.*
 import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
 import com.synapse.social.studioasinc.ui.components.post.PostInteractionBar
 import com.synapse.social.studioasinc.ui.components.post.PollContent
@@ -40,7 +40,7 @@ fun PostDetailScreen(
     onNavigateBack: () -> Unit,
     onNavigateToProfile: (String) -> Unit,
     onNavigateToEditPost: (String) -> Unit = {},
-    viewModel: PostDetailViewModel = viewModel(),
+    viewModel: PostDetailViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()

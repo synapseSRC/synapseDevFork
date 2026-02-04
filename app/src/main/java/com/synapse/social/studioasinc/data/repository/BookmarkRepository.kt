@@ -1,19 +1,21 @@
 package com.synapse.social.studioasinc.data.repository
 
 import android.util.Log
-import com.synapse.social.studioasinc.core.network.SupabaseClient
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import javax.inject.Inject
 
 /**
  * Repository for post bookmarking/favorites.
  * Requirements: 8.1, 8.2
  */
-class BookmarkRepository {
-    private val client = SupabaseClient.client
+class BookmarkRepository @Inject constructor(
+    private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
+) {
 
     @Serializable
     private data class Favorite(

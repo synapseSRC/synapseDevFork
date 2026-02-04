@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import com.synapse.social.studioasinc.ui.postdetail.PostDetailScreen
+import com.synapse.social.studioasinc.feature.post.postdetail.PostDetailScreen
 import com.synapse.social.studioasinc.ui.theme.SynapseTheme
 
 class PostDetailActivity : AppCompatActivity() {

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.main
+package com.synapse.social.studioasinc.feature.shared.main
 
 import android.app.Notification
 import android.app.NotificationChannel

@@ -120,7 +120,10 @@ class PostDetailRepository @Inject constructor(
 
             client.from("posts")
                 .update({ set("is_deleted", true) }) {
-                    filter { eq("id", postId) }
+                    filter {
+                        eq("id", postId)
+                        eq("author_uid", currentUser.id)
+                    }
                 }
 
             Log.d(TAG, "Post deleted successfully: $postId")
@@ -216,7 +219,7 @@ class PostDetailRepository @Inject constructor(
                 uid = userData["uid"]?.jsonPrimitive?.contentOrNull ?: return null,
                 username = userData["username"]?.jsonPrimitive?.contentOrNull ?: "",
                 displayName = userData["display_name"]?.jsonPrimitive?.contentOrNull ?: "",
-                email = userData["email"]?.jsonPrimitive?.contentOrNull ?: "",
+                email = "", // Privacy fix: Do not leak emails in public responses
                 bio = userData["bio"]?.jsonPrimitive?.contentOrNull,
                 avatar = userData["avatar"]?.jsonPrimitive?.contentOrNull,
                 followersCount = userData["followers_count"]?.jsonPrimitive?.intOrNull ?: 0,

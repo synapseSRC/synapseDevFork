@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.postdetail.components
+package com.synapse.social.studioasinc.feature.post.postdetail.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape

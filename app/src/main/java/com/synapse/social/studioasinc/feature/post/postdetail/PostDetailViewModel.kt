@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.postdetail
+package com.synapse.social.studioasinc.feature.post.postdetail
 
 import android.content.ClipData
 import android.content.ClipboardManager

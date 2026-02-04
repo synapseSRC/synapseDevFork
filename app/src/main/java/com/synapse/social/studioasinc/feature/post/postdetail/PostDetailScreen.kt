@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.postdetail
+package com.synapse.social.studioasinc.feature.post.postdetail
 
 import android.content.Intent
 import androidx.compose.foundation.layout.*
@@ -21,7 +21,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.synapse.social.studioasinc.domain.model.CommentAction
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.domain.model.CommentWithUser
-import com.synapse.social.studioasinc.ui.postdetail.components.*
+import com.synapse.social.studioasinc.feature.post.postdetail.components.*
 import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
 import com.synapse.social.studioasinc.ui.components.post.PostInteractionBar
 import com.synapse.social.studioasinc.ui.components.post.PollContent

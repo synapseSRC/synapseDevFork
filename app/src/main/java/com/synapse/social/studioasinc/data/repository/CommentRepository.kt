@@ -367,6 +367,30 @@ class CommentRepository @Inject constructor(
             val currentUser = client.auth.currentUserOrNull()
                 ?: return@withContext Result.failure(Exception("User must be authenticated"))
 
+            val existingComment = client.from("comments")
+                .select { filter { eq("id", commentId) } }
+                .decodeSingleOrNull<JsonObject>()
+                ?: return@withContext Result.failure(Exception("Comment not found"))
+
+            val commentUserId = existingComment["user_id"]?.jsonPrimitive?.contentOrNull
+            val postId = existingComment["post_id"]?.jsonPrimitive?.contentOrNull
+
+            // Check if user is comment owner
+            var isAuthorized = commentUserId == currentUser.id
+
+            if (!isAuthorized && postId != null) {
+                // Check if user is post owner
+                val post = client.from("posts")
+                    .select { filter { eq("id", postId) } }
+                    .decodeSingleOrNull<JsonObject>()
+                val postAuthor = post?.get("author_uid")?.jsonPrimitive?.contentOrNull
+                isAuthorized = postAuthor == currentUser.id
+            }
+
+            if (!isAuthorized) {
+                return@withContext Result.failure(Exception("Not authorized to hide this comment"))
+            }
+
             client.from("comments")
                 .update({
                     set("is_hidden", true)
@@ -444,7 +468,7 @@ class CommentRepository @Inject constructor(
                 uid = userData["uid"]?.jsonPrimitive?.contentOrNull ?: return null,
                 username = userData["username"]?.jsonPrimitive?.contentOrNull ?: "",
                 displayName = userData["display_name"]?.jsonPrimitive?.contentOrNull ?: "",
-                email = userData["email"]?.jsonPrimitive?.contentOrNull ?: "",
+                email = "", // Privacy fix: Do not leak emails in public responses
                 bio = userData["bio"]?.jsonPrimitive?.contentOrNull,
                 avatar = userData["avatar"]?.jsonPrimitive?.contentOrNull,
                 followersCount = userData["followers_count"]?.jsonPrimitive?.intOrNull ?: 0,

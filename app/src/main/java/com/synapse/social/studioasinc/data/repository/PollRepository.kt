@@ -154,7 +154,7 @@ class PollRepository @Inject constructor(
         // Get all votes
         val votes = client.from("poll_votes")
             .select(Columns.list("option_index")) {
-                filter { eq("id", postId) }
+                filter { eq("post_id", postId) }
             }
             .decodeList<PollVote>()
 

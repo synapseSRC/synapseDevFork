@@ -12,11 +12,11 @@ import com.synapse.social.studioasinc.core.network.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import com.synapse.social.studioasinc.feature.auth.ui.AuthScreen
 import com.synapse.social.studioasinc.ui.home.HomeScreen
-import com.synapse.social.studioasinc.ui.profile.ProfileScreen
+import com.synapse.social.studioasinc.feature.profile.profile.ProfileScreen
 import com.synapse.social.studioasinc.ui.inbox.InboxScreen
 import com.synapse.social.studioasinc.ui.search.SearchScreen
 import com.synapse.social.studioasinc.ui.search.SearchViewModel
-import com.synapse.social.studioasinc.ui.postdetail.PostDetailScreen
+import com.synapse.social.studioasinc.feature.post.postdetail.PostDetailScreen
 import com.synapse.social.studioasinc.ui.createpost.CreatePostScreen
 import com.synapse.social.studioasinc.ui.createpost.CreatePostViewModel
 import com.synapse.social.studioasinc.ui.settings.SettingsScreen
@@ -93,7 +93,7 @@ fun AppNavigation(
             val userId = backStackEntry.arguments?.getString("userId") ?: return@composable
             val currentUserId = SupabaseClient.client.auth.currentUserOrNull()?.id ?: return@composable
             val targetUserId = if (userId == "me") currentUserId else userId
-            val viewModel: com.synapse.social.studioasinc.ui.profile.ProfileViewModel = hiltViewModel()
+            val viewModel: com.synapse.social.studioasinc.feature.profile.profile.ProfileViewModel = hiltViewModel()
             ProfileScreen(
                 userId = targetUserId,
                 currentUserId = currentUserId,

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.postdetail
+package com.synapse.social.studioasinc.feature.post.postdetail
 
 import com.synapse.social.studioasinc.domain.model.CommentWithUser
 import com.synapse.social.studioasinc.domain.model.PostDetail

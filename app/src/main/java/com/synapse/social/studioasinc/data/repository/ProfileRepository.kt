@@ -1,6 +1,7 @@
 package com.synapse.social.studioasinc.data.repository
 
 import com.synapse.social.studioasinc.data.model.UserProfile
+import com.synapse.social.studioasinc.feature.profile.profile.components.MediaItem
 import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
@@ -11,7 +12,7 @@ interface ProfileRepository {
     suspend fun getFollowers(userId: String, limit: Int = 20, offset: Int = 0): Result<List<UserProfile>>
     suspend fun getFollowing(userId: String, limit: Int = 20, offset: Int = 0): Result<List<UserProfile>>
     suspend fun getProfilePosts(userId: String, limit: Int = 10, offset: Int = 0): Result<List<com.synapse.social.studioasinc.domain.model.Post>>
-    suspend fun getProfilePhotos(userId: String, limit: Int = 20, offset: Int = 0): Result<List<com.synapse.social.studioasinc.ui.profile.components.MediaItem>>
-    suspend fun getProfileReels(userId: String, limit: Int = 20, offset: Int = 0): Result<List<com.synapse.social.studioasinc.ui.profile.components.MediaItem>>
+    suspend fun getProfilePhotos(userId: String, limit: Int = 20, offset: Int = 0): Result<List<MediaItem>>
+    suspend fun getProfileReels(userId: String, limit: Int = 20, offset: Int = 0): Result<List<MediaItem>>
     suspend fun isFollowing(userId: String, targetUserId: String): Result<Boolean>
 }

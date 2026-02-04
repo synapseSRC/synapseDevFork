@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.profile.animations
+package com.synapse.social.studioasinc.feature.profile.profile.animations
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*

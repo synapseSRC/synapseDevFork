@@ -7,7 +7,7 @@ import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.MediaItem
 import com.synapse.social.studioasinc.domain.model.MediaType
 import com.synapse.social.studioasinc.domain.model.PollOption
-import com.synapse.social.studioasinc.ui.profile.utils.NetworkOptimizer
+import com.synapse.social.studioasinc.feature.profile.profile.utils.NetworkOptimizer
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.auth.auth
@@ -326,7 +326,7 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
         Result.failure(e)
     }
 
-    private suspend fun getMediaItemsByType(userId: String, limit: Int, offset: Int, isVideo: Boolean): Result<List<com.synapse.social.studioasinc.ui.profile.components.MediaItem>> = try {
+    private suspend fun getMediaItemsByType(userId: String, limit: Int, offset: Int, isVideo: Boolean): Result<List<com.synapse.social.studioasinc.feature.profile.profile.components.MediaItem>> = try {
         val actualUserId = resolveUserId(userId) ?: return Result.failure(Exception("User not authenticated"))
         val response = client.from("posts").select(
             columns = Columns.raw("$KEY_ID, $KEY_MEDIA_ITEMS")
@@ -344,7 +344,7 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
                 val typeStr = mediaMap[KEY_TYPE]?.jsonPrimitive?.contentOrNull ?: MEDIA_TYPE_IMAGE
                 val isVideoType = typeStr.equals(MEDIA_TYPE_VIDEO, ignoreCase = true)
                 if (isVideoType != isVideo) return@mapNotNull null
-                com.synapse.social.studioasinc.ui.profile.components.MediaItem(
+                com.synapse.social.studioasinc.feature.profile.profile.components.MediaItem(
                     id = mediaMap[KEY_ID]?.jsonPrimitive?.contentOrNull ?: postId,
                     url = constructMediaUrl(url),
                     isVideo = isVideo
@@ -356,10 +356,10 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
         Result.failure(e)
     }
 
-    override suspend fun getProfilePhotos(userId: String, limit: Int, offset: Int): Result<List<com.synapse.social.studioasinc.ui.profile.components.MediaItem>> =
+    override suspend fun getProfilePhotos(userId: String, limit: Int, offset: Int): Result<List<com.synapse.social.studioasinc.feature.profile.profile.components.MediaItem>> =
         getMediaItemsByType(userId, limit, offset, isVideo = false)
 
-    override suspend fun getProfileReels(userId: String, limit: Int, offset: Int): Result<List<com.synapse.social.studioasinc.ui.profile.components.MediaItem>> =
+    override suspend fun getProfileReels(userId: String, limit: Int, offset: Int): Result<List<com.synapse.social.studioasinc.feature.profile.profile.components.MediaItem>> =
         getMediaItemsByType(userId, limit, offset, isVideo = true)
 
     override suspend fun isFollowing(userId: String, targetUserId: String): Result<Boolean> = try {

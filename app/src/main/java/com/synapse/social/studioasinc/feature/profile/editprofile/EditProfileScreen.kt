@@ -45,7 +45,7 @@ import com.synapse.social.studioasinc.presentation.editprofile.components.Profil
 import com.synapse.social.studioasinc.ui.settings.SettingsCard
 import com.synapse.social.studioasinc.ui.settings.SettingsNavigationItem
 import com.synapse.social.studioasinc.ui.settings.SettingsSpacing
-import com.synapse.social.studioasinc.ui.theme.SynapseTheme
+import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

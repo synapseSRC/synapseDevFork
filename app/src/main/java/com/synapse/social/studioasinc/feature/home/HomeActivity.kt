@@ -14,8 +14,8 @@ import io.github.jan.supabase.auth.auth
 import com.synapse.social.studioasinc.feature.auth.ui.components.ProfileCompletionDialogFragment
 import com.synapse.social.studioasinc.ui.home.HomeScreen
 import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.ui.theme.SynapseTheme
-import com.synapse.social.studioasinc.ui.theme.ThemeManager
+import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
+import com.synapse.social.studioasinc.feature.shared.theme.ThemeManager
 import com.synapse.social.studioasinc.core.ui.animation.ActivityTransitions
 import com.synapse.social.studioasinc.feature.stories.viewer.StoryViewerActivity
 import com.synapse.social.studioasinc.feature.shared.reels.ReelUploadManager

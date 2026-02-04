@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.main
+package com.synapse.social.studioasinc.feature.shared.main
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 import com.synapse.social.studioasinc.data.local.database.AppDatabase
 import com.synapse.social.studioasinc.data.repository.AuthRepository
 import com.synapse.social.studioasinc.data.repository.UserRepository
-import com.synapse.social.studioasinc.ui.theme.SynapseTheme
+import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 import com.synapse.social.studioasinc.ui.navigation.AppNavigation
 import com.synapse.social.studioasinc.ui.navigation.AppDestination
 import androidx.navigation.compose.rememberNavController
@@ -59,16 +59,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var reelUploadManager: com.synapse.social.studioasinc.feature.shared.reels.ReelUploadManager
 
-    private val userRepository by lazy { UserRepository(AppDatabase.getDatabase(this).userDao()) }
-
-    private val viewModel: MainViewModel by viewModels {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return MainViewModel(application, authRepository, userRepository) as T
-            }
-        }
-    }
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()

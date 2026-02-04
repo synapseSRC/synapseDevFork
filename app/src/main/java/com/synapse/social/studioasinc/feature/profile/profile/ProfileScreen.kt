@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.profile
+package com.synapse.social.studioasinc.feature.profile.profile
 
 import android.content.Intent
 import android.net.Uri
@@ -36,9 +36,9 @@ import com.synapse.social.studioasinc.ui.components.post.PostCard
 import com.synapse.social.studioasinc.ui.components.post.PostCardState
 import com.synapse.social.studioasinc.ui.components.post.PostOptionsBottomSheet
 import com.synapse.social.studioasinc.ui.components.post.SharedPostItem
-import com.synapse.social.studioasinc.ui.profile.animations.crossfadeContent
-import com.synapse.social.studioasinc.ui.profile.components.*
-import com.synapse.social.studioasinc.ui.profile.components.UserSearchDialog
+import com.synapse.social.studioasinc.feature.profile.profile.animations.crossfadeContent
+import com.synapse.social.studioasinc.feature.profile.profile.components.*
+import com.synapse.social.studioasinc.feature.profile.profile.components.UserSearchDialog
 import com.synapse.social.studioasinc.domain.model.Post
 import kotlinx.coroutines.delay
 

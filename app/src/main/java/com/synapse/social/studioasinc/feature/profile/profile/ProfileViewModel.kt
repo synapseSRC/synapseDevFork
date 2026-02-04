@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.profile
+package com.synapse.social.studioasinc.feature.profile.profile
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,10 +8,10 @@ import com.synapse.social.studioasinc.data.model.UserProfile
 import com.synapse.social.studioasinc.domain.usecase.profile.*
 import com.synapse.social.studioasinc.domain.usecase.post.*
 import com.synapse.social.studioasinc.domain.usecase.story.HasActiveStoryUseCase
-import com.synapse.social.studioasinc.ui.profile.components.ViewAsMode
-import com.synapse.social.studioasinc.ui.profile.components.FollowingUser
-import com.synapse.social.studioasinc.ui.profile.utils.MemoryManager
-import com.synapse.social.studioasinc.ui.profile.utils.NetworkOptimizer
+import com.synapse.social.studioasinc.feature.profile.profile.components.ViewAsMode
+import com.synapse.social.studioasinc.feature.profile.profile.components.FollowingUser
+import com.synapse.social.studioasinc.feature.profile.profile.utils.MemoryManager
+import com.synapse.social.studioasinc.feature.profile.profile.utils.NetworkOptimizer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

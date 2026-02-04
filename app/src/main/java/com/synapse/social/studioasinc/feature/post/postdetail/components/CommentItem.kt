@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.postdetail.components
+package com.synapse.social.studioasinc.feature.post.postdetail.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image

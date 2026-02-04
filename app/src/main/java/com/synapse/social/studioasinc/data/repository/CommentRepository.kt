@@ -1,12 +1,12 @@
 package com.synapse.social.studioasinc.data.repository
 
 import android.util.Log
-import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.local.database.CommentDao
 import com.synapse.social.studioasinc.data.local.database.CommentEntity
 import com.synapse.social.studioasinc.data.repository.CommentMapper
 import com.synapse.social.studioasinc.domain.model.*
 import com.synapse.social.studioasinc.domain.model.UserStatus
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import io.github.jan.supabase.functions.functions
@@ -22,11 +22,13 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
+import javax.inject.Inject
 
-class CommentRepository(private val commentDao: CommentDao) {
-
-    private val client = SupabaseClient.client
-    private val reactionRepository = com.synapse.social.studioasinc.data.repository.ReactionRepository()
+class CommentRepository @Inject constructor(
+    private val commentDao: CommentDao,
+    private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client,
+    private val reactionRepository: ReactionRepository = ReactionRepository()
+) {
 
     companion object {
         private const val TAG = "CommentRepository"
@@ -154,10 +156,6 @@ class CommentRepository(private val commentDao: CommentDao) {
         parentCommentId: String? = null
     ): Result<CommentWithUser> = withContext(Dispatchers.IO) {
         try {
-            if (!SupabaseClient.isConfigured()) {
-                return@withContext Result.failure(Exception("Supabase not configured"))
-            }
-
             val currentUser = client.auth.currentUserOrNull()
             if (currentUser == null) {
                 return@withContext Result.failure(Exception("User must be authenticated to comment"))
@@ -245,10 +243,6 @@ class CommentRepository(private val commentDao: CommentDao) {
 
     suspend fun deleteComment(commentId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            if (!SupabaseClient.isConfigured()) {
-                return@withContext Result.failure(Exception("Supabase not configured"))
-            }
-
             val currentUser = client.auth.currentUserOrNull()
             if (currentUser == null) {
                 return@withContext Result.failure(Exception("User must be authenticated to delete comment"))
@@ -299,10 +293,6 @@ class CommentRepository(private val commentDao: CommentDao) {
 
     suspend fun editComment(commentId: String, content: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            if (!SupabaseClient.isConfigured()) {
-                return@withContext Result.failure(Exception("Supabase not configured"))
-            }
-
             val currentUser = client.auth.currentUserOrNull()
             if (currentUser == null) {
                 return@withContext Result.failure(Exception("User must be authenticated to edit comment"))
@@ -376,6 +366,32 @@ class CommentRepository(private val commentDao: CommentDao) {
         try {
             val currentUser = client.auth.currentUserOrNull()
                 ?: return@withContext Result.failure(Exception("User must be authenticated"))
+
+            val existingComment = client.from("comments")
+                .select { filter { eq("id", commentId) } }
+                .decodeSingleOrNull<JsonObject>()
+                ?: return@withContext Result.failure(Exception("Comment not found"))
+
+            val commentUserId = existingComment["user_id"]?.jsonPrimitive?.contentOrNull
+
+            // Check if user is comment owner
+            var isAuthorized = commentUserId == currentUser.id
+
+            if (!isAuthorized) {
+                val postId = existingComment["post_id"]?.jsonPrimitive?.contentOrNull
+                if (postId != null) {
+                    // Verification of post author from trusted source
+                    val post = client.from("posts")
+                        .select { filter { eq("id", postId) } }
+                        .decodeSingleOrNull<JsonObject>()
+                    val postAuthor = post?.get("author_uid")?.jsonPrimitive?.contentOrNull
+                    isAuthorized = postAuthor == currentUser.id
+                }
+            }
+
+            if (!isAuthorized) {
+                return@withContext Result.failure(Exception("Not authorized to hide this comment"))
+            }
 
             client.from("comments")
                 .update({
@@ -454,7 +470,7 @@ class CommentRepository(private val commentDao: CommentDao) {
                 uid = userData["uid"]?.jsonPrimitive?.contentOrNull ?: return null,
                 username = userData["username"]?.jsonPrimitive?.contentOrNull ?: "",
                 displayName = userData["display_name"]?.jsonPrimitive?.contentOrNull ?: "",
-                email = userData["email"]?.jsonPrimitive?.contentOrNull ?: "",
+                email = "", // Privacy fix: Do not leak emails in public responses
                 bio = userData["bio"]?.jsonPrimitive?.contentOrNull,
                 avatar = userData["avatar"]?.jsonPrimitive?.contentOrNull,
                 followersCount = userData["followers_count"]?.jsonPrimitive?.intOrNull ?: 0,

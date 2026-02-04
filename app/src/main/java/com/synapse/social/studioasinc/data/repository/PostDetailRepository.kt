@@ -1,9 +1,9 @@
 package com.synapse.social.studioasinc.data.repository
 
 import android.util.Log
-import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.domain.model.*
 import com.synapse.social.studioasinc.domain.model.UserStatus
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
+import javax.inject.Inject
 
 /**
  * Repository for fetching detailed post information with author data.
@@ -21,10 +22,10 @@ import kotlinx.serialization.json.*
  *
  * Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3
  */
-class PostDetailRepository {
-
-    private val client = SupabaseClient.client
-    private val reactionRepository = com.synapse.social.studioasinc.data.repository.ReactionRepository()
+class PostDetailRepository @Inject constructor(
+    private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client,
+    private val reactionRepository: ReactionRepository = ReactionRepository()
+) {
 
     companion object {
         private const val TAG = "PostDetailRepository"
@@ -32,10 +33,6 @@ class PostDetailRepository {
 
     suspend fun getPostWithDetails(postId: String): Result<PostDetail> = withContext(Dispatchers.IO) {
         try {
-            if (!SupabaseClient.isConfigured()) {
-                return@withContext Result.failure(Exception("Supabase not configured"))
-            }
-
             Log.d(TAG, "Fetching post details for: $postId")
 
             val response = client.from("posts")
@@ -123,7 +120,10 @@ class PostDetailRepository {
 
             client.from("posts")
                 .update({ set("is_deleted", true) }) {
-                    filter { eq("id", postId) }
+                    filter {
+                        eq("id", postId)
+                        eq("author_uid", currentUser.id)
+                    }
                 }
 
             Log.d(TAG, "Post deleted successfully: $postId")
@@ -219,7 +219,7 @@ class PostDetailRepository {
                 uid = userData["uid"]?.jsonPrimitive?.contentOrNull ?: return null,
                 username = userData["username"]?.jsonPrimitive?.contentOrNull ?: "",
                 displayName = userData["display_name"]?.jsonPrimitive?.contentOrNull ?: "",
-                email = userData["email"]?.jsonPrimitive?.contentOrNull ?: "",
+                email = "", // Privacy fix: Do not leak emails in public responses
                 bio = userData["bio"]?.jsonPrimitive?.contentOrNull,
                 avatar = userData["avatar"]?.jsonPrimitive?.contentOrNull,
                 followersCount = userData["followers_count"]?.jsonPrimitive?.intOrNull ?: 0,

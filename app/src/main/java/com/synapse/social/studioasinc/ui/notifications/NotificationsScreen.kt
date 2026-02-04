@@ -6,11 +6,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Box
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.synapse.social.studioasinc.ui.home.FeedLoading
@@ -63,8 +68,25 @@ fun NotificationsScreen(
     onUserClick: (String) -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val swipeRefreshState = rememberSwipeRefreshState(uiState.isLoading)
+
+    // Bolt Optimization: Memoize lambdas to make NotificationItem skippable.
+    val currentOnNotificationClick by rememberUpdatedState(onNotificationClick)
+    val currentOnUserClick by rememberUpdatedState(onUserClick)
+
+    val handleNotificationClick = remember(viewModel) {
+        { notification: UiNotification ->
+            viewModel.markAsRead(notification.id)
+            currentOnNotificationClick(notification)
+        }
+    }
+
+    val handleUserClick = remember {
+        { userId: String ->
+            currentOnUserClick(userId)
+        }
+    }
 
     SwipeRefresh(
         state = swipeRefreshState,
@@ -92,16 +114,11 @@ fun NotificationsScreen(
                         item {
                             NotificationHeader(date)
                         }
-                        items(notifications) { notification ->
+                        items(notifications, key = { it.id }) { notification ->
                             NotificationItem(
                                 notification = notification,
-                                onClick = {
-                                    viewModel.markAsRead(notification.id)
-                                    onNotificationClick(notification)
-                                },
-                                onUserClick = {
-                                     onUserClick(notification.actorName)
-                                }
+                                onNotificationClick = handleNotificationClick,
+                                onUserClick = handleUserClick
                             )
                         }
                     }

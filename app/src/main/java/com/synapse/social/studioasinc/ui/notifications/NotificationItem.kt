@@ -17,9 +17,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.background
+import androidx.compose.runtime.Immutable
 import com.synapse.social.studioasinc.ui.components.CircularAvatar
 
 // Simple notification model for UI
+@Immutable
 data class UiNotification(
     val id: String,
     val type: String, // like, comment, follow
@@ -34,14 +36,14 @@ data class UiNotification(
 @Composable
 fun NotificationItem(
     notification: UiNotification,
-    onClick: () -> Unit,
-    onUserClick: () -> Unit,
+    onNotificationClick: (UiNotification) -> Unit,
+    onUserClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(onClick = { onNotificationClick(notification) })
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -49,7 +51,7 @@ fun NotificationItem(
             imageUrl = notification.actorAvatar,
             contentDescription = "Avatar",
             size = 48.dp,
-            onClick = onUserClick
+            onClick = { onUserClick(notification.actorName) }
         )
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -60,7 +62,7 @@ fun NotificationItem(
                     text = notification.actorName,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable(onClick = onUserClick)
+                    modifier = Modifier.clickable(onClick = { onUserClick(notification.actorName) })
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(

@@ -51,8 +51,18 @@ fun UserDetailsSection(
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val hasDetails = details.location != null || details.work != null || details.education != null ||
-                    details.website != null || details.linkedAccounts.isNotEmpty()
+
+    val hasDetails = listOfNotNull(
+        details.location,
+        details.work,
+        details.education,
+        details.website,
+        details.joinedDate,
+        details.birthday,
+        details.relationshipStatus,
+        details.gender,
+        details.pronouns
+    ).any { !it.isNullOrBlank() } || details.linkedAccounts.isNotEmpty()
 
     Column(
         modifier = modifier
@@ -164,20 +174,20 @@ private fun ExpandCollapseButton(
 @Composable
 private fun CollapsedSummary(details: UserDetails) {
     val summaryText = buildString {
-        details.work?.let { append(it) }
-        details.location?.let {
+        details.work?.takeIf { it.isNotBlank() }?.let { append(it) }
+        details.location?.takeIf { it.isNotBlank() }?.let {
             if (isNotEmpty()) append(" • ")
             append(it)
         }
-        details.joinedDate?.let {
+        details.joinedDate?.takeIf { it.isNotBlank() }?.let {
             if (isNotEmpty()) append(" • ")
             append("Joined $it")
         }
 
         if (isEmpty()) {
-            details.website?.let { append(it) }
+            details.website?.takeIf { it.isNotBlank() }?.let { append(it) }
             if (isEmpty()) {
-                details.relationshipStatus?.let { append(it) }
+                details.relationshipStatus?.takeIf { it.isNotBlank() }?.let { append(it) }
             }
             if (isEmpty()) {
                  if (details.linkedAccounts.isNotEmpty()) {
@@ -205,31 +215,31 @@ private fun ExpandedDetailsContent(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)) {
         val detailItems = buildList<Triple<ImageVector, String, String>> {
-            details.location?.let {
+            details.location?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.LocationOn, "Location", it))
             }
-            details.work?.let {
+            details.work?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.Work, "Work", it))
             }
-            details.education?.let {
+            details.education?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.School, "Education", it))
             }
-            details.website?.let {
+            details.website?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.Link, "Website", it))
             }
-            details.joinedDate?.let {
+            details.joinedDate?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.CalendarToday, "Joined", it))
             }
-            details.birthday?.let {
+            details.birthday?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.Cake, "Birthday", it))
             }
-            details.relationshipStatus?.let {
+            details.relationshipStatus?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.Favorite, "Relationship", it))
             }
-            details.gender?.let {
+            details.gender?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.Person, "Gender", it))
             }
-            details.pronouns?.let {
+            details.pronouns?.takeIf { it.isNotBlank() }?.let {
                 add(Triple(Icons.Outlined.Badge, "Pronouns", it))
             }
         }

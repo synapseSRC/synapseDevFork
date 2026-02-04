@@ -39,7 +39,7 @@ fun StatItem(
     )
     
     val formattedCount = NumberFormatter.formatCount(count)
-    val contentDesc = " "
+    val contentDesc = "$formattedCount $label"
     
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

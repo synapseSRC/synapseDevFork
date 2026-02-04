@@ -80,20 +80,23 @@ class NotificationsViewModel @Inject constructor(
             val userId = authRepository.getCurrentUserId() ?: return@launch
 
             // Optimistic update
-            updateNotificationReadState(notificationId, isRead = true)
+            setNotificationReadState(notificationId, isRead = true)
 
             try {
                 notificationRepository.markAsRead(userId, notificationId)
             } catch (e: Exception) {
-                android.util.Log.e("NotificationsViewModel", "Failed to mark as read", e)
+                android.util.Log.e("NotificationsViewModel", "Failed to mark as read for notification $notificationId", e)
                 // Rollback optimistic update locally
-                updateNotificationReadState(notificationId, isRead = false)
+                setNotificationReadState(notificationId, isRead = false)
                 loadNotifications() // Revert/Sync on failure
+            } finally {
+                // Ensure loading is false if any uncaught exception occurred in loadNotifications
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }
 
-    private fun updateNotificationReadState(notificationId: String, isRead: Boolean) {
+    private fun setNotificationReadState(notificationId: String, isRead: Boolean) {
         _uiState.update { state ->
             val updatedList = state.notifications.map {
                 if (it.id == notificationId) it.copy(isRead = isRead) else it

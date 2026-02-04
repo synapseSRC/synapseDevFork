@@ -170,34 +170,41 @@ class NotificationsViewModelTest {
         val userId = "user123"
         val notificationId = "notif1"
         whenever(authRepository.getCurrentUserId()).thenReturn(userId)
+
+        // Mock notifications are not read yet (isRead = false) to test optimistic update to true and rollback to false
         val mockNotifications = listOf(createMockNotificationDto(notificationId, "like", isRead = false))
 
-        // Define sequence of behaviors for fetchNotifications
+        // Define sequence of behaviors for fetchNotifications:
+        // 1. Initial load succeeds to populate state
+        // 2. Subsequent reload attempt (revert sync) fails
         whenever(notificationRepository.fetchNotifications(userId))
             .thenReturn(mockNotifications) // For initial load
-            .thenThrow(RuntimeException("Revert failed")) // For reload on failure
+            .thenThrow(RuntimeException("Revert failed during fetchNotifications")) // For reload on failure
 
         createViewModel()
         advanceUntilIdle()
 
-        // Mock the primary failure for the test
-        whenever(notificationRepository.markAsRead(userId, notificationId)).thenThrow(RuntimeException("Update failed"))
+        // Mock the primary action failure (marking as read fails)
+        whenever(notificationRepository.markAsRead(userId, notificationId))
+            .thenThrow(RuntimeException("Update failed during markAsRead"))
 
         // Act
         viewModel.markAsRead(notificationId)
-        runCurrent() // Apply optimistic update
-        advanceUntilIdle() // Fail repo call and fail reload
+        runCurrent() // Apply optimistic update (isRead becomes true)
+        advanceUntilIdle() // Fail markAsRead repo call and fail the subsequent reload sync
 
         // Assert
         val state = viewModel.uiState.value
+
+        // Ensure the loading state is cleared even after multiple failures
         assertFalse("Loading should be false after all attempts", state.isLoading)
 
-        // Assert that the local UI state is reverted to isRead = false,
-        // even if the subsequent network call to sync state also fails.
-        // This verifies the manual rollback logic in the catch block.
+        // Assert that the local UI state is manually reverted to isRead = false,
+        // ensuring consistency even when the network-based sync (loadNotifications) also fails.
         val notif = state.notifications.first { it.id == notificationId }
-        assertFalse("UI state should be reverted even if reload fails", notif.isRead)
+        assertFalse("UI state should be reverted even if reload sync fails", notif.isRead)
 
+        // Verify we attempted to reload exactly once (init + 1 retry)
         verify(notificationRepository, times(2)).fetchNotifications(userId)
     }
 

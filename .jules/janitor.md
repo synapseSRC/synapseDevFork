@@ -35,6 +35,8 @@
 ### Pattern of Accumulation
 Legacy View-based components (`FollowButton`) and early Compose prototypes (`PollDisplay`) were left in a `legacy` package after being replaced by more optimized or modern versions in the `feature/shared/components/post` package. These components often kept their associated XML layouts and drawables, which contributed to resource clutter.
 
+- **Mismatched Package Declarations**: The removed files `FollowButton.kt` and `PollDisplay.kt` had a package declaration of `com.synapse.social.studioasinc.components`, which didn't match their file system location in the `.../feature/shared/components/legacy/` directory. This indicates a pattern where legacy code often diverges from established project structure.
+
 ### Discovery Method
 - Manual scan of `legacy` packages.
 - Grep-based usage analysis to confirm zero references in the current production UI.

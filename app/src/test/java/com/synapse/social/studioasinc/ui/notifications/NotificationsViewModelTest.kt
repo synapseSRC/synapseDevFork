@@ -13,7 +13,6 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import org.junit.Assert.*
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -190,9 +189,9 @@ class NotificationsViewModelTest {
         val state = viewModel.uiState.value
         assertFalse("Loading should be false after all attempts", state.isLoading)
 
-        // Strengthening assertion: In current implementation, the state REMAINS isRead = true
-        // if reload fails, because there's no manual rollback in markAsRead catch.
-        // This confirms the limitation/edge case identified in review.
+        // Assert that the local UI state is reverted to isRead = false,
+        // even if the subsequent network call to sync state also fails.
+        // This verifies the manual rollback logic in the catch block.
         val notif = state.notifications.first { it.id == notificationId }
         assertFalse("UI state should be reverted even if reload fails", notif.isRead)
 

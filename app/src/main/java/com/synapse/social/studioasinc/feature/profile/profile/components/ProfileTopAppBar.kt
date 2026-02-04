@@ -55,7 +55,7 @@ fun ProfileTopAppBar(
         targetValue = if (scrollProgress > 0.5f) {
             MaterialTheme.colorScheme.onSurface
         } else {
-            MaterialTheme.colorScheme.onSecondaryContainer // Better contrast on cover
+            MaterialTheme.colorScheme.onSecondaryContainer
         },
         animationSpec = tween(durationMillis = 200),
         label = "iconTint"
@@ -138,13 +138,26 @@ private fun AnimatedIconButton(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun ProfileTopAppBarPreview() {
     MaterialTheme {
         ProfileTopAppBar(
             displayName = "John Doe",
             scrollProgress = 0.7f,
+            onBackClick = {},
+            onMoreClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ProfileTopAppBarTransparentPreview() {
+    MaterialTheme {
+        ProfileTopAppBar(
+            displayName = "John Doe",
+            scrollProgress = 0f,
             onBackClick = {},
             onMoreClick = {}
         )

@@ -372,3 +372,30 @@ fun AnimatedFollowButton(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun ProfileHeaderPreview() {
+    MaterialTheme {
+        ProfileHeader(
+            avatar = null,
+            status = UserStatus.ONLINE,
+            coverImageUrl = null,
+            name = "John Doe",
+            username = "johndoe",
+            nickname = "JD",
+            bio = "Software developer | Tech enthusiast | Coffee lover ☕️ | Building amazing things with code every day.",
+            isVerified = true,
+            hasStory = true,
+            postsCount = 142,
+            followersCount = 12345,
+            followingCount = 567,
+            isOwnProfile = true,
+            onProfileImageClick = {},
+            onEditProfileClick = {},
+            onAddStoryClick = {},
+            onMoreClick = {},
+            onStatsClick = {}
+        )
+    }
+}

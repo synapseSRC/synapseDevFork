@@ -32,6 +32,16 @@ import com.synapse.social.studioasinc.feature.shared.theme.Spacing
 import com.synapse.social.studioasinc.feature.shared.theme.StatusOnline
 import com.synapse.social.studioasinc.domain.model.UserStatus
 
+/**
+ * Enhanced Cover Photo component with parallax and expressive placeholders.
+ *
+ * @param coverImageUrl The URL of the cover image to display.
+ * @param scrollOffset Normalised scroll progress (0.0 to 1.0) for the parallax effect.
+ * @param isOwnProfile Whether the profile being viewed belongs to the current user.
+ * @param onEditClick Callback for when the edit button is clicked.
+ * @param onCoverClick Callback for when the cover photo itself is clicked.
+ * @param height Height of the cover photo section.
+ */
 @Composable
 fun CoverPhoto(
     coverImageUrl: String?,
@@ -48,8 +58,10 @@ fun CoverPhoto(
             .fillMaxWidth()
             .height(height)
             .graphicsLayer {
-                translationY = scrollOffset * 0.5f
-                alpha = 1f - (scrollOffset / height.toPx()).coerceIn(0f, 1f)
+                // Parallax effect: move at half the scroll speed
+                translationY = scrollOffset * height.toPx() * 0.5f
+                // Fade out effect based on scroll progress
+                alpha = 1f - scrollOffset
             }
             .clickable(enabled = coverImageUrl != null) { onCoverClick() }
     ) {
@@ -141,6 +153,9 @@ private fun CoverPlaceholder(
     }
 }
 
+/**
+ * Combined component showing cover photo with overlapping profile picture.
+ */
 @Composable
 fun CoverPhotoWithProfile(
     coverImageUrl: String?,
@@ -188,6 +203,9 @@ fun CoverPhotoWithProfile(
     }
 }
 
+/**
+ * Profile image component with an animated story ring and online status indicator.
+ */
 @Composable
 fun ProfileImageWithRing(
     avatar: String?,
@@ -313,6 +331,44 @@ fun ProfileImageWithRing(
                     .semantics {
                         contentDescription = "Online"
                     }
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CoverPhotoPreview() {
+    MaterialTheme {
+        CoverPhoto(
+            coverImageUrl = null,
+            isOwnProfile = true,
+            onEditClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ProfileImageWithRingPreview() {
+    MaterialTheme {
+        Row(
+            modifier = Modifier.padding(Spacing.Medium),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.Medium)
+        ) {
+            ProfileImageWithRing(
+                avatar = null,
+                size = 80.dp,
+                status = UserStatus.ONLINE,
+                hasStory = true,
+                isOwnProfile = false
+            )
+            ProfileImageWithRing(
+                avatar = null,
+                size = 80.dp,
+                status = UserStatus.OFFLINE,
+                hasStory = false,
+                isOwnProfile = true
             )
         }
     }

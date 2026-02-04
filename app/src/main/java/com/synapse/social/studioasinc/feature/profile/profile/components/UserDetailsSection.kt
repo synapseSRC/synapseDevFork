@@ -391,3 +391,22 @@ private fun EmptyDetailsState(onAddClick: () -> Unit) {
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun UserDetailsSectionPreview() {
+    MaterialTheme {
+        UserDetailsSection(
+            details = UserDetails(
+                location = "San Francisco, CA",
+                joinedDate = "January 2024",
+                work = "Software Engineer",
+                education = "Stanford University",
+                website = "https://example.com"
+            ),
+            isOwnProfile = true,
+            onCustomizeClick = {},
+            onWebsiteClick = {}
+        )
+    }
+}

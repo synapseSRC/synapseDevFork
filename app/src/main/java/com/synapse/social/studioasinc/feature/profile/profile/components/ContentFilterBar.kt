@@ -60,3 +60,14 @@ private fun getFilterLabel(filter: ProfileContentFilter): String {
         ProfileContentFilter.REELS -> "Reels"
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun ContentFilterBarPreview() {
+    MaterialTheme {
+        ContentFilterBar(
+            selectedFilter = ProfileContentFilter.POSTS,
+            onFilterSelected = {}
+        )
+    }
+}

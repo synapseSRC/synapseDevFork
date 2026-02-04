@@ -121,3 +121,25 @@ fun StatsRow(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun StatItemPreview() {
+    MaterialTheme {
+        Row(
+            modifier = Modifier.padding(Spacing.Medium),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.Medium)
+        ) {
+            StatItem(
+                count = 1234,
+                label = "Followers",
+                onClick = { }
+            )
+            StatItem(
+                count = 567,
+                label = "Following",
+                onClick = { }
+            )
+        }
+    }
+}

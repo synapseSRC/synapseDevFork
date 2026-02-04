@@ -27,7 +27,7 @@ import javax.inject.Inject
 class CommentRepository @Inject constructor(
     private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client,
     private val commentDao: CommentDao,
-    private val reactionRepository: ReactionRepository = ReactionRepository()
+    private val reactionRepository: ReactionRepository
 ) {
 
     companion object {
@@ -362,7 +362,7 @@ class CommentRepository @Inject constructor(
         }
     }
 
-    suspend fun hideComment(commentId: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun hideComment(commentId: String, postAuthorId: String? = null): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             val currentUser = client.auth.currentUserOrNull()
                 ?: return@withContext Result.failure(Exception("User must be authenticated"))
@@ -373,18 +373,21 @@ class CommentRepository @Inject constructor(
                 ?: return@withContext Result.failure(Exception("Comment not found"))
 
             val commentUserId = existingComment["user_id"]?.jsonPrimitive?.contentOrNull
-            val postId = existingComment["post_id"]?.jsonPrimitive?.contentOrNull
 
-            // Check if user is comment owner
-            var isAuthorized = commentUserId == currentUser.id
+            // Check if user is comment owner or post author (if provided)
+            var isAuthorized = commentUserId == currentUser.id ||
+                             (postAuthorId != null && postAuthorId == currentUser.id)
 
-            if (!isAuthorized && postId != null) {
-                // Check if user is post owner
-                val post = client.from("posts")
-                    .select { filter { eq("id", postId) } }
-                    .decodeSingleOrNull<JsonObject>()
-                val postAuthor = post?.get("author_uid")?.jsonPrimitive?.contentOrNull
-                isAuthorized = postAuthor == currentUser.id
+            if (!isAuthorized) {
+                val postId = existingComment["post_id"]?.jsonPrimitive?.contentOrNull
+                if (postId != null) {
+                    // Fallback to fetching post if author not provided
+                    val post = client.from("posts")
+                        .select { filter { eq("id", postId) } }
+                        .decodeSingleOrNull<JsonObject>()
+                    val postAuthor = post?.get("author_uid")?.jsonPrimitive?.contentOrNull
+                    isAuthorized = postAuthor == currentUser.id
+                }
             }
 
             if (!isAuthorized) {

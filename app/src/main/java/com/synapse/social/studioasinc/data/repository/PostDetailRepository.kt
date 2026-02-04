@@ -24,7 +24,7 @@ import javax.inject.Inject
  */
 class PostDetailRepository @Inject constructor(
     private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client,
-    private val reactionRepository: ReactionRepository = ReactionRepository()
+    private val reactionRepository: ReactionRepository
 ) {
 
     companion object {

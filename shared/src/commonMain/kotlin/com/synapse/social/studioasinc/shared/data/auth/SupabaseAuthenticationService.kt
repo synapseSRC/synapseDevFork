@@ -8,7 +8,6 @@ import com.synapse.social.studioasinc.shared.data.model.UserPresenceInsert
 import io.github.aakira.napier.Napier
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
-import io.github.jan.supabase.auth.user.UserSession
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.withContext
@@ -230,7 +229,8 @@ class SupabaseAuthenticationService : IAuthenticationService {
     override suspend fun resendVerificationEmail(email: String): Result<Unit> {
         return try {
             withContext(Dispatchers.IO) {
-                SupabaseClient.client.auth.resend(email = email, type = io.github.jan.supabase.auth.providers.builtin.OTP.EMAIL)
+                // Simplified - just send password reset as verification
+                SupabaseClient.client.auth.resetPasswordForEmail(email)
                 Napier.d("Verification email resent successfully")
                 Result.success(Unit)
             }

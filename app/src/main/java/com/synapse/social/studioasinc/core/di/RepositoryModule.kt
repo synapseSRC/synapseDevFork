@@ -125,7 +125,7 @@ object RepositoryModule {
         commentDao: CommentDao,
         reactionRepository: ReactionRepository
     ): CommentRepository {
-        return CommentRepository(client, commentDao, reactionRepository)
+        return CommentRepository(commentDao, client, reactionRepository)
     }
 
     @Provides

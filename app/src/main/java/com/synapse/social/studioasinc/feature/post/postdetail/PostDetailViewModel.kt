@@ -239,11 +239,9 @@ class PostDetailViewModel @Inject constructor(
 
     fun hideComment(commentId: String) {
         val postId = currentPostId ?: return
-        val postAuthorId = _uiState.value.post?.post?.authorUid
-
         viewModelScope.launch {
             _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
-            commentRepository.hideComment(commentId, postAuthorId).onSuccess {
+            commentRepository.hideComment(commentId).onSuccess {
                 refreshCommentsList()
             }.also {
                 _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading - commentId) }

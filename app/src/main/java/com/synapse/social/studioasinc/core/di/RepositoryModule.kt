@@ -7,8 +7,6 @@ import com.russhwolf.settings.SharedPreferencesSettings
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
 import com.synapse.social.studioasinc.data.local.auth.TokenManager
 import com.synapse.social.studioasinc.shared.data.auth.TokenManager as SharedTokenManager
-import com.synapse.social.studioasinc.shared.data.auth.IAuthenticationService
-import com.synapse.social.studioasinc.shared.data.auth.SupabaseAuthenticationService
 import com.synapse.social.studioasinc.data.local.database.PostDao
 import com.synapse.social.studioasinc.data.repository.PostRepository
 import com.synapse.social.studioasinc.data.repository.AuthRepository
@@ -56,14 +54,8 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideSharedAuthRepository(authService: IAuthenticationService): SharedAuthRepository {
-        return SharedAuthRepository(authService)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSupabaseAuthService(tokenManager: SharedTokenManager): IAuthenticationService {
-        return SupabaseAuthenticationService(tokenManager)
+    fun provideSharedAuthRepository(): SharedAuthRepository {
+        return SharedAuthRepository()
     }
 
     @Provides

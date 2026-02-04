@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.inbox.animations
+package com.synapse.social.studioasinc.feature.inbox.inbox.animations
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*

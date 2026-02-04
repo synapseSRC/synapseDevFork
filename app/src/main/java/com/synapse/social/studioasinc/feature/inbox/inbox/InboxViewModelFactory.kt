@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.inbox
+package com.synapse.social.studioasinc.feature.inbox.inbox
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.navigation
+package com.synapse.social.studioasinc.feature.shared.navigation
 
 sealed class AppDestination(val route: String) {
     object Auth : AppDestination("auth")

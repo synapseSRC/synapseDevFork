@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.components
+package com.synapse.social.studioasinc.feature.shared.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size

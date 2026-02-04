@@ -25,7 +25,7 @@ import com.synapse.social.studioasinc.domain.model.CommentWithUser
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.ui.components.CircularAvatar
 import com.synapse.social.studioasinc.core.util.TimeUtils
-import com.synapse.social.studioasinc.ui.components.mentions.MentionTextFormatter
+import com.synapse.social.studioasinc.feature.shared.components.mentions.MentionTextFormatter
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.runtime.*
 

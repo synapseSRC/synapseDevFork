@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.feature.auth
 
 import android.content.Intent
 import android.net.Uri

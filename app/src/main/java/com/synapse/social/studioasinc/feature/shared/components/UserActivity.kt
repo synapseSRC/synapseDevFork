@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.feature.shared.components
 
 import com.synapse.social.studioasinc.data.remote.services.SupabaseDatabaseService
 import io.github.jan.supabase.postgrest.query.filter.PostgrestFilterBuilder

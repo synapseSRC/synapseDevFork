@@ -1,0 +1,646 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.13/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+
+> Configure project :shared
+w: The following Kotlin/Native targets cannot be built on this machine and are disabled:
+iosArm64, iosSimulatorArm64, iosX64
+To hide this message, add 'kotlin.native.ignoreDisabledTargets=true' to the Gradle properties.
+
+
+> Task :shared:preBuild UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :shared:preDebugBuild UP-TO-DATE
+> Task :shared:generateDebugResValues UP-TO-DATE
+> Task :shared:generateDebugResources UP-TO-DATE
+> Task :shared:packageDebugResources UP-TO-DATE
+> Task :shared:processDebugNavigationResources UP-TO-DATE
+> Task :shared:parseDebugLocalResources UP-TO-DATE
+> Task :shared:generateDebugRFile UP-TO-DATE
+> Task :shared:writeDebugAarMetadata UP-TO-DATE
+> Task :shared:extractDeepLinksDebug UP-TO-DATE
+> Task :shared:processDebugManifest UP-TO-DATE
+> Task :shared:compileDebugLibraryResources UP-TO-DATE
+> Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:generateDebugBuildConfig UP-TO-DATE
+> Task :shared:compileDebugKotlinAndroid UP-TO-DATE
+> Task :shared:javaPreCompileDebug UP-TO-DATE
+> Task :shared:compileDebugJavaWithJavac UP-TO-DATE
+> Task :shared:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :app:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesDebug UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:kspDebugKotlin
+> Task :app:compileDebugKotlin
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/core/domain/parser/MentionUtils.kt:12:39 Unresolved reference 'ProfileActivity'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/core/domain/parser/MentionUtils.kt:56:78 Unresolved reference 'ProfileActivity'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/core/domain/parser/MentionUtils.kt:56:101 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/core/domain/parser/MentionUtils.kt:56:101 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+val <T> KClass<T>.java: Class<T>
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/core/domain/parser/MentionUtils.kt:57:56 Unresolved reference 'putExtra'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedScreen.kt:32:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedScreen.kt:75:19 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedScreen.kt:76:9 Unresolved reference 'PostActions'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedScreen.kt:78:27 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedScreen.kt:78:62 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedScreen.kt:81:31 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedScreen.kt:83:29 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedScreen.kt:84:30 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:19:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:20:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:21:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:79:13 Unresolved reference 'PostEventBus'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:79:43 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:81:24 Unresolved reference 'PostEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:82:66 Unresolved reference 'postId'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:100:24 Unresolved reference 'PostEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:101:61 Unresolved reference 'post'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:101:69 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:101:78 Unresolved reference 'post'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:103:24 Unresolved reference 'PostEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:169:14 Unresolved reference 'PostEventBus'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:169:32 Unresolved reference 'PostEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:176:23 Unresolved reference 'PostEventBus'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:176:41 Unresolved reference 'PostEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:181:19 Unresolved reference 'PostEventBus'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:181:37 Unresolved reference 'PostEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:201:9 Unresolved reference 'PostEventBus'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:201:27 Unresolved reference 'PostEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/FeedViewModel.kt:274:16 Unresolved reference 'PostMapper'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:46:42 Unresolved reference 'navigation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:70:53 Unresolved reference 'HomeDestinations'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:142:67 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:186:77 Unresolved reference 'HomeDestinations'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:188:44 Unresolved reference 'HomeDestinations'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:198:92 Unresolved reference 'HomeDestinations'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:206:77 Unresolved reference 'HomeDestinations'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:208:44 Unresolved reference 'HomeDestinations'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:218:92 Unresolved reference 'HomeDestinations'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:226:77 Unresolved reference 'HomeDestinations'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:226:108 Unresolved reference 'route'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:228:44 Unresolved reference 'HomeDestinations'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:228:75 Unresolved reference 'route'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:241:96 Unresolved reference 'HomeDestinations'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/home/HomeScreen.kt:241:127 Unresolved reference 'route'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:22:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:23:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:24:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:25:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:27:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:40:17 Property delegate must have a 'getValue(Nothing?, KProperty0<*>)' method. None of the following functions is applicable:
+fun FloatState.getValue(thisObj: Any?, property: KProperty<*>): Float
+fun DoubleState.getValue(thisObj: Any?, property: KProperty<*>): Double
+fun IntState.getValue(thisObj: Any?, property: KProperty<*>): Int
+fun LongState.getValue(thisObj: Any?, property: KProperty<*>): Long
+fun <T> State<T>.getValue(thisObj: Any?, property: KProperty<*>): T
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:40:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:40:38 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+fun <T> StateFlow<T>.collectAsState(context: CoroutineContext = ...): State<T>
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:60:38 Unresolved reference 'InboxUiState'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:60:61 Unresolved reference 'selectionMode'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:61:38 Unresolved reference 'InboxUiState'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:61:61 Unresolved reference 'selectedItems'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:65:28 Unresolved reference 'InboxUiState'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:66:29 Unresolved reference 'InboxUiState'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:66:51 Unresolved reference 'archivedChats'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:66:71 Unresolved reference 'it'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:93:48 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:110:56 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:112:56 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:129:78 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:156:21 Unresolved reference 'InboxSearchTopAppBar'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:158:68 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:158:99 Unresolved reference 'it'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:164:21 Unresolved reference 'InboxTopAppBar'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:171:65 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:172:65 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:173:66 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:232:17 Unresolved reference 'NewChatFab'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:233:52 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:236:56 Unresolved reference 'it'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:255:25 Argument type mismatch: actual type is 'R', but 'K' was expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:255:33 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:255:33 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+fun <T, R> T.let(block: (T) -> R): R
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:255:37 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:256:73 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:257:36 Unresolved reference 'copy'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:257:73 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:265:38 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:267:36 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:268:61 Unresolved reference 'chatId'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:268:76 Unresolved reference 'userId'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:279:22 Unresolved reference 'CallsTabScreen'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxScreen.kt:280:22 Unresolved reference 'ContactsTabScreen'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:7:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:23:28 Inapplicable candidate(s): fun <T> MutableStateFlow(value: T): MutableStateFlow<T>
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:23:45 Unresolved reference 'InboxUiState'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:23:59 Unresolved reference 'InboxUiState'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:24:28 Unresolved reference 'InboxUiState'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:24:53 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:38:39 Unresolved reference 'ChatItemUiModel'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:38:71 Unresolved reference 'ChatItemUiModel'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:38:89 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:38:89 Argument type mismatch: actual type is 'kotlin.collections.List<T>', but 'kotlin.collections.List<ERROR CLASS: Symbol not found for ChatItemUiModel>' was expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:41:24 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:75:30 Unresolved reference 'InboxUiState'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:83:30 Unresolved reference 'InboxUiState'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:89:30 Unresolved reference 'InboxUiState'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:90:25 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:91:31 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:92:33 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:107:26 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:109:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:110:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:110:75 Unresolved reference 'query'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:111:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:111:78 Unresolved reference 'chatId'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:112:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:112:65 Unresolved reference 'chatId'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:113:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:114:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:114:62 Unresolved reference 'chatId'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:115:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:116:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:116:66 Unresolved reference 'chatId'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:117:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:118:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:118:60 Unresolved reference 'chatId'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:119:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:120:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:120:74 Unresolved reference 'chatId'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:121:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:122:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:123:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:123:56 Unresolved reference 'chatId'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:123:71 Unresolved reference 'duration'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:124:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:124:54 Unresolved reference 'chatId'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:125:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:125:58 Unresolved reference 'chatId'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:126:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:127:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:128:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:128:41 Inapplicable candidate(s): fun setFilter(filter: <ERROR TYPE REF: Symbol not found for InboxFilter>): Unit
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:128:58 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:128:58 Function invocation 'filter(...)' expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:129:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:130:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:131:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:198:52 Unresolved reference 'MuteDuration'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/InboxViewModel.kt:210:35 Unresolved reference 'InboxFilter'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/animations/InboxAnimations.kt:13:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/animations/InboxAnimations.kt:25:25 Unresolved reference 'AnimSpecs'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/animations/InboxAnimations.kt:32:34 Unresolved reference 'AnimSpecs'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/animations/InboxAnimations.kt:38:34 Unresolved reference 'AnimSpecs'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/animations/InboxAnimations.kt:46:34 Unresolved reference 'AnimSpecs'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/animations/InboxAnimations.kt:51:34 Unresolved reference 'AnimSpecs'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/animations/InboxAnimations.kt:74:25 Unresolved reference 'AnimSpecs'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/animations/InboxAnimations.kt:102:25 Unresolved reference 'AnimSpecs'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/animations/InboxAnimations.kt:213:30 Unresolved reference 'AnimSpecs'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/animations/InboxAnimations.kt:222:30 Unresolved reference 'AnimSpecs'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/animations/InboxAnimations.kt:242:26 Unresolved reference 'AnimSpecs'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/ChatSectionHeader.kt:12:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/ChatSectionHeader.kt:26:21 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/ChatSectionHeader.kt:53:21 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxEmptyState.kt:18:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxEmptyState.kt:26:11 Unresolved reference 'EmptyStateType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxEmptyState.kt:31:50 Destructuring of type 'kotlin.Unit' requires operator function 'component1()'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxEmptyState.kt:31:50 Destructuring of type 'kotlin.Unit' requires operator function 'component2()'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxEmptyState.kt:31:50 Destructuring of type 'kotlin.Unit' requires operator function 'component3()'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxEmptyState.kt:31:50 Destructuring of type 'kotlin.Unit' requires operator function 'component4()'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxEmptyState.kt:33:13 Unresolved reference 'EmptyStateType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxEmptyState.kt:39:13 Unresolved reference 'EmptyStateType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxEmptyState.kt:45:13 Unresolved reference 'EmptyStateType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxEmptyState.kt:51:13 Unresolved reference 'EmptyStateType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxEmptyState.kt:57:13 Unresolved reference 'EmptyStateType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxEmptyState.kt:63:13 Unresolved reference 'EmptyStateType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxEmptyState.kt:169:21 None of the following candidates is applicable:
+fun Text(text: String, modifier: Modifier = ..., color: Color = ..., autoSize: TextAutoSize? = ..., fontSize: TextUnit = ..., fontStyle: FontStyle? = ..., fontWeight: FontWeight? = ..., fontFamily: FontFamily? = ..., letterSpacing: TextUnit = ..., textDecoration: TextDecoration? = ..., textAlign: TextAlign? = ..., lineHeight: TextUnit = ..., overflow: TextOverflow = ..., softWrap: Boolean = ..., maxLines: Int = ..., minLines: Int = ..., onTextLayout: ((TextLayoutResult) -> Unit)? = ..., style: TextStyle = ...): Unit
+fun Text(text: AnnotatedString, modifier: Modifier = ..., color: Color = ..., autoSize: TextAutoSize? = ..., fontSize: TextUnit = ..., fontStyle: FontStyle? = ..., fontWeight: FontWeight? = ..., fontFamily: FontFamily? = ..., letterSpacing: TextUnit = ..., textDecoration: TextDecoration? = ..., textAlign: TextAlign? = ..., lineHeight: TextUnit = ..., overflow: TextOverflow = ..., softWrap: Boolean = ..., maxLines: Int = ..., minLines: Int = ..., inlineContent: Map<String, InlineTextContent> = ..., onTextLayout: (TextLayoutResult) -> Unit = ..., style: TextStyle = ...): Unit
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxSearchBar.kt:23:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxSearchBar.kt:24:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxSearchBar.kt:72:29 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxSearchBar.kt:73:27 Unresolved reference 'InboxShapes'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxSearchBar.kt:181:21 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxSearchBar.kt:182:19 Unresolved reference 'InboxShapes'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxTopAppBar.kt:32:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/NewChatFab.kt:14:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/NewChatFab.kt:89:21 Unresolved reference 'InboxShapes'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/NewChatFab.kt:115:17 Unresolved reference 'InboxShapes'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:17:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:18:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:29:41 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:74:33 Unresolved reference 'InboxColors'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:74:33 Argument type mismatch: actual type is 'androidx.compose.animation.core.AnimationState<kotlin.Float, androidx.compose.animation.core.AnimationVector1D>', but 'androidx.compose.ui.graphics.Color' was expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:84:37 Unresolved reference 'InboxColors'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:86:29 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:131:25 Unresolved reference 'InboxColors'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:132:25 Unresolved reference 'InboxColors'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:133:25 Unresolved reference 'InboxColors'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:134:25 Unresolved reference 'InboxColors'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:139:22 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:167:41 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:170:41 Argument type mismatch: actual type is 'kotlin.Comparable<it(kotlin.String & androidx.compose.ui.unit.Dp)>', but 'androidx.compose.ui.unit.Dp' was expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:170:55 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:175:45 Argument type mismatch: actual type is 'kotlin.Comparable<it(kotlin.String & androidx.compose.ui.unit.Dp)>', but 'androidx.compose.ui.unit.Dp' was expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/OnlineIndicator.kt:175:59 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/SwipeableChatItem.kt:27:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/SwipeableChatItem.kt:28:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/SwipeableChatItem.kt:29:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/SwipeableChatItem.kt:81:23 Unresolved reference 'InboxShapes'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/SwipeableChatItem.kt:88:39 Unresolved reference 'InboxColors'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/SwipeableChatItem.kt:100:39 Unresolved reference 'InboxColors'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/SwipeableChatItem.kt:117:39 Unresolved reference 'InboxColors'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/SwipeableChatItem.kt:129:39 Unresolved reference 'InboxColors'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/SwipeableChatItem.kt:215:23 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/UnreadBadge.kt:27:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/UnreadBadge.kt:28:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/UnreadBadge.kt:38:30 Unresolved reference 'InboxColors'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/UnreadBadge.kt:74:37 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/UnreadBadge.kt:74:77 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/UnreadBadge.kt:79:21 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/UnreadBadge.kt:80:28 Argument type mismatch: actual type is 'kotlin.String', but 'androidx.compose.ui.unit.Dp' was expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/UnreadBadge.kt:116:19 Unresolved reference 'InboxDimens'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/UnreadBadge.kt:138:16 Unresolved reference 'InboxColors'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:30:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:37:12 Unresolved reference 'InboxUiState'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:39:16 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:44:16 Unresolved reference 'InboxUiState'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:52:16 Unresolved reference 'InboxUiState'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:54:28 Unresolved reference 'EmptyStateType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:55:37 Unresolved reference 'message'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:56:48 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:60:16 Unresolved reference 'InboxUiState'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:62:48 Unresolved reference 'isArchivedView'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:62:70 Unresolved reference 'archivedChats'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:62:95 Unresolved reference 'chats'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:64:57 Unresolved reference 'isArchivedView'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:64:81 Unresolved reference 'pinnedChats'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:66:62 Unresolved reference 'EmptyStateType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:66:100 Unresolved reference 'EmptyStateType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:80:36 Unresolved reference 'isArchivedView'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:83:59 Unresolved reference 'filter'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:84:56 Unresolved reference 'InboxFilter'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:84:67 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:90:36 Unresolved reference 'isArchivedView'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:90:60 Unresolved reference 'archivedChats'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:96:63 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:117:65 Unresolved reference 'archivedChats'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:125:42 Unresolved reference 'isArchivedView'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:129:58 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:147:36 Unresolved reference 'isArchivedView'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:147:60 Unresolved reference 'pinnedChats'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:152:47 Unresolved reference 'pinnedChats'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:153:41 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:153:44 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:153:57 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:154:33 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:154:40 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:155:74 Unresolved reference 'pinnedChats'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:156:56 Unresolved reference 'selectedItems'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:156:84 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:158:33 @Composable invocations can only happen from the context of a @Composable function
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:160:52 Unresolved reference 'isMuted'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:161:55 Unresolved reference 'isArchived'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:163:50 Unresolved reference 'isArchived'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:163:71 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:163:102 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:164:55 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:164:84 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:166:59 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:166:87 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:167:57 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:167:83 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:167:87 Unresolved reference 'MuteDuration'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:168:56 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:168:83 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:198:46 Argument type mismatch: actual type is 'kotlin.Function1<ERROR CLASS: Symbol not found for ChatSection, kotlin.Unit>', but 'kotlin.Function2<ERROR CLASS: Symbol not found for ChatSection, kotlin.collections.List<ERROR CLASS: Symbol not found for ChatItemUiModel>, kotlin.Unit>' was expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:198:48 Function 'component1()' is ambiguous for this expression:
+fun <T> Array<out T>.component1(): T
+fun ByteArray.component1(): Byte
+fun ShortArray.component1(): Short
+fun IntArray.component1(): Int
+fun LongArray.component1(): Long
+fun FloatArray.component1(): Float
+fun DoubleArray.component1(): Double
+fun BooleanArray.component1(): Boolean
+fun CharArray.component1(): Char
+fun <T> List<T>.component1(): T
+fun <K, V> Map.Entry<K, V>.component1(): K
+fun UIntArray.component1(): UInt
+fun ULongArray.component1(): ULong
+fun UByteArray.component1(): UByte
+fun UShortArray.component1(): UShort.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:198:48 Function 'component2()' is ambiguous for this expression:
+fun <T> Array<out T>.component2(): T
+fun ByteArray.component2(): Byte
+fun ShortArray.component2(): Short
+fun IntArray.component2(): Int
+fun LongArray.component2(): Long
+fun FloatArray.component2(): Float
+fun DoubleArray.component2(): Double
+fun BooleanArray.component2(): Boolean
+fun CharArray.component2(): Char
+fun <T> List<T>.component2(): T
+fun <K, V> Map.Entry<K, V>.component2(): V
+fun UIntArray.component2(): UInt
+fun ULongArray.component2(): ULong
+fun UByteArray.component2(): UByte
+fun UShortArray.component2(): UShort.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:198:48 Unresolved reference 'ChatSection'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:201:71 Unresolved reference 'displayName'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:206:45 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:206:48 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:206:61 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:207:37 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:207:44 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:208:78 Function invocation 'size(...)' expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:209:60 Unresolved reference 'selectedItems'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:209:88 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:211:37 @Composable invocations can only happen from the context of a @Composable function
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:213:56 Unresolved reference 'isMuted'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:214:59 Unresolved reference 'isArchived'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:216:54 Unresolved reference 'isArchived'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:216:75 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:216:106 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:217:59 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:217:88 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:219:63 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:219:91 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:220:61 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:220:87 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:220:91 Unresolved reference 'MuteDuration'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:221:60 Unresolved reference 'InboxAction'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:221:85 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:284:42 Unresolved reference 'ChatItemUiModel'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:284:65 Unresolved reference 'ChatSection'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:284:83 Unresolved reference 'ChatItemUiModel'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:289:32 Unresolved reference 'ChatSection'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:289:57 Unresolved reference 'ChatItemUiModel'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:292:5 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:292:13 Unresolved reference 'ChatSection'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:292:34 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:292:34 Argument type mismatch: actual type is 'kotlin.collections.MutableList<T>', but 'kotlin.collections.MutableList<ERROR CLASS: Symbol not found for ChatItemUiModel>' was expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:293:5 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:293:13 Unresolved reference 'ChatSection'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:293:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:293:38 Argument type mismatch: actual type is 'kotlin.collections.MutableList<T>', but 'kotlin.collections.MutableList<ERROR CLASS: Symbol not found for ChatItemUiModel>' was expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:294:5 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:294:13 Unresolved reference 'ChatSection'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:294:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:294:38 Argument type mismatch: actual type is 'kotlin.collections.MutableList<T>', but 'kotlin.collections.MutableList<ERROR CLASS: Symbol not found for ChatItemUiModel>' was expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:295:5 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:295:13 Unresolved reference 'ChatSection'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:295:34 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:295:34 Argument type mismatch: actual type is 'kotlin.collections.MutableList<T>', but 'kotlin.collections.MutableList<ERROR CLASS: Symbol not found for ChatItemUiModel>' was expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:297:21 Unresolved reference 'ChatItemUiModel'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:298:75 Unresolved reference 'lastMessageTime'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:301:51 Unresolved reference 'ChatSection'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:302:55 Unresolved reference 'ChatSection'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:303:49 Unresolved reference 'ChatSection'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:304:29 Unresolved reference 'ChatSection'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:309:20 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:309:20 Not enough information to infer type argument for 'K'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:309:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:309:38 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+fun <T> Collection<T>.isNotEmpty(): Boolean
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:320:20 Unresolved reference 'InboxFilter'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:321:24 Unresolved reference 'InboxFilter'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:333:15 Unresolved reference 'InboxFilter'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/ChatsTabScreen.kt:337:39 Unresolved reference 'displayName'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/OtherTabScreens.kt:9:42 Unresolved reference 'inbox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/OtherTabScreens.kt:17:16 Unresolved reference 'EmptyStateType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/screens/OtherTabScreens.kt:30:16 Unresolved reference 'EmptyStateType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/postdetail/PostDetailScreen.kt:28:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/postdetail/PostDetailScreen.kt:277:48 Not enough information to infer type argument for 'K'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/postdetail/PostDetailScreen.kt:277:72 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/postdetail/PostDetailScreen.kt:277:72 Not enough information to infer type argument for 'R'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/postdetail/PostDetailScreen.kt:278:38 Unresolved reference 'PollOption'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/postdetail/PostDetailScreen.kt:284:39 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/postdetail/PostDetailScreen.kt:284:39 Not enough information to infer type argument for 'T'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/postdetail/components/CommentItem.kt:26:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/postdetail/components/CommentItem.kt:81:13 Unresolved reference 'CircularAvatar'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/ProfileEditActivity.kt:13:39 Unresolved reference 'presentation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/ProfileEditActivity.kt:17:39 Unresolved reference 'presentation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/ProfileEditActivity.kt:64:55 Unresolved reference 'EditProfileEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/ProfileEditActivity.kt:81:34 Unresolved reference 'PhotoType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/ProfileEditActivity.kt:83:34 Unresolved reference 'PhotoType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/EditProfileScreen.kt:202:48 Unresolved reference 'Gender'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/GenderSelector.kt:31:39 Unresolved reference 'presentation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/GenderSelector.kt:37:21 Unresolved reference 'Gender'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/GenderSelector.kt:38:24 Unresolved reference 'Gender'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/GenderSelector.kt:64:50 Unresolved reference 'Gender'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/GenderSelector.kt:65:50 Unresolved reference 'Gender'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/GenderSelector.kt:74:50 Unresolved reference 'Gender'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/GenderSelector.kt:75:50 Unresolved reference 'Gender'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/GenderSelector.kt:84:50 Unresolved reference 'Gender'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/GenderSelector.kt:85:50 Unresolved reference 'Gender'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileFormFields.kt:25:39 Unresolved reference 'presentation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileFormFields.kt:33:25 Unresolved reference 'UsernameValidation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileFormFields.kt:119:17 Unresolved reference 'UsernameValidation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileFormFields.kt:121:33 Unresolved reference 'UsernameValidation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileFormFields.kt:122:42 Unresolved reference 'UsernameValidation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileFormFields.kt:122:79 Unresolved reference 'message'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileFormFields.kt:134:20 Unresolved reference 'UsernameValidation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileFormFields.kt:139:20 Unresolved reference 'UsernameValidation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileFormFields.kt:147:20 Unresolved reference 'UsernameValidation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileFormFields.kt:159:17 Overload resolution ambiguity between candidates:
+fun Text(text: String, modifier: Modifier = ..., color: Color = ..., autoSize: TextAutoSize? = ..., fontSize: TextUnit = ..., fontStyle: FontStyle? = ..., fontWeight: FontWeight? = ..., fontFamily: FontFamily? = ..., letterSpacing: TextUnit = ..., textDecoration: TextDecoration? = ..., textAlign: TextAlign? = ..., lineHeight: TextUnit = ..., overflow: TextOverflow = ..., softWrap: Boolean = ..., maxLines: Int = ..., minLines: Int = ..., onTextLayout: ((TextLayoutResult) -> Unit)? = ..., style: TextStyle = ...): Unit
+fun Text(text: AnnotatedString, modifier: Modifier = ..., color: Color = ..., autoSize: TextAutoSize? = ..., fontSize: TextUnit = ..., fontStyle: FontStyle? = ..., fontWeight: FontWeight? = ..., fontFamily: FontFamily? = ..., letterSpacing: TextUnit = ..., textDecoration: TextDecoration? = ..., textAlign: TextAlign? = ..., lineHeight: TextUnit = ..., overflow: TextOverflow = ..., softWrap: Boolean = ..., maxLines: Int = ..., minLines: Int = ..., inlineContent: Map<String, InlineTextContent> = ..., onTextLayout: (TextLayoutResult) -> Unit = ..., style: TextStyle = ...): Unit
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileImageSection.kt:48:55 Unresolved reference 'presentation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileImageSection.kt:49:54 Unresolved reference 'presentation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileImageSection.kt:87:59 Unresolved reference 'presentation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileImageSection.kt:100:59 Unresolved reference 'presentation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileImageSection.kt:114:58 Unresolved reference 'canRetry'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileImageSection.kt:184:59 Unresolved reference 'presentation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileImageSection.kt:196:59 Unresolved reference 'presentation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/components/ProfileImageSection.kt:208:59 Unresolved reference 'canRetry'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:29:39 Unresolved reference 'PostDetailActivity'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:34:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:434:19 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:435:9 Unresolved reference 'PostActions'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:436:29 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:437:24 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:437:58 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:438:27 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:439:46 Unresolved reference 'PostDetailActivity'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:439:72 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:439:72 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+val <T> KClass<T>.java: Class<T>
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:439:78 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:439:78 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+fun <T> T.apply(block: T.() -> Unit): T
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:439:84 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:440:21 Unresolved reference 'putExtra'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:440:30 Unresolved reference 'PostDetailActivity'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:440:69 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:441:21 Unresolved reference 'putExtra'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:441:30 Unresolved reference 'PostDetailActivity'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:441:72 Unresolved reference 'authorUid'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:445:25 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:448:109 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:452:28 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:452:62 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:453:31 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:454:30 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:459:28 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:459:34 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:459:65 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:675:25 No parameter with name 'onMediaClick' found.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:675:42 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileScreen.kt:706:14 Unresolved reference 'PostActions'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:23:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:24:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:25:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:26:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:96:13 Unresolved reference 'PostEventBus'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:96:43 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:98:24 Unresolved reference 'PostEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:101:70 Unresolved reference 'post'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:101:85 Unresolved reference 'post'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:227:21 Unresolved reference 'PostEventBus'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:227:39 Unresolved reference 'PostEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:243:21 Unresolved reference 'PostEventBus'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:243:39 Unresolved reference 'PostEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:302:9 Unresolved reference 'PostEventBus'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:302:27 Unresolved reference 'PostEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:313:21 Unresolved reference 'PostEventBus'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:313:39 Unresolved reference 'PostEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:398:9 Unresolved reference 'PostEventBus'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:398:27 Unresolved reference 'PostEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/ProfileViewModel.kt:539:16 Unresolved reference 'PostMapper'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/components/PostFeed.kt:18:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/components/PostFeed.kt:61:21 Unresolved reference 'PostCard'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/components/PostFeed.kt:100:9 Unresolved reference 'SharePostBottomSheet'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/components/PostFeed.kt:137:9 Unresolved reference 'PostMenuBottomSheet'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/components/PostFeed.kt:148:9 Unresolved reference 'ReportPostDialog'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/components/PostFeed.kt:150:27 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/components/ProfileSkeleton.kt:9:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/components/ProfileSkeleton.kt:10:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/components/UserSearchDialog.kt:20:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/components/UserSearchDialog.kt:143:13 Unresolved reference 'CircularAvatar'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/settings/SettingsActivity.kt:20:39 Unresolved reference 'AuthActivity'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/settings/SettingsActivity.kt:113:27 Argument type mismatch: actual type is 'T', but 'android.content.Intent!' was expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/settings/SettingsActivity.kt:113:57 Unresolved reference 'AuthActivity'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/settings/SettingsActivity.kt:113:77 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/settings/SettingsActivity.kt:113:77 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+val <T> KClass<T>.java: Class<T>
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/settings/SettingsActivity.kt:113:83 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/settings/SettingsActivity.kt:113:83 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+fun <T> T.apply(block: T.() -> Unit): T
+    [R|Contract description]
+     <
+        CallsInPlace(block, EXACTLY_ONCE)
+    >
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/settings/SettingsActivity.kt:113:89 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/settings/SettingsActivity.kt:114:17 Unresolved reference 'flags'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/components/FollowListActivity.kt:51:70 Unresolved reference 'ProfileActivity'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/components/FollowListActivity.kt:51:93 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/components/FollowListActivity.kt:51:93 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+val <T> KClass<T>.java: Class<T>
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/components/FollowListActivity.kt:52:32 Unresolved reference 'putExtra'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/components/post/PostHeader.kt:27:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/components/post/PostHeader.kt:28:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/components/post/PostHeader.kt:29:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/components/post/PostHeader.kt:48:9 Unresolved reference 'CircularAvatar'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/navigation/AppNavigation.kt:25:39 Unresolved reference 'presentation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/navigation/AppNavigation.kt:28:39 Unresolved reference 'presentation'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/navigation/AppNavigation.kt:232:39 Unresolved reference 'EditProfileEvent'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/navigation/AppNavigation.kt:256:17 Unresolved reference 'PhotoType'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/reels/ReelItem.kt:36:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/reels/ReelItem.kt:293:25 Unresolved reference 'CircularAvatar'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/reels/ReelsScreen.kt:21:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/reels/ReelsScreen.kt:176:17 Unresolved reference 'ShimmerBox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/reels/ReelsScreen.kt:178:17 Unresolved reference 'ShimmerBox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/reels/ReelsScreen.kt:181:13 Unresolved reference 'ShimmerBox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/reels/ReelsScreen.kt:183:13 Unresolved reference 'ShimmerBox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/reels/ReelsScreen.kt:194:17 Unresolved reference 'ShimmerBox'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/reels/components/CommentsBottomSheet.kt:15:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/reels/components/CommentsBottomSheet.kt:117:9 Unresolved reference 'CircularAvatar'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/theme/styling/MarkdownRenderer.kt:105:86 Unresolved reference 'ProfileActivity'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/theme/styling/MarkdownRenderer.kt:105:109 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/theme/styling/MarkdownRenderer.kt:105:109 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+val <T> KClass<T>.java: Class<T>
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/theme/styling/MarkdownRenderer.kt:105:115 Unresolved reference 'putExtra'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationItem.kt:21:42 Unresolved reference 'components'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationItem.kt:50:9 Unresolved reference 'CircularAvatar'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationsScreen.kt:21:42 Unresolved reference 'home'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationsScreen.kt:97:17 Unresolved reference 'FeedLoading'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:17:39 Unresolved reference 'settings'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:26:26 Property delegate must have a 'getValue(Nothing?, KProperty0<*>)' method. None of the following functions is applicable:
+fun FloatState.getValue(thisObj: Any?, property: KProperty<*>): Float
+fun DoubleState.getValue(thisObj: Any?, property: KProperty<*>): Double
+fun IntState.getValue(thisObj: Any?, property: KProperty<*>): Int
+fun LongState.getValue(thisObj: Any?, property: KProperty<*>): Long
+fun <T> State<T>.getValue(thisObj: Any?, property: KProperty<*>): T
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:75:87 Unresolved reference 'preferredProvider'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:109:56 Unresolved reference 'fallbackToPlatform'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:152:35 Argument type mismatch: actual type is 'kotlin.collections.List<ERROR CLASS: Symbol not found for ApiKeyInfo>', but 'kotlin.Int' was expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:153:33 @Composable invocations can only happen from the context of a @Composable function
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:155:80 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:188:13 Unresolved reference 'ApiKeyInfo'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:207:35 Unresolved reference 'keyName'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:211:38 Unresolved reference 'provider'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:211:71 Unresolved reference 'usageCount'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:211:92 Unresolved reference 'usageLimit'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:218:45 Unresolved reference 'id'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsViewModel.kt:8:39 Unresolved reference 'settings'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsViewModel.kt:9:39 Unresolved reference 'settings'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsViewModel.kt:19:48 Unresolved reference 'ApiKeyInfo'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsViewModel.kt:19:61 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsViewModel.kt:19:61 Argument type mismatch: actual type is 'kotlin.collections.List<T>', but 'kotlin.collections.List<ERROR CLASS: Symbol not found for ApiKeyInfo>' was expected.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsViewModel.kt:20:29 Unresolved reference 'ApiKeyInfo'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsViewModel.kt:22:37 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsViewModel.kt:22:52 Unresolved reference 'ProviderSettings'.
+e: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsViewModel.kt:23:33 Unresolved reference 'ProviderSettings'.
+
+> Task :app:compileDebugKotlin FAILED
+
+[Incubating] Problems report is available at: file:///app/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2m 38s
+35 actionable tasks: 2 executed, 33 up-to-date

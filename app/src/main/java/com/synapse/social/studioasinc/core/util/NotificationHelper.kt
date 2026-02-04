@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.core.util
 
 import android.util.Log
 import com.synapse.social.studioasinc.core.network.SupabaseClient

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.feature.search
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,9 +10,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.synapse.social.studioasinc.ui.search.SearchScreen
-import com.synapse.social.studioasinc.ui.search.SearchViewModel
+import com.synapse.social.studioasinc.feature.search.search.SearchScreen
+import com.synapse.social.studioasinc.feature.search.search.SearchViewModel
 import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
+import com.synapse.social.studioasinc.feature.profile.ProfileActivity
+import com.synapse.social.studioasinc.feature.home.HomeActivity
 // TODO: Re-implement chat functionality
 // import com.synapse.social.studioasinc.ui.chat.ChatActivity
 import dagger.hilt.android.AndroidEntryPoint

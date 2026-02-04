@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.presentation.editprofile
+package com.synapse.social.studioasinc.feature.profile.editprofile
 
 import android.content.Context
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
@@ -7,7 +7,7 @@ import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
 import com.synapse.social.studioasinc.domain.model.UserProfile
 import com.synapse.social.studioasinc.domain.model.UserStatus
-import com.synapse.social.studioasinc.presentation.editprofile.photohistory.HistoryItem
+import com.synapse.social.studioasinc.feature.profile.editprofile.photohistory.HistoryItem
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns

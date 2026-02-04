@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.settings.ApiKeySettingsService
+import com.synapse.social.studioasinc.feature.settings.legacy.ApiKeySettingsService
 import com.synapse.social.studioasinc.settings.ApiKeyInfo
 import com.synapse.social.studioasinc.settings.ProviderSettings
 import dagger.hilt.android.lifecycle.HiltViewModel

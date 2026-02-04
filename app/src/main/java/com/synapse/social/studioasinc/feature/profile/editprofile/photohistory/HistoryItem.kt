@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.presentation.editprofile.photohistory
+package com.synapse.social.studioasinc.feature.profile.editprofile.photohistory
 
 data class HistoryItem(
     val key: String,

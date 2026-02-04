@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.core.util
 
 import com.synapse.social.studioasinc.data.remote.services.SupabaseDatabaseService
 import com.synapse.social.studioasinc.data.remote.services.SupabaseAuthenticationService

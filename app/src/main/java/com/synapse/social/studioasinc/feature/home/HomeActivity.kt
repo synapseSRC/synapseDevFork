@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.feature.home
 
 import android.content.Intent
 import android.os.Build
@@ -12,12 +12,16 @@ import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jan.supabase.auth.auth
 import com.synapse.social.studioasinc.feature.auth.ui.components.ProfileCompletionDialogFragment
-import com.synapse.social.studioasinc.ui.home.HomeScreen
+import com.synapse.social.studioasinc.feature.home.home.HomeScreen
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 import com.synapse.social.studioasinc.feature.shared.theme.ThemeManager
 import com.synapse.social.studioasinc.core.ui.animation.ActivityTransitions
 import com.synapse.social.studioasinc.feature.stories.viewer.StoryViewerActivity
+import com.synapse.social.studioasinc.feature.search.SearchActivity
+import com.synapse.social.studioasinc.feature.profile.ProfileActivity
+import com.synapse.social.studioasinc.feature.inbox.InboxActivity
+import com.synapse.social.studioasinc.feature.createpost.CreatePostActivity
 import com.synapse.social.studioasinc.feature.shared.reels.ReelUploadManager
 import kotlinx.coroutines.launch
 import javax.inject.Inject

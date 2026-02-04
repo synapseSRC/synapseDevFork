@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.search
+package com.synapse.social.studioasinc.feature.search.search
 
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel

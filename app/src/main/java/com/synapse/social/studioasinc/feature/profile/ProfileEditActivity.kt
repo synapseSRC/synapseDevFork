@@ -11,9 +11,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
 import com.synapse.social.studioasinc.presentation.editprofile.EditProfileEvent
-import com.synapse.social.studioasinc.presentation.editprofile.EditProfileScreen
-import com.synapse.social.studioasinc.presentation.editprofile.EditProfileViewModel
-import com.synapse.social.studioasinc.presentation.editprofile.photohistory.PhotoHistoryScreen
+import com.synapse.social.studioasinc.feature.profile.editprofile.EditProfileScreen
+import com.synapse.social.studioasinc.feature.profile.editprofile.EditProfileViewModel
+import com.synapse.social.studioasinc.feature.profile.editprofile.photohistory.PhotoHistoryScreen
 import com.synapse.social.studioasinc.presentation.editprofile.photohistory.PhotoType
 import com.synapse.social.studioasinc.ui.settings.SelectRegionScreen
 import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.domain.model
 
 import kotlinx.serialization.Serializable
 

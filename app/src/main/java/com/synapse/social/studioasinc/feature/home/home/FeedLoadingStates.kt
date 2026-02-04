@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.home
+package com.synapse.social.studioasinc.feature.home.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
+import com.synapse.social.studioasinc.feature.shared.components.ExpressiveLoadingIndicator
 
 @Composable
 fun FeedLoading() {

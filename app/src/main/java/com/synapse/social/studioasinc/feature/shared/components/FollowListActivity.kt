@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.feature.shared.components
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,7 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.lifecycleScope
-import com.synapse.social.studioasinc.compose.FollowListScreen
+import com.synapse.social.studioasinc.feature.shared.components.compose.FollowListScreen
 import com.synapse.social.studioasinc.data.repository.AuthRepository
 // TODO: Re-implement chat functionality
 // import com.synapse.social.studioasinc.ui.chat.ChatActivity

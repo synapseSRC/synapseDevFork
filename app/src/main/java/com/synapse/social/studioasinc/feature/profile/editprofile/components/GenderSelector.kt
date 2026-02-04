@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.presentation.editprofile.components
+package com.synapse.social.studioasinc.feature.profile.editprofile.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState

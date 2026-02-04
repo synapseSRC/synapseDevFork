@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.presentation.editprofile.components
+package com.synapse.social.studioasinc.feature.profile.editprofile.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.createpost
+package com.synapse.social.studioasinc.feature.createpost.createpost
 
 import android.app.Application
 import android.content.Context

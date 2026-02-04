@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.createpost
+package com.synapse.social.studioasinc.feature.createpost.createpost
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

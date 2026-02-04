@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.presentation.editprofile
+package com.synapse.social.studioasinc.feature.profile.editprofile
 
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -16,7 +16,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
+import com.synapse.social.studioasinc.feature.shared.components.ExpressiveLoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
@@ -39,9 +39,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.presentation.editprofile.components.GenderSelector
-import com.synapse.social.studioasinc.presentation.editprofile.components.ProfileFormFields
-import com.synapse.social.studioasinc.presentation.editprofile.components.ProfileImageSection
+import com.synapse.social.studioasinc.feature.profile.editprofile.components.GenderSelector
+import com.synapse.social.studioasinc.feature.profile.editprofile.components.ProfileFormFields
+import com.synapse.social.studioasinc.feature.profile.editprofile.components.ProfileImageSection
 import com.synapse.social.studioasinc.ui.settings.SettingsCard
 import com.synapse.social.studioasinc.ui.settings.SettingsNavigationItem
 import com.synapse.social.studioasinc.ui.settings.SettingsSpacing

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.search
+package com.synapse.social.studioasinc.feature.search.search
 
 import android.text.format.DateUtils
 import androidx.compose.animation.*
@@ -30,7 +30,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
+import com.synapse.social.studioasinc.feature.shared.components.ExpressiveLoadingIndicator
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector

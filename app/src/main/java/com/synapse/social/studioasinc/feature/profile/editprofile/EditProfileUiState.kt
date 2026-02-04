@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.presentation.editprofile
+package com.synapse.social.studioasinc.feature.profile.editprofile
 
 import android.net.Uri
 import com.synapse.social.studioasinc.domain.model.UserProfile

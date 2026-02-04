@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.feature.shared.components
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

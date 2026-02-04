@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc
+package com.synapse.social.studioasinc.feature.profile
 
 import android.app.ProgressDialog
 import android.content.Intent
@@ -20,6 +20,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.synapse.social.studioasinc.feature.profile.ProfileEditActivity
 import com.synapse.social.studioasinc.feature.settings.SettingsActivity
+import com.synapse.social.studioasinc.feature.shared.components.FollowListActivity
+import com.synapse.social.studioasinc.feature.shared.components.ActivityLogActivity
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 // TODO: Re-implement chat feature - chat service import
 // import com.synapse.social.studioasinc.data.remote.services.SupabaseChatService

@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.navigation
+package com.synapse.social.studioasinc.feature.shared.navigation
 
 import android.content.Intent
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.synapse.social.studioasinc.ui.home.FeedScreen
+import com.synapse.social.studioasinc.feature.home.home.FeedScreen
 import com.synapse.social.studioasinc.feature.shared.reels.ReelsScreen
 import com.synapse.social.studioasinc.ui.notifications.NotificationsScreen
 import com.synapse.social.studioasinc.feature.post.postdetail.PostDetailScreen

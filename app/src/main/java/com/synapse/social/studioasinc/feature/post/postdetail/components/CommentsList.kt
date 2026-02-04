@@ -11,7 +11,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.synapse.social.studioasinc.domain.model.CommentWithUser
 import com.synapse.social.studioasinc.domain.model.CommentAction
-import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
+import com.synapse.social.studioasinc.feature.shared.components.ExpressiveLoadingIndicator
 
 @Composable
 fun CommentsList(

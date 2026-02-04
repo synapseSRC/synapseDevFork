@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.components.post
+package com.synapse.social.studioasinc.feature.shared.components.post
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

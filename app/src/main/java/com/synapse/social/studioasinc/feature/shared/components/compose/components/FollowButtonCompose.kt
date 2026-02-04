@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.compose.components
+package com.synapse.social.studioasinc.feature.shared.components.compose.components
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -9,7 +9,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.viewmodel.FollowButtonViewModel
+import com.synapse.social.studioasinc.feature.shared.viewmodel.FollowButtonViewModel
 
 @Composable
 fun FollowButtonCompose(

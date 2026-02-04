@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.home
+package com.synapse.social.studioasinc.feature.home.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,9 +30,9 @@ import androidx.paging.compose.itemKey
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.StoryWithUser
 import com.synapse.social.studioasinc.ui.components.post.PostActions
-import com.synapse.social.studioasinc.ui.components.post.SharedPostItem
-import com.synapse.social.studioasinc.ui.components.post.PostOptionsBottomSheet
-import com.synapse.social.studioasinc.ui.components.ExpressivePullToRefreshIndicator
+import com.synapse.social.studioasinc.feature.shared.components.post.SharedPostItem
+import com.synapse.social.studioasinc.feature.shared.components.post.PostOptionsBottomSheet
+import com.synapse.social.studioasinc.feature.shared.components.ExpressivePullToRefreshIndicator
 import com.synapse.social.studioasinc.feature.stories.tray.StoryTray
 import com.synapse.social.studioasinc.feature.stories.tray.StoryTrayViewModel
 

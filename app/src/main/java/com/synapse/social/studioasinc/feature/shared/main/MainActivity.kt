@@ -43,8 +43,8 @@ import com.synapse.social.studioasinc.data.local.database.AppDatabase
 import com.synapse.social.studioasinc.data.repository.AuthRepository
 import com.synapse.social.studioasinc.data.repository.UserRepository
 import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
-import com.synapse.social.studioasinc.ui.navigation.AppNavigation
-import com.synapse.social.studioasinc.ui.navigation.AppDestination
+import com.synapse.social.studioasinc.feature.shared.navigation.AppNavigation
+import com.synapse.social.studioasinc.feature.shared.navigation.AppDestination
 import androidx.navigation.compose.rememberNavController
 import com.synapse.social.studioasinc.R
 import com.synapse.social.studioasinc.core.network.SupabaseClient

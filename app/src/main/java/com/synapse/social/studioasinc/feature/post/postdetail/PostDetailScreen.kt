@@ -22,14 +22,14 @@ import com.synapse.social.studioasinc.domain.model.CommentAction
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.domain.model.CommentWithUser
 import com.synapse.social.studioasinc.feature.post.postdetail.components.*
-import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
-import com.synapse.social.studioasinc.ui.components.post.PostInteractionBar
-import com.synapse.social.studioasinc.ui.components.post.PollContent
+import com.synapse.social.studioasinc.feature.shared.components.ExpressiveLoadingIndicator
+import com.synapse.social.studioasinc.feature.shared.components.post.PostInteractionBar
+import com.synapse.social.studioasinc.feature.shared.components.post.PollContent
 import com.synapse.social.studioasinc.ui.components.post.PollOption
-import com.synapse.social.studioasinc.ui.components.post.PostOptionsBottomSheet
-import com.synapse.social.studioasinc.ui.components.post.ReactionPicker
+import com.synapse.social.studioasinc.feature.shared.components.post.PostOptionsBottomSheet
+import com.synapse.social.studioasinc.feature.shared.components.post.ReactionPicker
 import com.synapse.social.studioasinc.domain.model.User as HomeUser
-import com.synapse.social.studioasinc.ui.components.MediaViewer
+import com.synapse.social.studioasinc.feature.shared.components.MediaViewer
 import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Brush
 

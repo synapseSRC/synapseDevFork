@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.settings
+package com.synapse.social.studioasinc.feature.settings.legacy
 
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from

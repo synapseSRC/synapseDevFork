@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.home
+package com.synapse.social.studioasinc.feature.home.home
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -12,7 +12,7 @@ import com.synapse.social.studioasinc.data.local.database.AppDatabase
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.ui.components.post.PostCardState
+import com.synapse.social.studioasinc.feature.shared.components.post.PostCardState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import com.synapse.social.studioasinc.core.util.ScrollPositionState

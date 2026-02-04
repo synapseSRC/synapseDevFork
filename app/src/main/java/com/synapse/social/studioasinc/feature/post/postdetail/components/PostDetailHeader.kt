@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.ui.components.post.PostHeader
+import com.synapse.social.studioasinc.feature.shared.components.post.PostHeader
 
 // We can likely reuse the existing PostHeader, but let's wrap it if needed or use directly.
 // The existing PostHeader takes a User object. PostDetailState has Author which might be different or map to it.

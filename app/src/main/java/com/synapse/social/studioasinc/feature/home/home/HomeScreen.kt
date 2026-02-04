@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.home
+package com.synapse.social.studioasinc.feature.home.home
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
@@ -44,7 +44,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.synapse.social.studioasinc.R
 import com.synapse.social.studioasinc.ui.navigation.HomeDestinations
-import com.synapse.social.studioasinc.ui.navigation.HomeNavGraph
+import com.synapse.social.studioasinc.feature.shared.navigation.HomeNavGraph
 import androidx.compose.ui.unit.dp
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from

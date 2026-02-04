@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.styling
+package com.synapse.social.studioasinc.feature.shared.theme.styling
 
 import android.content.Context
 import android.content.Intent

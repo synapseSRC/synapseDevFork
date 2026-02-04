@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.ui.components.post.PostCardState
+import com.synapse.social.studioasinc.feature.shared.components.post.PostCardState
 import com.synapse.social.studioasinc.ui.components.post.PollOption
 import com.synapse.social.studioasinc.ui.components.post.PostEventBus
 import com.synapse.social.studioasinc.ui.components.post.PostEvent
@@ -464,7 +464,7 @@ class ProfileViewModel @Inject constructor(
             try {
                 // Use IO dispatcher if the manager call is blocking or for safety
                 val results = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-                    com.synapse.social.studioasinc.UserProfileManager.searchUsers(query)
+                    com.synapse.social.studioasinc.core.util.UserProfileManager.searchUsers(query)
                 }
                 _state.update { it.copy(searchResults = results, isSearching = false) }
             } catch (e: Exception) {

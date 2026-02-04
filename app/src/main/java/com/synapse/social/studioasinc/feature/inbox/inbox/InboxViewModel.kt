@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.inbox
+package com.synapse.social.studioasinc.feature.inbox.inbox
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,7 +6,7 @@ import com.synapse.social.studioasinc.data.remote.services.SupabaseAuthenticatio
 import com.synapse.social.studioasinc.data.remote.services.SupabaseDatabaseService
 import com.synapse.social.studioasinc.ui.inbox.models.*
 import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.UserProfileManager
+import com.synapse.social.studioasinc.core.util.UserProfileManager
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 

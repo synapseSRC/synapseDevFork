@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.UserProfileManager
+import com.synapse.social.studioasinc.core.util.UserProfileManager
 import com.synapse.social.studioasinc.data.remote.services.SupabaseAuthenticationService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

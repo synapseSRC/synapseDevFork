@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.ui.createpost
+package com.synapse.social.studioasinc.feature.createpost.createpost
 
 import android.Manifest
 import android.net.Uri
@@ -35,7 +35,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.synapse.social.studioasinc.domain.model.LocationData
-import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
+import com.synapse.social.studioasinc.feature.shared.components.ExpressiveLoadingIndicator
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions

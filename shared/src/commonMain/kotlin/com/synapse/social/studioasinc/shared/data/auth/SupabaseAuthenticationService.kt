@@ -23,12 +23,15 @@ class SupabaseAuthenticationService : IAuthenticationService {
     override suspend fun signUp(email: String, password: String): Result<String> {
         return try {
             withContext(Dispatchers.IO) {
-                val result = SupabaseClient.client.auth.signUpWith(Email) {
+                SupabaseClient.client.auth.signUpWith(Email) {
                     this.email = email
                     this.password = password
                 }
                 
-                val userId = result.user?.id ?: throw Exception("User ID not found after signup")
+                // Get user ID from current session
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id 
+                    ?: throw Exception("User ID not found after signup")
+                
                 Napier.d("User signed up successfully: $userId")
                 Result.success(userId)
             }
@@ -131,12 +134,15 @@ class SupabaseAuthenticationService : IAuthenticationService {
     override suspend fun signIn(email: String, password: String): Result<String> {
         return try {
             withContext(Dispatchers.IO) {
-                val result = SupabaseClient.client.auth.signInWith(Email) {
+                SupabaseClient.client.auth.signInWith(Email) {
                     this.email = email
                     this.password = password
                 }
                 
-                val userId = result.user?.id ?: throw Exception("User ID not found after sign in")
+                // Get user ID from current session
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id 
+                    ?: throw Exception("User ID not found after sign in")
+                
                 Napier.d("User signed in successfully: $userId")
                 Result.success(userId)
             }

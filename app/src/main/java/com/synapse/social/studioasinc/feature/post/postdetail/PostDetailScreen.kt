@@ -44,7 +44,8 @@ fun PostDetailScreen(
     viewModel: PostDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val pagingItems = viewModel.commentsFlow.collectAsLazyPagingItems()
+    // Changed: collectAsLazyPagingItems from .commentsPagingFlow instead of commentsFlow
+    val pagingItems = viewModel.commentsPagingFlow.collectAsLazyPagingItems()
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -177,13 +178,23 @@ fun PostDetailScreen(
                     }
                     is CommentAction.Delete -> viewModel.deleteComment(action.commentId)
                     is CommentAction.Edit -> viewModel.setEditingComment(comment)
-                    is CommentAction.Report -> viewModel.reportComment(action.comment.id, "Inappropriate", null) // Corrected signature
+                    is CommentAction.Report -> viewModel.reportComment(action.commentId, "Inappropriate", null) // Corrected signature, use action.commentId
                     is CommentAction.Copy -> {
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         val clip = ClipData.newPlainText("Comment", action.content)
                         clipboard.setPrimaryClip(clip)
                         Toast.makeText(context, "Comment copied", Toast.LENGTH_SHORT).show()
                     }
+                    // Handle missing exhaustive branches
+                    is CommentAction.Share -> {
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, action.content)
+                        }
+                        context.startActivity(Intent.createChooser(shareIntent, "Share Comment"))
+                    }
+                    is CommentAction.Hide -> viewModel.hideComment(action.commentId)
+                    is CommentAction.Pin -> viewModel.pinComment(action.commentId, action.postId)
                 }
                 showCommentOptions = null
             }

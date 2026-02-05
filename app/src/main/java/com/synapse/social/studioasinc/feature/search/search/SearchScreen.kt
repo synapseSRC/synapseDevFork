@@ -269,25 +269,24 @@ private fun SearchPost.toPost(): Post {
         id = this.id,
         authorUid = this.authorId ?: "",
         postText = this.content,
-        timestamp = try {
-             // Assuming ISO8601 or similar, but for safety in UI just use current time or 0 if parsing fails
-             // You might need a proper parser if createdAt format is known
-             0L
-        } catch (e: Exception) { 0L },
-        publishDate = this.createdAt, // PostCard uses publishDate string for TimeUtils
+        // Assuming createdAt is ISO string, using it for publishDate
+        publishDate = this.createdAt,
+        // Using timestamp as 0L since we don't have a numeric timestamp in SearchPost
+        timestamp = 0L,
         likesCount = this.likesCount,
         commentsCount = this.commentsCount,
         resharesCount = this.boostCount,
         username = this.authorHandle,
         avatarUrl = this.authorAvatar,
+        // Fix for media items construction
         mediaItems = this.imageUrls.map { url ->
             MediaItem(
                 url = url,
                 type = MediaType.IMAGE
             )
-        }.toMutableList().also { list ->
-            if (this.videoUrl != null) {
-                list.add(MediaItem(url = this.videoUrl, type = MediaType.VIDEO))
+        }.toMutableList().apply {
+            if (this@toPost.videoUrl != null) {
+                add(MediaItem(url = this@toPost.videoUrl!!, type = MediaType.VIDEO))
             }
         }
     )

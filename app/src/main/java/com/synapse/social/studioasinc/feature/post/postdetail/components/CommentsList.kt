@@ -29,8 +29,7 @@ fun CommentsList(
     headerContent: @Composable () -> Unit = {}
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 120.dp)
+        modifier = modifier.fillMaxSize()
     ) {
         item {
             headerContent()

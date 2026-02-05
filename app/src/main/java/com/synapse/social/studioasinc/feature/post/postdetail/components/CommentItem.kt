@@ -114,28 +114,22 @@ fun CommentItem(
                 val mentionColor = MaterialTheme.colorScheme.primary
                 val pillColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
 
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                    modifier = Modifier.padding(vertical = 4.dp)
-                ) {
-                    val annotatedText = remember(comment.content, mentionColor, pillColor) {
-                        MentionTextFormatter.buildMentionText(
-                            text = comment.content,
-                            mentionColor = mentionColor,
-                            pillColor = pillColor
-                        )
-                    }
-                    Text(
-                        text = annotatedText,
-                        style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
-                        modifier = Modifier
-                            .padding(horizontal = 12.dp, vertical = 8.dp)
-                            .clickable {
-                                // Handle mention clicks if needed
-                            }
+                val annotatedText = remember(comment.content, mentionColor, pillColor) {
+                    MentionTextFormatter.buildMentionText(
+                        text = comment.content,
+                        mentionColor = mentionColor,
+                        pillColor = pillColor
                     )
                 }
+                Text(
+                    text = annotatedText,
+                    style = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
+                    modifier = Modifier
+                        .padding(vertical = 4.dp)
+                        .clickable {
+                            // Handle mention clicks if needed
+                        }
+                )
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
@@ -229,6 +223,11 @@ fun CommentItem(
                 )
             }
         }
+
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f),
+            thickness = 0.5.dp
+        )
 
         // Render nested replies
         if (directReplies.isNotEmpty()) {

@@ -3,11 +3,16 @@ package com.synapse.social.studioasinc.ui.search
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.data.repository.SearchRepository
-import com.synapse.social.studioasinc.domain.model.SearchResult
+import com.synapse.social.studioasinc.shared.domain.model.SearchAccount
+import com.synapse.social.studioasinc.shared.domain.model.SearchHashtag
+import com.synapse.social.studioasinc.shared.domain.model.SearchNews
+import com.synapse.social.studioasinc.shared.domain.model.SearchPost
+import com.synapse.social.studioasinc.shared.domain.usecase.search.GetSuggestedAccountsUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.search.SearchHashtagsUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.search.SearchNewsUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.search.SearchPostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,23 +21,32 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+enum class SearchTab(val title: String) {
+    POSTS("Posts"),
+    HASHTAGS("Hashtags"),
+    NEWS("News"),
+    FOR_YOU("For you")
+}
+
 data class SearchUiState(
     val query: String = "",
     val active: Boolean = false,
     val isLoading: Boolean = false,
-    val selectedFilter: SearchFilter = SearchFilter.ALL,
-    val results: List<SearchResult> = emptyList(),
+    val selectedTab: SearchTab = SearchTab.POSTS,
     val error: String? = null,
-    val searchHistory: List<String> = emptyList() // Could be implemented later
+    val posts: List<SearchPost> = emptyList(),
+    val hashtags: List<SearchHashtag> = emptyList(),
+    val news: List<SearchNews> = emptyList(),
+    val accounts: List<SearchAccount> = emptyList(),
+    val searchHistory: List<String> = emptyList()
 )
-
-enum class SearchFilter {
-    ALL, PEOPLE, POSTS, PHOTOS, VIDEOS
-}
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val searchRepository: SearchRepository,
+    private val searchPostsUseCase: SearchPostsUseCase,
+    private val searchHashtagsUseCase: SearchHashtagsUseCase,
+    private val searchNewsUseCase: SearchNewsUseCase,
+    private val getSuggestedAccountsUseCase: GetSuggestedAccountsUseCase,
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
@@ -44,6 +58,8 @@ class SearchViewModel @Inject constructor(
 
     init {
         loadHistory()
+        // Initial load for "For You" or default content
+        refreshCurrentTab()
     }
 
     private fun loadHistory() {
@@ -64,7 +80,7 @@ class SearchViewModel @Inject constructor(
     fun addToHistory(query: String) {
         if (query.isBlank()) return
         val currentHistory = uiState.value.searchHistory.toMutableList()
-        currentHistory.remove(query) // Remove if exists to move to top
+        currentHistory.remove(query)
         currentHistory.add(0, query)
         if (currentHistory.size > 10) {
             currentHistory.removeAt(currentHistory.lastIndex)
@@ -87,14 +103,11 @@ class SearchViewModel @Inject constructor(
 
     fun onQueryChange(query: String) {
         _uiState.update { it.copy(query = query) }
-
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            if (query.isNotEmpty()) {
-                delay(300) // Debounce
+            delay(500) // Debounce
+            if (query.isNotEmpty() || uiState.value.selectedTab == SearchTab.HASHTAGS || uiState.value.selectedTab == SearchTab.FOR_YOU) {
                 performSearch(query)
-            } else {
-                _uiState.update { it.copy(results = emptyList()) }
             }
         }
     }
@@ -103,12 +116,9 @@ class SearchViewModel @Inject constructor(
         _uiState.update { it.copy(active = active) }
     }
 
-    fun onFilterSelect(filter: SearchFilter) {
-        _uiState.update { it.copy(selectedFilter = filter) }
-        val currentQuery = uiState.value.query
-        if (currentQuery.isNotEmpty()) {
-            performSearch(currentQuery)
-        }
+    fun onTabSelected(tab: SearchTab) {
+        _uiState.update { it.copy(selectedTab = tab) }
+        performSearch(uiState.value.query)
     }
 
     fun onSearch(query: String) {
@@ -118,53 +128,42 @@ class SearchViewModel @Inject constructor(
     }
 
     fun clearSearch() {
-        _uiState.update { it.copy(query = "", results = emptyList()) }
+        _uiState.update { it.copy(query = "") }
+        performSearch("")
     }
 
     private fun performSearch(query: String) {
+        refreshCurrentTab(query)
+    }
+
+    fun refreshCurrentTab(query: String = uiState.value.query) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
-
             try {
-                val filter = uiState.value.selectedFilter
-                val results = mutableListOf<SearchResult>()
-
-                when (filter) {
-                    SearchFilter.ALL -> {
-                        val usersDeferred = async { searchRepository.searchUsers(query) }
-                        val postsDeferred = async { searchRepository.searchPosts(query) }
-                        val mediaDeferred = async { searchRepository.searchMedia(query) }
-
-                        val users = usersDeferred.await().getOrThrow()
-                        val posts = postsDeferred.await().getOrThrow()
-                        val media = mediaDeferred.await().getOrThrow()
-
-                        results.addAll(users)
-                        results.addAll(posts)
-                        results.addAll(media)
+                when (uiState.value.selectedTab) {
+                    SearchTab.POSTS -> {
+                         val result = searchPostsUseCase(query)
+                         result.onSuccess { data -> _uiState.update { it.copy(posts = data, isLoading = false) } }
+                         result.onFailure { err -> _uiState.update { it.copy(error = err.message, isLoading = false) } }
                     }
-                    SearchFilter.PEOPLE -> {
-                        results.addAll(searchRepository.searchUsers(query).getOrThrow())
+                    SearchTab.HASHTAGS -> {
+                        val result = searchHashtagsUseCase(query)
+                        result.onSuccess { data -> _uiState.update { it.copy(hashtags = data, isLoading = false) } }
+                        result.onFailure { err -> _uiState.update { it.copy(error = err.message, isLoading = false) } }
                     }
-                    SearchFilter.POSTS -> {
-                        results.addAll(searchRepository.searchPosts(query).getOrThrow())
+                    SearchTab.NEWS -> {
+                        val result = searchNewsUseCase(query)
+                        result.onSuccess { data -> _uiState.update { it.copy(news = data, isLoading = false) } }
+                        result.onFailure { err -> _uiState.update { it.copy(error = err.message, isLoading = false) } }
                     }
-                    SearchFilter.PHOTOS -> {
-                        results.addAll(searchRepository.searchMedia(query, mediaType = SearchResult.MediaType.PHOTO).getOrThrow())
-                    }
-                    SearchFilter.VIDEOS -> {
-                        results.addAll(searchRepository.searchMedia(query, mediaType = SearchResult.MediaType.VIDEO).getOrThrow())
+                    SearchTab.FOR_YOU -> {
+                        val result = getSuggestedAccountsUseCase(query)
+                        result.onSuccess { data -> _uiState.update { it.copy(accounts = data, isLoading = false) } }
+                        result.onFailure { err -> _uiState.update { it.copy(error = err.message, isLoading = false) } }
                     }
                 }
-
-                _uiState.update { it.copy(isLoading = false, results = results) }
             } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = e.message ?: "Unknown error occurred"
-                    )
-                }
+                _uiState.update { it.copy(isLoading = false, error = e.message) }
             }
         }
     }

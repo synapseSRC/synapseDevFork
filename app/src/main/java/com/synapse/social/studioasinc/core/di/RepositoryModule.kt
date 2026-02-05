@@ -170,12 +170,6 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideSearchRepository(): SearchRepository {
-        return SearchRepositoryImpl()
-    }
-
-    @Provides
-    @Singleton
     fun provideReelRepository(): ReelRepository {
         return ReelRepository()
     }

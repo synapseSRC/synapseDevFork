@@ -202,6 +202,41 @@ fun PostDetailScreen(
     }
 
     Scaffold(
+
+        bottomBar = {
+            Column(
+                 modifier = Modifier
+                     .fillMaxWidth()
+                     .navigationBarsPadding() // Ensure it respects system bars
+                     .padding(bottom = 16.dp)
+            ) {
+
+                 if (uiState.replyToComment != null) {
+                     ReplyIndicator(
+                         replyTo = uiState.replyToComment!!,
+                         onCancelReply = { viewModel.setReplyTo(null) }
+                     )
+                 }
+                 if (uiState.editingComment != null) {
+                     EditIndicator(
+                         comment = uiState.editingComment!!,
+                         onCancel = { viewModel.setEditingComment(null) }
+                     )
+                 }
+                 CommentInput(
+                     onSend = {
+                         if (uiState.editingComment != null) {
+                             viewModel.editComment(uiState.editingComment!!.id, it)
+                         } else {
+                             viewModel.addComment(it)
+                         }
+                     },
+                     initialValue = uiState.editingComment?.content ?: "",
+                     focusRequester = focusRequester
+                 )
+
+            }
+        },
         topBar = {
             TopAppBar(
                 title = { Text("Post") },
@@ -290,50 +325,7 @@ fun PostDetailScreen(
              }
         }
 
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.background.copy(alpha = 0f),
-                                MaterialTheme.colorScheme.background
-                            )
-                        )
-                    )
-            )
 
-            Column(
-                 modifier = Modifier
-                     .align(Alignment.BottomCenter)
-                     .padding(bottom = 16.dp)
-            ) {
-                 if (uiState.replyToComment != null) {
-                     ReplyIndicator(
-                         replyTo = uiState.replyToComment!!,
-                         onCancelReply = { viewModel.setReplyTo(null) }
-                     )
-                 }
-                 if (uiState.editingComment != null) {
-                     EditIndicator(
-                         comment = uiState.editingComment!!,
-                         onCancel = { viewModel.setEditingComment(null) }
-                     )
-                 }
-                 CommentInput(
-                     onSend = {
-                         if (uiState.editingComment != null) {
-                             viewModel.editComment(uiState.editingComment!!.id, it)
-                         } else {
-                             viewModel.addComment(it)
-                         }
-                     },
-                     initialValue = uiState.editingComment?.content ?: "",
-                     focusRequester = focusRequester
-                 )
-            }
         }
     }
 }

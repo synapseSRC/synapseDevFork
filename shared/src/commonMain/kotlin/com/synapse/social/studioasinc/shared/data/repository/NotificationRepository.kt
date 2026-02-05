@@ -9,9 +9,18 @@ import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.realtime.realtime
+import io.github.jan.supabase.realtime.postgresChangeFlow
+import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.channel
 import kotlinx.serialization.json.JsonObject
 import io.github.aakira.napier.Napier
 import com.synapse.social.studioasinc.shared.core.util.getCurrentIsoTime
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class NotificationRepository(private val supabase: SupabaseClient) {
 
@@ -34,6 +43,26 @@ class NotificationRepository(private val supabase: SupabaseClient) {
         } catch (e: Exception) {
             Napier.e("Failed to fetch notifications for $userId", e)
             emptyList()
+        }
+    }
+
+    fun getRealtimeNotifications(userId: String): Flow<NotificationDto> {
+        val channel = supabase.realtime.channel("notifications:$userId")
+        val flow = channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
+            table = "notifications"
+            filter = "recipient_id=eq.$userId"
+        }
+
+        CoroutineScope(Dispatchers.Default).launch {
+            try {
+                channel.subscribe()
+            } catch (e: Exception) {
+                Napier.e("Failed to subscribe to realtime channel", e)
+            }
+        }
+
+        return flow.map {
+            it.decodeRecord<NotificationDto>()
         }
     }
 
@@ -99,6 +128,23 @@ class NotificationRepository(private val supabase: SupabaseClient) {
                 .insert(analytics)
         } catch (e: Exception) {
             Napier.e("Failed to log notification analytics", e)
+        }
+    }
+
+    suspend fun updateOneSignalPlayerId(userId: String, playerId: String) {
+        val currentUserId = supabase.auth.currentUserOrNull()?.id
+        if (currentUserId != userId) {
+            Napier.e("IDOR attempt: User $currentUserId tried to update OneSignal ID for $userId")
+            return
+        }
+        try {
+            supabase.postgrest.from("users").update(
+                mapOf("one_signal_player_id" to playerId)
+            ) {
+                filter { eq("uid", userId) }
+            }
+        } catch (e: Exception) {
+            Napier.e("Failed to update OneSignal ID for $userId", e)
         }
     }
 }

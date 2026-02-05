@@ -15,7 +15,8 @@ fun NavController.navigateToPostDetail(postId: String) {
 
 fun NavGraphBuilder.postDetailScreen(
     onNavigateBack: () -> Unit,
-    onNavigateToProfile: (String) -> Unit
+    onNavigateToProfile: (String) -> Unit,
+    onNavigateToEditPost: (String) -> Unit
 ) {
     composable(
         route = postDetailRoute,
@@ -25,7 +26,8 @@ fun NavGraphBuilder.postDetailScreen(
         PostDetailScreen(
             postId = postId,
             onNavigateBack = onNavigateBack,
-            onNavigateToProfile = onNavigateToProfile
+            onNavigateToProfile = onNavigateToProfile,
+            onNavigateToEditPost = onNavigateToEditPost
         )
     }
 }

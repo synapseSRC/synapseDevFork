@@ -19,11 +19,12 @@ fun SharedPostItem(
     currentProfile: UserProfile? = null, // Optional, for Profile screen context
     postViewStyle: PostViewStyle = PostViewStyle.SWIPE,
     actions: PostActions,
+    isExpanded: Boolean = false, // Added parameter
     modifier: Modifier = Modifier
 ) {
     // Use the shared mapper
-    val state = remember(post, currentProfile) {
-        PostMapper.mapToState(post, currentProfile)
+    val state = remember(post, currentProfile, isExpanded) {
+        PostMapper.mapToState(post, currentProfile, isExpanded)
     }
 
     /**

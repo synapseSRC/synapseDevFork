@@ -92,7 +92,8 @@ fun HomeNavGraph(
              PostDetailScreen(
                  postId = postId,
                  onNavigateBack = { navController.popBackStack() },
-                 onNavigateToProfile = onNavigateToProfile
+                 onNavigateToProfile = onNavigateToProfile,
+                 onNavigateToEditPost = onNavigateToEditPost
              )
         }
 

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -44,7 +43,8 @@ data class PostCardState(
     val userPollVote: Int? = null, // Track user's vote for poll
     val topCommentAuthor: String? = null,
     val topCommentText: String? = null,
-    val formattedTimestamp: String = "" // Bolt: Cache formatted time to avoid re-calculating during composition
+    val formattedTimestamp: String = "", // Bolt: Cache formatted time to avoid re-calculating during composition
+    val isExpanded: Boolean = false // Added for detail view
 )
 
 @Composable
@@ -90,7 +90,8 @@ fun PostCard(
                 pollQuestion = state.pollQuestion,
                 pollOptions = state.pollOptions,
                 onMediaClick = onMediaClick,
-                onPollVote = onPollVote
+                onPollVote = onPollVote,
+                isExpanded = state.isExpanded
             )
 
             // Comment Preview Section

@@ -14,6 +14,7 @@ import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.decodeRecord
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import kotlinx.serialization.json.JsonObject
 import io.github.aakira.napier.Napier
 import com.synapse.social.studioasinc.shared.core.util.getCurrentIsoTime
@@ -51,7 +52,7 @@ class NotificationRepository(private val supabase: SupabaseClient) {
         val channel = supabase.realtime.channel("notifications:$userId")
         val flow = channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
             table = "notifications"
-            filter("recipient_id=eq.$userId")
+            filter("recipient_id", FilterOperator.EQ, userId)
         }
 
         CoroutineScope(Dispatchers.Default).launch {

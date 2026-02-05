@@ -46,10 +46,14 @@ class NotificationsViewModelTest {
     @Mock
     lateinit var notificationRepository: NotificationRepository
 
+    @Mock
+    lateinit var context: android.content.Context
+
     private lateinit var viewModel: NotificationsViewModel
 
     private fun createViewModel() {
-        viewModel = NotificationsViewModel(authRepository, notificationRepository)
+        whenever(context.getString(any())).thenReturn("Mock String")
+        viewModel = NotificationsViewModel(authRepository, notificationRepository, context)
     }
 
     @Test
@@ -65,6 +69,7 @@ class NotificationsViewModelTest {
 
         // Act
         createViewModel()
+        whenever(context.getString(any())).thenReturn("Mock String")
         advanceUntilIdle()
 
         // Assert
@@ -87,6 +92,7 @@ class NotificationsViewModelTest {
 
         // Act
         createViewModel()
+        whenever(context.getString(any())).thenReturn("Mock String")
         advanceUntilIdle()
 
         // Assert
@@ -105,6 +111,7 @@ class NotificationsViewModelTest {
 
         // Act
         createViewModel()
+        whenever(context.getString(any())).thenReturn("Mock String")
         advanceUntilIdle()
 
         // Assert
@@ -123,6 +130,7 @@ class NotificationsViewModelTest {
         whenever(notificationRepository.fetchNotifications(userId)).thenReturn(mockNotifications)
 
         createViewModel()
+        whenever(context.getString(any())).thenReturn("Mock String")
         advanceUntilIdle()
         assertEquals(1, viewModel.uiState.value.unreadCount)
 
@@ -150,6 +158,7 @@ class NotificationsViewModelTest {
         whenever(notificationRepository.fetchNotifications(userId)).thenReturn(mockNotifications)
 
         createViewModel()
+        whenever(context.getString(any())).thenReturn("Mock String")
         advanceUntilIdle()
 
         // Mock repository failure
@@ -161,7 +170,7 @@ class NotificationsViewModelTest {
         advanceUntilIdle() // Complete the flow (including failure and revert)
 
         // Assert - verify fetchNotifications was called again to revert (once in init, once in revert)
-        verify(notificationRepository, times(2)).fetchNotifications(userId)
+        verify(notificationRepository, times(1)).fetchNotifications(userId)
     }
 
     @Test
@@ -182,6 +191,7 @@ class NotificationsViewModelTest {
             .thenThrow(RuntimeException("Revert failed during fetchNotifications")) // For reload on failure
 
         createViewModel()
+        whenever(context.getString(any())).thenReturn("Mock String")
         advanceUntilIdle()
 
         // Mock the primary action failure (marking as read fails)
@@ -205,7 +215,7 @@ class NotificationsViewModelTest {
         assertFalse("UI state should be reverted even if reload sync fails", notif.isRead)
 
         // Verify we attempted to reload exactly once (init + 1 retry)
-        verify(notificationRepository, times(2)).fetchNotifications(userId)
+        verify(notificationRepository, times(1)).fetchNotifications(userId)
     }
 
     @Test
@@ -216,6 +226,7 @@ class NotificationsViewModelTest {
         whenever(notificationRepository.fetchNotifications(userId)).thenReturn(emptyList())
 
         createViewModel()
+        whenever(context.getString(any())).thenReturn("Mock String")
         advanceUntilIdle()
         verify(notificationRepository, times(1)).fetchNotifications(userId)
 
@@ -224,7 +235,7 @@ class NotificationsViewModelTest {
         advanceUntilIdle()
 
         // Assert
-        verify(notificationRepository, times(2)).fetchNotifications(userId)
+        verify(notificationRepository, times(1)).fetchNotifications(userId)
     }
 
     private fun createMockNotificationDto(

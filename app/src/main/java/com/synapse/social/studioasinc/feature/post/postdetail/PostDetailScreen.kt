@@ -118,7 +118,7 @@ fun PostDetailScreen(
     if (showReportDialog) {
         ReportPostDialog(
             onDismiss = { showReportDialog = false },
-            onReport = { reason ->
+            onConfirm = { reason ->
                 viewModel.reportPost(reason)
                 showReportDialog = false
                 Toast.makeText(context, "Post reported", Toast.LENGTH_SHORT).show()

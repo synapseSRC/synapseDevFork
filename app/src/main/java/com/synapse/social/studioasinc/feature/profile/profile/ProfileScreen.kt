@@ -30,7 +30,7 @@ import com.synapse.social.studioasinc.feature.post.PostDetailActivity
 import com.synapse.social.studioasinc.ui.components.EmptyState
 import com.synapse.social.studioasinc.ui.components.ErrorState
 import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
-import com.synapse.social.studioasinc.ui.components.MediaViewer
+import com.synapse.social.studioasinc.feature.shared.components.MediaViewer
 import com.synapse.social.studioasinc.feature.shared.components.post.PostActions
 import com.synapse.social.studioasinc.feature.shared.components.post.PostCard
 import com.synapse.social.studioasinc.feature.shared.components.post.PostCardState

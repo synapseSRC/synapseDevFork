@@ -10,17 +10,13 @@ import com.synapse.social.studioasinc.core.config.NotificationConfig
 import com.synapse.social.studioasinc.core.util.MediaCacheCleanupManager
 import com.synapse.social.studioasinc.data.repository.SettingsRepositoryImpl
 import com.synapse.social.studioasinc.feature.shared.theme.ThemeManager
-import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 @HiltAndroidApp
 class SynapseApplication : Application() {
 
-    @Inject lateinit var notificationRepository: NotificationRepository
     private lateinit var mediaCacheCleanupManager: MediaCacheCleanupManager
 
     override fun onCreate() {
@@ -54,6 +50,8 @@ class SynapseApplication : Application() {
         OneSignal.initWithContext(this, NotificationConfig.ONESIGNAL_APP_ID)
 
         // Prompt for notification permission on Android 13+
+        // Note: The SDK v5 recommendation is to use an In-App Message,
+        // but we'll use the direct prompt for now to ensure delivery works.
         CoroutineScope(Dispatchers.Main).launch {
             OneSignal.Notifications.requestPermission(true)
 
@@ -63,19 +61,6 @@ class SynapseApplication : Application() {
                 authService.getCurrentUserId()?.let { userId ->
                     OneSignal.login(userId)
                     android.util.Log.d("SynapseApplication", "Restored OneSignal session for user: $userId")
-
-                    // Sync OneSignal Player ID
-                    val subscriptionId = OneSignal.User.pushSubscription.id
-                    if (!subscriptionId.isNullOrEmpty()) {
-                        withContext(Dispatchers.IO) {
-                            try {
-                                notificationRepository.updateOneSignalPlayerId(userId, subscriptionId)
-                                android.util.Log.d("SynapseApplication", "Synced OneSignal ID: $subscriptionId")
-                            } catch (e: Exception) {
-                                android.util.Log.e("SynapseApplication", "Failed to sync OneSignal ID", e)
-                            }
-                        }
-                    }
                 }
             } catch (e: Exception) {
                 android.util.Log.e("SynapseApplication", "Failed to restore OneSignal session", e)

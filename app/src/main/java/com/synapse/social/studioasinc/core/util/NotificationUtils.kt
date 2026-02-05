@@ -1,10 +1,9 @@
 package com.synapse.social.studioasinc.core.util
 
 import android.content.Context
-import com.synapse.social.studioasinc.R
 import com.synapse.social.studioasinc.data.remote.services.SupabaseAuthenticationService
 import com.synapse.social.studioasinc.core.config.NotificationConfig
-import com.synapse.social.studioasinc.core.util.NotificationHelper
+import com.synapse.social.studioasinc.NotificationHelper
 import com.synapse.social.studioasinc.data.local.database.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,8 +30,8 @@ object NotificationUtils {
                 }
 
                 val senderUser = userRepository.getUserById(currentUser.id).getOrNull()
-                val senderName = senderUser?.username ?: context.getString(R.string.someone)
-                val message = context.getString(R.string.notification_like_post, senderName)
+                val senderName = senderUser?.username ?: "Someone"
+                val message = "$senderName liked your post"
 
                 val data = hashMapOf<String, String>().apply {
                     put("postId", postKey)
@@ -66,8 +65,8 @@ object NotificationUtils {
                 }
 
                 val senderUser = userRepository.getUserById(currentUser.id).getOrNull()
-                val senderName = senderUser?.username ?: context.getString(R.string.someone)
-                val message = context.getString(R.string.notification_comment_post, senderName)
+                val senderName = senderUser?.username ?: "Someone"
+                val message = "$senderName commented on your post"
 
                 val data = hashMapOf<String, String>().apply {
                     put("postId", postKey)
@@ -102,8 +101,8 @@ object NotificationUtils {
                 }
 
                 val senderUser = userRepository.getUserById(currentUser.id).getOrNull()
-                val senderName = senderUser?.username ?: context.getString(R.string.someone)
-                val message = context.getString(R.string.notification_like_comment, senderName)
+                val senderName = senderUser?.username ?: "Someone"
+                val message = "$senderName liked your comment"
 
                 val data = hashMapOf<String, String>().apply {
                     put("postId", postKey)
@@ -138,8 +137,8 @@ object NotificationUtils {
                 }
 
                 val senderUser = userRepository.getUserById(currentUser.id).getOrNull()
-                val senderName = senderUser?.username ?: context.getString(R.string.someone)
-                val message = context.getString(R.string.notification_follow, senderName)
+                val senderName = senderUser?.username ?: "Someone"
+                val message = "$senderName started following you"
 
                 val data = hashMapOf<String, String>().apply {
                     put("followerId", currentUser.id)
@@ -173,7 +172,7 @@ object NotificationUtils {
                 }
 
                 val senderUser = userRepository.getUserById(currentUser.id).getOrNull()
-                val senderName = senderUser?.username ?: context.getString(R.string.someone)
+                val senderName = senderUser?.username ?: "Someone"
 
                 // Truncate message for notification
                 val truncatedMessage = if (messageText.length > 50) {
@@ -217,8 +216,8 @@ object NotificationUtils {
                 }
 
                 val senderUser = userRepository.getUserById(currentUser.id).getOrNull()
-                val senderName = senderUser?.username ?: context.getString(R.string.someone)
-                val message = context.getString(R.string.notification_mention, senderName, contentType)
+                val senderName = senderUser?.username ?: "Someone"
+                val message = "$senderName mentioned you in a $contentType"
 
                 val data = hashMapOf<String, String>().apply {
                     put("postId", postKey)

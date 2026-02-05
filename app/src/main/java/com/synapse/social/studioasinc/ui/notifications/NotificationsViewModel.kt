@@ -1,16 +1,12 @@
 package com.synapse.social.studioasinc.ui.notifications
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.R
 import com.synapse.social.studioasinc.core.util.TimeUtils
 import com.synapse.social.studioasinc.data.repository.AuthRepository
 import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
-import com.synapse.social.studioasinc.shared.data.model.NotificationDto
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,8 +26,7 @@ data class NotificationsUiState(
 @HiltViewModel
 class NotificationsViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val notificationRepository: NotificationRepository,
-    @ApplicationContext private val context: Context
+    private val notificationRepository: NotificationRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(NotificationsUiState())
     val uiState: StateFlow<NotificationsUiState> = _uiState.asStateFlow()
@@ -47,9 +42,20 @@ class NotificationsViewModel @Inject constructor(
                 val currentUserId = authRepository.getCurrentUserId()
 
                 if (currentUserId != null) {
-                    // Initial load (REST)
                     val dtos = notificationRepository.fetchNotifications(currentUserId)
-                    val notifications = dtos.map { mapDtoToUi(it) }
+
+                    val notifications = dtos.map { dto ->
+                        UiNotification(
+                            id = dto.id,
+                            type = dto.type,
+                            actorName = dto.actor?.displayName ?: "User",
+                            actorAvatar = dto.actor?.avatar,
+                            message = dto.body["en"]?.jsonPrimitive?.contentOrNull ?: "New notification",
+                            timestamp = TimeUtils.getTimeAgo(dto.createdAt),
+                            isRead = dto.isRead,
+                            targetId = dto.data?.get("target_id")?.jsonPrimitive?.contentOrNull
+                        )
+                    }
 
                      _uiState.update {
                         it.copy(
@@ -57,23 +63,6 @@ class NotificationsViewModel @Inject constructor(
                             isLoading = false,
                             unreadCount = notifications.count { !it.isRead }
                         )
-                    }
-
-                    // Subscribe to Realtime
-                    launch {
-                        try {
-                            notificationRepository.getRealtimeNotifications(currentUserId).collect { dto ->
-                                val newNotification = mapDtoToUi(dto)
-                                _uiState.update { state ->
-                                    state.copy(
-                                        notifications = listOf(newNotification) + state.notifications,
-                                        unreadCount = state.unreadCount + 1
-                                    )
-                                }
-                            }
-                        } catch (e: Exception) {
-                            android.util.Log.e("NotificationsViewModel", "Realtime error", e)
-                        }
                     }
                 } else {
                      _uiState.update { it.copy(isLoading = false) }
@@ -83,22 +72,6 @@ class NotificationsViewModel @Inject constructor(
                 _uiState.update { it.copy(isLoading = false) }
             }
         }
-    }
-
-    private fun mapDtoToUi(dto: NotificationDto): UiNotification {
-        val fallback = context.getString(R.string.notification_fallback_message)
-        val newActivity = context.getString(R.string.notification_new_activity)
-
-        return UiNotification(
-            id = dto.id,
-            type = dto.type,
-            actorName = dto.actor?.displayName ?: newActivity,
-            actorAvatar = dto.actor?.avatar,
-            message = dto.body["en"]?.jsonPrimitive?.contentOrNull ?: fallback,
-            timestamp = TimeUtils.getTimeAgo(dto.createdAt),
-            isRead = dto.isRead,
-            targetId = dto.data?.get("target_id")?.jsonPrimitive?.contentOrNull
-        )
     }
 
     fun refresh() {
@@ -118,6 +91,10 @@ class NotificationsViewModel @Inject constructor(
                 android.util.Log.e("NotificationsViewModel", "Failed to mark as read for notification $notificationId", e)
                 // Rollback optimistic update locally
                 setNotificationReadState(notificationId, isRead = false)
+                loadNotifications() // Revert/Sync on failure
+            } finally {
+                // Ensure loading is false if any uncaught exception occurred in loadNotifications
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }

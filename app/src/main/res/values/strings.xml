@@ -1027,12 +1027,4 @@ Please explain the following message from %3$s in detail, considering the contex
     <string name="request_channels_report_success">Request sent. Your report will be ready in a few days.</string>
     <string name="save_post">Save post</string>
     <string name="unsave_post">Remove from saved</string>
-    <string name="notification_like_post">%1$s liked your post</string>
-    <string name="notification_comment_post">%1$s commented on your post</string>
-    <string name="notification_like_comment">%1$s liked your comment</string>
-    <string name="notification_follow">%1$s started following you</string>
-    <string name="notification_mention">%1$s mentioned you in a %2$s</string>
-    <string name="notification_new_activity">New Activity</string>
-    <string name="notification_fallback_message">You have a new notification</string>
-    <string name="someone">Someone</string>
 </resources>

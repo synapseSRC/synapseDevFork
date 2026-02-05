@@ -26,7 +26,7 @@ import com.synapse.social.studioasinc.domain.model.CommentWithUser
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.feature.post.postdetail.components.*
 import com.synapse.social.studioasinc.feature.shared.components.MediaViewer
-import com.synapse.social.studioasinc.feature.shared.components.PostOptionsBottomSheet
+import com.synapse.social.studioasinc.feature.shared.components.post.PostOptionsBottomSheet
 import com.synapse.social.studioasinc.feature.shared.components.ReportPostDialog
 import com.synapse.social.studioasinc.feature.shared.components.post.PostActions
 import com.synapse.social.studioasinc.feature.shared.components.post.ReactionPicker
@@ -44,8 +44,10 @@ fun PostDetailScreen(
     viewModel: PostDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    // Changed: collectAsLazyPagingItems from .commentsPagingFlow instead of commentsFlow
-    val pagingItems = viewModel.commentsPagingFlow.collectAsLazyPagingItems()
+    // Fix: unwrap StateFlow<Flow<...>>
+    val commentsFlow by viewModel.commentsPagingFlow.collectAsStateWithLifecycle()
+    val pagingItems = commentsFlow.collectAsLazyPagingItems()
+
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -56,7 +58,6 @@ fun PostDetailScreen(
     var showPostOptions by remember { mutableStateOf(false) }
     var showReportDialog by remember { mutableStateOf(false) }
 
-    // Restored state variables with correct types
     var showCommentOptions by remember { mutableStateOf<CommentWithUser?>(null) }
     var showReactionPickerForComment by remember { mutableStateOf<CommentWithUser?>(null) }
     var showReactionPicker by remember { mutableStateOf(false) }
@@ -129,7 +130,7 @@ fun PostDetailScreen(
     if (showPostOptions && uiState.post != null) {
         PostOptionsBottomSheet(
             post = uiState.post!!.post,
-            isOwner = uiState.post!!.post.authorUid == currentUserId, // Checked ownership logic
+            isOwner = uiState.post!!.post.authorUid == currentUserId,
             commentsDisabled = uiState.post!!.post.postDisableComments == "true",
             onDismiss = { showPostOptions = false },
             onEdit = {
@@ -137,7 +138,7 @@ fun PostDetailScreen(
                 onNavigateToEditPost(uiState.post!!.post.id)
             },
             onDelete = {
-                viewModel.deletePost(uiState.post!!.post.id) // Pass ID
+                viewModel.deletePost(uiState.post!!.post.id)
                 onNavigateBack()
             },
             onShare = {
@@ -154,7 +155,7 @@ fun PostDetailScreen(
                 showPostOptions = false
                 showReportDialog = true
             },
-            onBlock = { viewModel.blockUser(uiState.post!!.post.authorUid) }, // Correct method name
+            onBlock = { viewModel.blockUser(uiState.post!!.post.authorUid) },
             onRevokeVote = { viewModel.revokeVote() }
         )
     }
@@ -178,14 +179,13 @@ fun PostDetailScreen(
                     }
                     is CommentAction.Delete -> viewModel.deleteComment(action.commentId)
                     is CommentAction.Edit -> viewModel.setEditingComment(comment)
-                    is CommentAction.Report -> viewModel.reportComment(action.commentId, "Inappropriate", null) // Corrected signature, use action.commentId
+                    is CommentAction.Report -> viewModel.reportComment(action.commentId, "Inappropriate", null)
                     is CommentAction.Copy -> {
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         val clip = ClipData.newPlainText("Comment", action.content)
                         clipboard.setPrimaryClip(clip)
                         Toast.makeText(context, "Comment copied", Toast.LENGTH_SHORT).show()
                     }
-                    // Handle missing exhaustive branches
                     is CommentAction.Share -> {
                         val shareIntent = Intent(Intent.ACTION_SEND).apply {
                             type = "text/plain"
@@ -258,7 +258,6 @@ fun PostDetailScreen(
                              )
                         }
 
-                        // Map detail view model actions to shared PostActions
                         val actions = remember(viewModel, context, postId) {
                              PostActions(
                                  onLike = { viewModel.toggleReaction(ReactionType.LIKE) },
@@ -283,7 +282,7 @@ fun PostDetailScreen(
                         SharedPostItem(
                             post = mergedPost,
                             actions = actions,
-                            isExpanded = true, // Force full text display
+                            isExpanded = true,
                             modifier = Modifier.fillMaxWidth()
                         )
                      }

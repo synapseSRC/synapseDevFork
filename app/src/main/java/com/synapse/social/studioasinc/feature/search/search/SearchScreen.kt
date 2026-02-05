@@ -161,12 +161,10 @@ fun SearchScreen(
                                         items(uiState.posts, key = { it.id }) { searchPost ->
                                             val post = remember(searchPost) { searchPost.toPost() }
 
-                                            // Dummy actions for search view since we don't have full interaction capability yet
-                                            // Only click and user click are routed
                                             val actions = remember(post) {
                                                 PostActions(
                                                     onLike = { /* No-op */ },
-                                                    onComment = { onNavigateToPost(post.id) }, // Redirect to detail on comment/click
+                                                    onComment = { onNavigateToPost(post.id) },
                                                     onShare = { /* No-op */ },
                                                     onBookmark = { /* No-op */ },
                                                     onOptionClick = { /* No-op */ },
@@ -180,7 +178,6 @@ fun SearchScreen(
                                                 post = post,
                                                 actions = actions
                                             )
-                                            // No explicit HorizontalDivider here, it is inside SharedPostItem/PostCard
                                         }
                                     }
                                 }
@@ -267,27 +264,15 @@ fun EmptyState(message: String) {
 private fun SearchPost.toPost(): Post {
     return Post(
         id = this.id,
-        authorUid = this.authorId ?: "",
+        authorUid = this.authorId,
         postText = this.content,
-        // Assuming createdAt is ISO string, using it for publishDate
         publishDate = this.createdAt,
-        // Using timestamp as 0L since we don't have a numeric timestamp in SearchPost
         timestamp = 0L,
         likesCount = this.likesCount,
         commentsCount = this.commentsCount,
         resharesCount = this.boostCount,
         username = this.authorHandle,
         avatarUrl = this.authorAvatar,
-        // Fix for media items construction
-        mediaItems = this.imageUrls.map { url ->
-            MediaItem(
-                url = url,
-                type = MediaType.IMAGE
-            )
-        }.toMutableList().apply {
-            if (this@toPost.videoUrl != null) {
-                add(MediaItem(url = this@toPost.videoUrl!!, type = MediaType.VIDEO))
-            }
-        }
+        mediaItems = null
     )
 }

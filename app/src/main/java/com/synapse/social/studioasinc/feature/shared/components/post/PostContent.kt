@@ -25,22 +25,23 @@ fun PostContent(
     pollOptions: List<PollOption>?, // Using the PollOption from PollContent.kt
     onMediaClick: (Int) -> Unit,
     onPollVote: (String) -> Unit,
+    isExpanded: Boolean = false, // Added parameter
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         if (!text.isNullOrBlank()) {
-            var isExpanded by remember { mutableStateOf(false) }
+            var localExpanded by remember { mutableStateOf(false) }
+            val showFullText = isExpanded || localExpanded
+
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                maxLines = if (isExpanded) Int.MAX_VALUE else 3,
+                maxLines = if (showFullText) Int.MAX_VALUE else 3,
                 overflow = TextOverflow.Ellipsis,
                 onTextLayout = { textLayoutResult ->
-                    if (textLayoutResult.hasVisualOverflow && !isExpanded) {
-                        // Ideally show a "See more" button here or make the text clickable to expand
-                        // For simplicity, let's make the whole text toggle expansion on click if needed,
-                        // but since the requirement says "Add content expansion", we can handle it via click
+                    if (textLayoutResult.hasVisualOverflow && !showFullText) {
+                        // Logic handled by maxLines and overflow
                     }
                 }
             )

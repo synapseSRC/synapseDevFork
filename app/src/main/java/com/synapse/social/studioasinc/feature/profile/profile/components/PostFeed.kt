@@ -8,6 +8,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
+import com.synapse.social.studioasinc.feature.shared.components.ReportPostDialog
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
@@ -16,6 +17,7 @@ import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.feature.stories.creator.StoryCreatorActivity
 import com.synapse.social.studioasinc.feature.stories.creator.EXTRA_SHARED_POST_ID
 import com.synapse.social.studioasinc.ui.components.*
+import com.synapse.social.studioasinc.feature.shared.components.ReportPostDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

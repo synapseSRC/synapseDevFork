@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asSharedFlow
  * This ensures Home and Profile screens render posts identically.
  */
 object PostMapper {
-    fun mapToState(post: Post, currentProfile: UserProfile? = null): PostCardState {
+    fun mapToState(post: Post, currentProfile: UserProfile? = null, isExpanded: Boolean = false): PostCardState {
         // Resolve User Info: Default to Post fields, fallback to provided Profile if ID matches
         val resolvedUsername = when {
             !post.username.isNullOrBlank() -> post.username!!
@@ -67,7 +67,8 @@ object PostMapper {
             userPollVote = post.userPollVote,
             topCommentAuthor = post.latestCommentAuthor,
             topCommentText = post.latestCommentText,
-            formattedTimestamp = com.synapse.social.studioasinc.core.util.TimeUtils.getTimeAgo(post.publishDate ?: "")
+            formattedTimestamp = com.synapse.social.studioasinc.core.util.TimeUtils.getTimeAgo(post.publishDate ?: ""),
+            isExpanded = isExpanded
         )
     }
 }

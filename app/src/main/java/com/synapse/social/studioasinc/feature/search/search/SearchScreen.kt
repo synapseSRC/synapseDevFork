@@ -3,16 +3,13 @@ package com.synapse.social.studioasinc.ui.search
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.animation.*
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Search
@@ -21,15 +18,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.R
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.synapse.social.studioasinc.feature.search.search.components.AccountCard
 import com.synapse.social.studioasinc.feature.search.search.components.HashtagCard
 import com.synapse.social.studioasinc.feature.search.search.components.NewsCard
-import com.synapse.social.studioasinc.feature.search.search.components.PostCard
+import com.synapse.social.studioasinc.feature.shared.components.post.PostActions
+import com.synapse.social.studioasinc.feature.shared.components.post.SharedPostItem
 import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
+import com.synapse.social.studioasinc.shared.domain.model.SearchPost
+import com.synapse.social.studioasinc.domain.model.Post
+import com.synapse.social.studioasinc.domain.model.MediaItem
+import com.synapse.social.studioasinc.domain.model.MediaType
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -157,14 +158,25 @@ fun SearchScreen(
                                     if (uiState.posts.isEmpty()) {
                                         item { EmptyState("No posts found") }
                                     } else {
-                                        items(uiState.posts, key = { it.id }) { post ->
-                                            PostCard(
+                                        items(uiState.posts, key = { it.id }) { searchPost ->
+                                            val post = remember(searchPost) { searchPost.toPost() }
+
+                                            val actions = remember(post) {
+                                                PostActions(
+                                                    onLike = { /* No-op */ },
+                                                    onComment = { onNavigateToPost(post.id) },
+                                                    onShare = { /* No-op */ },
+                                                    onBookmark = { /* No-op */ },
+                                                    onOptionClick = { /* No-op */ },
+                                                    onPollVote = { _, _ -> /* No-op */ },
+                                                    onUserClick = { onNavigateToProfile(post.authorUid) },
+                                                    onMediaClick = { onNavigateToPost(post.id) }
+                                                )
+                                            }
+
+                                            SharedPostItem(
                                                 post = post,
-                                                onClick = { onNavigateToPost(post.id) }
-                                            )
-                                            HorizontalDivider(
-                                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                                                thickness = 0.5.dp
+                                                actions = actions
                                             )
                                         }
                                     }
@@ -246,4 +258,21 @@ fun EmptyState(message: String) {
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
+}
+
+// Mapper extension
+private fun SearchPost.toPost(): Post {
+    return Post(
+        id = this.id,
+        authorUid = this.authorId,
+        postText = this.content,
+        publishDate = this.createdAt,
+        timestamp = 0L,
+        likesCount = this.likesCount,
+        commentsCount = this.commentsCount,
+        resharesCount = this.boostCount,
+        username = this.authorHandle,
+        avatarUrl = this.authorAvatar,
+        mediaItems = null
+    )
 }

@@ -1,99 +1,98 @@
 package com.synapse.social.studioasinc.feature.post.postdetail
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
+import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material3.*
-import coil.compose.AsyncImage
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.Alignment
 import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.synapse.social.studioasinc.domain.model.CommentAction
-import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.domain.model.CommentWithUser
+import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.feature.post.postdetail.components.*
-import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
-import com.synapse.social.studioasinc.feature.shared.components.post.PostInteractionBar
-import com.synapse.social.studioasinc.feature.shared.components.post.PollContent
-import com.synapse.social.studioasinc.feature.shared.components.post.PollOption
+import com.synapse.social.studioasinc.feature.shared.components.MediaViewer
 import com.synapse.social.studioasinc.feature.shared.components.post.PostOptionsBottomSheet
+import com.synapse.social.studioasinc.feature.shared.components.ReportPostDialog
+import com.synapse.social.studioasinc.feature.shared.components.post.PostActions
 import com.synapse.social.studioasinc.feature.shared.components.post.ReactionPicker
-import com.synapse.social.studioasinc.domain.model.User as HomeUser
-import com.synapse.social.studioasinc.ui.components.MediaViewer
-import androidx.compose.foundation.background
-import androidx.compose.ui.graphics.Brush
+import com.synapse.social.studioasinc.feature.shared.components.post.SharedPostItem
+import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostDetailScreen(
     postId: String,
-    onNavigateBack: () -> Unit,
     onNavigateToProfile: (String) -> Unit,
-    onNavigateToEditPost: (String) -> Unit = {},
-    viewModel: PostDetailViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier
+    onNavigateToEditPost: (String) -> Unit,
+    onNavigateBack: () -> Unit,
+    viewModel: PostDetailViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val pagingItems = viewModel.commentsPagingFlow.collectAsState().value.collectAsLazyPagingItems()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    // Fix: unwrap StateFlow<Flow<...>>
+    val commentsFlow by viewModel.commentsPagingFlow.collectAsStateWithLifecycle()
+    val pagingItems = commentsFlow.collectAsLazyPagingItems()
 
-    // Observe refresh trigger to reload list without full screen reload
-    LaunchedEffect(uiState.refreshTrigger) {
-        if (uiState.refreshTrigger > 0) {
-            pagingItems.refresh()
-        }
-    }
+    val focusRequester = remember { FocusRequester() }
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     var showMediaViewer by remember { mutableStateOf(false) }
-    var selectedMediaIndex by remember { mutableStateOf(0) }
+    var selectedMediaIndex by remember { mutableIntStateOf(0) }
     var showPostOptions by remember { mutableStateOf(false) }
+    var showReportDialog by remember { mutableStateOf(false) }
+
     var showCommentOptions by remember { mutableStateOf<CommentWithUser?>(null) }
     var showReactionPickerForComment by remember { mutableStateOf<CommentWithUser?>(null) }
     var showReactionPicker by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
-    val keyboardController = LocalSoftwareKeyboardController.current
     val currentUserId = uiState.currentUserId
-    val focusRequester = remember { androidx.compose.ui.focus.FocusRequester() }
 
     LaunchedEffect(postId) {
         viewModel.loadPost(postId)
     }
 
-    LaunchedEffect(uiState.replyToComment, uiState.editingComment) {
-        if (uiState.replyToComment != null || uiState.editingComment != null) {
-            focusRequester.requestFocus()
-            keyboardController?.show()
+    // Helper functions for actions
+    fun sharePost() {
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, "Check out this post on Synapse: synapse://post/$postId")
         }
+        context.startActivity(Intent.createChooser(shareIntent, "Share Post"))
     }
 
-    if (showMediaViewer && uiState.post?.post?.mediaItems?.isNotEmpty() == true) {
+    fun copyLink() {
+        viewModel.copyLink(postId, context)
+    }
+
+    if (showMediaViewer && uiState.post != null) {
+        val mediaUrls = uiState.post!!.post.mediaItems?.map { it.url }
+            ?: listOfNotNull(uiState.post!!.post.postImage)
+
         MediaViewer(
-            mediaUrls = uiState.post!!.post.mediaItems!!.map { it.url },
+            mediaUrls = mediaUrls,
             initialPage = selectedMediaIndex,
             onDismiss = { showMediaViewer = false }
         )
     }
 
-    if (showReactionPickerForComment != null) {
-        ReactionPicker(
-            onReactionSelected = { reaction ->
-                viewModel.toggleCommentReaction(showReactionPickerForComment!!.id, reaction)
-                showReactionPickerForComment = null
-            },
-            onDismiss = { showReactionPickerForComment = null }
-        )
-    }
-
+    // Reaction Picker for Post
     if (showReactionPicker) {
         ReactionPicker(
             onReactionSelected = { reaction ->
@@ -104,41 +103,64 @@ fun PostDetailScreen(
         )
     }
 
+    // Reaction Picker for Comment
+    if (showReactionPickerForComment != null) {
+        ReactionPicker(
+            onReactionSelected = { reaction ->
+                viewModel.toggleCommentReaction(showReactionPickerForComment!!.id, reaction)
+                showReactionPickerForComment = null
+            },
+            onDismiss = { showReactionPickerForComment = null }
+        )
+    }
+
+    // Report Dialog
+    if (showReportDialog) {
+        ReportPostDialog(
+            onDismiss = { showReportDialog = false },
+            onConfirm = { reason ->
+                viewModel.reportPost(reason)
+                showReportDialog = false
+                Toast.makeText(context, "Post reported", Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
+
+    // Post Options
     if (showPostOptions && uiState.post != null) {
-        val post = uiState.post!!.post
         PostOptionsBottomSheet(
-            post = post,
-            isOwner = post.authorUid == currentUserId,
+            post = uiState.post!!.post,
+            isOwner = uiState.post!!.post.authorUid == currentUserId,
+            commentsDisabled = uiState.post!!.post.postDisableComments == "true",
             onDismiss = { showPostOptions = false },
             onEdit = {
                 showPostOptions = false
-                onNavigateToEditPost(postId)
+                onNavigateToEditPost(uiState.post!!.post.id)
             },
             onDelete = {
-                 viewModel.deletePost(postId)
-                 onNavigateBack()
+                viewModel.deletePost(uiState.post!!.post.id)
+                onNavigateBack()
             },
             onShare = {
-                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, "Check out this post on Synapse: synapse://post/$postId")
-                }
-                context.startActivity(Intent.createChooser(shareIntent, "Share Post"))
+                showPostOptions = false
+                sharePost()
             },
             onCopyLink = {
-                 viewModel.copyLink(postId, context)
+                showPostOptions = false
+                copyLink()
             },
             onBookmark = { viewModel.toggleBookmark() },
-            onReshare = { viewModel.createReshare(null) },
             onToggleComments = { viewModel.toggleComments() },
-            onReport = { viewModel.reportPost("Spam") },
-            onBlock = {
-                post.authorUid?.let { viewModel.blockUser(it) }
+            onReport = {
+                showPostOptions = false
+                showReportDialog = true
             },
+            onBlock = { viewModel.blockUser(uiState.post!!.post.authorUid) },
             onRevokeVote = { viewModel.revokeVote() }
         )
     }
 
+    // Comment Options
     if (showCommentOptions != null) {
         val comment = showCommentOptions!!
         CommentOptionsBottomSheet(
@@ -148,23 +170,33 @@ fun PostDetailScreen(
             onDismiss = { showCommentOptions = null },
             onAction = { action ->
                 when (action) {
-                    is CommentAction.Reply -> viewModel.setReplyTo(comment)
+                    is CommentAction.Reply -> {
+                        viewModel.setReplyTo(comment)
+                        scope.launch {
+                            focusRequester.requestFocus()
+                            keyboardController?.show()
+                        }
+                    }
                     is CommentAction.Delete -> viewModel.deleteComment(action.commentId)
                     is CommentAction.Edit -> viewModel.setEditingComment(comment)
-                    is CommentAction.Report -> viewModel.reportComment(action.commentId, action.reason, action.description)
-                    is CommentAction.Pin -> viewModel.pinComment(action.commentId, action.postId)
-                    is CommentAction.Hide -> viewModel.hideComment(action.commentId)
+                    is CommentAction.Report -> viewModel.reportComment(action.commentId, "Inappropriate", null)
+                    is CommentAction.Copy -> {
+                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText("Comment", action.content)
+                        clipboard.setPrimaryClip(clip)
+                        Toast.makeText(context, "Comment copied", Toast.LENGTH_SHORT).show()
+                    }
                     is CommentAction.Share -> {
-                         val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
                             type = "text/plain"
-                            putExtra(Intent.EXTRA_TEXT, "Check out this comment: ${action.content}")
+                            putExtra(Intent.EXTRA_TEXT, action.content)
                         }
                         context.startActivity(Intent.createChooser(shareIntent, "Share Comment"))
                     }
-                    is CommentAction.Copy -> {
-                        viewModel.copyLink(postId, context) // Actually copy comment content
-                    }
+                    is CommentAction.Hide -> viewModel.hideComment(action.commentId)
+                    is CommentAction.Pin -> viewModel.pinComment(action.commentId, action.postId)
                 }
+                showCommentOptions = null
             }
         )
     }
@@ -178,18 +210,21 @@ fun PostDetailScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    scrolledContainerColor = MaterialTheme.colorScheme.background
+                ),
                 windowInsets = WindowInsets(0, 0, 0, 0)
             )
         }
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-        // Only show full screen loader if we have no data and are loading
         if (uiState.isLoading && uiState.post == null) {
-             Box(modifier = Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
+             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                  ExpressiveLoadingIndicator()
              }
         } else if (uiState.error != null && uiState.post == null) {
-             Box(modifier = Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
+             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                  Text("Error: ${uiState.error}")
              }
         } else {
@@ -200,7 +235,13 @@ fun PostDetailScreen(
                      repliesState = uiState.replies,
                      replyLoadingState = uiState.replyLoading,
                      commentActionsLoading = uiState.commentActionsLoading,
-                     onReplyClick = { viewModel.setReplyTo(it) },
+                     onReplyClick = {
+                         viewModel.setReplyTo(it)
+                         scope.launch {
+                             focusRequester.requestFocus()
+                             keyboardController?.show()
+                         }
+                     },
                      onLikeClick = { viewModel.toggleCommentReaction(it, ReactionType.LIKE) },
                      onShowReactions = { showReactionPickerForComment = it },
                      onShowOptions = { showCommentOptions = it },
@@ -208,113 +249,42 @@ fun PostDetailScreen(
                      onViewReplies = { commentId: String -> viewModel.loadReplies(commentId) },
                      modifier = Modifier.fillMaxSize(),
                      headerContent = {
-                         Column {
-                             // Header
-                             val author = postDetail.author
-                             if (author != null) {
-                                 val homeUser = HomeUser(
-                                     uid = author.uid,
-                                     username = author.username ?: "Unknown",
-                                     avatar = author.avatar,
-                                     verify = author.isVerified == true,
-                                     // Removed bio, location, website mapping as they don't match Home User definition
-                                     // and aren't displayed in PostHeader anyway.
-                                 )
-                                 PostDetailHeader(
-                                     user = homeUser,
-                                     timestamp = com.synapse.social.studioasinc.core.util.TimeUtils.getTimeAgo(postDetail.post.publishDate ?: ""),
-                                     onUserClick = { onNavigateToProfile(author.uid) },
-                                     onOptionsClick = { showPostOptions = true }
-                                 )
-                             }
-
-                             // Content
-                             Text(
-                                 text = postDetail.post.postText ?: "",
-                                 style = MaterialTheme.typography.bodyLarge,
-                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                        val mergedPost = remember(postDetail) {
+                             postDetail.post.copy(
+                                 userReaction = postDetail.userReaction,
+                                 reactions = postDetail.reactionSummary,
+                                 likesCount = postDetail.reactionSummary.values.sum(),
+                                 commentsCount = postDetail.post.commentsCount
                              )
+                        }
 
-                             // Media
-                             if (!postDetail.post.mediaItems.isNullOrEmpty()) {
-                                 postDetail.post.mediaItems?.forEachIndexed { index, mediaItem ->
-                                     Box(
-                                         modifier = Modifier
-                                             .fillMaxWidth()
-                                             .padding(vertical = 4.dp)
-                                             .clickable {
-                                                 selectedMediaIndex = index
-                                                 showMediaViewer = true
-                                             }
-                                     ) {
-                                         AsyncImage(
-                                             model = mediaItem.url,
-                                             contentDescription = "Post Media",
-                                             modifier = Modifier
-                                                 .fillMaxWidth()
-                                                 .wrapContentHeight(),
-                                             contentScale = ContentScale.FillWidth
-                                         )
-
-                                         if (postDetail.post.postType == "video") {
-                                             Icon(
-                                                 imageVector = Icons.Default.PlayCircle,
-                                                 contentDescription = "Play Video",
-                                                 modifier = Modifier
-                                                     .align(Alignment.Center)
-                                                     .size(48.dp),
-                                                 tint = androidx.compose.ui.graphics.Color.White
-                                             )
-                                         }
+                        val actions = remember(viewModel, context, postId) {
+                             PostActions(
+                                 onLike = { viewModel.toggleReaction(ReactionType.LIKE) },
+                                 onComment = {
+                                     scope.launch {
+                                         focusRequester.requestFocus()
+                                         keyboardController?.show()
                                      }
-                                 }
-                             }
-
-                             // Poll
-                             if (postDetail.post.hasPoll == true) {
-                                 val totalVotes = postDetail.pollResults?.sumOf { it.voteCount } ?: 0
-                                 val userVote = postDetail.userPollVote
-                                 val options = postDetail.pollResults?.map {
-                                     PollOption(
-                                         id = it.index.toString(), // Mapped from PollOptionResult.index
-                                         text = it.text,
-                                         voteCount = it.voteCount,
-                                         isSelected = userVote == it.index
-                                     )
-                                 } ?: emptyList()
-
-                                 PollContent(
-                                     question = postDetail.post.pollQuestion ?: "",
-                                     options = options,
-                                     totalVotes = totalVotes,
-                                     hasVoted = userVote != null,
-                                     onVote = { index -> viewModel.votePoll(index.toIntOrNull() ?: 0) }
-                                 )
-                             }
-
-                             // Interaction Bar
-                             PostInteractionBar(
-                                 isLiked = postDetail.userReaction == ReactionType.LIKE,
-                                 likeCount = postDetail.reactionSummary.values.sum(),
-                                 commentCount = postDetail.post.commentsCount,
-                                 isBookmarked = false,
-                                 hideLikeCount = postDetail.post.postHideLikeCount == "true",
-                                 onLikeClick = { viewModel.toggleReaction(ReactionType.LIKE) },
-                                 onCommentClick = { /* Focus input */ },
-                                 onShareClick = {
-                                     val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                        type = "text/plain"
-                                        putExtra(Intent.EXTRA_TEXT, "Check out this post on Synapse: synapse://post/$postId")
-                                    }
-                                    context.startActivity(Intent.createChooser(shareIntent, "Share Post"))
                                  },
-                                 onBookmarkClick = { viewModel.toggleBookmark() },
-                                 onReactionLongPress = { showReactionPicker = true }
+                                 onShare = { sharePost() },
+                                 onBookmark = { viewModel.toggleBookmark() },
+                                 onOptionClick = { showPostOptions = true },
+                                 onPollVote = { _, index -> viewModel.votePoll(index) },
+                                 onUserClick = { uid -> onNavigateToProfile(uid) },
+                                 onMediaClick = { index ->
+                                     selectedMediaIndex = index
+                                     showMediaViewer = true
+                                 }
                              )
+                        }
 
-                             @Suppress("DEPRECATION")
-                             Divider()
-                         }
+                        SharedPostItem(
+                            post = mergedPost,
+                            actions = actions,
+                            isExpanded = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
                      }
                  )
              }

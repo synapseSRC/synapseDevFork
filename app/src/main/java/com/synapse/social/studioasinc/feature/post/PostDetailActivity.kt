@@ -40,7 +40,8 @@ class PostDetailActivity : AppCompatActivity() {
                 PostDetailScreen(
                     postId = postId,
                     onNavigateBack = { finish() },
-                    onNavigateToProfile = { userId -> navigateToProfile(userId) }
+                    onNavigateToProfile = { userId -> navigateToProfile(userId) },
+                    onNavigateToEditPost = { /* TODO: Implement edit post navigation */ }
                 )
             }
         }

@@ -41,8 +41,7 @@ fun StorageDataScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             painter = painterResource(R.drawable.ic_arrow_back),
-                            contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            contentDescription = "Back"
                         )
                     }
                 },
@@ -67,23 +66,21 @@ fun StorageDataScreen(
             // Section 1: Storage Management
             item {
                 SettingsSection(title = "Storage Management") {
-                    SettingsGroup {
-                        SettingsNavigationItem(
-                            title = "Manage storage",
-                            subtitle = "2.4 GB", // Mocked as per original
-                            icon = R.drawable.file_save_24px,
-                            onClick = { navController?.navigate("settings_storage_manage") },
-                            position = SettingsItemPosition.Top
-                        )
-                        SettingsDivider()
-                        SettingsNavigationItem(
-                            title = "Network usage",
-                            subtitle = "1.8 GB sent • 2.1 GB received",
-                            icon = R.drawable.ic_network_check,
-                            onClick = { navController?.navigate("settings_network_usage") },
-                            position = SettingsItemPosition.Bottom
-                        )
-                    }
+                    SettingsNavigationItem(
+                        title = "Manage storage",
+                        subtitle = "2.4 GB", // Mocked as per original
+                        icon = R.drawable.file_save_24px,
+                        onClick = { navController?.navigate("settings_storage_manage") },
+                        position = SettingsItemPosition.Top
+                    )
+                    SettingsDivider()
+                    SettingsNavigationItem(
+                        title = "Network usage",
+                        subtitle = "1.8 GB sent • 2.1 GB received",
+                        icon = R.drawable.ic_network_check,
+                        onClick = { navController?.navigate("settings_network_usage") },
+                        position = SettingsItemPosition.Bottom
+                    )
                 }
             }
 
@@ -116,34 +113,44 @@ fun StorageDataScreen(
             // Section 4: Media auto-download
             item {
                 SettingsSection(title = "Media auto-download") {
-                    SettingsGroup {
-                        SettingsNavigationItem(
-                            title = "When using mobile data",
-                            subtitle = getAutoDownloadSummary(autoDownloadRules.mobileData),
-                            onClick = { showMobileDialog = true },
-                            position = SettingsItemPosition.Top
-                        )
-                        SettingsDivider()
-                        SettingsNavigationItem(
-                            title = "When connected on Wi-Fi",
-                            subtitle = getAutoDownloadSummary(autoDownloadRules.wifi),
-                            onClick = { showWifiDialog = true },
-                            position = SettingsItemPosition.Middle
-                        )
-                        SettingsDivider()
-                        SettingsNavigationItem(
-                            title = "When roaming",
-                            subtitle = getAutoDownloadSummary(autoDownloadRules.roaming),
-                            onClick = { showRoamingDialog = true },
-                            position = SettingsItemPosition.Bottom
-                        )
-                    }
+                    Text(
+                        text = "Voice messages are always automatically downloaded",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 4.dp)
+                    )
+                    SettingsNavigationItem(
+                        title = "When using mobile data",
+                        subtitle = getAutoDownloadSummary(autoDownloadRules.mobileData),
+                        onClick = { showMobileDialog = true },
+                        position = SettingsItemPosition.Top
+                    )
+                    SettingsDivider()
+                    SettingsNavigationItem(
+                        title = "When connected on Wi-Fi",
+                        subtitle = getAutoDownloadSummary(autoDownloadRules.wifi),
+                        onClick = { showWifiDialog = true },
+                        position = SettingsItemPosition.Middle
+                    )
+                    SettingsDivider()
+                    SettingsNavigationItem(
+                        title = "When roaming",
+                        subtitle = getAutoDownloadSummary(autoDownloadRules.roaming),
+                        onClick = { showRoamingDialog = true },
+                        position = SettingsItemPosition.Bottom
+                    )
                 }
             }
 
             // Section 5: Media upload quality
             item {
                 SettingsSection(title = "Media upload quality") {
+                    Text(
+                        text = "Choose the quality of media files to be sent",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 4.dp)
+                    )
                     SettingsClickableItem(
                         title = "Photo upload quality",
                         subtitle = mediaUploadQuality.displayName(),

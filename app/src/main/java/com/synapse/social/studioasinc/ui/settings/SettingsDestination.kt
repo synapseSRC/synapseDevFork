@@ -107,6 +107,11 @@ sealed class SettingsDestination(val route: String) {
     object RequestAccountInfo : SettingsDestination(ROUTE_REQUEST_ACCOUNT_INFO)
 
     /**
+     * Account Information screen (Read-only view).
+     */
+    object AccountInfo : SettingsDestination(ROUTE_ACCOUNT_INFO)
+
+    /**
      * Manage Storage screen.
      */
     object ManageStorage : SettingsDestination(ROUTE_MANAGE_STORAGE)
@@ -139,6 +144,7 @@ sealed class SettingsDestination(val route: String) {
         const val ROUTE_SEARCH = "settings_search"
         const val ROUTE_API_KEY = "settings_api_key"
         const val ROUTE_REQUEST_ACCOUNT_INFO = "settings_request_account_info"
+        const val ROUTE_ACCOUNT_INFO = "settings_account_info"
         const val ROUTE_MANAGE_STORAGE = "settings_storage_manage"
         const val ROUTE_NETWORK_USAGE = "settings_network_usage"
 
@@ -164,6 +170,7 @@ sealed class SettingsDestination(val route: String) {
             Accessibility,
             ApiKey,
             RequestAccountInfo,
+            AccountInfo,
             ManageStorage,
             NetworkUsage
         )
@@ -192,6 +199,7 @@ sealed class SettingsDestination(val route: String) {
             ROUTE_ACCESSIBILITY -> Accessibility
             ROUTE_API_KEY -> ApiKey
             ROUTE_REQUEST_ACCOUNT_INFO -> RequestAccountInfo
+            ROUTE_ACCOUNT_INFO -> AccountInfo
             ROUTE_MANAGE_STORAGE -> ManageStorage
             ROUTE_NETWORK_USAGE -> NetworkUsage
             else -> null

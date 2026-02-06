@@ -80,6 +80,9 @@ fun SettingsNavHost(
                 onLogout = onLogout,
                 onNavigateToRequestAccountInfo = {
                     navController.navigate(SettingsDestination.ROUTE_REQUEST_ACCOUNT_INFO)
+                },
+                onNavigateToAccountInfo = {
+                    navController.navigate(SettingsDestination.ROUTE_ACCOUNT_INFO)
                 }
             )
         }
@@ -94,6 +97,17 @@ fun SettingsNavHost(
                 }
             )
         }
+        // Account Information Screen (Read-only)
+        composable(route = SettingsDestination.ROUTE_ACCOUNT_INFO) {
+            val viewModel: AccountInfoViewModel = hiltViewModel()
+            AccountInfoScreen(
+                viewModel = viewModel,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
 
         // Privacy & Security Settings Screen
         composable(route = SettingsDestination.ROUTE_PRIVACY) {

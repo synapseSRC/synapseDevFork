@@ -40,14 +40,14 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 // Supabase & Ktor
-                implementation(project.dependencies.platform("io.github.jan-tennert.supabase:bom:3.2.6"))
+                implementation(project.dependencies.platform("io.github.jan-tennert.supabase:bom:3.0.0"))
                 implementation("io.github.jan-tennert.supabase:postgrest-kt")
                 implementation("io.github.jan-tennert.supabase:auth-kt")
                 implementation("io.github.jan-tennert.supabase:realtime-kt")
                 implementation("io.github.jan-tennert.supabase:storage-kt")
-                implementation("io.ktor:ktor-client-core:3.2.2")
-                implementation("io.ktor:ktor-client-content-negotiation:3.2.2")
-                implementation("io.ktor:ktor-serialization-kotlinx-json:3.2.2")
+                implementation("io.ktor:ktor-client-core:3.0.0")
+                implementation("io.ktor:ktor-client-content-negotiation:3.0.0")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0")
 
                 // Serialization
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
@@ -75,7 +75,7 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-okhttp:3.2.2")
+                implementation("io.ktor:ktor-client-okhttp:3.0.0")
                 implementation("org.whispersystems:signal-protocol-android:2.8.1")
                 implementation("androidx.security:security-crypto:1.0.0")
             }
@@ -83,13 +83,13 @@ kotlin {
 
         val iosMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-darwin:3.2.2")
+                implementation("io.ktor:ktor-client-darwin:3.0.0")
             }
         }
 
         val wasmJsMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-js:3.2.2")
+                implementation("io.ktor:ktor-client-js:3.0.0")
             }
         }
     }

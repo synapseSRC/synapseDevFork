@@ -180,11 +180,6 @@ android {
 }
 
 configurations.all {
-    resolutionStrategy {
-        force 'org.jetbrains.kotlin:kotlin-stdlib:2.2.21'
-        force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.2.21'
-        force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.21'
-    }
     exclude group: 'com.google.protobuf', module: 'protobuf-java'
 }
 
@@ -231,20 +226,20 @@ dependencies {
     implementation 'androidx.hilt:hilt-navigation-compose:1.2.0'
 
     // Supabase BOM and dependencies (3.x uses auth-kt instead of gotrue-kt and requires Ktor 3.x)
-    implementation(platform("io.github.jan-tennert.supabase:bom:3.2.6"))
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.0.0"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("io.github.jan-tennert.supabase:auth-kt")
     implementation("io.github.jan-tennert.supabase:realtime-kt")
     implementation("io.github.jan-tennert.supabase:storage-kt")
     implementation("io.github.jan-tennert.supabase:functions-kt")
-    implementation("io.ktor:ktor-client-android:3.2.2")
-    implementation("io.ktor:ktor-client-okhttp:3.2.2")
+    implementation("io.ktor:ktor-client-android:3.0.0")
+    implementation("io.ktor:ktor-client-okhttp:3.0.0")
 
     // Serialization for Supabase
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
-    implementation("io.ktor:ktor-client-content-negotiation:3.2.2")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:3.2.2")
+    implementation("io.ktor:ktor-client-content-negotiation:3.0.0")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0")
 
     // Firebase Vertex AI for Gemini
     implementation("com.google.firebase:firebase-vertexai:16.0.2")
@@ -312,7 +307,7 @@ dependencies {
     // implementation 'com.google.android.gms:play-services-auth:21.4.0'
 
     // Networking
-    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation 'com.google.code.gson:gson:2.13.1'
 
     // UI Components (Non-AndroidX)

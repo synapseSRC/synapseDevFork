@@ -7,12 +7,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.synapse.social.studioasinc.R
+import com.synapse.social.studioasinc.feature.shared.theme.Spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,7 +36,7 @@ fun StorageDataScreen(
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            MediumTopAppBar(
+            LargeTopAppBar(
                 title = { Text("Storage and data") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
@@ -46,6 +46,12 @@ fun StorageDataScreen(
                         )
                     }
                 },
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
+                ),
                 scrollBehavior = scrollBehavior
             )
         }
@@ -53,148 +59,121 @@ fun StorageDataScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
-            contentPadding = PaddingValues(bottom = 32.dp)
+                .padding(padding)
+                .padding(horizontal = SettingsSpacing.screenPadding),
+            verticalArrangement = Arrangement.spacedBy(SettingsSpacing.sectionSpacing),
+            contentPadding = PaddingValues(top = 8.dp, bottom = 32.dp)
         ) {
-            // Section 1: Manage Storage & Network Usage
+            // Section 1: Storage Management
             item {
-                ListItem(
-                    headlineContent = { Text("Manage storage") },
-                    supportingContent = { Text("2.4 GB") }, // Mocked for main screen, real data in detailed screen
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(R.drawable.file_save_24px),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                SettingsSection(title = "Storage Management") {
+                    SettingsNavigationItem(
+                        title = "Manage storage",
+                        subtitle = "2.4 GB", // Mocked as per original
+                        icon = R.drawable.file_save_24px,
+                        onClick = { navController?.navigate("settings_storage_manage") },
+                        position = SettingsItemPosition.Top
+                    )
+                    SettingsDivider()
+                    SettingsNavigationItem(
+                        title = "Network usage",
+                        subtitle = "1.8 GB sent • 2.1 GB received",
+                        icon = R.drawable.ic_network_check,
+                        onClick = { navController?.navigate("settings_network_usage") },
+                        position = SettingsItemPosition.Bottom
+                    )
+                }
+            }
+
+            // Section 2: Call Settings
+            item {
+                SettingsSection(title = "Call Settings") {
+                    SettingsToggleItem(
+                        title = "Use less data for calls",
+                        icon = R.drawable.ic_call,
+                        checked = useLessDataCalls,
+                        onCheckedChange = { viewModel.setUseLessDataCalls(it) },
+                        position = SettingsItemPosition.Single
+                    )
+                }
+            }
+
+            // Section 3: Network
+            item {
+                SettingsSection(title = "Network") {
+                    SettingsNavigationItem(
+                        title = "Proxy",
+                        subtitle = "Off",
+                        icon = R.drawable.ic_vpn_key,
+                        onClick = { /* Placeholder */ },
+                        position = SettingsItemPosition.Single
+                    )
+                }
+            }
+
+            // Section 4: Media auto-download
+            item {
+                SettingsSection(title = "Media auto-download") {
+                    Text(
+                        text = "Voice messages are always automatically downloaded",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(
+                            start = SettingsSpacing.itemHorizontalPadding,
+                            end = SettingsSpacing.itemHorizontalPadding,
+                            top = SettingsSpacing.itemVerticalPadding,
+                            bottom = Spacing.ExtraSmall
                         )
-                    },
-                    modifier = Modifier.clickable { navController?.navigate("settings_storage_manage") }
-                )
+                    )
+                    SettingsNavigationItem(
+                        title = "When using mobile data",
+                        subtitle = getAutoDownloadSummary(autoDownloadRules.mobileData),
+                        onClick = { showMobileDialog = true },
+                        position = SettingsItemPosition.Top
+                    )
+                    SettingsDivider()
+                    SettingsNavigationItem(
+                        title = "When connected on Wi-Fi",
+                        subtitle = getAutoDownloadSummary(autoDownloadRules.wifi),
+                        onClick = { showWifiDialog = true },
+                        position = SettingsItemPosition.Middle
+                    )
+                    SettingsDivider()
+                    SettingsNavigationItem(
+                        title = "When roaming",
+                        subtitle = getAutoDownloadSummary(autoDownloadRules.roaming),
+                        onClick = { showRoamingDialog = true },
+                        position = SettingsItemPosition.Bottom
+                    )
+                }
             }
+
+            // Section 5: Media upload quality
             item {
-                ListItem(
-                    headlineContent = { Text("Network usage") },
-                    supportingContent = { Text("1.8 GB sent • 2.1 GB received") },
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_network_check),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                SettingsSection(title = "Media upload quality") {
+                    Text(
+                        text = "Choose the quality of media files to be sent",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(
+                            start = SettingsSpacing.itemHorizontalPadding,
+                            end = SettingsSpacing.itemHorizontalPadding,
+                            top = SettingsSpacing.itemVerticalPadding,
+                            bottom = Spacing.ExtraSmall
                         )
-                    },
-                    modifier = Modifier.clickable { navController?.navigate("settings_network_usage") }
-                )
-            }
-            item {
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            }
-
-            // Section 2: Use Less Data for Calls
-            item {
-                ListItem(
-                    headlineContent = { Text("Use less data for calls") },
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_call),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    },
-                    trailingContent = {
-                        Switch(
-                            checked = useLessDataCalls,
-                            onCheckedChange = { viewModel.setUseLessDataCalls(it) }
-                        )
-                    },
-                    modifier = Modifier.clickable { viewModel.setUseLessDataCalls(!useLessDataCalls) }
-                )
-            }
-            item {
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                    )
+                    SettingsClickableItem(
+                        title = "Photo upload quality",
+                        subtitle = mediaUploadQuality.displayName(),
+                        onClick = { viewModel.openMediaQualitySheet() },
+                        position = SettingsItemPosition.Single
+                    )
+                }
             }
 
-            // Section 3: Proxy
+            // Bottom padding
             item {
-                ListItem(
-                    headlineContent = { Text("Proxy") },
-                    supportingContent = { Text("Off") },
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_vpn_key),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    },
-                    modifier = Modifier.clickable { /* Placeholder */ }
-                )
-            }
-            item {
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            }
-
-            // Section 4: Media Auto-Download
-            item {
-                Text(
-                    text = "Media auto-download",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
-                )
-                Text(
-                    text = "Voice messages are always automatically downloaded",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
-                )
-            }
-
-            item {
-                ListItem(
-                    headlineContent = { Text("When using mobile data") },
-                    supportingContent = { Text(getAutoDownloadSummary(autoDownloadRules.mobileData)) },
-                    modifier = Modifier.clickable { showMobileDialog = true }
-                )
-            }
-            item {
-                ListItem(
-                    headlineContent = { Text("When connected on Wi-Fi") },
-                    supportingContent = { Text(getAutoDownloadSummary(autoDownloadRules.wifi)) },
-                    modifier = Modifier.clickable { showWifiDialog = true }
-                )
-            }
-            item {
-                ListItem(
-                    headlineContent = { Text("When roaming") },
-                    supportingContent = { Text(getAutoDownloadSummary(autoDownloadRules.roaming)) },
-                    modifier = Modifier.clickable { showRoamingDialog = true }
-                )
-            }
-            item {
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            }
-
-            // Section 5: Media Upload Quality
-            item {
-                Text(
-                    text = "Media upload quality",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
-                )
-                Text(
-                    text = "Choose the quality of media files to be sent",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
-                )
-            }
-
-            item {
-                ListItem(
-                    headlineContent = { Text("Photo upload quality") },
-                    supportingContent = { Text(mediaUploadQuality.displayName()) },
-                    modifier = Modifier.clickable { viewModel.openMediaQualitySheet() }
-                )
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }

@@ -5,6 +5,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization") version "2.1.0"
     id("com.google.devtools.ksp")
+    id("app.cash.sqldelight")
 }
 
 version = project.findProperty("projectVersion") as String
@@ -29,13 +30,6 @@ kotlin {
             isStatic = true
         }
     }
-
-    // Temporarily disabled due to dependency compatibility issues
-    // @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
-    // wasmJs {
-    //     browser()
-    //     binaries.executable()
-    // }
 
     sourceSets {
         all {
@@ -75,9 +69,16 @@ kotlin {
                 // Settings
                 implementation("com.russhwolf:multiplatform-settings-no-arg:1.2.0")
 
-                // Room
-                // implementation("androidx.room:room-runtime:2.7.0-alpha01")
-                // implementation("androidx.sqlite:sqlite-bundled:2.5.0-alpha01")
+                // SQLDelight
+                implementation("app.cash.sqldelight:runtime:2.0.2")
+                implementation("app.cash.sqldelight:coroutines-extensions:2.0.2")
+            }
+        }
+
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
             }
         }
 
@@ -86,32 +87,29 @@ kotlin {
                 implementation("io.ktor:ktor-client-okhttp:3.2.2")
                 implementation("org.whispersystems:signal-protocol-android:2.8.1")
                 implementation("androidx.security:security-crypto:1.0.0")
+                implementation("app.cash.sqldelight:android-driver:2.0.2")
+                implementation("io.insert-koin:koin-android:4.0.0")
             }
         }
 
         val iosMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-darwin:3.2.2")
+                implementation("app.cash.sqldelight:native-driver:2.0.2")
             }
         }
-
-        // Temporarily disabled
-        // val wasmJsMain by getting {
-        //     dependencies {
-        //         implementation("io.ktor:ktor-client-js:3.2.2")
-        //     }
-        // }
     }
 }
 
+sqldelight {
+  databases {
+    create("StorageDatabase") {
+      packageName.set("com.synapse.social.studioasinc.shared.data.database")
+    }
+  }
+}
+
 dependencies {
-    /*
-    add("kspCommonMainMetadata", "androidx.room:room-compiler:2.7.0-alpha01")
-    add("kspAndroid", "androidx.room:room-compiler:2.7.0-alpha01")
-    add("kspIosX64", "androidx.room:room-compiler:2.7.0-alpha01")
-    add("kspIosArm64", "androidx.room:room-compiler:2.7.0-alpha01")
-    add("kspIosSimulatorArm64", "androidx.room:room-compiler:2.7.0-alpha01")
-    */
 }
 
 android {

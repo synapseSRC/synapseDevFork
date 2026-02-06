@@ -3,6 +3,8 @@ package com.synapse.social.studioasinc.presentation.editprofile.photohistory
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import com.synapse.social.studioasinc.presentation.editprofile.EditProfileRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,9 +26,13 @@ sealed class PhotoHistoryEvent {
     data class DeleteItem(val item: HistoryItem) : PhotoHistoryEvent()
 }
 
-class PhotoHistoryViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class PhotoHistoryViewModel @Inject constructor(
+    application: Application,
+    private val repository: EditProfileRepository
+) : AndroidViewModel(application) {
 
-    private val repository = EditProfileRepository(application.applicationContext)
+
     private val _uiState = MutableStateFlow(PhotoHistoryUiState())
     val uiState: StateFlow<PhotoHistoryUiState> = _uiState.asStateFlow()
 

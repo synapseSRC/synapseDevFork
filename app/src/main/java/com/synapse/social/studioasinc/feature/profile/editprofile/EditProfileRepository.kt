@@ -2,9 +2,12 @@ package com.synapse.social.studioasinc.presentation.editprofile
 
 import android.content.Context
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
-import com.synapse.social.studioasinc.core.storage.MediaStorageService
+import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
+import javax.inject.Inject
+import dagger.hilt.android.qualifiers.ApplicationContext
+import com.synapse.social.studioasinc.shared.domain.model.MediaType
 import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
+
 import com.synapse.social.studioasinc.domain.model.UserProfile
 import com.synapse.social.studioasinc.domain.model.UserStatus
 import com.synapse.social.studioasinc.presentation.editprofile.photohistory.HistoryItem
@@ -26,12 +29,16 @@ import kotlinx.serialization.json.longOrNull
 import java.util.UUID
 import kotlin.coroutines.resume
 
-class EditProfileRepository(private val context: Context) {
+class EditProfileRepository @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val uploadMediaUseCase: UploadMediaUseCase,
+    private val imageCompressor: ImageCompressor
+) {
 
     private val client = SupabaseClient.client
-    private val appSettingsManager = AppSettingsManager.getInstance(context)
-    private val imageCompressor = ImageCompressor(context)
-    private val mediaStorageService = MediaStorageService(context, appSettingsManager, imageCompressor)
+
+
+
 
     suspend fun getCurrentUserId(): String? {
         return client.auth.currentUserOrNull()?.id
@@ -138,26 +145,13 @@ class EditProfileRepository(private val context: Context) {
         return uploadFile(imagePath, SupabaseClient.BUCKET_USER_COVERS)
     }
 
-    private suspend fun uploadFile(filePath: String, bucketName: String): Result<String> = suspendCancellableCoroutine { continuation ->
-        kotlinx.coroutines.CoroutineScope(Dispatchers.IO).launch {
-            mediaStorageService.uploadFile(filePath, bucketName, object : MediaStorageService.UploadCallback {
-                override fun onProgress(percent: Int) {
-                    // Progress callback
-                }
-
-                override fun onSuccess(url: String, publicId: String) {
-                    if (continuation.isActive) {
-                        continuation.resume(Result.success(url))
-                    }
-                }
-
-                override fun onError(error: String) {
-                    if (continuation.isActive) {
-                        continuation.resume(Result.failure(Exception(error)))
-                    }
-                }
-            })
-        }
+    private suspend fun uploadFile(filePath: String, bucketName: String): Result<String> {
+        return uploadMediaUseCase(
+            filePath = filePath,
+            mediaType = MediaType.PHOTO,
+            bucketName = bucketName,
+            onProgress = {}
+        )
     }
 
     suspend fun addToProfileHistory(userId: String, imageUrl: String) {

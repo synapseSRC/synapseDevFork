@@ -30,6 +30,7 @@ fun AccountCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .height(96.dp)
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically

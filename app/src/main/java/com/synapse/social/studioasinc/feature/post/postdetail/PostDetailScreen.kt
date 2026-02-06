@@ -68,6 +68,13 @@ fun PostDetailScreen(
         viewModel.loadPost(postId)
     }
 
+    // Refresh comments when trigger changes
+    LaunchedEffect(uiState.refreshTrigger) {
+        if (uiState.refreshTrigger > 0) {
+            pagingItems.refresh()
+        }
+    }
+
     // Helper functions for actions
     fun sharePost() {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
@@ -202,7 +209,6 @@ fun PostDetailScreen(
     }
 
     Scaffold(
-
         bottomBar = {
             Column(
                  modifier = Modifier
@@ -248,8 +254,7 @@ fun PostDetailScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     scrolledContainerColor = MaterialTheme.colorScheme.background
-                ),
-                windowInsets = WindowInsets(0, 0, 0, 0)
+                )
             )
         }
     ) { paddingValues ->
@@ -289,7 +294,10 @@ fun PostDetailScreen(
                                  userReaction = postDetail.userReaction,
                                  reactions = postDetail.reactionSummary,
                                  likesCount = postDetail.reactionSummary.values.sum(),
-                                 commentsCount = postDetail.post.commentsCount
+                                 commentsCount = postDetail.post.commentsCount,
+                                 username = postDetail.author.username,
+                                 avatarUrl = postDetail.author.avatar,
+                                 isVerified = postDetail.author.verify
                              )
                         }
 

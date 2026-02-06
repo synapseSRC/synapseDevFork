@@ -60,16 +60,14 @@ fun ProfileImageSection(
         tonalElevation = 2.dp
     ) {
         Column {
+            // Cover Photo
             Box(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                    .clickable(onClick = onCoverClick)
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                        .clickable(onClick = onCoverClick)
-                ) {
                     val context = LocalContext.current
                     AsyncImage(
                         model = if (coverUrl != null && coverUrl.isNotBlank()) {
@@ -141,13 +139,18 @@ fun ProfileImageSection(
                             }
                         }
                     }
-                }
+            }
 
+            // Profile Avatar
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (-48).dp),
+                contentAlignment = Alignment.Center
+            ) {
                 Box(
                     modifier = Modifier
                         .size(96.dp)
-                        .align(Alignment.TopCenter)
-                        .offset(y = 152.dp)
                         .clickable(onClick = onAvatarClick)
                 ) {
                     Surface(

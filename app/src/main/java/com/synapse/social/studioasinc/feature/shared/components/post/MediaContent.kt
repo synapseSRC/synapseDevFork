@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayCircle
@@ -52,9 +53,9 @@ fun MediaContent(
                 contentDescription = "Post Image",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(if (isVideo) 16f / 9f else 4f / 3f) // Adjust aspect ratio as needed
+                    .heightIn(max = 600.dp)
                     .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Fit
             )
             if (isVideo) {
                 Icon(
@@ -89,9 +90,9 @@ fun MediaContent(
                         contentDescription = "Post Image",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(if (isVideo) 16f / 9f else 4f / 3f)
+                            .heightIn(max = 600.dp)
                             .clip(RoundedCornerShape(8.dp)),
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.Fit
                     )
                 }
             }
@@ -133,7 +134,7 @@ fun PostMediaGrid(
     ) {
         when (count) {
             2 -> {
-                Row(modifier = Modifier.fillMaxWidth().height(300.dp)) {
+                Row(modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp, max = 400.dp)) {
                     MediaGridItem(url = mediaUrls[0], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(0) })
                     Spacer(modifier = Modifier.width(spacing))
                     MediaGridItem(url = mediaUrls[1], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(1) })
@@ -141,9 +142,9 @@ fun PostMediaGrid(
             }
             3 -> {
                 // One big top, two small bottom
-                MediaGridItem(url = mediaUrls[0], modifier = Modifier.fillMaxWidth().height(300.dp), onClick = { onMediaClick(0) })
+                MediaGridItem(url = mediaUrls[0], modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp, max = 350.dp), onClick = { onMediaClick(0) })
                 Spacer(modifier = Modifier.height(spacing))
-                Row(modifier = Modifier.fillMaxWidth().height(150.dp)) {
+                Row(modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp, max = 200.dp)) {
                     MediaGridItem(url = mediaUrls[1], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(1) })
                     Spacer(modifier = Modifier.width(spacing))
                     MediaGridItem(url = mediaUrls[2], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(2) })
@@ -151,13 +152,13 @@ fun PostMediaGrid(
             }
             else -> {
                 // 4 or more: 2x2 grid
-                Row(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+                Row(modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp, max = 250.dp)) {
                     MediaGridItem(url = mediaUrls[0], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(0) })
                     Spacer(modifier = Modifier.width(spacing))
                     MediaGridItem(url = mediaUrls[1], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(1) })
                 }
                 Spacer(modifier = Modifier.height(spacing))
-                Row(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+                Row(modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp, max = 250.dp)) {
                     MediaGridItem(url = mediaUrls[2], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(2) })
                     Spacer(modifier = Modifier.width(spacing))
 
@@ -168,11 +169,9 @@ fun PostMediaGrid(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .background(Color.Black.copy(alpha = 0.5f))
-                                    .clickable { onMediaClick(3) }, // Usually clicking "more" opens the gallery at that index
+                                    .clickable { onMediaClick(3) },
                                 contentAlignment = Alignment.Center
                             ) {
-                                // Show "+N" where N is the number of items remaining
-                                // For 5 items: indices 0,1,2 are shown, slot [3] shows item 3 with overlay "+2" (items 4 and 5 remaining)
                                 Text(
                                     text = "+${count - 3}",
                                     color = Color.White,

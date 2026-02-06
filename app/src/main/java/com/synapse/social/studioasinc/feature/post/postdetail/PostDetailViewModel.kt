@@ -78,17 +78,14 @@ class PostDetailViewModel @Inject constructor(
 
     fun refreshComments() {
         val postId = currentPostId ?: return
-        // For backwards compatibility or full reload if needed, but prefer refreshCommentsList()
-        // Here we just reload post details and refresh list, without full screen loader
         viewModelScope.launch {
             postDetailRepository.getPostWithDetails(postId).onSuccess { updatedPost ->
                 _uiState.update { it.copy(post = updatedPost) }
             }
         }
-        refreshCommentsList()
     }
 
-    private fun refreshCommentsList() {
+    fun invalidateComments() {
         _uiState.update { it.copy(refreshTrigger = it.refreshTrigger + 1) }
     }
 
@@ -110,8 +107,7 @@ class PostDetailViewModel @Inject constructor(
             _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
 
             reactionRepository.toggleReaction(commentId, "comment", reactionType).onSuccess {
-                 refreshCommentsList()
-                 // We also need to refresh post details for reaction summary if needed, but comments list is main priority.
+                 invalidateComments()
             }.also {
                 _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading - commentId) }
             }
@@ -164,7 +160,7 @@ class PostDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
             commentRepository.editComment(commentId, content).onSuccess {
-                refreshCommentsList()
+                invalidateComments()
                 setEditingComment(null)
             }.also {
                 _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading - commentId) }
@@ -242,7 +238,7 @@ class PostDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
             commentRepository.hideComment(commentId).onSuccess {
-                refreshCommentsList()
+                invalidateComments()
             }.also {
                 _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading - commentId) }
             }
@@ -253,7 +249,7 @@ class PostDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
             commentRepository.pinComment(commentId, postId).onSuccess {
-                refreshCommentsList()
+                invalidateComments()
             }.also {
                 _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading - commentId) }
             }

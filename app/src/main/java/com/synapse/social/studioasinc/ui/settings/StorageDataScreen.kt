@@ -128,7 +128,7 @@ fun StorageDataScreen(
                         title = "When using mobile data",
                         subtitle = getAutoDownloadSummary(autoDownloadRules.mobileData),
                         onClick = { showMobileDialog = true },
-                        position = SettingsItemPosition.Top
+                        position = SettingsItemPosition.Middle
                     )
                     SettingsDivider()
                     SettingsNavigationItem(
@@ -165,7 +165,7 @@ fun StorageDataScreen(
                         title = "Photo upload quality",
                         subtitle = mediaUploadQuality.displayName(),
                         onClick = { viewModel.openMediaQualitySheet() },
-                        position = SettingsItemPosition.Single
+                        position = SettingsItemPosition.Bottom
                     )
                 }
             }

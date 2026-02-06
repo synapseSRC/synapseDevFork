@@ -120,11 +120,15 @@ sealed class SettingsDestination(val route: String) {
      * Business Platform features for creators and business accounts.
      */
     object BusinessPlatform : SettingsDestination(ROUTE_BUSINESS_PLATFORM)
+     * Two-Factor Authentication screen.
+     */
+    object TwoFactorAuth : SettingsDestination(ROUTE_TWO_FACTOR_AUTH)
 
     companion object {
         // Route constants for navigation
         const val ROUTE_HUB = "settings_hub"
         const val ROUTE_ACCOUNT = "settings_account"
+        const val ROUTE_TWO_FACTOR_AUTH = "settings_two_factor_auth"
         const val ROUTE_PRIVACY = "settings_privacy"
         const val ROUTE_APPEARANCE = "settings_appearance"
         const val ROUTE_NOTIFICATIONS = "settings_notifications"
@@ -154,6 +158,7 @@ sealed class SettingsDestination(val route: String) {
         fun allDestinations(): List<SettingsDestination> = listOf(
             Hub,
             Account,
+            TwoFactorAuth,
             Privacy,
             Appearance,
             Notifications,
@@ -183,6 +188,7 @@ sealed class SettingsDestination(val route: String) {
         fun fromRoute(route: String): SettingsDestination? = when (route) {
             ROUTE_HUB -> Hub
             ROUTE_ACCOUNT -> Account
+            ROUTE_TWO_FACTOR_AUTH -> TwoFactorAuth
             ROUTE_PRIVACY -> Privacy
             ROUTE_APPEARANCE -> Appearance
             ROUTE_NOTIFICATIONS -> Notifications

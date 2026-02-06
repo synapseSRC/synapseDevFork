@@ -3,13 +3,18 @@ package com.synapse.social.studioasinc.feature.shared.components.post
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayCircle
@@ -17,6 +22,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,10 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import com.synapse.social.studioasinc.ui.settings.PostViewStyle
 
 @Composable
@@ -40,66 +46,67 @@ fun MediaContent(
 ) {
     if (mediaUrls.isEmpty()) return
 
+    // Track which video is currently active (player attached)
+    // Removed redundant DisposableEffect as this state is scoped to composable
+    var activeVideoIndex by remember { mutableStateOf<Int?>(null) }
+
     if (mediaUrls.size == 1) {
         val url = mediaUrls.first()
         Box(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
-                .clickable { onMediaClick(0) }
         ) {
-            AsyncImage(
-                model = url,
-                contentDescription = "Post Image",
+            MediaItemContent(
+                url = url,
+                isVideo = isVideo,
+                isActive = activeVideoIndex == 0,
+                onActivate = { activeVideoIndex = 0 },
+                onClick = { onMediaClick(0) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(max = 600.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Fit
+                    .clip(RoundedCornerShape(8.dp))
             )
-            if (isVideo) {
-                Icon(
-                    imageVector = Icons.Default.PlayCircle,
-                    contentDescription = "Play Video",
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(16.dp),
-                    tint = androidx.compose.ui.graphics.Color.White
-                )
-            }
         }
     } else if (postViewStyle == PostViewStyle.GRID) {
-        // Grid Layout logic
-        PostMediaGrid(mediaUrls, onMediaClick, modifier)
+        PostMediaGrid(mediaUrls, onMediaClick, modifier, isVideo)
     } else {
-        // Horizontal Pager for multiple images
-        val pagerState = androidx.compose.foundation.pager.rememberPagerState(pageCount = { mediaUrls.size })
+        val pagerState = rememberPagerState(pageCount = { mediaUrls.size })
+
+        // Deactivate video when page changes
+        LaunchedEffect(pagerState.currentPage) {
+            if (activeVideoIndex != null && activeVideoIndex != pagerState.currentPage) {
+                activeVideoIndex = null
+            }
+        }
+
         Box(modifier = modifier.fillMaxWidth()) {
-            androidx.compose.foundation.pager.HorizontalPager(
+            HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxWidth()
             ) { page ->
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onMediaClick(page) }
                         .padding(vertical = 8.dp)
                 ) {
-                    AsyncImage(
-                        model = mediaUrls[page],
-                        contentDescription = "Post Image",
+                    MediaItemContent(
+                        url = mediaUrls[page],
+                        isVideo = isVideo,
+                        isActive = activeVideoIndex == page,
+                        onActivate = { activeVideoIndex = page },
+                        onClick = { onMediaClick(page) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(max = 600.dp)
-                            .clip(RoundedCornerShape(8.dp)),
-                        contentScale = ContentScale.Fit
+                            .clip(RoundedCornerShape(8.dp))
                     )
                 }
             }
 
-            // Page Indicator
             if (mediaUrls.size > 1) {
-                androidx.compose.material3.Text(
+                Text(
                     text = "${pagerState.currentPage + 1}/${mediaUrls.size}",
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -118,10 +125,52 @@ fun MediaContent(
 }
 
 @Composable
+private fun MediaItemContent(
+    url: String,
+    isVideo: Boolean,
+    isActive: Boolean,
+    onActivate: () -> Unit,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (isVideo && isActive) {
+        PostVideoPlayer(
+            videoUrl = url,
+            modifier = modifier
+        )
+    } else {
+        // Thumbnail view
+        Box(modifier = modifier) {
+            AsyncImage(
+                model = url,
+                contentDescription = "Post Image",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable { onClick() }, // Click on image triggers general click (detail view)
+                contentScale = ContentScale.Crop
+            )
+            if (isVideo) {
+                // Play icon overlay
+                Icon(
+                    imageVector = Icons.Default.PlayCircle,
+                    contentDescription = "Play Video",
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(48.dp)
+                        .clickable { onActivate() }, // Click on play button triggers video activation
+                    tint = Color.White
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun PostMediaGrid(
     mediaUrls: List<String>,
     onMediaClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isVideo: Boolean = false
 ) {
     val count = mediaUrls.size
     val spacing = 2.dp
@@ -141,7 +190,6 @@ fun PostMediaGrid(
                 }
             }
             3 -> {
-                // One big top, two small bottom
                 MediaGridItem(url = mediaUrls[0], modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp, max = 350.dp), onClick = { onMediaClick(0) })
                 Spacer(modifier = Modifier.height(spacing))
                 Row(modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp, max = 200.dp)) {
@@ -151,7 +199,6 @@ fun PostMediaGrid(
                 }
             }
             else -> {
-                // 4 or more: 2x2 grid
                 Row(modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp, max = 250.dp)) {
                     MediaGridItem(url = mediaUrls[0], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(0) })
                     Spacer(modifier = Modifier.width(spacing))
@@ -192,11 +239,13 @@ fun MediaGridItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    AsyncImage(
-        model = url,
-        contentDescription = "Post Image",
-        modifier = modifier
-            .clickable(onClick = onClick),
-        contentScale = ContentScale.Crop
-    )
+    Box(modifier = modifier.clickable(onClick = onClick)) {
+        AsyncImage(
+            model = url,
+            contentDescription = "Post Image",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+        // Play icon removed for consistency until grid playback is supported
+    }
 }

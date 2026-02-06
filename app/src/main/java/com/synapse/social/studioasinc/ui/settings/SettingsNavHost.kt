@@ -99,6 +99,8 @@ fun SettingsNavHost(
                 onNavigateToRequestAccountInfo = {
                     navController.navigate(SettingsDestination.ROUTE_REQUEST_ACCOUNT_INFO)
                 },
+                onNavigateToBusinessPlatform = {
+                    navController.navigate(SettingsDestination.ROUTE_BUSINESS_PLATFORM)
                 onNavigateToTwoFactorAuth = {
                     navController.navigate(SettingsDestination.ROUTE_TWO_FACTOR_AUTH)
                 }
@@ -229,6 +231,17 @@ fun SettingsNavHost(
         composable(route = SettingsDestination.ROUTE_NETWORK_USAGE) {
             val viewModel: NetworkUsageViewModel = hiltViewModel()
             NetworkUsageScreen(
+                viewModel = viewModel,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Business Platform Screen
+        composable(route = SettingsDestination.ROUTE_BUSINESS_PLATFORM) {
+            val viewModel: BusinessPlatformViewModel = hiltViewModel()
+            BusinessPlatformScreen(
                 viewModel = viewModel,
                 onBackClick = {
                     navController.popBackStack()

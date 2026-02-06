@@ -27,7 +27,9 @@ import androidx.media3.ui.PlayerView
 @Composable
 fun PostVideoPlayer(
     videoUrl: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    repeatMode: Int = Player.REPEAT_MODE_OFF,
+    playWhenReady: Boolean = true
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -35,8 +37,8 @@ fun PostVideoPlayer(
     // Create player once per composable lifecycle
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
-            repeatMode = Player.REPEAT_MODE_OFF
-            playWhenReady = true // Start playing when attached
+            this.repeatMode = repeatMode
+            this.playWhenReady = playWhenReady // Start playing when attached
         }
     }
 
@@ -50,8 +52,16 @@ fun PostVideoPlayer(
     // Pause video when app goes to background
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_PAUSE) {
-                exoPlayer.pause()
+            when (event) {
+                Lifecycle.Event.ON_PAUSE, Lifecycle.Event.ON_STOP -> {
+                    exoPlayer.pause()
+                }
+                Lifecycle.Event.ON_RESUME -> {
+                    if (playWhenReady) {
+                        exoPlayer.play()
+                    }
+                }
+                else -> {}
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -67,12 +77,17 @@ fun PostVideoPlayer(
         exoPlayer.prepare()
     }
 
+    // Handle repeat mode changes
+    LaunchedEffect(repeatMode) {
+        exoPlayer.repeatMode = repeatMode
+    }
+
     AndroidView(
         factory = {
             PlayerView(context).apply {
                 player = exoPlayer
                 useController = true // Show controls for inline video
-                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM // Changed to ZOOM as suggested
+                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT

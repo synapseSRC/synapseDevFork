@@ -144,24 +144,25 @@ private fun MediaItemContent(
             modifier = modifier
         )
     } else {
-        Box(
-            modifier = modifier.clickable {
-                if (isVideo) onActivate() else onClick()
-            }
-        ) {
+        // Thumbnail view
+        Box(modifier = modifier) {
             AsyncImage(
                 model = url,
                 contentDescription = "Post Image",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop // Changed to Crop as suggested
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable { onClick() }, // Click on image triggers general click (detail view)
+                contentScale = ContentScale.Crop
             )
             if (isVideo) {
+                // Play icon overlay
                 Icon(
                     imageVector = Icons.Default.PlayCircle,
                     contentDescription = "Play Video",
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .size(48.dp),
+                        .size(48.dp)
+                        .clickable { onActivate() }, // Click on play button triggers video activation
                     tint = Color.White
                 )
             }

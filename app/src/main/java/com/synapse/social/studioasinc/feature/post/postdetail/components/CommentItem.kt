@@ -44,12 +44,14 @@ fun CommentItem(
     onShowOptions: (CommentWithUser) -> Unit,
     onUserClick: (String) -> Unit,
     onViewReplies: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isLastReply: Boolean = false
 ) {
     val isLoading = loadingIds.contains(comment.id)
     var showMentionDialogForUser by remember { mutableStateOf<String?>(null) }
 
     val directReplies = replies.ifEmpty { repliesState[comment.id] ?: emptyList() }
+    val isReply = depth > 0
 
     if (showMentionDialogForUser != null) {
         AlertDialog(
@@ -77,6 +79,42 @@ fun CommentItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
+                .then(
+                    if (isReply) {
+                        Modifier.drawBehind {
+                            val lineColor = Color.Gray.copy(alpha = 0.3f)
+                            val lineWidth = 2.dp.toPx()
+                            val avatarCenterX = 16.dp.toPx()
+                            val avatarCenterY = 16.dp.toPx()
+                            
+                            // Vertical line from top
+                            drawLine(
+                                color = lineColor,
+                                start = Offset(avatarCenterX, 0f),
+                                end = Offset(avatarCenterX, avatarCenterY),
+                                strokeWidth = lineWidth
+                            )
+                            
+                            // Horizontal line to avatar
+                            drawLine(
+                                color = lineColor,
+                                start = Offset(avatarCenterX, avatarCenterY),
+                                end = Offset(avatarCenterX + 24.dp.toPx(), avatarCenterY),
+                                strokeWidth = lineWidth
+                            )
+                            
+                            // Continue vertical line if not last reply
+                            if (!isLastReply) {
+                                drawLine(
+                                    color = lineColor,
+                                    start = Offset(avatarCenterX, avatarCenterY),
+                                    end = Offset(avatarCenterX, size.height),
+                                    strokeWidth = lineWidth
+                                )
+                            }
+                        }
+                    } else Modifier
+                )
         ) {
             CircularAvatar(
                 imageUrl = comment.user?.avatar,
@@ -229,28 +267,15 @@ fun CommentItem(
             thickness = 0.5.dp
         )
 
-        // Render nested replies
-        if (directReplies.isNotEmpty()) {
-            Column(
-                modifier = Modifier
-                    .padding(start = 12.dp)
-                    .drawBehind {
-                        if (depth < 3) {
-                            drawLine(
-                                color = Color.Gray.copy(alpha = 0.5f),
-                                start = Offset(0f, 0f),
-                                end = Offset(0f, size.height),
-                                strokeWidth = 2.dp.toPx()
-                            )
-                        }
-                    }
-            ) {
-                directReplies.forEach { reply ->
+        // Render nested replies (only 1 level deep - flatten further nesting)
+        if (directReplies.isNotEmpty() && depth == 0) {
+            Column(modifier = Modifier.padding(start = 48.dp)) {
+                directReplies.forEachIndexed { index, reply ->
                     CommentItem(
                         comment = reply,
-                        replies = emptyList(),
-                        repliesState = repliesState,
-                        depth = depth + 1,
+                        replies = emptyList(), // Flatten: no further nesting
+                        repliesState = emptyMap(),
+                        depth = 1,
                         isRepliesLoading = false,
                         loadingIds = loadingIds,
                         onReplyClick = onReplyClick,
@@ -258,8 +283,8 @@ fun CommentItem(
                         onShowReactions = onShowReactions,
                         onShowOptions = onShowOptions,
                         onUserClick = onUserClick,
-                        onViewReplies = onViewReplies,
-                        modifier = Modifier.padding(start = if (depth < 3) 12.dp else 0.dp)
+                        onViewReplies = {},
+                        isLastReply = index == directReplies.lastIndex
                     )
                 }
             }

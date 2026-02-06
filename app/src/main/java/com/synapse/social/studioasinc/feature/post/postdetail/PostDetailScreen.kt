@@ -202,7 +202,7 @@ fun PostDetailScreen(
     }
 
     Scaffold(
-
+        contentWindowInsets = WindowInsets(0),
         bottomBar = {
             Column(
                  modifier = Modifier
@@ -289,7 +289,10 @@ fun PostDetailScreen(
                                  userReaction = postDetail.userReaction,
                                  reactions = postDetail.reactionSummary,
                                  likesCount = postDetail.reactionSummary.values.sum(),
-                                 commentsCount = postDetail.post.commentsCount
+                                 commentsCount = postDetail.post.commentsCount,
+                                 username = postDetail.author.username,
+                                 avatarUrl = postDetail.author.avatar,
+                                 isVerified = postDetail.author.verify
                              )
                         }
 

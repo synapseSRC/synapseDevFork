@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,12 +38,12 @@ fun SynapsePlusScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumTopAppBar(
-                title = { Text("Synapse Plus") },
+                title = { Text(stringResource(R.string.synapse_plus_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             painter = painterResource(R.drawable.ic_arrow_back),
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -64,7 +65,7 @@ fun SynapsePlusScreen(
 
             item {
                 Text(
-                    text = "Premium Features",
+                    text = stringResource(R.string.synapse_plus_section_features),
                     style = SettingsTypography.sectionHeader,
                     color = SettingsColors.sectionTitle,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -130,14 +131,14 @@ private fun HeroCard() {
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "Synapse Plus",
+                        text = stringResource(R.string.synapse_plus_hero_title),
                         style = MaterialTheme.typography.headlineLarge.copy(
                             fontWeight = FontWeight.Bold
                         ),
                         color = Color.White
                     )
                     Text(
-                        text = "Get Verified & Unlock Exclusive Features",
+                        text = stringResource(R.string.synapse_plus_hero_subtitle),
                         style = MaterialTheme.typography.bodyLarge,
                         color = Color.White.copy(alpha = 0.9f),
                         textAlign = TextAlign.Center
@@ -151,12 +152,36 @@ private fun HeroCard() {
 @Composable
 private fun FeatureGrid() {
     val features = listOf(
-        FeatureItem("Verified Badge", "Get that blue checkmark", R.drawable.ic_verified),
-        FeatureItem("Ad-Free", "No interruptions", Icons.Filled.Lock), // Using Lock as proxy for privacy/ad-free
-        FeatureItem("Analytics", "Deep insights", Icons.Filled.Info), // Using Info as proxy for analytics
-        FeatureItem("Custom Themes", "Express yourself", Icons.Filled.Face), // Using Face as proxy for themes/palette
-        FeatureItem("Priority Support", "Skip the line", Icons.Filled.Star),
-        FeatureItem("Extended Posts", "Write up to 4000 chars", Icons.Filled.Edit)
+        FeatureItem(
+            stringResource(R.string.synapse_plus_feature_verified),
+            stringResource(R.string.synapse_plus_feature_verified_desc),
+            R.drawable.ic_verified
+        ),
+        FeatureItem(
+            stringResource(R.string.synapse_plus_feature_ad_free),
+            stringResource(R.string.synapse_plus_feature_ad_free_desc),
+            Icons.Filled.Lock
+        ),
+        FeatureItem(
+            stringResource(R.string.synapse_plus_feature_analytics),
+            stringResource(R.string.synapse_plus_feature_analytics_desc),
+            Icons.Filled.Info
+        ),
+        FeatureItem(
+            stringResource(R.string.synapse_plus_feature_themes),
+            stringResource(R.string.synapse_plus_feature_themes_desc),
+            Icons.Filled.Face
+        ),
+        FeatureItem(
+            stringResource(R.string.synapse_plus_feature_support),
+            stringResource(R.string.synapse_plus_feature_support_desc),
+            Icons.Filled.Star
+        ),
+        FeatureItem(
+            stringResource(R.string.synapse_plus_feature_extended),
+            stringResource(R.string.synapse_plus_feature_extended_desc),
+            Icons.Filled.Edit
+        )
     )
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -171,7 +196,7 @@ private fun FeatureGrid() {
                         modifier = Modifier.weight(1f)
                     )
                 }
-                // Handle case where chunk is less than 2 if needed (not needed for static list of 6)
+                // Handle case where chunk is less than 2
                 if (rowFeatures.size < 2) {
                     Spacer(modifier = Modifier.weight(1f))
                 }
@@ -269,12 +294,12 @@ private fun UpgradeButton(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Upgrade Now",
+                text = stringResource(R.string.synapse_plus_upgrade_button),
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 color = Color.White
             )
             Text(
-                text = "$4.99/month",
+                text = stringResource(R.string.synapse_plus_price),
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White.copy(alpha = 0.9f)
             )

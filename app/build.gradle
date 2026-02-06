@@ -369,3 +369,11 @@ dependencies {
 }
 
 // Supabase configuration is handled through BuildConfig
+dependencies {
+    // Charts (Vico)
+    implementation "com.patrykandpatrick.vico:compose:2.0.0-alpha.12"
+    implementation "com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.12"
+    // 2FA / QR Code
+    implementation 'com.google.zxing:core:3.5.3'
+    implementation 'dev.turingcomplete:kotlin-onetimepassword:2.4.1'
+}

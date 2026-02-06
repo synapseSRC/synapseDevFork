@@ -1,56 +1,74 @@
 package com.synapse.social.studioasinc.ui.settings
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.synapse.social.studioasinc.data.repository.SettingsRepositoryImpl
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.synapse.social.studioasinc.ui.settings.about.AboutSupportScreen
+import com.synapse.social.studioasinc.ui.settings.about.AboutSupportViewModel
+import com.synapse.social.studioasinc.ui.settings.account.RequestAccountInfoScreen
+import com.synapse.social.studioasinc.ui.settings.account.RequestAccountInfoViewModel
+import com.synapse.social.studioasinc.ui.settings.appearance.AppearanceScreen
+import com.synapse.social.studioasinc.ui.settings.appearance.AppearanceViewModel
+import com.synapse.social.studioasinc.ui.settings.data.NetworkUsageScreen
+import com.synapse.social.studioasinc.ui.settings.data.NetworkUsageViewModel
+import com.synapse.social.studioasinc.ui.settings.language.LanguageRegionScreen
+import com.synapse.social.studioasinc.ui.settings.language.LanguageRegionViewModel
+import com.synapse.social.studioasinc.ui.settings.notifications.NotificationSettingsScreen
+import com.synapse.social.studioasinc.ui.settings.notifications.NotificationSettingsViewModel
+import com.synapse.social.studioasinc.ui.settings.privacy.PrivacySecurityScreen
+import com.synapse.social.studioasinc.ui.settings.privacy.PrivacySecurityViewModel
+import com.synapse.social.studioasinc.ui.settings.storage.ManageStorageScreen
+import com.synapse.social.studioasinc.ui.settings.storage.ManageStorageViewModel
+import com.synapse.social.studioasinc.ui.settings.storage.StorageDataScreen
+import com.synapse.social.studioasinc.ui.settings.storage.StorageDataViewModel
+import com.synapse.social.studioasinc.ui.settings.storage.StorageDataViewModelFactory
+import com.synapse.social.studioasinc.ui.settings.licenses.LicensesScreen
+import com.synapse.social.studioasinc.data.repository.SettingsRepository
+import com.synapse.social.studioasinc.ui.settings.synapseplus.SynapsePlusScreen
+import com.synapse.social.studioasinc.ui.settings.avatar.AvatarScreen
+import com.synapse.social.studioasinc.ui.settings.favourites.FavouritesScreen
+import com.synapse.social.studioasinc.ui.settings.accessibility.AccessibilityScreen
+import com.synapse.social.studioasinc.ui.settings.apikey.ApiKeySettingsScreen
+import com.synapse.social.studioasinc.ui.settings.apikey.ApiKeySettingsViewModel
 
 /**
  * Navigation host for the Settings feature.
  *
- * Manages navigation between all settings screens with consistent transitions
- * and state preservation. Uses Jetpack Compose Navigation with Material 3
- * motion design.
+ * Configures the navigation graph and handles transitions between settings screens.
  *
- * Requirements: 1.2, 1.3
- *
- * @param modifier Modifier to be applied to the NavHost
- * @param navController Navigation controller for managing navigation state
- * @param startDestination Initial destination route (defaults to Settings Hub)
- * @param onBackClick Callback to exit the settings flow (finish activity)
- * @param onNavigateToProfileEdit Callback to navigate to ProfileEditActivity
- * @param onNavigateToChatPrivacy Callback to navigate to ChatPrivacySettingsActivity
- * @param onLogout Callback to perform logout
+ * Requirements: 1.1
  */
 @Composable
 fun SettingsNavHost(
-    modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
-    startDestination: String = SettingsDestination.ROUTE_HUB,
-    onBackClick: () -> Unit = {},
-    onNavigateToProfileEdit: () -> Unit = {},
-    onNavigateToChatPrivacy: () -> Unit = {},
-    onLogout: () -> Unit = {}
+    navController: NavHostController,
+    settingsRepository: SettingsRepository,
+    onBackClick: () -> Unit,
+    onNavigateToProfileEdit: () -> Unit,
+    onLogout: () -> Unit
 ) {
-    val context = LocalContext.current
-    val settingsRepository = SettingsRepositoryImpl.getInstance(context)
-
     NavHost(
         navController = navController,
-        startDestination = startDestination,
-        modifier = modifier,
+        startDestination = SettingsDestination.ROUTE_HUB,
         enterTransition = { SettingsAnimations.enterTransition },
         exitTransition = { SettingsAnimations.exitTransition },
         popEnterTransition = { SettingsAnimations.popEnterTransition },
@@ -83,6 +101,21 @@ fun SettingsNavHost(
                 },
                 onNavigateToChangePhoneNumber = {
                     navController.navigate(SettingsDestination.ROUTE_CHANGE_PHONE_NUMBER)
+                onNavigateToBusinessPlatform = {
+                    navController.navigate(SettingsDestination.ROUTE_BUSINESS_PLATFORM)
+                onNavigateToTwoFactorAuth = {
+                    navController.navigate(SettingsDestination.ROUTE_TWO_FACTOR_AUTH)
+                }
+            )
+        }
+
+        // Two-Factor Authentication Screen
+        composable(route = SettingsDestination.ROUTE_TWO_FACTOR_AUTH) {
+            val viewModel: TwoFactorAuthViewModel = hiltViewModel()
+            TwoFactorAuthScreen(
+                viewModel = viewModel,
+                onBackClick = {
+                    navController.popBackStack()
                 }
             )
         }
@@ -211,6 +244,10 @@ fun SettingsNavHost(
         composable(route = SettingsDestination.ROUTE_CHANGE_PHONE_NUMBER) {
             val viewModel: ChangePhoneNumberViewModel = hiltViewModel()
             ChangePhoneNumberScreen(
+        // Business Platform Screen
+        composable(route = SettingsDestination.ROUTE_BUSINESS_PLATFORM) {
+            val viewModel: BusinessPlatformViewModel = hiltViewModel()
+            BusinessPlatformScreen(
                 viewModel = viewModel,
                 onBackClick = {
                     navController.popBackStack()

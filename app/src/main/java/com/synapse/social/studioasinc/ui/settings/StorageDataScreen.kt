@@ -61,7 +61,7 @@ fun StorageDataScreen(
                 .padding(padding)
                 .padding(horizontal = SettingsSpacing.screenPadding),
             verticalArrangement = Arrangement.spacedBy(SettingsSpacing.sectionSpacing),
-            contentPadding = PaddingValues(vertical = 8.dp)
+            contentPadding = PaddingValues(top = 8.dp, bottom = 32.dp)
         ) {
             // Section 1: Storage Management
             item {
@@ -121,7 +121,7 @@ fun StorageDataScreen(
                             start = SettingsSpacing.itemHorizontalPadding,
                             end = SettingsSpacing.itemHorizontalPadding,
                             top = SettingsSpacing.itemVerticalPadding,
-                            bottom = 4.dp
+                            bottom = 4.dp // Standard small spacing, could define in theme if desired
                         )
                     )
                     SettingsNavigationItem(
@@ -168,11 +168,6 @@ fun StorageDataScreen(
                         position = SettingsItemPosition.Single
                     )
                 }
-            }
-
-            // Bottom padding
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }

@@ -68,6 +68,13 @@ fun PostDetailScreen(
         viewModel.loadPost(postId)
     }
 
+    // Refresh comments when trigger changes
+    LaunchedEffect(uiState.refreshTrigger) {
+        if (uiState.refreshTrigger > 0) {
+            pagingItems.refresh()
+        }
+    }
+
     // Helper functions for actions
     fun sharePost() {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {

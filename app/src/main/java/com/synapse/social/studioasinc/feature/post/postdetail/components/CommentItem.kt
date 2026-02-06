@@ -78,43 +78,45 @@ fun CommentItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
                 .then(
                     if (isReply) {
-                        Modifier.drawBehind {
-                            val lineColor = Color.Gray.copy(alpha = 0.3f)
-                            val lineWidth = 2.dp.toPx()
-                            val avatarCenterX = 16.dp.toPx()
-                            val avatarCenterY = 16.dp.toPx()
-                            
-                            // Vertical line from top
-                            drawLine(
-                                color = lineColor,
-                                start = Offset(avatarCenterX, 0f),
-                                end = Offset(avatarCenterX, avatarCenterY),
-                                strokeWidth = lineWidth
-                            )
-                            
-                            // Horizontal line to avatar
-                            drawLine(
-                                color = lineColor,
-                                start = Offset(avatarCenterX, avatarCenterY),
-                                end = Offset(avatarCenterX + 24.dp.toPx(), avatarCenterY),
-                                strokeWidth = lineWidth
-                            )
-                            
-                            // Continue vertical line if not last reply
-                            if (!isLastReply) {
+                        Modifier
+                            .drawBehind {
+                                val lineColor = Color.Gray.copy(alpha = 0.3f)
+                                val lineWidth = 2.dp.toPx()
+                                val startX = 0f
+                                val avatarCenterY = 24.dp.toPx()
+                                
+                                // Vertical line from top
                                 drawLine(
                                     color = lineColor,
-                                    start = Offset(avatarCenterX, avatarCenterY),
-                                    end = Offset(avatarCenterX, size.height),
+                                    start = Offset(startX, 0f),
+                                    end = Offset(startX, avatarCenterY),
                                     strokeWidth = lineWidth
                                 )
+                                
+                                // Horizontal line to avatar
+                                drawLine(
+                                    color = lineColor,
+                                    start = Offset(startX, avatarCenterY),
+                                    end = Offset(startX + 32.dp.toPx(), avatarCenterY),
+                                    strokeWidth = lineWidth
+                                )
+                                
+                                // Continue vertical line if not last reply
+                                if (!isLastReply) {
+                                    drawLine(
+                                        color = lineColor,
+                                        start = Offset(startX, avatarCenterY),
+                                        end = Offset(startX, size.height),
+                                        strokeWidth = lineWidth
+                                    )
+                                }
                             }
-                        }
+                            .padding(start = 32.dp)
                     } else Modifier
                 )
+                .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             CircularAvatar(
                 imageUrl = comment.user?.avatar,

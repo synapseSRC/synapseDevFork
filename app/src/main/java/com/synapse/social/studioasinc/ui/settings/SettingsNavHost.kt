@@ -206,10 +206,7 @@ fun SettingsNavHost(
 
         // Storage Provider Configuration Screen
         composable(route = SettingsDestination.ROUTE_STORAGE_PROVIDER) {
-            // Reusing SettingsViewModel for now or creating a specific one if needed.
-            // Since StorageProviderScreen uses SettingsViewModel, let's use that.
-            // Note: SettingsViewModel handles AppSettingsManager directly.
-            val viewModel: SettingsViewModel = viewModel()
+            val viewModel: SettingsViewModel = hiltViewModel()
             StorageProviderScreen(
                 onBackClick = {
                     navController.popBackStack()

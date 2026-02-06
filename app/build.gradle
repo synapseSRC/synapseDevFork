@@ -368,3 +368,8 @@ dependencies {
 }
 
 // Supabase configuration is handled through BuildConfig
+dependencies {
+    // 2FA / QR Code
+    implementation 'com.google.zxing:core:3.5.3'
+    implementation 'dev.turingcomplete:kotlin-onetimepassword:2.4.1'
+}

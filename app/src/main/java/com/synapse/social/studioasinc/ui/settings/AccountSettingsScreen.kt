@@ -37,7 +37,7 @@ fun AccountSettingsScreen(
     onNavigateBack: () -> Unit,
     onEditProfile: () -> Unit,
     onLogout: () -> Unit,
-    onNavigateToRequestAccountInfo: () -> Unit = {}
+    onNavigateToRequestAccountInfo: () -> Unit = {}, onNavigateToTwoFactorAuth: () -> Unit = {}
 ) {
     val linkedAccounts by viewModel.linkedAccounts.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -111,7 +111,7 @@ fun AccountSettingsScreen(
                         title = "Two-Step Verification",
                         subtitle = "Add extra security to your account",
                         icon = R.drawable.ic_security,
-                        onClick = { }
+                        onClick = onNavigateToTwoFactorAuth
                     )
                 }
             }

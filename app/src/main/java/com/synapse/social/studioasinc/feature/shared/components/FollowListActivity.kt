@@ -10,9 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import com.synapse.social.studioasinc.ProfileActivity
 import com.synapse.social.studioasinc.feature.shared.components.compose.FollowListScreen
 import com.synapse.social.studioasinc.data.repository.AuthRepository
-// TODO: Re-implement chat functionality
-// import com.synapse.social.studioasinc.ui.chat.ChatActivity
-// import com.synapse.social.studioasinc.data.remote.services.SupabaseChatService
 import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 import kotlinx.coroutines.launch
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,23 +71,7 @@ class FollowListActivity : ComponentActivity() {
                     return@launch
                 }
 
-                // TODO: Re-implement chat feature - chat functionality
                 Toast.makeText(this@FollowListActivity, "Chat feature not implemented", Toast.LENGTH_SHORT).show()
-                /*
-                val chatService = SupabaseChatService()
-                val result = chatService.getOrCreateDirectChat(currentUserId, targetUserId)
-
-                result.fold(
-                    onSuccess = { chatId ->
-                        val intent = Intent(this@FollowListActivity, ChatActivity::class.java)
-                        intent.putExtra("chatId", chatId)
-                        intent.putExtra("uid", targetUserId)
-                        intent.putExtra("isGroup", false)
-                        startActivity(intent)
-                    },
-                    onFailure = { }
-                )
-                */
             } catch (e: Exception) {
                 // Handle error silently
             }

@@ -18,8 +18,6 @@ import javax.inject.Inject
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.synapse.social.studioasinc.data.repository.AuthRepository
 import com.synapse.social.studioasinc.AuthActivity
-// TODO: Re-implement chat privacy settings
-// import com.synapse.social.studioasinc.ChatPrivacySettingsActivity
 import com.synapse.social.studioasinc.feature.profile.ProfileEditActivity
 import com.synapse.social.studioasinc.ui.settings.AppearanceViewModel
 import com.synapse.social.studioasinc.ui.settings.SettingsNavHost
@@ -84,11 +82,7 @@ class SettingsActivity : ComponentActivity() {
                                 startActivity(Intent(this@SettingsActivity, ProfileEditActivity::class.java))
                             },
                             onNavigateToChatPrivacy = {
-                                // TODO: Re-implement chat privacy settings navigation
                                 Toast.makeText(this@SettingsActivity, "Chat feature not implemented", Toast.LENGTH_SHORT).show()
-                                /*
-                                startActivity(Intent(this@SettingsActivity, ChatPrivacySettingsActivity::class.java))
-                                */
                             },
                             onLogout = {
                                 performLogout()

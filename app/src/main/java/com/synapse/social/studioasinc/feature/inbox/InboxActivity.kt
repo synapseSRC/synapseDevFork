@@ -66,7 +66,6 @@ class InboxActivity : ComponentActivity() {
                     InboxScreen(
                         onNavigateBack = { finish() },
                         onNavigateToChat = { chatId, userId ->
-                            // TODO: Re-implement chat feature - chat navigation
                             Log.d("InboxActivity", "Chat navigation disabled - chatId: $chatId, userId: $userId")
                             android.widget.Toast.makeText(this@InboxActivity, "Chat feature temporarily unavailable", android.widget.Toast.LENGTH_SHORT).show()
                         },

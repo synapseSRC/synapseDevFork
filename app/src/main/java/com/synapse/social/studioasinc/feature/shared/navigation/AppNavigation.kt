@@ -123,12 +123,8 @@ fun AppNavigation(
         composable(AppDestination.Inbox.route) {
             InboxScreen(
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToChat = { _, _ ->
-                    // TODO: Re-implement chat feature - chat navigation
-                },
-                onNavigateToCreateGroup = {
-                    // TODO: Re-implement chat feature - group creation
-                },
+                onNavigateToChat = { _, _ -> },
+                onNavigateToCreateGroup = { },
                 onNavigateToProfile = { userId ->
                     navController.navigate(AppDestination.Profile.createRoute(userId))
                 }

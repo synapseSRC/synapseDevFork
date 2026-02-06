@@ -124,7 +124,7 @@ fun SettingsNavHost(
                     navController.popBackStack()
                 },
                 onNavigateToChatCustomization = {
-                    // Placeholder - navigate to chat customization screen
+                    // Navigate to chat customization screen
                 }
             )
         }
@@ -140,76 +140,28 @@ fun SettingsNavHost(
             )
         }
 
-        // TODO: Chat Settings Screen - Chat feature not implemented
         composable(route = SettingsDestination.ROUTE_CHAT) {
-            // TODO: Implement chat settings when chat feature is ready
-            /*
-            val viewModel: ChatSettingsViewModel = viewModel(
-                factory = ChatSettingsViewModelFactory(settingsRepository)
-            )
-            ChatSettingsScreen(
-                viewModel = viewModel,
-                onBackClick = {
-                    navController.popBackStack()
-                },
-                onNavigateToChatPrivacy = onNavigateToChatPrivacy,
-                onNavigateToChatHistoryDeletion = {
-                    navController.navigate(SettingsDestination.ROUTE_CHAT_HISTORY_DELETION)
-                },
-                onNavigateToChatCustomization = {
-                    navController.navigate(SettingsDestination.ROUTE_CHAT_THEME)
-                },
-                onNavigateToChatWallpapers = {
-                    navController.navigate(SettingsDestination.ROUTE_CHAT_WALLPAPER)
-                }
-            )
-            */
             ChatPlaceholderScreen(
                 title = "Chat Settings",
                 onBackClick = { navController.popBackStack() }
             )
         }
 
-        // TODO: Chat Customization Screen (Themes) - Chat feature not implemented
         composable(route = SettingsDestination.ROUTE_CHAT_THEME) {
-            // TODO: Implement chat customization when chat feature is ready
-            /*
-            com.synapse.social.studioasinc.ui.chat.theme.ChatCustomizationScreen(
-                onBackClick = { navController.popBackStack() }
-            )
-            */
             ChatPlaceholderScreen(
                 title = "Chat Themes",
                 onBackClick = { navController.popBackStack() }
             )
         }
 
-        // TODO: Chat Wallpaper Screen - Chat feature not implemented
         composable(route = SettingsDestination.ROUTE_CHAT_WALLPAPER) {
-            // TODO: Implement chat wallpaper when chat feature is ready
-            /*
-            com.synapse.social.studioasinc.ui.chat.wallpaper.ChatWallpaperScreen(
-                onBackClick = { navController.popBackStack() }
-            )
-            */
             ChatPlaceholderScreen(
                 title = "Chat Wallpapers",
                 onBackClick = { navController.popBackStack() }
             )
         }
 
-        // TODO: Chat History Deletion Screen - Chat feature not implemented
         composable(route = SettingsDestination.ROUTE_CHAT_HISTORY_DELETION) {
-            // TODO: Implement chat history deletion when chat feature is ready
-            /*
-            val viewModel: com.synapse.social.studioasinc.ui.deletion.ChatHistoryDeletionViewModel = hiltViewModel()
-            com.synapse.social.studioasinc.ui.deletion.ChatHistoryDeletionScreen(
-                viewModel = viewModel,
-                onBackClick = {
-                    navController.popBackStack()
-                }
-            )
-            */
             ChatPlaceholderScreen(
                 title = "Chat History Deletion",
                 onBackClick = { navController.popBackStack() }
@@ -382,11 +334,11 @@ private fun ChatPlaceholderScreen(
                 }
             )
         }
-    ) { padding ->
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
+                .padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
             Text(

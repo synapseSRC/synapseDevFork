@@ -130,7 +130,6 @@ class HomeActivity : AppCompatActivity() {
         super.onStart()
         val currentUser = SupabaseClient.client.auth.currentUserOrNull()
         if (currentUser != null) {
-            // TODO: Re-implement presence management if needed
         }
     }
 }

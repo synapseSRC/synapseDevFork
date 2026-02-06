@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -888,6 +890,82 @@ fun ProfileHeaderCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+        }
+    }
+}
+
+/**
+ * A read-only info item displaying a label and value, with optional copy functionality.
+ *
+ * @param title The label text
+ * @param value The value text
+ * @param icon Optional icon resource ID
+ * @param onCopy Optional callback when the item is clicked (e.g. to copy value)
+ */
+@Composable
+fun SettingsInfoItem(
+    title: String,
+    value: String,
+    @DrawableRes icon: Int? = null,
+    onCopy: (() -> Unit)? = null
+) {
+    val modifier = if (onCopy != null) {
+        Modifier
+            .clickable(onClick = onCopy)
+            .padding(
+                horizontal = SettingsSpacing.itemHorizontalPadding,
+                vertical = SettingsSpacing.itemVerticalPadding
+            )
+    } else {
+        Modifier
+            .padding(
+                horizontal = SettingsSpacing.itemHorizontalPadding,
+                vertical = SettingsSpacing.itemVerticalPadding
+            )
+    }
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (icon != null) {
+                Icon(
+                    painter = painterResource(icon),
+                    contentDescription = null,
+                    modifier = Modifier.size(SettingsSpacing.iconSize),
+                    tint = SettingsColors.itemIcon
+                )
+            }
+
+            Column {
+                Text(
+                    text = title,
+                    style = SettingsTypography.itemTitle,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                if (value.isNotBlank()) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = value,
+                        style = SettingsTypography.itemSubtitle,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+
+        if (onCopy != null) {
+             Icon(
+                imageVector = Icons.Filled.ContentCopy,
+                contentDescription = "Copy",
+                tint = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }

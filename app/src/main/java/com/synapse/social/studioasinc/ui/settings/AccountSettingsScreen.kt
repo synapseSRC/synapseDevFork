@@ -37,7 +37,8 @@ fun AccountSettingsScreen(
     onNavigateBack: () -> Unit,
     onEditProfile: () -> Unit,
     onLogout: () -> Unit,
-    onNavigateToRequestAccountInfo: () -> Unit = {}
+    onNavigateToRequestAccountInfo: () -> Unit = {},
+    onNavigateToAccountInfo: () -> Unit = {}
 ) {
     val linkedAccounts by viewModel.linkedAccounts.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -137,7 +138,7 @@ fun AccountSettingsScreen(
                         title = "Account Info",
                         subtitle = "View your account details",
                         icon = R.drawable.ic_info,
-                        onClick = { }
+                        onClick = onNavigateToAccountInfo
                     )
                     SettingsDivider()
                     SettingsNavigationItem(

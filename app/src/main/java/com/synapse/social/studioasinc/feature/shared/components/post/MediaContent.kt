@@ -252,20 +252,6 @@ fun MediaGridItem(
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-        if (isVideo) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.2f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PlayCircle,
-                    contentDescription = "Play Video",
-                    modifier = Modifier.size(32.dp),
-                    tint = Color.White
-                )
-            }
-        }
+        // Play icon removed for consistency until grid playback is supported
     }
 }

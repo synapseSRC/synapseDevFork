@@ -82,6 +82,11 @@ fun PostVideoPlayer(
         exoPlayer.repeatMode = repeatMode
     }
 
+    // Handle playWhenReady changes
+    LaunchedEffect(playWhenReady) {
+        exoPlayer.playWhenReady = playWhenReady
+    }
+
     AndroidView(
         factory = {
             PlayerView(context).apply {

@@ -42,6 +42,7 @@ fun AccountSettingsScreen(
     onNavigateToBusinessPlatform: () -> Unit = {}
 ) {
     val linkedAccounts by viewModel.linkedAccounts.collectAsState()
+    val securityNotificationsEnabled by viewModel.securityNotificationsEnabled.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
     val showChangeEmailDialog by viewModel.showChangeEmailDialog.collectAsState()
@@ -98,8 +99,8 @@ fun AccountSettingsScreen(
                     SettingsToggleItem(
                         title = "Security Notifications",
                         subtitle = "Get notified about security events",
-                        checked = true,
-                        onCheckedChange = { }
+                        checked = securityNotificationsEnabled,
+                        onCheckedChange = { viewModel.toggleSecurityNotifications(it) }
                     )
                     SettingsDivider()
                     SettingsNavigationItem(

@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.booleanOrNull
 
 /**
  * ViewModel for the Account Settings screen.
@@ -31,6 +32,9 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
 
     private val _linkedAccounts = MutableStateFlow<LinkedAccountsState>(LinkedAccountsState())
     val linkedAccounts: StateFlow<LinkedAccountsState> = _linkedAccounts.asStateFlow()
+
+    private val _securityNotificationsEnabled = MutableStateFlow(true)
+    val securityNotificationsEnabled: StateFlow<Boolean> = _securityNotificationsEnabled.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -50,6 +54,69 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
 
     init {
         loadLinkedAccounts()
+        loadSecurityNotificationsSettings()
+    }
+
+    // ========================================================================
+    // Security Settings
+    // ========================================================================
+
+    /**
+     * Loads the security notifications setting.
+     */
+    private fun loadSecurityNotificationsSettings() {
+        viewModelScope.launch {
+            try {
+                val supabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
+                val currentUser = supabaseClient.auth.currentUserOrNull()
+
+                if (currentUser != null) {
+                    val response = supabaseClient.from("user_preferences").select {
+                        filter { eq("user_id", currentUser.id) }
+                    }.decodeSingleOrNull<JsonObject>()
+
+                    if (response != null) {
+                         _securityNotificationsEnabled.value = response["security_notifications_enabled"]?.jsonPrimitive?.booleanOrNull ?: true
+                    }
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("AccountSettingsViewModel", "Failed to load security notifications settings", e)
+                // Fallback to default true if table not found or error
+            }
+        }
+    }
+
+    /**
+     * Toggles the security notifications setting.
+     *
+     * @param enabled The new state
+     */
+    fun toggleSecurityNotifications(enabled: Boolean) {
+        viewModelScope.launch {
+            // Optimistic update
+            _securityNotificationsEnabled.value = enabled
+
+            try {
+                val supabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
+                val currentUser = supabaseClient.auth.currentUserOrNull()
+
+                if (currentUser != null) {
+                    supabaseClient.from("user_preferences").upsert(
+                        mapOf(
+                            "user_id" to currentUser.id,
+                            "security_notifications_enabled" to enabled
+                        )
+                    ) {
+                        onConflict = "user_id"
+                    }
+                }
+            } catch (e: Exception) {
+                // Revert on failure
+                _securityNotificationsEnabled.value = !enabled
+                android.util.Log.e("AccountSettingsViewModel", "Failed to update security notifications", e)
+                _error.value = "Failed to update security notifications"
+            }
+        }
     }
 
     // ========================================================================

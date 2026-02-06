@@ -37,7 +37,7 @@ fun AccountSettingsScreen(
     onNavigateBack: () -> Unit,
     onEditProfile: () -> Unit,
     onLogout: () -> Unit,
-    onNavigateToRequestAccountInfo: () -> Unit = {}
+    onNavigateToRequestAccountInfo: () -> Unit = {}, onNavigateToBusinessPlatform: () -> Unit = {}
 ) {
     val linkedAccounts by viewModel.linkedAccounts.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -156,7 +156,7 @@ fun AccountSettingsScreen(
                         title = "Business Platform",
                         subtitle = "Manage business features",
                         icon = R.drawable.ic_business,
-                        onClick = { }
+                        onClick = onNavigateToBusinessPlatform
                     )
                 }
             }

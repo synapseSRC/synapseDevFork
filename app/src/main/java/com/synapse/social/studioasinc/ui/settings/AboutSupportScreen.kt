@@ -240,7 +240,7 @@ private fun AppInfoHeaderCard(
         ) {
             // App Logo
             Image(
-                painter = painterResource(R.drawable.synapse_logo_small),
+                painter = painterResource(R.drawable.ic_launcher_foreground),
                 contentDescription = "Synapse Logo",
                 modifier = Modifier.size(80.dp)
             )

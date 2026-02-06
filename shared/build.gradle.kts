@@ -30,17 +30,25 @@ kotlin {
         }
     }
 
-    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
-    wasmJs {
-        browser()
-        binaries.executable()
-    }
+    // Temporarily disabled due to dependency compatibility issues
+    // @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+    // wasmJs {
+    //     browser()
+    //     binaries.executable()
+    // }
 
     sourceSets {
+        all {
+            languageSettings.apply {
+                apiVersion = "2.1"
+                languageVersion = "2.1"
+            }
+        }
+
         val commonMain by getting {
             dependencies {
                 // Supabase & Ktor
-                implementation(project.dependencies.platform("io.github.jan-tennert.supabase:bom:3.2.6"))
+                implementation(project.dependencies.platform("io.github.jan-tennert.supabase:bom:3.0.2"))
                 implementation("io.github.jan-tennert.supabase:postgrest-kt")
                 implementation("io.github.jan-tennert.supabase:auth-kt")
                 implementation("io.github.jan-tennert.supabase:realtime-kt")
@@ -87,11 +95,12 @@ kotlin {
             }
         }
 
-        val wasmJsMain by getting {
-            dependencies {
-                implementation("io.ktor:ktor-client-js:3.2.2")
-            }
-        }
+        // Temporarily disabled
+        // val wasmJsMain by getting {
+        //     dependencies {
+        //         implementation("io.ktor:ktor-client-js:3.2.2")
+        //     }
+        // }
     }
 }
 

@@ -260,6 +260,8 @@ dependencies {
 
     // Biometric authentication
     implementation 'androidx.biometric:biometric:1.1.0'
+    implementation "androidx.credentials:credentials:1.2.2"
+    implementation "androidx.credentials:credentials-play-services-auth:1.2.2"
 
     // AndroidX Core & UI Components
     implementation 'androidx.core:core-splashscreen:1.0.1'
@@ -368,3 +370,8 @@ dependencies {
 }
 
 // Supabase configuration is handled through BuildConfig
+dependencies {
+    // Charts (Vico)
+    implementation "com.patrykandpatrick.vico:compose:2.0.0-alpha.12"
+    implementation "com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.12"
+}

@@ -22,7 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,12 +47,8 @@ fun MediaContent(
     if (mediaUrls.isEmpty()) return
 
     // Track which video is currently active (player attached)
+    // Removed redundant DisposableEffect as this state is scoped to composable
     var activeVideoIndex by remember { mutableStateOf<Int?>(null) }
-
-    // Reset active state when composable is detached/disposed
-    DisposableEffect(Unit) {
-        onDispose { activeVideoIndex = null }
-    }
 
     if (mediaUrls.size == 1) {
         val url = mediaUrls.first()
@@ -189,33 +184,33 @@ fun PostMediaGrid(
         when (count) {
             2 -> {
                 Row(modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp, max = 400.dp)) {
-                    MediaGridItem(url = mediaUrls[0], isVideo = isVideo, modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(0) })
+                    MediaGridItem(url = mediaUrls[0], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(0) })
                     Spacer(modifier = Modifier.width(spacing))
-                    MediaGridItem(url = mediaUrls[1], isVideo = isVideo, modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(1) })
+                    MediaGridItem(url = mediaUrls[1], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(1) })
                 }
             }
             3 -> {
-                MediaGridItem(url = mediaUrls[0], isVideo = isVideo, modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp, max = 350.dp), onClick = { onMediaClick(0) })
+                MediaGridItem(url = mediaUrls[0], modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp, max = 350.dp), onClick = { onMediaClick(0) })
                 Spacer(modifier = Modifier.height(spacing))
                 Row(modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp, max = 200.dp)) {
-                    MediaGridItem(url = mediaUrls[1], isVideo = isVideo, modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(1) })
+                    MediaGridItem(url = mediaUrls[1], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(1) })
                     Spacer(modifier = Modifier.width(spacing))
-                    MediaGridItem(url = mediaUrls[2], isVideo = isVideo, modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(2) })
+                    MediaGridItem(url = mediaUrls[2], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(2) })
                 }
             }
             else -> {
                 Row(modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp, max = 250.dp)) {
-                    MediaGridItem(url = mediaUrls[0], isVideo = isVideo, modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(0) })
+                    MediaGridItem(url = mediaUrls[0], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(0) })
                     Spacer(modifier = Modifier.width(spacing))
-                    MediaGridItem(url = mediaUrls[1], isVideo = isVideo, modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(1) })
+                    MediaGridItem(url = mediaUrls[1], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(1) })
                 }
                 Spacer(modifier = Modifier.height(spacing))
                 Row(modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp, max = 250.dp)) {
-                    MediaGridItem(url = mediaUrls[2], isVideo = isVideo, modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(2) })
+                    MediaGridItem(url = mediaUrls[2], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(2) })
                     Spacer(modifier = Modifier.width(spacing))
 
                     Box(modifier = Modifier.weight(1f).fillMaxSize()) {
-                        MediaGridItem(url = mediaUrls[3], isVideo = isVideo, modifier = Modifier.fillMaxSize(), onClick = { onMediaClick(3) })
+                        MediaGridItem(url = mediaUrls[3], modifier = Modifier.fillMaxSize(), onClick = { onMediaClick(3) })
                         if (count > 4) {
                             Box(
                                 modifier = Modifier
@@ -241,7 +236,6 @@ fun PostMediaGrid(
 @Composable
 fun MediaGridItem(
     url: String,
-    isVideo: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {

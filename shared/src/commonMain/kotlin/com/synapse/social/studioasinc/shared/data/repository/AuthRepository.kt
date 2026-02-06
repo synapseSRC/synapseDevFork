@@ -18,7 +18,7 @@ class AuthRepository {
 
     suspend fun signUp(email: String, password: String): Result<String> {
         return try {
-            withContext(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 SupabaseClient.client.auth.signUpWith(Email) {
                     this.email = email
                     this.password = password
@@ -40,7 +40,7 @@ class AuthRepository {
 
     suspend fun signIn(email: String, password: String): Result<String> {
         return try {
-            withContext(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 SupabaseClient.client.auth.signInWith(Email) {
                     this.email = email
                     this.password = password
@@ -58,7 +58,7 @@ class AuthRepository {
 
     suspend fun signOut(): Result<Unit> {
         return try {
-            withContext(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 SupabaseClient.client.auth.signOut()
                 Napier.d("User signed out", tag = TAG)
                 Result.success(Unit)
@@ -99,7 +99,7 @@ class AuthRepository {
 
     suspend fun refreshSession(): Result<Unit> {
         return try {
-            withContext(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 SupabaseClient.client.auth.refreshCurrentSession()
                 Napier.d("Session refreshed", tag = TAG)
                 Result.success(Unit)
@@ -121,7 +121,7 @@ class AuthRepository {
 
     suspend fun sendPasswordResetEmail(email: String): Result<Unit> {
         return try {
-            withContext(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 SupabaseClient.client.auth.resetPasswordForEmail(email)
                 Napier.d("Password reset email sent", tag = TAG)
                 Result.success(Unit)
@@ -138,7 +138,7 @@ class AuthRepository {
 
     suspend fun updatePassword(password: String): Result<Unit> {
         return try {
-            withContext(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 SupabaseClient.client.auth.updateUser {
                     this.password = password
                 }
@@ -164,7 +164,7 @@ class AuthRepository {
 
     suspend fun handleOAuthCallback(code: String?, accessToken: String?, refreshToken: String?): Result<Unit> {
         return try {
-            withContext(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 when {
                     code != null -> {
                         SupabaseClient.client.auth.exchangeCodeForSession(code)
@@ -187,7 +187,7 @@ class AuthRepository {
 
     suspend fun signInWithOAuth(provider: OAuthProvider, redirectUrl: String): Result<Unit> {
         return try {
-            withContext(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 SupabaseClient.client.auth.signInWith(provider)
                 Napier.d("OAuth sign-in initiated for ${provider.name}", tag = TAG)
                 Result.success(Unit)

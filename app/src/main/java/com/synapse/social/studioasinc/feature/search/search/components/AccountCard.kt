@@ -38,8 +38,7 @@ fun AccountCard(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(account.avatarUrl)
                 .crossfade(true)
-                .placeholder(R.drawable.avatar)
-                .error(R.drawable.avatar)
+                .placeholder(R.drawable.ic_profile_placeholder)
                 .build(),
             contentDescription = null,
             contentScale = ContentScale.Crop,

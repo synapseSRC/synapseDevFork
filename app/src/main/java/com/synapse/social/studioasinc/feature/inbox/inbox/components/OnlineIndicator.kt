@@ -214,10 +214,10 @@ private fun AvatarImage(
             modifier = modifier.clip(CircleShape),
             contentScale = androidx.compose.ui.layout.ContentScale.Crop,
             placeholder = coil.compose.rememberAsyncImagePainter(
-                model = com.synapse.social.studioasinc.R.drawable.avatar
+                model = com.synapse.social.studioasinc.R.drawable.ic_profile_placeholder
             ),
             error = coil.compose.rememberAsyncImagePainter(
-                model = com.synapse.social.studioasinc.R.drawable.avatar
+                model = com.synapse.social.studioasinc.R.drawable.ic_profile_placeholder
             )
         )
     } else {

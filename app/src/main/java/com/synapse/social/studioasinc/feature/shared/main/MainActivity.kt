@@ -214,7 +214,7 @@ fun MainScreen(
 
             // App logo
             Image(
-                painter = painterResource(id = R.drawable.appicon),
+                painter = painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = "App Logo",
                 modifier = Modifier
                     .size(85.dp)
@@ -229,7 +229,7 @@ fun MainScreen(
 
             // Company trademark
             Image(
-                painter = painterResource(id = R.drawable.bycompany_mtrl),
+                painter = painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = "Company Trademark",
                 modifier = Modifier
                     .height(100.dp)

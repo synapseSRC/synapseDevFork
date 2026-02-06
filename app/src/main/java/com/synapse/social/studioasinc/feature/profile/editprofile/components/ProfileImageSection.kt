@@ -75,7 +75,7 @@ fun ProfileImageSection(
                         model = if (coverUrl != null && coverUrl.isNotBlank()) {
                             ImageLoader.buildImageRequest(context, coverUrl)
                         } else {
-                            R.drawable.user_null_cover_photo
+                            R.drawable.default_image
                         },
                         contentDescription = "Cover photo",
                         modifier = Modifier.fillMaxSize(),

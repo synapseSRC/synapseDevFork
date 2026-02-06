@@ -21,16 +21,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.synapse.social.studioasinc.feature.profile.ProfileEditActivity
 import com.synapse.social.studioasinc.feature.settings.SettingsActivity
 import com.synapse.social.studioasinc.core.network.SupabaseClient
-// TODO: Re-implement chat feature - chat service import
-// import com.synapse.social.studioasinc.data.remote.services.SupabaseChatService
 import com.synapse.social.studioasinc.data.repository.AuthRepository
 import com.synapse.social.studioasinc.feature.profile.profile.ProfileScreen
 import com.synapse.social.studioasinc.feature.profile.profile.ProfileViewModel
 import com.synapse.social.studioasinc.feature.shared.components.FollowListActivity
 import com.synapse.social.studioasinc.ui.settings.AppearanceViewModel
 import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
-// TODO: Re-implement chat feature - chat activity import
-// import com.synapse.social.studioasinc.ui.chat.ChatActivity
 import androidx.activity.enableEdgeToEdge
 import io.github.jan.supabase.auth.auth
 import dagger.hilt.android.AndroidEntryPoint
@@ -197,39 +193,6 @@ class ProfileActivity : ComponentActivity() {
 
                 // Show loading
                 @Suppress("DEPRECATION")
-                // TODO: Re-implement chat feature - chat functionality
-                /*
-                val progressDialog = ProgressDialog(this@ProfileActivity).apply {
-                    setMessage("Starting chat...")
-                    setCancelable(false)
-                    show()
-                }
-
-                val chatService = SupabaseChatService()
-                val result = chatService.getOrCreateDirectChat(currentUserId, targetUserId)
-
-                result.fold(
-                    onSuccess = { chatId ->
-                        progressDialog.dismiss()
-
-                        // Navigate to ChatActivity
-                        val intent = Intent(this@ProfileActivity, ChatActivity::class.java)
-                        intent.putExtra("chatId", chatId)
-                        intent.putExtra("uid", targetUserId)
-                        intent.putExtra("isGroup", false)
-                        startActivity(intent)
-                    },
-                    onFailure = { error ->
-                        progressDialog.dismiss()
-                        android.util.Log.e("ProfileActivity", "Failed to create chat", error)
-                        Toast.makeText(
-                            this@ProfileActivity,
-                            "Failed to start chat: ${error.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                )
-                */
                 Toast.makeText(this@ProfileActivity, "Chat feature not implemented", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 android.util.Log.e("ProfileActivity", "Error starting chat", e)

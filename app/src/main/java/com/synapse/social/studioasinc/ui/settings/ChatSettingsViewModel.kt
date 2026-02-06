@@ -172,12 +172,11 @@ class ChatSettingsViewModel(
 
     /**
      * Handles navigation to message requests screen.
-     * This is a placeholder for future implementation.
      *
      * Requirements: 6.5
      */
     fun navigateToMessageRequests() {
-        android.util.Log.d("ChatSettingsViewModel", "Navigate to message requests (placeholder)")
+        android.util.Log.d("ChatSettingsViewModel", "Navigate to message requests")
         // Navigation will be handled by the screen composable
     }
 

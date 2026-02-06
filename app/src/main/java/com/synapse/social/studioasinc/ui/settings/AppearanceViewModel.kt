@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
  * - Theme mode (Light, Dark, System)
  * - Dynamic color (Android 12+ wallpaper-based theming)
  * - Font scale (text size customization)
- * - Chat customization navigation
  *
  * Theme changes are applied immediately with preview support.
  *
@@ -285,12 +284,11 @@ class AppearanceViewModel(
 
     /**
      * Handles navigation to chat customization screen.
-     * This is a placeholder for future implementation.
      *
      * Requirements: 4.6
      */
     fun navigateToChatCustomization() {
-        android.util.Log.d("AppearanceViewModel", "Navigate to chat customization (placeholder)")
+        android.util.Log.d("AppearanceViewModel", "Navigate to chat customization")
         // Navigation will be handled by the screen composable
     }
 

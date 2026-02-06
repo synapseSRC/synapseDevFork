@@ -18,7 +18,6 @@ import com.synapse.social.studioasinc.R
  * - Theme Mode (Light, Dark, System Default)
  * - Dynamic Color (Android 12+ wallpaper-based theming)
  * - Font Size (text size customization with live preview)
- * - Chat Customization (placeholder navigation)
  *
  * Theme changes are applied immediately using SynapseTheme.
  * Dynamic Color option is conditionally visible based on SDK >= 31.

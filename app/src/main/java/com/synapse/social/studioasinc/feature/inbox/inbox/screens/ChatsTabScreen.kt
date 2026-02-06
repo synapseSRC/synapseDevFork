@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.ui.inbox.components.ChatSectionHeader
 import com.synapse.social.studioasinc.ui.inbox.components.InboxEmptyState
 import com.synapse.social.studioasinc.ui.inbox.components.SwipeableChatItem
-// import com.synapse.social.studioasinc.ui.inbox.components.ChatListItem
 import com.synapse.social.studioasinc.ui.inbox.models.*
 import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
 import java.util.Calendar
@@ -167,27 +166,6 @@ fun ChatsTabScreen(
                                     onMute = { onAction(InboxAction.MuteChat(chat.id, MuteDuration.EIGHT_HOURS)) },
                                     onPin = { onAction(InboxAction.UnpinChat(chat.id)) }
                                 ) {
-                                    // ChatListItem has been removed. Placeholder for now.
-                                    // ChatListItem(
-                                    //     chat = chat,
-                                    //     shape = shape,
-                                    //     isSelected = isSelected,
-                                    //     selectionMode = state.selectionMode,
-                                    //     onClick = {
-                                    //         if (state.selectionMode) {
-                                    //             onAction(InboxAction.ToggleSelection(chat.id))
-                                    //         } else {
-                                    //             onAction(InboxAction.OpenChat(chat.id, chat.otherUserId))
-                                    //         }
-                                    //     },
-                                    //     onLongPress = {
-                                    //         if (state.selectionMode) {
-                                    //              onAction(InboxAction.ToggleSelection(chat.id))
-                                    //         } else {
-                                    //             onLongPressChat(chat.id)
-                                    //         }
-                                    //     }
-                                    // )
                                     androidx.compose.material3.Text("Chat Item Placeholder")
                                 }
                             }
@@ -220,27 +198,6 @@ fun ChatsTabScreen(
                                         onMute = { onAction(InboxAction.MuteChat(chat.id, MuteDuration.EIGHT_HOURS)) },
                                         onPin = { onAction(InboxAction.PinChat(chat.id)) }
                                     ) {
-                                    // ChatListItem has been removed. Placeholder for now.
-                                    // ChatListItem(
-                                    //     chat = chat,
-                                    //     shape = shape,
-                                    //     isSelected = isSelected,
-                                    //     selectionMode = state.selectionMode,
-                                    //     onClick = {
-                                    //         if (state.selectionMode) {
-                                    //             onAction(InboxAction.ToggleSelection(chat.id))
-                                    //         } else {
-                                    //             onAction(InboxAction.OpenChat(chat.id, chat.otherUserId))
-                                    //         }
-                                    //     },
-                                    //     onLongPress = {
-                                    //         if (state.selectionMode) {
-                                    //              onAction(InboxAction.ToggleSelection(chat.id))
-                                    //         } else {
-                                    //             onLongPressChat(chat.id)
-                                    //         }
-                                    //     }
-                                    // )
                                     androidx.compose.material3.Text("Chat Item Placeholder")
                                     }
                                 }

@@ -13,8 +13,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.synapse.social.studioasinc.ui.search.SearchScreen
 import com.synapse.social.studioasinc.ui.search.SearchViewModel
 import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
-// TODO: Re-implement chat functionality
-// import com.synapse.social.studioasinc.ui.chat.ChatActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -42,15 +40,7 @@ class SearchActivity : ComponentActivity() {
                         viewModel = viewModel,
                         onNavigateToProfile = { uid ->
                             if (chatMode) {
-                                // TODO: Re-implement chat navigation
                                 Toast.makeText(this@SearchActivity, "Chat feature not implemented", Toast.LENGTH_SHORT).show()
-                                /*
-                                val intent = Intent(this, ChatActivity::class.java)
-                                intent.putExtra("uid", uid)
-                                intent.putExtra("ORIGIN_KEY", "SearchActivity")
-                                startActivity(intent)
-                                finish()
-                                */
                             } else {
                                 val intent = Intent(this, ProfileActivity::class.java)
                                 intent.putExtra("uid", uid)

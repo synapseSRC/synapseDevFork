@@ -105,6 +105,14 @@ class AuthRepository @Inject constructor(
         return sharedAuthRepository.signInWithOAuth(provider, redirectUrl)
     }
 
+    suspend fun updatePhoneNumber(phone: String): Result<Unit> {
+        return sharedAuthRepository.updatePhoneNumber(phone)
+    }
+
+    suspend fun verifyPhoneChange(phone: String, token: String): Result<Unit> {
+        return sharedAuthRepository.verifyPhoneChange(phone, token)
+    }
+
     // Legacy compatibility methods
     suspend fun getCurrentUserUid(): String? = getCurrentUserId()
     suspend fun recoverSession(accessToken: String): Result<Unit> = Result.success(Unit)

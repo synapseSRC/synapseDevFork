@@ -37,7 +37,7 @@ fun AccountSettingsScreen(
     onNavigateBack: () -> Unit,
     onEditProfile: () -> Unit,
     onLogout: () -> Unit,
-    onNavigateToRequestAccountInfo: () -> Unit = {}
+    onNavigateToRequestAccountInfo: () -> Unit = {}, onNavigateToChangePhoneNumber: () -> Unit = {}
 ) {
     val linkedAccounts by viewModel.linkedAccounts.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -130,7 +130,7 @@ fun AccountSettingsScreen(
                         title = "Change Number",
                         subtitle = "Update your phone number",
                         icon = R.drawable.ic_phone,
-                        onClick = { }
+                        onClick = { onNavigateToChangePhoneNumber() }
                     )
                     SettingsDivider()
                     SettingsNavigationItem(

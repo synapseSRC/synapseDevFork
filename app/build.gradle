@@ -193,6 +193,7 @@ ksp {
 }
 
 dependencies {
+    implementation "com.googlecode.libphonenumber:libphonenumber:8.13.32"
     // Shared Module
     implementation(project(':shared')) {
         exclude group: 'com.google.protobuf', module: 'protobuf-java'

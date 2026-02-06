@@ -80,6 +80,9 @@ fun SettingsNavHost(
                 onLogout = onLogout,
                 onNavigateToRequestAccountInfo = {
                     navController.navigate(SettingsDestination.ROUTE_REQUEST_ACCOUNT_INFO)
+                },
+                onNavigateToChangePhoneNumber = {
+                    navController.navigate(SettingsDestination.ROUTE_CHANGE_PHONE_NUMBER)
                 }
             )
         }
@@ -197,6 +200,17 @@ fun SettingsNavHost(
         composable(route = SettingsDestination.ROUTE_NETWORK_USAGE) {
             val viewModel: NetworkUsageViewModel = hiltViewModel()
             NetworkUsageScreen(
+                viewModel = viewModel,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Change Phone Number Screen
+        composable(route = SettingsDestination.ROUTE_CHANGE_PHONE_NUMBER) {
+            val viewModel: ChangePhoneNumberViewModel = hiltViewModel()
+            ChangePhoneNumberScreen(
                 viewModel = viewModel,
                 onBackClick = {
                     navController.popBackStack()

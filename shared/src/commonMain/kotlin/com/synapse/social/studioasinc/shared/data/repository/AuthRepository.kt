@@ -4,6 +4,7 @@ import com.synapse.social.studioasinc.shared.core.network.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.OAuthProvider
+import io.github.jan.supabase.auth.OtpType
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 import io.github.aakira.napier.Napier
@@ -25,7 +26,7 @@ class AuthRepository {
                 }
                 val userId = SupabaseClient.client.auth.currentUserOrNull()?.id 
                     ?: throw Exception("User ID not found")
-                Napier.d("User signed up: $userId", tag = TAG)
+                Napier.d("User signed up: ", tag = TAG)
                 Result.success(userId)
             }
         } catch (e: Exception) {
@@ -47,7 +48,7 @@ class AuthRepository {
                 }
                 val userId = SupabaseClient.client.auth.currentUserOrNull()?.id 
                     ?: throw Exception("User ID not found")
-                Napier.d("User signed in: $userId", tag = TAG)
+                Napier.d("User signed in: ", tag = TAG)
                 Result.success(userId)
             }
         } catch (e: Exception) {
@@ -194,6 +195,38 @@ class AuthRepository {
             }
         } catch (e: Exception) {
             Napier.e("OAuth sign-in failed", e, tag = TAG)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun updatePhoneNumber(phone: String): Result<Unit> {
+        return try {
+            withContext(Dispatchers.Default) {
+                SupabaseClient.client.auth.updateUser {
+                    this.phone = phone
+                }
+                Napier.d("Phone number update initiated: $phone", tag = TAG)
+                Result.success(Unit)
+            }
+        } catch (e: Exception) {
+            Napier.e("Phone number update failed", e, tag = TAG)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun verifyPhoneChange(phone: String, token: String): Result<Unit> {
+        return try {
+            withContext(Dispatchers.Default) {
+                SupabaseClient.client.auth.verifyPhoneOtp(
+                    type = OtpType.Phone.SMS,
+                    token = token,
+                    phone = phone
+                )
+                Napier.d("Phone number verified and updated", tag = TAG)
+                Result.success(Unit)
+            }
+        } catch (e: Exception) {
+            Napier.e("Phone verification failed", e, tag = TAG)
             Result.failure(e)
         }
     }

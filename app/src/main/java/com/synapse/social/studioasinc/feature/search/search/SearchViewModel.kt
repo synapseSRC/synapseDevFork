@@ -3,6 +3,9 @@ package com.synapse.social.studioasinc.ui.search
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.synapse.social.studioasinc.data.repository.AuthRepository
+import com.synapse.social.studioasinc.domain.usecase.profile.FollowUserUseCase
+import com.synapse.social.studioasinc.domain.usecase.profile.UnfollowUserUseCase
 import com.synapse.social.studioasinc.shared.domain.model.SearchAccount
 import com.synapse.social.studioasinc.shared.domain.model.SearchHashtag
 import com.synapse.social.studioasinc.shared.domain.model.SearchNews
@@ -47,7 +50,13 @@ class SearchViewModel @Inject constructor(
     private val searchHashtagsUseCase: SearchHashtagsUseCase,
     private val searchNewsUseCase: SearchNewsUseCase,
     private val getSuggestedAccountsUseCase: GetSuggestedAccountsUseCase,
-    private val sharedPreferences: SharedPreferences
+    private val followUserUseCase: FollowUserUseCase,
+    private val unfollowUserUseCase: UnfollowUserUseCase,
+    private val authRepository: AuthRepository,
+    private val sharedPreferences: SharedPreferences,
+    private val postRepository: com.synapse.social.studioasinc.data.repository.PostRepository,
+    private val bookmarkRepository: com.synapse.social.studioasinc.data.repository.BookmarkRepository,
+    private val pollRepository: com.synapse.social.studioasinc.data.repository.PollRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUiState())
@@ -158,7 +167,11 @@ class SearchViewModel @Inject constructor(
                     }
                     SearchTab.FOR_YOU -> {
                         val result = getSuggestedAccountsUseCase(query)
-                        result.onSuccess { data -> _uiState.update { it.copy(accounts = data, isLoading = false) } }
+                        val currentUserId = authRepository.getCurrentUserId()
+                        result.onSuccess { data -> 
+                            val filtered = data.filter { it.id != currentUserId }
+                            _uiState.update { it.copy(accounts = filtered, isLoading = false) } 
+                        }
                         result.onFailure { err -> _uiState.update { it.copy(error = err.message, isLoading = false) } }
                     }
                 }
@@ -166,5 +179,95 @@ class SearchViewModel @Inject constructor(
                 _uiState.update { it.copy(isLoading = false, error = e.message) }
             }
         }
+    }
+
+    fun toggleFollow(accountId: String) {
+        viewModelScope.launch {
+            val currentUserId = authRepository.getCurrentUserId() ?: return@launch
+            val account = uiState.value.accounts.find { it.id == accountId } ?: return@launch
+            
+            val result = if (account.isFollowing) {
+                unfollowUserUseCase(currentUserId, accountId)
+            } else {
+                followUserUseCase(currentUserId, accountId)
+            }
+            
+            result.onSuccess {
+                _uiState.update { state ->
+                    state.copy(
+                        accounts = state.accounts.map { acc ->
+                            if (acc.id == accountId) acc.copy(isFollowing = !acc.isFollowing) else acc
+                        }
+                    )
+                }
+            }.onFailure { err ->
+                _uiState.update { it.copy(error = err.message) }
+            }
+        }
+    }
+
+    // Post interaction methods
+    fun likePost(post: com.synapse.social.studioasinc.domain.model.Post) {
+        viewModelScope.launch {
+            val userId = authRepository.getCurrentUserId() ?: return@launch
+            postRepository.toggleReaction(post.id, userId, com.synapse.social.studioasinc.domain.model.ReactionType.LIKE)
+                .onFailure { err -> _uiState.update { it.copy(error = err.message) } }
+        }
+    }
+
+    fun bookmarkPost(post: com.synapse.social.studioasinc.domain.model.Post) {
+        viewModelScope.launch {
+            bookmarkRepository.toggleBookmark(post.id)
+                .onFailure { err -> _uiState.update { it.copy(error = err.message) } }
+        }
+    }
+
+    fun sharePost(post: com.synapse.social.studioasinc.domain.model.Post) {
+        // Share is typically handled in UI with Intent
+    }
+
+    fun votePoll(post: com.synapse.social.studioasinc.domain.model.Post, optionIndex: Int) {
+        viewModelScope.launch {
+            pollRepository.submitVote(post.id, optionIndex)
+                .onFailure { err -> _uiState.update { it.copy(error = err.message) } }
+        }
+    }
+
+    fun deletePost(post: com.synapse.social.studioasinc.domain.model.Post) {
+        viewModelScope.launch {
+            postRepository.deletePost(post.id)
+                .onFailure { err -> _uiState.update { it.copy(error = err.message) } }
+        }
+    }
+
+    fun copyPostLink(post: com.synapse.social.studioasinc.domain.model.Post) {
+        // Handled in UI with ClipboardManager
+    }
+
+    fun toggleComments(post: com.synapse.social.studioasinc.domain.model.Post) {
+        // TODO: Implement toggle comments in PostRepository
+    }
+
+    fun reportPost(post: com.synapse.social.studioasinc.domain.model.Post) {
+        // Handled via dialog in UI
+    }
+
+    fun blockUser(userId: String) {
+        // TODO: Implement block user functionality
+    }
+
+    fun revokeVote(post: com.synapse.social.studioasinc.domain.model.Post) {
+        viewModelScope.launch {
+            pollRepository.revokeVote(post.id)
+                .onFailure { err -> _uiState.update { it.copy(error = err.message) } }
+        }
+    }
+
+    fun isPostOwner(post: com.synapse.social.studioasinc.domain.model.Post): Boolean {
+        return authRepository.getCurrentUserId() == post.authorUid
+    }
+
+    fun areCommentsDisabled(post: com.synapse.social.studioasinc.domain.model.Post): Boolean {
+        return post.postDisableComments == "true"
     }
 }

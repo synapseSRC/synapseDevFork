@@ -202,7 +202,6 @@ fun PostDetailScreen(
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0),
         bottomBar = {
             Column(
                  modifier = Modifier
@@ -248,8 +247,7 @@ fun PostDetailScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     scrolledContainerColor = MaterialTheme.colorScheme.background
-                ),
-                windowInsets = WindowInsets(0, 0, 0, 0)
+                )
             )
         }
     ) { paddingValues ->

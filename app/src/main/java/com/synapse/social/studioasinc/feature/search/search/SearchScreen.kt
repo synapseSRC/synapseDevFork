@@ -1,7 +1,11 @@
 package com.synapse.social.studioasinc.ui.search
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
@@ -25,6 +29,7 @@ import com.synapse.social.studioasinc.feature.search.search.components.AccountCa
 import com.synapse.social.studioasinc.feature.search.search.components.HashtagCard
 import com.synapse.social.studioasinc.feature.search.search.components.NewsCard
 import com.synapse.social.studioasinc.feature.shared.components.post.PostActions
+import com.synapse.social.studioasinc.feature.shared.components.post.PostOptionsBottomSheet
 import com.synapse.social.studioasinc.feature.shared.components.post.SharedPostItem
 import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
 import com.synapse.social.studioasinc.shared.domain.model.SearchPost
@@ -45,6 +50,7 @@ fun SearchScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    var selectedPost by remember { mutableStateOf<Post?>(null) }
 
     // Sync Pager with Tab
     val pagerState = rememberPagerState(
@@ -161,16 +167,16 @@ fun SearchScreen(
                                         items(uiState.posts, key = { it.id }) { searchPost ->
                                             val post = remember(searchPost) { searchPost.toPost() }
 
-                                            val actions = remember(post) {
+                                            val actions = remember(viewModel) {
                                                 PostActions(
-                                                    onLike = { /* No-op */ },
-                                                    onComment = { onNavigateToPost(post.id) },
-                                                    onShare = { /* No-op */ },
-                                                    onBookmark = { /* No-op */ },
-                                                    onOptionClick = { /* No-op */ },
-                                                    onPollVote = { _, _ -> /* No-op */ },
-                                                    onUserClick = { onNavigateToProfile(post.authorUid) },
-                                                    onMediaClick = { onNavigateToPost(post.id) }
+                                                    onLike = viewModel::likePost,
+                                                    onComment = { post -> onNavigateToPost(post.id) },
+                                                    onShare = viewModel::sharePost,
+                                                    onBookmark = viewModel::bookmarkPost,
+                                                    onOptionClick = { post -> selectedPost = post },
+                                                    onPollVote = viewModel::votePoll,
+                                                    onUserClick = { userId -> onNavigateToProfile(userId) },
+                                                    onMediaClick = { _ -> onNavigateToPost(post.id) }
                                                 )
                                             }
 
@@ -226,7 +232,7 @@ fun SearchScreen(
                                             AccountCard(
                                                 account = account,
                                                 onClick = { onNavigateToProfile(account.id) },
-                                                onFollowClick = { /* TODO: Implement Follow */ }
+                                                onFollowClick = { viewModel.toggleFollow(account.id) }
                                             )
                                             HorizontalDivider(
                                                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
@@ -241,6 +247,55 @@ fun SearchScreen(
                 }
             }
         }
+    }
+
+    selectedPost?.let { post ->
+        PostOptionsBottomSheet(
+            post = post,
+            isOwner = viewModel.isPostOwner(post),
+            commentsDisabled = viewModel.areCommentsDisabled(post),
+            onDismiss = { selectedPost = null },
+            onEdit = { /* Not supported in search */ },
+            onDelete = { 
+                viewModel.deletePost(post)
+                selectedPost = null
+            },
+            onShare = { 
+                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, "Check out this post on Synapse: synapse://post/${post.id}")
+                }
+                context.startActivity(Intent.createChooser(shareIntent, "Share Post"))
+                selectedPost = null
+            },
+            onCopyLink = { 
+                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("Post Link", "synapse://post/${post.id}")
+                clipboard.setPrimaryClip(clip)
+                Toast.makeText(context, "Link copied", Toast.LENGTH_SHORT).show()
+                selectedPost = null
+            },
+            onBookmark = { 
+                viewModel.bookmarkPost(post)
+                selectedPost = null
+            },
+            onToggleComments = { 
+                viewModel.toggleComments(post)
+                selectedPost = null
+            },
+            onReport = { 
+                viewModel.reportPost(post)
+                selectedPost = null
+            },
+            onBlock = { 
+                viewModel.blockUser(post.authorUid)
+                selectedPost = null
+            },
+            onRevokeVote = { 
+                viewModel.revokeVote(post)
+                selectedPost = null
+            }
+        )
     }
 }
 

@@ -171,7 +171,7 @@ fun StorageDataScreen(
             }
 
             // Bottom padding
-             item {
+            item {
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }

@@ -35,11 +35,9 @@ fun PostVideoPlayer(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     // Create player once per composable lifecycle
+    // Removed redundant apply block as LaunchedEffects handle initialization
     val exoPlayer = remember {
-        ExoPlayer.Builder(context).build().apply {
-            this.repeatMode = repeatMode
-            this.playWhenReady = playWhenReady // Start playing when attached
-        }
+        ExoPlayer.Builder(context).build()
     }
 
     // Manage lifecycle (release on dispose)
@@ -50,7 +48,8 @@ fun PostVideoPlayer(
     }
 
     // Pause video when app goes to background
-    DisposableEffect(lifecycleOwner) {
+    // Added playWhenReady to keys to ensure observer uses latest value
+    DisposableEffect(lifecycleOwner, playWhenReady) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_PAUSE, Lifecycle.Event.ON_STOP -> {

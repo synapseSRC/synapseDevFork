@@ -8,6 +8,7 @@ import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
 import com.synapse.social.studioasinc.data.local.auth.TokenManager
 import com.synapse.social.studioasinc.shared.data.auth.TokenManager as SharedTokenManager
 import com.synapse.social.studioasinc.data.repository.*
+import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
 import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
 import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
@@ -156,10 +157,9 @@ object RepositoryModule {
     @Singleton
     fun provideStoryRepository(
         @ApplicationContext context: Context,
-        appSettingsManager: AppSettingsManager,
-        imageCompressor: ImageCompressor
+        uploadMediaUseCase: UploadMediaUseCase
     ): StoryRepository {
-        return StoryRepositoryImpl(context, appSettingsManager, imageCompressor)
+        return StoryRepositoryImpl(context, uploadMediaUseCase)
     }
 
     @Provides

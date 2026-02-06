@@ -3,8 +3,9 @@ package com.synapse.social.studioasinc.data.repository
 import android.net.Uri
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
 import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.core.storage.MediaStorageService
-import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
+import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
+import com.synapse.social.studioasinc.shared.domain.model.MediaType
+
 import com.synapse.social.studioasinc.data.model.StoryCreateRequest
 import com.synapse.social.studioasinc.domain.model.Story
 import com.synapse.social.studioasinc.domain.model.StoryMediaType
@@ -77,11 +78,10 @@ interface StoryRepository {
 
 class StoryRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: android.content.Context,
-    private val appSettingsManager: AppSettingsManager,
-    private val imageCompressor: ImageCompressor
+    private val uploadMediaUseCase: UploadMediaUseCase
 ) : StoryRepository {
     private val client = SupabaseClient.client
-    private val mediaStorageService = MediaStorageService(context, appSettingsManager, imageCompressor)
+
 
     companion object {
         private const val TABLE_STORIES = "stories"
@@ -269,29 +269,21 @@ class StoryRepositoryImpl @Inject constructor(
         val filePath = FileManager.getPathFromUri(context, mediaUri)
             ?: throw Exception("Could not convert URI to file path")
 
-        // Upload media using MediaStorageService (same as Post Composition)
-        val mediaUrl = kotlinx.coroutines.suspendCancellableCoroutine<String?> { continuation ->
-            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-                mediaStorageService.uploadFile(filePath, null, object : MediaStorageService.UploadCallback {
-                    override fun onProgress(percent: Int) {
-                        // Progress can be handled by caller if needed
-                    }
-
-                    override fun onSuccess(url: String, publicId: String) {
-                        android.util.Log.d("StoryRepository", "Uploaded story media: $url")
-                        if (continuation.isActive) {
-                            continuation.resume(url) {}
-                        }
-                    }
-
-                    override fun onError(error: String) {
-                        android.util.Log.e("StoryRepository", "Upload failed: $error")
-                        if (continuation.isActive) {
-                            continuation.resume(null) {}
-                        }
-                    }
-                })
+        // Upload media
+        val mediaUrl = try {
+            val sharedMediaType = when (mediaType) {
+                StoryMediaType.PHOTO -> MediaType.PHOTO
+                StoryMediaType.VIDEO -> MediaType.VIDEO
             }
+
+            val result = uploadMediaUseCase(
+                filePath = filePath,
+                mediaType = sharedMediaType,
+                onProgress = {}
+            )
+            result.getOrNull()
+        } catch (e: Exception) {
+            null
         } ?: throw Exception("Media upload failed")
 
         // Calculate expiry (24 hours from now)

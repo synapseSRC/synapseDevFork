@@ -16,9 +16,8 @@ import com.synapse.social.studioasinc.domain.model.User
 import com.synapse.social.studioasinc.domain.model.UserProfile
 import com.synapse.social.studioasinc.domain.model.LocationData
 import com.synapse.social.studioasinc.core.util.FileManager
-import com.synapse.social.studioasinc.core.storage.MediaStorageService
+import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
-import com.synapse.social.studioasinc.data.local.database.AppSettingsManager
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -93,13 +92,13 @@ class CreatePostViewModel @Inject constructor(
     private val reelRepository: ReelRepository,
     private val userRepository: com.synapse.social.studioasinc.data.repository.UserRepository,
     private val locationRepository: LocationRepository,
-    private val appSettingsManager: AppSettingsManager,
-    private val imageCompressor: ImageCompressor
+    private val imageCompressor: ImageCompressor,
+    private val uploadMediaUseCase: UploadMediaUseCase
 ) : AndroidViewModel(application) {
 
     private val authService = SupabaseAuthenticationService()
     private val prefs = application.getSharedPreferences("create_post_draft", Context.MODE_PRIVATE)
-    private val mediaStorageService = MediaStorageService(application, appSettingsManager, imageCompressor)
+
 
     private val _uiState = MutableStateFlow(CreatePostUiState())
     val uiState: StateFlow<CreatePostUiState> = _uiState.asStateFlow()
@@ -564,42 +563,35 @@ class CreatePostViewModel @Inject constructor(
                         return@forEach
                     }
 
-                    val uploadedUrl = kotlinx.coroutines.suspendCancellableCoroutine<String?> { continuation ->
-                        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-                            mediaStorageService.uploadFile(filePath, null, object : MediaStorageService.UploadCallback {
-                                override fun onProgress(percent: Int) {
-                                    val itemProgress = (percent / 100f) / totalItems
-                                    val baseProgress = completedItems.toFloat() / totalItems
-                                    _uiState.update { it.copy(uploadProgress = baseProgress + itemProgress) }
-                                }
-
-                                override fun onSuccess(url: String, publicId: String) {
-                                    android.util.Log.d("CreatePost", "Uploaded ${mediaItem.type}: $url")
-                                    if (continuation.isActive) {
-                                        continuation.resume(url)
-                                    }
-                                }
-
-                                override fun onError(error: String) {
-                                    android.util.Log.e("CreatePost", "Upload failed: $error")
-                                    if (continuation.isActive) {
-                                        continuation.resume(null)
-                                    }
-                                }
-                            })
-                        }
+                    // Map App MediaType to Shared MediaType
+                    val sharedMediaType = when (mediaItem.type) {
+                        MediaType.IMAGE -> com.synapse.social.studioasinc.shared.domain.model.MediaType.PHOTO
+                        MediaType.VIDEO -> com.synapse.social.studioasinc.shared.domain.model.MediaType.VIDEO
+                        else -> com.synapse.social.studioasinc.shared.domain.model.MediaType.OTHER
                     }
 
-                    if (uploadedUrl != null) {
-                        uploadedItems.add(
+                    val result = uploadMediaUseCase(
+                        filePath = filePath,
+                        mediaType = sharedMediaType,
+                        onProgress = { progress ->
+                            val itemProgress = progress / totalItems
+                            val baseProgress = completedItems.toFloat() / totalItems
+                            _uiState.update { it.copy(uploadProgress = baseProgress + itemProgress) }
+                        }
+                    )
+
+                    result.onSuccess { uploadedUrl ->
+                         uploadedItems.add(
                             mediaItem.copy(
                                 id = java.util.UUID.randomUUID().toString(),
                                 url = uploadedUrl,
                                 mimeType = getApplication<Application>().contentResolver.getType(android.net.Uri.parse(filePath))
                             )
                         )
-                    } else {
-                        _uiState.update { it.copy(isLoading = false, error = "Upload failed for ${mediaItem.type}") }
+                         android.util.Log.d("CreatePost", "Uploaded ${mediaItem.type}: $uploadedUrl")
+                    }.onFailure { e ->
+                        android.util.Log.e("CreatePost", "Upload failed: ${e.message}")
+                        _uiState.update { it.copy(isLoading = false, error = "Upload failed: ${e.message}") }
                         return
                     }
 

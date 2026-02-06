@@ -20,9 +20,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class EditProfileViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
+class EditProfileViewModel @Inject constructor(
+    application: Application,
+    private val repository: EditProfileRepository
+) : AndroidViewModel(application) {
 
-    private val repository = EditProfileRepository(application.applicationContext)
+
 
     private val _uiState = MutableStateFlow(EditProfileUiState())
     val uiState: StateFlow<EditProfileUiState> = _uiState.asStateFlow()

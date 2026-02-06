@@ -80,6 +80,9 @@ fun SettingsNavHost(
                 onLogout = onLogout,
                 onNavigateToRequestAccountInfo = {
                     navController.navigate(SettingsDestination.ROUTE_REQUEST_ACCOUNT_INFO)
+                },
+                onNavigateToPasskeys = {
+                    navController.navigate(SettingsDestination.ROUTE_PASSKEYS)
                 }
             )
         }
@@ -304,6 +307,16 @@ fun SettingsNavHost(
             LaunchedEffect(Unit) {
                 navController.popBackStack()
             }
+        }
+        // Passkeys Settings Screen
+        composable(route = SettingsDestination.ROUTE_PASSKEYS) {
+            val viewModel: PasskeysViewModel = hiltViewModel()
+            PasskeysScreen(
+                viewModel = viewModel,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

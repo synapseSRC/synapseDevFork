@@ -37,7 +37,8 @@ fun AccountSettingsScreen(
     onNavigateBack: () -> Unit,
     onEditProfile: () -> Unit,
     onLogout: () -> Unit,
-    onNavigateToRequestAccountInfo: () -> Unit = {}
+    onNavigateToRequestAccountInfo: () -> Unit = {},
+    onNavigateToPasskeys: () -> Unit = {}
 ) {
     val linkedAccounts by viewModel.linkedAccounts.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -104,7 +105,7 @@ fun AccountSettingsScreen(
                         title = "Passkeys",
                         subtitle = "Manage your passkeys",
                         icon = R.drawable.ic_key,
-                        onClick = { }
+                        onClick = onNavigateToPasskeys
                     )
                     SettingsDivider()
                     SettingsNavigationItem(

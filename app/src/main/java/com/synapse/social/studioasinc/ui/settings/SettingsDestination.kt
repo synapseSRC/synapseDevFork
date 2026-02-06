@@ -116,6 +116,11 @@ sealed class SettingsDestination(val route: String) {
      */
     object NetworkUsage : SettingsDestination(ROUTE_NETWORK_USAGE)
 
+    /**
+     * Passkeys management screen.
+     */
+    object Passkeys : SettingsDestination(ROUTE_PASSKEYS)
+
     companion object {
         // Route constants for navigation
         const val ROUTE_HUB = "settings_hub"
@@ -141,6 +146,7 @@ sealed class SettingsDestination(val route: String) {
         const val ROUTE_REQUEST_ACCOUNT_INFO = "settings_request_account_info"
         const val ROUTE_MANAGE_STORAGE = "settings_storage_manage"
         const val ROUTE_NETWORK_USAGE = "settings_network_usage"
+        const val ROUTE_PASSKEYS = "settings_passkeys"
 
         /**
          * Returns all available settings destinations.
@@ -165,7 +171,8 @@ sealed class SettingsDestination(val route: String) {
             ApiKey,
             RequestAccountInfo,
             ManageStorage,
-            NetworkUsage
+            NetworkUsage,
+            Passkeys
         )
 
         /**
@@ -194,6 +201,7 @@ sealed class SettingsDestination(val route: String) {
             ROUTE_REQUEST_ACCOUNT_INFO -> RequestAccountInfo
             ROUTE_MANAGE_STORAGE -> ManageStorage
             ROUTE_NETWORK_USAGE -> NetworkUsage
+            ROUTE_PASSKEYS -> Passkeys
             else -> null
         }
     }

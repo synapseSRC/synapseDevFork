@@ -117,7 +117,12 @@ fun StorageDataScreen(
                         text = "Voice messages are always automatically downloaded",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 4.dp)
+                        modifier = Modifier.padding(
+                            start = SettingsSpacing.itemHorizontalPadding,
+                            end = SettingsSpacing.itemHorizontalPadding,
+                            top = SettingsSpacing.itemVerticalPadding,
+                            bottom = 4.dp
+                        )
                     )
                     SettingsNavigationItem(
                         title = "When using mobile data",
@@ -149,7 +154,12 @@ fun StorageDataScreen(
                         text = "Choose the quality of media files to be sent",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 4.dp)
+                        modifier = Modifier.padding(
+                            start = SettingsSpacing.itemHorizontalPadding,
+                            end = SettingsSpacing.itemHorizontalPadding,
+                            top = SettingsSpacing.itemVerticalPadding,
+                            bottom = 4.dp
+                        )
                     )
                     SettingsClickableItem(
                         title = "Photo upload quality",

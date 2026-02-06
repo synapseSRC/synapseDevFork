@@ -61,7 +61,9 @@ fun ProfileImageSection(
     ) {
         Column {
             Box(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(248.dp)
             ) {
                 Box(
                     modifier = Modifier
@@ -146,8 +148,7 @@ fun ProfileImageSection(
                 Box(
                     modifier = Modifier
                         .size(96.dp)
-                        .align(Alignment.TopCenter)
-                        .offset(y = 152.dp)
+                        .align(Alignment.BottomCenter)
                         .clickable(onClick = onAvatarClick)
                 ) {
                     Surface(

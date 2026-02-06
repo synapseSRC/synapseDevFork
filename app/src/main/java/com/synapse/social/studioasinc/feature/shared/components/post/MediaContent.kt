@@ -3,14 +3,18 @@ package com.synapse.social.studioasinc.feature.shared.components.post
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayCircle
@@ -31,10 +35,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import com.synapse.social.studioasinc.ui.settings.PostViewStyle
 
 @Composable
@@ -47,12 +47,12 @@ fun MediaContent(
 ) {
     if (mediaUrls.isEmpty()) return
 
-    // Track which video is currently playing
-    var playingVideoIndex by remember { mutableStateOf<Int?>(null) }
+    // Track which video is currently active (player attached)
+    var activeVideoIndex by remember { mutableStateOf<Int?>(null) }
 
-    // Reset playing state when composable is detached/disposed
+    // Reset active state when composable is detached/disposed
     DisposableEffect(Unit) {
-        onDispose { playingVideoIndex = null }
+        onDispose { activeVideoIndex = null }
     }
 
     if (mediaUrls.size == 1) {
@@ -61,52 +61,33 @@ fun MediaContent(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
-                // If it's a video, PostVideoPlayer handles clicks for playback control.
-                // If not playing (thumbnail), PostVideoPlayer handles click to play.
-                // We add clickable only if it's NOT a video, so image click opens detail.
-                .then(if (!isVideo) Modifier.clickable { onMediaClick(0) } else Modifier)
         ) {
-            if (isVideo) {
-                PostVideoPlayer(
-                    videoUrl = url,
-                    thumbnailUrl = url, // Use video URL as thumbnail source
-                    isPlaying = playingVideoIndex == 0,
-                    onPlayPauseClick = {
-                        playingVideoIndex = if (playingVideoIndex == 0) null else 0
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 600.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                )
-            } else {
-                AsyncImage(
-                    model = url,
-                    contentDescription = "Post Image",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 600.dp)
-                        .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Fit
-                )
-            }
+            MediaItemContent(
+                url = url,
+                isVideo = isVideo,
+                isActive = activeVideoIndex == 0,
+                onActivate = { activeVideoIndex = 0 },
+                onClick = { onMediaClick(0) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 600.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
         }
     } else if (postViewStyle == PostViewStyle.GRID) {
-        // Grid Layout logic - Keep existing behavior (thumbnail only, click to open detail)
         PostMediaGrid(mediaUrls, onMediaClick, modifier, isVideo)
     } else {
-        // Horizontal Pager for multiple images/videos
-        val pagerState = androidx.compose.foundation.pager.rememberPagerState(pageCount = { mediaUrls.size })
+        val pagerState = rememberPagerState(pageCount = { mediaUrls.size })
 
-        // Pause video when page changes
+        // Deactivate video when page changes
         LaunchedEffect(pagerState.currentPage) {
-            if (playingVideoIndex != null && playingVideoIndex != pagerState.currentPage) {
-                playingVideoIndex = null
+            if (activeVideoIndex != null && activeVideoIndex != pagerState.currentPage) {
+                activeVideoIndex = null
             }
         }
 
         Box(modifier = modifier.fillMaxWidth()) {
-            androidx.compose.foundation.pager.HorizontalPager(
+            HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxWidth()
             ) { page ->
@@ -114,38 +95,23 @@ fun MediaContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
-                        .then(if (!isVideo) Modifier.clickable { onMediaClick(page) } else Modifier)
                 ) {
-                    if (isVideo) {
-                        PostVideoPlayer(
-                            videoUrl = mediaUrls[page],
-                            thumbnailUrl = mediaUrls[page],
-                            isPlaying = playingVideoIndex == page,
-                            onPlayPauseClick = {
-                                playingVideoIndex = if (playingVideoIndex == page) null else page
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(max = 600.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                        )
-                    } else {
-                        AsyncImage(
-                            model = mediaUrls[page],
-                            contentDescription = "Post Image",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(max = 600.dp)
-                                .clip(RoundedCornerShape(8.dp)),
-                            contentScale = ContentScale.Fit
-                        )
-                    }
+                    MediaItemContent(
+                        url = mediaUrls[page],
+                        isVideo = isVideo,
+                        isActive = activeVideoIndex == page,
+                        onActivate = { activeVideoIndex = page },
+                        onClick = { onMediaClick(page) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 600.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                    )
                 }
             }
 
-            // Page Indicator
             if (mediaUrls.size > 1) {
-                androidx.compose.material3.Text(
+                Text(
                     text = "${pagerState.currentPage + 1}/${mediaUrls.size}",
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -164,11 +130,51 @@ fun MediaContent(
 }
 
 @Composable
+private fun MediaItemContent(
+    url: String,
+    isVideo: Boolean,
+    isActive: Boolean,
+    onActivate: () -> Unit,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (isVideo && isActive) {
+        PostVideoPlayer(
+            videoUrl = url,
+            modifier = modifier
+        )
+    } else {
+        Box(
+            modifier = modifier.clickable {
+                if (isVideo) onActivate() else onClick()
+            }
+        ) {
+            AsyncImage(
+                model = url,
+                contentDescription = "Post Image",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit
+            )
+            if (isVideo) {
+                Icon(
+                    imageVector = Icons.Default.PlayCircle,
+                    contentDescription = "Play Video",
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(48.dp),
+                    tint = Color.White
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun PostMediaGrid(
     mediaUrls: List<String>,
     onMediaClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    isVideo: Boolean = false // Added to show play icon on grid items
+    isVideo: Boolean = false
 ) {
     val count = mediaUrls.size
     val spacing = 2.dp
@@ -188,7 +194,6 @@ fun PostMediaGrid(
                 }
             }
             3 -> {
-                // One big top, two small bottom
                 MediaGridItem(url = mediaUrls[0], isVideo = isVideo, modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp, max = 350.dp), onClick = { onMediaClick(0) })
                 Spacer(modifier = Modifier.height(spacing))
                 Row(modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp, max = 200.dp)) {
@@ -198,7 +203,6 @@ fun PostMediaGrid(
                 }
             }
             else -> {
-                // 4 or more: 2x2 grid
                 Row(modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp, max = 250.dp)) {
                     MediaGridItem(url = mediaUrls[0], isVideo = isVideo, modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(0) })
                     Spacer(modifier = Modifier.width(spacing))

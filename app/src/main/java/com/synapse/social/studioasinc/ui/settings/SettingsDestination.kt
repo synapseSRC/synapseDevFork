@@ -117,6 +117,9 @@ sealed class SettingsDestination(val route: String) {
     object NetworkUsage : SettingsDestination(ROUTE_NETWORK_USAGE)
 
     /**
+     * Business Platform features for creators and business accounts.
+     */
+    object BusinessPlatform : SettingsDestination(ROUTE_BUSINESS_PLATFORM)
      * Two-Factor Authentication screen.
      */
     object TwoFactorAuth : SettingsDestination(ROUTE_TWO_FACTOR_AUTH)
@@ -147,6 +150,7 @@ sealed class SettingsDestination(val route: String) {
         const val ROUTE_REQUEST_ACCOUNT_INFO = "settings_request_account_info"
         const val ROUTE_MANAGE_STORAGE = "settings_storage_manage"
         const val ROUTE_NETWORK_USAGE = "settings_network_usage"
+        const val ROUTE_BUSINESS_PLATFORM = "settings_business_platform"
 
         /**
          * Returns all available settings destinations.
@@ -172,7 +176,8 @@ sealed class SettingsDestination(val route: String) {
             ApiKey,
             RequestAccountInfo,
             ManageStorage,
-            NetworkUsage
+            NetworkUsage,
+            BusinessPlatform
         )
 
         /**
@@ -202,6 +207,7 @@ sealed class SettingsDestination(val route: String) {
             ROUTE_REQUEST_ACCOUNT_INFO -> RequestAccountInfo
             ROUTE_MANAGE_STORAGE -> ManageStorage
             ROUTE_NETWORK_USAGE -> NetworkUsage
+            ROUTE_BUSINESS_PLATFORM -> BusinessPlatform
             else -> null
         }
     }

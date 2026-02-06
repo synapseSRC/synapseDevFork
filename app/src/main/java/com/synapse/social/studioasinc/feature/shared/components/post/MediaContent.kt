@@ -153,7 +153,7 @@ private fun MediaItemContent(
                 model = url,
                 contentDescription = "Post Image",
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Crop // Changed to Crop as suggested
             )
             if (isVideo) {
                 Icon(

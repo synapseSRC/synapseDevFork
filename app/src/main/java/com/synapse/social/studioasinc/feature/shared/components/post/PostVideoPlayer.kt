@@ -72,7 +72,7 @@ fun PostVideoPlayer(
             PlayerView(context).apply {
                 player = exoPlayer
                 useController = true // Show controls for inline video
-                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM // Changed to ZOOM as suggested
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT

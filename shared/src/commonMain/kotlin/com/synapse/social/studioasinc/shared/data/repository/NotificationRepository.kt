@@ -23,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import io.github.jan.supabase.realtime.channel
+import kotlinx.coroutines.flow.emptyFlow
 
 class NotificationRepository(private val supabase: SupabaseClient) {
 
@@ -49,6 +50,12 @@ class NotificationRepository(private val supabase: SupabaseClient) {
     }
 
     fun getRealtimeNotifications(userId: String): Flow<NotificationDto> {
+        val currentUserId = supabase.auth.currentUserOrNull()?.id
+        if (currentUserId != userId) {
+            Napier.e("IDOR attempt: User $currentUserId tried to subscribe to notifications for $userId")
+            return emptyFlow()
+        }
+
         val channel = supabase.channel("notifications:$userId")
         val flow = channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
             table = "notifications"

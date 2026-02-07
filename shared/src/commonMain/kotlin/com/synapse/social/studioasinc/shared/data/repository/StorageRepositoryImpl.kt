@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
 import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToOneOrNull
+import app.cash.sqldelight.coroutines.mapToOne
 
 class StorageRepositoryImpl(
     db: StorageDatabase
@@ -21,26 +21,9 @@ class StorageRepositoryImpl(
     override fun getStorageConfig(): Flow<StorageConfig> {
         return queries.getConfig().asFlow()
             .onStart { ensureDefault() }
-            .mapToOneOrNull(Dispatchers.IO)
+            .mapToOne(Dispatchers.IO)
             .map { row ->
-                row?.let {
-                    StorageConfig(
-                        photoProvider = it.photo_provider.toStorageProvider(),
-                        videoProvider = it.video_provider.toStorageProvider(),
-                        otherProvider = it.other_provider.toStorageProvider(),
-                        imgBBKey = it.imgbb_key,
-                        cloudinaryCloudName = it.cloudinary_cloud_name,
-                        cloudinaryApiKey = it.cloudinary_api_key,
-                        cloudinaryApiSecret = it.cloudinary_api_secret,
-                        supabaseUrl = it.supabase_url,
-                        supabaseKey = it.supabase_key,
-                        supabaseBucket = it.supabase_bucket,
-                        r2AccountId = it.r2_account_id,
-                        r2AccessKeyId = it.r2_access_key_id,
-                        r2SecretAccessKey = it.r2_secret_access_key,
-                        r2BucketName = it.r2_bucket_name
-                    )
-                } ?: StorageConfig()
+                row.toStorageConfig()
             }
     }
 
@@ -99,5 +82,24 @@ class StorageRepositoryImpl(
         } catch (e: Exception) {
             StorageProvider.DEFAULT
         }
+    }
+
+    private fun com.synapse.social.studioasinc.shared.data.database.Storage_config.toStorageConfig(): StorageConfig {
+        return StorageConfig(
+            photoProvider = photo_provider.toStorageProvider(),
+            videoProvider = video_provider.toStorageProvider(),
+            otherProvider = other_provider.toStorageProvider(),
+            imgBBKey = imgbb_key,
+            cloudinaryCloudName = cloudinary_cloud_name,
+            cloudinaryApiKey = cloudinary_api_key,
+            cloudinaryApiSecret = cloudinary_api_secret,
+            supabaseUrl = supabase_url,
+            supabaseKey = supabase_key,
+            supabaseBucket = supabase_bucket,
+            r2AccountId = r2_account_id,
+            r2AccessKeyId = r2_access_key_id,
+            r2SecretAccessKey = r2_secret_access_key,
+            r2BucketName = r2_bucket_name
+        )
     }
 }

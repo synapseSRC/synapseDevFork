@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.synapse.social.studioasinc.CreatePostActivity
 import com.synapse.social.studioasinc.ProfileActivity
 import com.synapse.social.studioasinc.feature.post.postdetail.PostDetailScreen
 import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
@@ -41,7 +42,7 @@ class PostDetailActivity : AppCompatActivity() {
                     postId = postId,
                     onNavigateBack = { finish() },
                     onNavigateToProfile = { userId -> navigateToProfile(userId) },
-                    onNavigateToEditPost = { /* TODO: Implement edit post navigation */ }
+                    onNavigateToEditPost = { editPostId -> navigateToEditPost(editPostId) }
                 )
             }
         }
@@ -50,6 +51,12 @@ class PostDetailActivity : AppCompatActivity() {
     private fun navigateToProfile(userId: String) {
         startActivity(Intent(this, ProfileActivity::class.java).apply {
             putExtra("user_id", userId)
+        })
+    }
+
+    private fun navigateToEditPost(postId: String) {
+        startActivity(Intent(this, CreatePostActivity::class.java).apply {
+            putExtra("edit_post_id", postId)
         })
     }
 }

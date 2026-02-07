@@ -54,8 +54,8 @@ fun CreatePostScreen(
 
     // Edit Media State
     var editingMediaIndex by remember { mutableStateOf<Int?>(null) }
-
     val cropImage = rememberLauncherForActivityResult(contract = CropImageContract()) { result ->
+
         if (result.isSuccessful) {
              editingMediaIndex?.let { index ->
                  result.uriContent?.let { uri ->

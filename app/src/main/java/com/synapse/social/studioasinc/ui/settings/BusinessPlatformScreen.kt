@@ -24,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
-// TODO: Re-enable when vico library is properly configured
 // import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 // import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 // import com.patrykandpatrick.vico.compose.chart.Chart
@@ -224,7 +223,6 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
             }
 
             // Follower Growth Chart
-            // TODO: Re-enable when vico library is properly configured
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
@@ -237,7 +235,6 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    // TODO: Re-enable when vico library is properly configured
                     /*
                     val chartEntryModel = entryModelOf(*analytics.followerGrowth.map { it.value }.toTypedArray())
 

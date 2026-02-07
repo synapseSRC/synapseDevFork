@@ -36,10 +36,21 @@ import com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseC
 import com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase
 import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
 import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import javax.inject.Named
 
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
+
+    @Provides
+    @Singleton
+    @Named("ApplicationScope")
+    fun provideApplicationScope(): CoroutineScope {
+        return CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    }
 
     @Provides
     @Singleton
@@ -192,8 +203,11 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideNotificationRepository(client: SupabaseClientType): NotificationRepository {
-        return NotificationRepository(client)
+    fun provideNotificationRepository(
+        client: SupabaseClientType,
+        @Named("ApplicationScope") externalScope: CoroutineScope
+    ): NotificationRepository {
+        return NotificationRepository(client, externalScope)
     }
 
     @Provides

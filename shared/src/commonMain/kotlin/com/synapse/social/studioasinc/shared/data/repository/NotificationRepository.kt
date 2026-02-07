@@ -12,7 +12,6 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.realtime.realtime
 import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.realtime.PostgresAction
-import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.decodeRecord
 import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import kotlinx.serialization.json.JsonObject
@@ -22,9 +21,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
+import io.github.jan.supabase.realtime.channel
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.channels.awaitClose
+import kotlin.coroutines.cancellation.CancellationException
+import kotlinx.coroutines.GlobalScope
 
-class NotificationRepository(private val supabase: SupabaseClient) {
+class NotificationRepository(
+    private val supabase: SupabaseClient,
+    private val externalScope: CoroutineScope
+) {
 
     suspend fun fetchNotifications(userId: String, limit: Long = 50): List<NotificationDto> {
         val currentUserId = supabase.auth.currentUserOrNull()?.id
@@ -49,22 +58,46 @@ class NotificationRepository(private val supabase: SupabaseClient) {
     }
 
     fun getRealtimeNotifications(userId: String): Flow<NotificationDto> {
-        val channel = supabase.realtime.channel("notifications:$userId")
-        val flow = channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
-            table = "notifications"
-            filter("recipient_id", FilterOperator.EQ, userId)
+        val currentUserId = supabase.auth.currentUserOrNull()?.id
+        if (currentUserId != userId) {
+            Napier.e("IDOR attempt: User $currentUserId tried to subscribe to notifications for $userId")
+            return emptyFlow()
         }
 
-        CoroutineScope(Dispatchers.Default).launch {
-            try {
-                channel.subscribe()
-            } catch (e: Exception) {
-                Napier.e("Failed to subscribe to realtime channel", e)
+        return callbackFlow {
+            val channel = supabase.channel("notifications:$userId")
+            val flow = channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
+                table = "notifications"
+                filter("recipient_id", FilterOperator.EQ, userId)
             }
-        }
 
-        return flow.map {
-            it.decodeRecord<NotificationDto>()
+            val collector = launch {
+                flow.map { it.decodeRecord<NotificationDto>() }.collect {
+                    trySend(it)
+                }
+            }
+
+            launch(Dispatchers.IO) {
+                try {
+                    channel.subscribe()
+                } catch (e: Exception) {
+                    if (e !is CancellationException) {
+                        Napier.e("Failed to subscribe to realtime channel", e)
+                        close(e)
+                    }
+                }
+            }
+
+            awaitClose {
+                collector.cancel()
+                externalScope.launch {
+                    try {
+                        channel.unsubscribe()
+                    } catch (e: Exception) {
+                        Napier.w("Failed to unsubscribe from realtime channel", e)
+                    }
+                }
+            }
         }
     }
 

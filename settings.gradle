@@ -25,36 +25,6 @@ dependencyResolutionManagement {
         flatDir {
             dirs 'app/libs'
         }
-
-        // Add Node.js distribution for Kotlin/Wasm
-        ivy {
-            name = "Node.js"
-            url = "https://nodejs.org/dist"
-            patternLayout {
-                artifact "v[revision]/[artifact](-v[revision]-[classifier]).[ext]"
-            }
-            metadataSources { artifact() }
-        }
-
-        // Add Yarn distribution for Kotlin/Wasm
-        ivy {
-            name = "Yarn"
-            url = "https://github.com/yarnpkg/yarn/releases/download"
-            patternLayout {
-                artifact "v[revision]/[artifact](-v[revision]).[ext]"
-            }
-            metadataSources { artifact() }
-        }
-
-        // Add Binaryen distribution for Kotlin/Wasm
-        ivy {
-            name = "Binaryen"
-            url = "https://github.com/WebAssembly/binaryen/releases/download"
-            patternLayout {
-                artifact "version_[revision]/[artifact]-version_[revision]-[classifier].[ext]"
-            }
-            metadataSources { artifact() }
-        }
     }
 }
 

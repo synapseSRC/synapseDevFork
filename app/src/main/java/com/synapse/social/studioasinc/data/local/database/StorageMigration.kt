@@ -2,8 +2,8 @@ package com.synapse.social.studioasinc.data.local.database
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
+import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
+import com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,7 +12,8 @@ import javax.inject.Singleton
 
 @Singleton
 class StorageMigration @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val storageRepository: StorageRepository
 ) {
     private val prefs: SharedPreferences = context.getSharedPreferences("migration_prefs", Context.MODE_PRIVATE)
     private val MIGRATION_VERSION_KEY = "storage_migration_version"
@@ -32,6 +33,7 @@ class StorageMigration @Inject constructor(
         when (fromVersion) {
             0 -> {
                 // Initial migration - ensure storage database is initialized
+                (storageRepository as? StorageRepositoryImpl)?.ensureDefault()
             }
         }
     }

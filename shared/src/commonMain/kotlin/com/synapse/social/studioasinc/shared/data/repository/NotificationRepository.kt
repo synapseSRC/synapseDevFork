@@ -24,6 +24,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import io.github.jan.supabase.realtime.channel
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.channels.awaitClose
+import kotlin.coroutines.cancellation.CancellationException
 
 class NotificationRepository(private val supabase: SupabaseClient) {
 
@@ -56,14 +59,46 @@ class NotificationRepository(private val supabase: SupabaseClient) {
             return emptyFlow()
         }
 
-        val channel = supabase.channel("notifications:$userId")
-        val flow = channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
-            table = "notifications"
-            filter("recipient_id", FilterOperator.EQ, userId)
-        }
+        return callbackFlow {
+            val channel = supabase.channel("notifications:$userId")
+            val flow = channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
+                table = "notifications"
+                filter("recipient_id", FilterOperator.EQ, userId)
+            }
 
-        return flow.map {
-            it.decodeRecord<NotificationDto>()
+            val collector = launch {
+                flow.map { it.decodeRecord<NotificationDto>() }.collect {
+                    trySend(it)
+                }
+            }
+
+            launch {
+                try {
+                    channel.subscribe()
+                } catch (e: Exception) {
+                    if (e !is CancellationException) {
+                        Napier.e("Failed to subscribe to realtime channel", e)
+                        close(e)
+                    }
+                }
+            }
+
+            awaitClose {
+                collector.cancel()
+                // channel.unsubscribe() is usually handled by the scope cancellation if attached,
+                // but supabase-kt might need explicit handling or just the parent scope cancel is enough.
+                // Assuming postgresChangeFlow and channel.subscribe behavior within callbackFlow scope.
+                // But wait, channel.subscribe() usually keeps running.
+                // However, the channel created via supabase.channel is attached to the client.
+                // It's good practice to unsubscribe if we manually subscribed.
+                launch {
+                    try {
+                        channel.unsubscribe()
+                    } catch (e: Exception) {
+                        // ignore
+                    }
+                }
+            }
         }
     }
 

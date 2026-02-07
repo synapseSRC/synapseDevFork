@@ -1,6 +1,7 @@
 package com.synapse.social.studioasinc.shared.data.repository
 
 import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
+import com.synapse.social.studioasinc.shared.data.database.Storage_config
 import com.synapse.social.studioasinc.shared.domain.model.StorageConfig
 import com.synapse.social.studioasinc.shared.domain.model.StorageProvider
 import com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
@@ -84,7 +85,7 @@ class StorageRepositoryImpl(
         }
     }
 
-    private fun com.synapse.social.studioasinc.shared.data.database.Storage_config.toStorageConfig(): StorageConfig {
+    private fun Storage_config.toStorageConfig(): StorageConfig {
         return StorageConfig(
             photoProvider = photo_provider.toStorageProvider(),
             videoProvider = video_provider.toStorageProvider(),

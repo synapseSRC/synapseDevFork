@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
 import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToOne
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 
 class StorageRepositoryImpl(
     db: StorageDatabase
@@ -21,9 +21,9 @@ class StorageRepositoryImpl(
     override fun getStorageConfig(): Flow<StorageConfig> {
         return queries.getConfig().asFlow()
             .onStart { ensureDefault() }
-            .mapToOne(Dispatchers.IO)
+            .mapToOneOrNull(Dispatchers.IO)
             .map { row ->
-                row.toStorageConfig()
+                row?.toStorageConfig() ?: StorageConfig()
             }
     }
 

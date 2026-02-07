@@ -32,6 +32,7 @@ import com.synapse.social.studioasinc.R
 fun SynapsePlusScreen(
     onBackClick: () -> Unit
 ) {
+    var showUpgradeDialog by remember { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
@@ -74,8 +75,21 @@ fun SynapsePlusScreen(
             }
 
             item {
-                UpgradeButton(onClick = { /* TODO: Implement upgrade flow */ })
+                UpgradeButton(onClick = { showUpgradeDialog = true })
             }
+        }
+
+        if (showUpgradeDialog) {
+            AlertDialog(
+                onDismissRequest = { showUpgradeDialog = false },
+                title = { Text("Upgrade to Synapse Plus") },
+                text = { Text("Payment integration is coming soon. Stay tuned for premium features!") },
+                confirmButton = {
+                    TextButton(onClick = { showUpgradeDialog = false }) {
+                        Text("OK")
+                    }
+                }
+            )
         }
     }
 }

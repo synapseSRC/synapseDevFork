@@ -181,25 +181,12 @@ object RepositoryModule {
         return NotificationRepository(client)
     }
 
-    // Storage-related providers - simplified stubs for now
-    // TODO: Properly integrate with Koin modules from shared
     @Provides
     @Singleton
-    fun provideStorageRepository(): com.synapse.social.studioasinc.shared.domain.repository.StorageRepository {
-        // Return a stub implementation
-        return object : com.synapse.social.studioasinc.shared.domain.repository.StorageRepository {
-            override fun getStorageConfig() = kotlinx.coroutines.flow.flowOf(
-                com.synapse.social.studioasinc.shared.domain.model.StorageConfig()
-            )
-            override suspend fun saveStorageConfig(config: com.synapse.social.studioasinc.shared.domain.model.StorageConfig) {}
-            override suspend fun updatePhotoProvider(provider: com.synapse.social.studioasinc.shared.domain.model.StorageProvider) {}
-            override suspend fun updateVideoProvider(provider: com.synapse.social.studioasinc.shared.domain.model.StorageProvider) {}
-            override suspend fun updateOtherProvider(provider: com.synapse.social.studioasinc.shared.domain.model.StorageProvider) {}
-            override suspend fun updateImgBBConfig(key: String) {}
-            override suspend fun updateCloudinaryConfig(cloudName: String, apiKey: String, apiSecret: String) {}
-            override suspend fun updateR2Config(accountId: String, accessKeyId: String, secretAccessKey: String, bucketName: String) {}
-            override suspend fun updateSupabaseConfig(url: String, key: String, bucket: String) {}
-        }
+    fun provideStorageRepository(
+        db: com.synapse.social.studioasinc.shared.data.database.StorageDatabase
+    ): com.synapse.social.studioasinc.shared.domain.repository.StorageRepository {
+        return com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl(db)
     }
 
     @Provides
@@ -231,14 +218,13 @@ object RepositoryModule {
         httpClient: io.ktor.client.HttpClient,
         supabaseClient: SupabaseClientType
     ): com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase {
-        // Stub implementation - needs proper setup with all upload services
         return com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase(
             repository,
             com.synapse.social.studioasinc.shared.data.FileUploader(),
             com.synapse.social.studioasinc.shared.data.source.remote.ImgBBUploadService(httpClient),
             com.synapse.social.studioasinc.shared.data.source.remote.CloudinaryUploadService(httpClient),
             com.synapse.social.studioasinc.shared.data.source.remote.SupabaseUploadService(supabaseClient),
-            com.synapse.social.studioasinc.shared.data.source.remote.R2UploadService()
+            com.synapse.social.studioasinc.shared.data.source.remote.R2UploadService(httpClient)
         )
     }
 }

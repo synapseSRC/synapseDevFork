@@ -1,4 +1,3 @@
-
 package com.synapse.social.studioasinc.shared.data.repository
 
 import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
@@ -84,7 +83,7 @@ class StorageRepositoryImpl(
         queries.updateR2(accountId, accessKeyId, secretAccessKey, bucketName)
     }
 
-    suspend fun ensureDefault() = withContext(Dispatchers.IO) {
+    override suspend fun ensureDefault() = withContext(Dispatchers.IO) {
         queries.insertDefault()
     }
 

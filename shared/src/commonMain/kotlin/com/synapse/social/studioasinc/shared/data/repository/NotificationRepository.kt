@@ -29,7 +29,10 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.GlobalScope
 
-class NotificationRepository(private val supabase: SupabaseClient) {
+class NotificationRepository(
+    private val supabase: SupabaseClient,
+    private val externalScope: CoroutineScope
+) {
 
     suspend fun fetchNotifications(userId: String, limit: Long = 50): List<NotificationDto> {
         val currentUserId = supabase.auth.currentUserOrNull()?.id
@@ -86,9 +89,7 @@ class NotificationRepository(private val supabase: SupabaseClient) {
 
             awaitClose {
                 collector.cancel()
-                // Unsubscribe from the channel to prevent resource leaks.
-                // Using GlobalScope as the flow's scope is cancelling.
-                GlobalScope.launch {
+                externalScope.launch {
                     try {
                         channel.unsubscribe()
                     } catch (e: Exception) {

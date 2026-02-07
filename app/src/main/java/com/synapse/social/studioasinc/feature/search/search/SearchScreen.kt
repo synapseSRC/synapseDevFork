@@ -94,7 +94,7 @@ fun SearchScreen(
                             Icon(Icons.Default.Close, contentDescription = "Clear")
                         }
                     } else {
-                        IconButton(onClick = { /* TODO: Implement QR Scan */ }) {
+                        IconButton(onClick = { Toast.makeText(context, "QR Scanner feature coming soon", Toast.LENGTH_SHORT).show() }) {
                             Icon(Icons.Default.QrCodeScanner, contentDescription = "Scan QR")
                         }
                     }

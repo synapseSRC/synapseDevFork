@@ -10,11 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
-import kotlinx.datetime.minus
-import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.*
 
 /**
  * ViewModel for the Business Platform screen.
@@ -105,10 +101,9 @@ class BusinessPlatformViewModel(application: Application) : AndroidViewModel(app
     private suspend fun fetchAnalytics(userId: String): AnalyticsData {
         // In a real implementation, query 'analytics_daily' table
         // For now, returning dummy data for visualization
-        val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
         val points = (0..6).map { dayOffset ->
              DataPoint(
-                 date = today.minus(DatePeriod(days = 6 - dayOffset)).toString(),
+                 date = "2024-01-${dayOffset + 1}",
                  value = (100..500).random().toFloat()
              )
         }

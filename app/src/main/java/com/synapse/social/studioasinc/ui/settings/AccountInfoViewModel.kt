@@ -86,7 +86,7 @@ class AccountInfoViewModel @Inject constructor() : ViewModel() {
                     email = profileResult.email ?: authUser.email ?: "N/A",
                     phoneNumber = authUser.phone,
                     bio = profileResult.bio,
-                    accountType = if (profileResult.accountPremium == true) AccountType.PLUS else AccountType.FREE,
+                    accountType = if (profileResult.accountPremium == true) SubscriptionType.PLUS else SubscriptionType.FREE,
                     isVerified = profileResult.verify == true,
                     createdAt = profileResult.createdAt,
                     lastLoginAt = authUser.lastSignInAt,
@@ -140,7 +140,7 @@ data class AccountInfoData(
     val email: String,
     val phoneNumber: String?,
     val bio: String?,
-    val accountType: AccountType,
+    val accountType: SubscriptionType,
     val isVerified: Boolean,
     val createdAt: String?,
     val lastLoginAt: Instant?,
@@ -153,6 +153,6 @@ data class AccountInfoData(
     val language: String
 )
 
-enum class AccountType {
+enum class SubscriptionType {
     FREE, PLUS
 }

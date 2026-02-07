@@ -236,9 +236,7 @@ fun SettingsNavHost(
         composable(route = SettingsDestination.ROUTE_STORAGE_PROVIDER) {
             val viewModel: SettingsViewModel = hiltViewModel()
             StorageProviderScreen(
-                onBackClick = {
-                    navController.popBackStack()
-                },
+                navController = navController,
                 viewModel = viewModel
             )
         }

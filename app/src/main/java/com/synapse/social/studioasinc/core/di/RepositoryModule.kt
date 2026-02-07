@@ -13,6 +13,7 @@ import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as S
 import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
 import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
 import com.synapse.social.studioasinc.data.local.database.*
+import com.synapse.social.studioasinc.data.local.AppSettingsManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -178,5 +179,66 @@ object RepositoryModule {
     @Singleton
     fun provideNotificationRepository(client: SupabaseClientType): NotificationRepository {
         return NotificationRepository(client)
+    }
+
+    // Storage-related providers - simplified stubs for now
+    // TODO: Properly integrate with Koin modules from shared
+    @Provides
+    @Singleton
+    fun provideStorageRepository(): com.synapse.social.studioasinc.shared.domain.repository.StorageRepository {
+        // Return a stub implementation
+        return object : com.synapse.social.studioasinc.shared.domain.repository.StorageRepository {
+            override fun getStorageConfig() = kotlinx.coroutines.flow.flowOf(
+                com.synapse.social.studioasinc.shared.domain.model.StorageConfig()
+            )
+            override suspend fun saveStorageConfig(config: com.synapse.social.studioasinc.shared.domain.model.StorageConfig) {}
+            override suspend fun updatePhotoProvider(provider: com.synapse.social.studioasinc.shared.domain.model.StorageProvider) {}
+            override suspend fun updateVideoProvider(provider: com.synapse.social.studioasinc.shared.domain.model.StorageProvider) {}
+            override suspend fun updateOtherProvider(provider: com.synapse.social.studioasinc.shared.domain.model.StorageProvider) {}
+            override suspend fun updateImgBBConfig(key: String) {}
+            override suspend fun updateCloudinaryConfig(cloudName: String, apiKey: String, apiSecret: String) {}
+            override suspend fun updateR2Config(accountId: String, accessKeyId: String, secretAccessKey: String, bucketName: String) {}
+            override suspend fun updateSupabaseConfig(url: String, key: String, bucket: String) {}
+        }
+    }
+
+    @Provides
+    @Singleton
+    fun provideKtorHttpClient(): io.ktor.client.HttpClient {
+        return io.ktor.client.HttpClient()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetStorageConfigUseCase(
+        repository: com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
+    ): com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseCase {
+        return com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateStorageProviderUseCase(
+        repository: com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
+    ): com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase {
+        return com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUploadMediaUseCase(
+        repository: com.synapse.social.studioasinc.shared.domain.repository.StorageRepository,
+        httpClient: io.ktor.client.HttpClient,
+        supabaseClient: SupabaseClientType
+    ): com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase {
+        // Stub implementation - needs proper setup with all upload services
+        return com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase(
+            repository,
+            com.synapse.social.studioasinc.shared.data.FileUploader(),
+            com.synapse.social.studioasinc.shared.data.source.remote.ImgBBUploadService(httpClient),
+            com.synapse.social.studioasinc.shared.data.source.remote.CloudinaryUploadService(httpClient),
+            com.synapse.social.studioasinc.shared.data.source.remote.SupabaseUploadService(supabaseClient),
+            com.synapse.social.studioasinc.shared.data.source.remote.R2UploadService()
+        )
     }
 }

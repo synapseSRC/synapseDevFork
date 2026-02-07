@@ -32,6 +32,10 @@ import com.synapse.social.studioasinc.shared.data.source.remote.SupabaseUploadSe
 import com.synapse.social.studioasinc.shared.data.source.remote.R2UploadService
 import com.synapse.social.studioasinc.shared.domain.usecase.ValidateProviderConfigUseCase
 import com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
+import com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase
+import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
+import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -195,9 +199,9 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideStorageRepository(
-        db: com.synapse.social.studioasinc.shared.data.database.StorageDatabase
-    ): com.synapse.social.studioasinc.shared.domain.repository.StorageRepository {
-        return com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl(db)
+        db: StorageDatabase
+    ): StorageRepository {
+        return StorageRepositoryImpl(db)
     }
 
     @Provides
@@ -254,16 +258,16 @@ object RepositoryModule {
     @Singleton
     fun provideGetStorageConfigUseCase(
         repository: StorageRepository
-    ): com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseCase {
-        return com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseCase(repository)
+    ): GetStorageConfigUseCase {
+        return GetStorageConfigUseCase(repository)
     }
 
     @Provides
     @Singleton
     fun provideUpdateStorageProviderUseCase(
         repository: StorageRepository
-    ): com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase {
-        return com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase(repository)
+    ): UpdateStorageProviderUseCase {
+        return UpdateStorageProviderUseCase(repository)
     }
 
     @Provides
@@ -275,8 +279,8 @@ object RepositoryModule {
         cloudinaryUploadService: CloudinaryUploadService,
         supabaseUploadService: SupabaseUploadService,
         r2UploadService: R2UploadService
-    ): com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase {
-        return com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase(
+    ): UploadMediaUseCase {
+        return UploadMediaUseCase(
             repository,
             fileUploader,
             imgBBUploadService,

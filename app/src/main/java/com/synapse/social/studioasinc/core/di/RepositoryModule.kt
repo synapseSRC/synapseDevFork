@@ -196,7 +196,7 @@ object RepositoryModule {
     @Singleton
     fun provideStorageRepository(
         db: com.synapse.social.studioasinc.shared.data.database.StorageDatabase
-    ): StorageRepository {
+    ): com.synapse.social.studioasinc.shared.domain.repository.StorageRepository {
         return com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl(db)
     }
 

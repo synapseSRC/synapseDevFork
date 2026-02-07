@@ -20,8 +20,8 @@ class StorageRepositoryImpl(
 
     override fun getStorageConfig(): Flow<StorageConfig> {
         return queries.getConfig().asFlow()
-            .mapToOneOrNull(Dispatchers.IO)
             .onStart { ensureDefault() }
+            .mapToOneOrNull(Dispatchers.IO)
             .map { row ->
                 row?.let {
                     StorageConfig(

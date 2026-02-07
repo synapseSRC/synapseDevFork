@@ -25,11 +25,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
 // TODO: Re-enable when vico library is properly configured
-import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
-import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
-import com.patrykandpatrick.vico.compose.chart.Chart
-import com.patrykandpatrick.vico.compose.chart.line.lineChart
-import com.patrykandpatrick.vico.core.entry.entryModelOf
+// import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
+// import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
+// import com.patrykandpatrick.vico.compose.chart.Chart
+// import com.patrykandpatrick.vico.compose.chart.line.lineChart
+// import com.patrykandpatrick.vico.core.entry.entryModelOf
 
 /**
  * Business Platform Screen.
@@ -237,6 +237,8 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
+                    // TODO: Re-enable when vico library is properly configured
+                    /*
                     val chartEntryModel = entryModelOf(*analytics.followerGrowth.map { it.value }.toTypedArray())
 
                     Chart(
@@ -247,6 +249,14 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(200.dp)
+                    )
+                    */
+                    
+                    Text(
+                        text = "Chart visualization coming soon",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(vertical = 32.dp)
                     )
             }
             }

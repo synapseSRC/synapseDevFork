@@ -23,26 +23,24 @@ class StorageRepositoryImpl(
             .mapToOneOrNull(Dispatchers.IO)
             .onStart { ensureDefault() }
             .map { row ->
-                if (row == null) {
-                    StorageConfig()
-                } else {
+                row?.let {
                     StorageConfig(
-                        photoProvider = row.photo_provider.toStorageProvider(),
-                        videoProvider = row.video_provider.toStorageProvider(),
-                        otherProvider = row.other_provider.toStorageProvider(),
-                        imgBBKey = row.imgbb_key,
-                        cloudinaryCloudName = row.cloudinary_cloud_name,
-                        cloudinaryApiKey = row.cloudinary_api_key,
-                        cloudinaryApiSecret = row.cloudinary_api_secret,
-                        supabaseUrl = row.supabase_url,
-                        supabaseKey = row.supabase_key,
-                        supabaseBucket = row.supabase_bucket,
-                        r2AccountId = row.r2_account_id,
-                        r2AccessKeyId = row.r2_access_key_id,
-                        r2SecretAccessKey = row.r2_secret_access_key,
-                        r2BucketName = row.r2_bucket_name
+                        photoProvider = it.photo_provider.toStorageProvider(),
+                        videoProvider = it.video_provider.toStorageProvider(),
+                        otherProvider = it.other_provider.toStorageProvider(),
+                        imgBBKey = it.imgbb_key,
+                        cloudinaryCloudName = it.cloudinary_cloud_name,
+                        cloudinaryApiKey = it.cloudinary_api_key,
+                        cloudinaryApiSecret = it.cloudinary_api_secret,
+                        supabaseUrl = it.supabase_url,
+                        supabaseKey = it.supabase_key,
+                        supabaseBucket = it.supabase_bucket,
+                        r2AccountId = it.r2_account_id,
+                        r2AccessKeyId = it.r2_access_key_id,
+                        r2SecretAccessKey = it.r2_secret_access_key,
+                        r2BucketName = it.r2_bucket_name
                     )
-                }
+                } ?: StorageConfig()
             }
     }
 

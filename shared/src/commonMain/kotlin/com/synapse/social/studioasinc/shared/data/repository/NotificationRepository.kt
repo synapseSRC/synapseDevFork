@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.channels.awaitClose
 import kotlin.coroutines.cancellation.CancellationException
+import kotlinx.coroutines.GlobalScope
 
 class NotificationRepository(private val supabase: SupabaseClient) {
 
@@ -85,17 +86,13 @@ class NotificationRepository(private val supabase: SupabaseClient) {
 
             awaitClose {
                 collector.cancel()
-                // channel.unsubscribe() is usually handled by the scope cancellation if attached,
-                // but supabase-kt might need explicit handling or just the parent scope cancel is enough.
-                // Assuming postgresChangeFlow and channel.subscribe behavior within callbackFlow scope.
-                // But wait, channel.subscribe() usually keeps running.
-                // However, the channel created via supabase.channel is attached to the client.
-                // It's good practice to unsubscribe if we manually subscribed.
-                launch {
+                // Unsubscribe from the channel to prevent resource leaks.
+                // Using GlobalScope as the flow's scope is cancelling.
+                GlobalScope.launch {
                     try {
                         channel.unsubscribe()
                     } catch (e: Exception) {
-                        // ignore
+                        Napier.w("Failed to unsubscribe from realtime channel", e)
                     }
                 }
             }

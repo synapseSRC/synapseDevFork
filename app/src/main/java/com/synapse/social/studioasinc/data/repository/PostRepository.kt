@@ -604,4 +604,24 @@ class PostRepository @Inject constructor(
             android.util.Log.e(TAG, "Failed to process mentions: ${e.message}", e)
         }
     }
+
+    suspend fun toggleComments(postId: String): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val post = client.from("posts").select(Columns.list("post_disable_comments")) {
+                filter { eq("id", postId) }
+            }.decodeSingleOrNull<JsonObject>()
+
+            val currentStr = post?.get("post_disable_comments")?.jsonPrimitive?.contentOrNull
+            val currentBool = currentStr == "true"
+            val newStr = if (currentBool) "false" else "true"
+
+            client.from("posts").update(mapOf("post_disable_comments" to newStr)) {
+                filter { eq("id", postId) }
+            }
+            Result.success(Unit)
+        } catch (e: Exception) {
+             android.util.Log.e(TAG, "Failed to toggle comments", e)
+             Result.failure(e)
+        }
+    }
 }

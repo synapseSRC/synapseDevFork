@@ -1,5 +1,6 @@
 package com.synapse.social.studioasinc.ui.search
 
+import com.synapse.social.studioasinc.data.repository.ProfileActionRepository
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -56,7 +57,8 @@ class SearchViewModel @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     private val postRepository: com.synapse.social.studioasinc.data.repository.PostRepository,
     private val bookmarkRepository: com.synapse.social.studioasinc.data.repository.BookmarkRepository,
-    private val pollRepository: com.synapse.social.studioasinc.data.repository.PollRepository
+    private val pollRepository: com.synapse.social.studioasinc.data.repository.PollRepository,
+    private val profileActionRepository: com.synapse.social.studioasinc.data.repository.ProfileActionRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUiState())
@@ -245,7 +247,10 @@ class SearchViewModel @Inject constructor(
     }
 
     fun toggleComments(post: com.synapse.social.studioasinc.domain.model.Post) {
-        // TODO: Implement toggle comments in PostRepository
+        viewModelScope.launch {
+            postRepository.toggleComments(post.id)
+                .onFailure { err -> _uiState.update { it.copy(error = err.message) } }
+        }
     }
 
     fun reportPost(post: com.synapse.social.studioasinc.domain.model.Post) {
@@ -253,7 +258,14 @@ class SearchViewModel @Inject constructor(
     }
 
     fun blockUser(userId: String) {
-        // TODO: Implement block user functionality
+        viewModelScope.launch {
+             val currentUserId = authRepository.getCurrentUserId() ?: return@launch
+             profileActionRepository.blockUser(currentUserId, userId)
+                 .onSuccess {
+                     performSearch(uiState.value.query)
+                 }
+                 .onFailure { err -> _uiState.update { it.copy(error = err.message) } }
+        }
     }
 
     fun revokeVote(post: com.synapse.social.studioasinc.domain.model.Post) {

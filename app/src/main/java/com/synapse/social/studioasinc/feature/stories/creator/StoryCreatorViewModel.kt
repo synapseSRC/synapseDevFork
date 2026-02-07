@@ -2,6 +2,7 @@ package com.synapse.social.studioasinc.feature.stories.creator
 
 import android.net.Uri
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.core.network.SupabaseClient
@@ -21,6 +22,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+data class DrawingPath(
+    val points: List<Offset>,
+    val color: Color,
+    val strokeWidth: Float
+)
+
+data class StickerOverlay(
+    val emoji: String,
+    val position: Offset,
+    val scale: Float = 1f
+)
+
 data class StoryCreatorState(
     val capturedMediaUri: Uri? = null,
     val mediaType: StoryMediaType = StoryMediaType.PHOTO,
@@ -29,6 +42,8 @@ data class StoryCreatorState(
     val isRecording: Boolean = false,
     val recordingProgress: Float = 0f,
     val textOverlays: List<TextOverlay> = emptyList(),
+    val drawings: List<DrawingPath> = emptyList(),
+    val stickers: List<StickerOverlay> = emptyList(),
     val selectedPrivacy: StoryPrivacy = StoryPrivacy.ALL_FRIENDS,
     val isPosting: Boolean = false,
     val isPosted: Boolean = false,
@@ -64,9 +79,6 @@ class StoryCreatorViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Toggle flash mode: OFF -> ON -> AUTO -> OFF
-     */
     fun toggleFlash() {
         _state.update { state ->
             val newMode = when (state.flashMode) {
@@ -78,31 +90,19 @@ class StoryCreatorViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Flip between front and back camera
-     */
     fun flipCamera() {
         _state.update { it.copy(isFrontCamera = !it.isFrontCamera) }
     }
 
-    /**
-     * Capture a photo
-     * In production, this would interface with CameraX
-     */
     fun capturePhoto() {
-        // Placeholder - actual implementation would use CameraX
-        // For now, just set a demo state
         _state.update {
             it.copy(
-                capturedMediaUri = null, // Would be set by CameraX
+                capturedMediaUri = null,
                 mediaType = StoryMediaType.PHOTO
             )
         }
     }
 
-    /**
-     * Start video recording (up to 15 seconds)
-     */
     fun startVideoRecording() {
         _state.update { it.copy(isRecording = true, recordingProgress = 0f) }
 
@@ -120,37 +120,24 @@ class StoryCreatorViewModel @Inject constructor(
                     break
                 }
 
-                delay(50) // Update every 50ms
+                delay(50)
             }
         }
     }
 
-    /**
-     * Stop video recording
-     */
     fun stopVideoRecording() {
         recordingJob?.cancel()
         recordingJob = null
-
-        val duration = (_state.value.recordingProgress * MAX_VIDEO_DURATION_MS / 1000).toInt()
-
         _state.update {
             it.copy(
                 isRecording = false,
-                // capturedMediaUri would be set by CameraX
                 mediaType = StoryMediaType.VIDEO
             )
         }
     }
 
-    /**
-     * Set media from gallery selection
-     */
     fun setMediaFromGallery(uri: Uri) {
-        // Determine media type from URI/MimeType
-        // This is simplified - actual implementation would check MIME type
         val isVideo = uri.toString().contains("video")
-
         _state.update {
             it.copy(
                 capturedMediaUri = uri,
@@ -159,9 +146,6 @@ class StoryCreatorViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Set captured media from camera
-     */
     fun setCapturedMedia(uri: Uri, type: StoryMediaType) {
         _state.update {
             it.copy(
@@ -171,21 +155,17 @@ class StoryCreatorViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Clear captured media and return to capture mode
-     */
     fun clearCapturedMedia() {
         _state.update {
             it.copy(
                 capturedMediaUri = null,
-                textOverlays = emptyList()
+                textOverlays = emptyList(),
+                drawings = emptyList(),
+                stickers = emptyList()
             )
         }
     }
 
-    /**
-     * Add a new text overlay
-     */
     fun addTextOverlay() {
         _state.update { state ->
             state.copy(
@@ -197,9 +177,6 @@ class StoryCreatorViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Remove a text overlay by index
-     */
     fun removeTextOverlay(index: Int) {
         _state.update { state ->
             state.copy(
@@ -208,9 +185,6 @@ class StoryCreatorViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Update text overlay position
-     */
     fun updateTextPosition(index: Int, position: Offset) {
         _state.update { state ->
             state.copy(
@@ -221,9 +195,6 @@ class StoryCreatorViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Update text overlay content
-     */
     fun updateTextContent(index: Int, content: String) {
         _state.update { state ->
             state.copy(
@@ -234,16 +205,53 @@ class StoryCreatorViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Set privacy setting
-     */
+    // Drawing methods
+    fun addDrawing(path: DrawingPath) {
+        _state.update { state ->
+            state.copy(drawings = state.drawings + path)
+        }
+    }
+
+    fun clearDrawings() {
+        _state.update { state ->
+            state.copy(drawings = emptyList())
+        }
+    }
+
+    // Sticker methods
+    fun addSticker(emoji: String) {
+        _state.update { state ->
+            state.copy(
+                stickers = state.stickers + StickerOverlay(
+                    emoji = emoji,
+                    position = Offset(200f, 400f)
+                )
+            )
+        }
+    }
+
+    fun removeSticker(index: Int) {
+        _state.update { state ->
+            state.copy(
+                stickers = state.stickers.filterIndexed { i, _ -> i != index }
+            )
+        }
+    }
+
+    fun updateStickerPosition(index: Int, position: Offset) {
+        _state.update { state ->
+            state.copy(
+                stickers = state.stickers.mapIndexed { i, sticker ->
+                    if (i == index) sticker.copy(position = position) else sticker
+                }
+            )
+        }
+    }
+
     fun setPrivacy(privacy: StoryPrivacy) {
         _state.update { it.copy(selectedPrivacy = privacy) }
     }
 
-    /**
-     * Post the story
-     */
     fun postStory() {
         val userId = currentUserId ?: return
         val mediaUri = _state.value.capturedMediaUri ?: return
@@ -273,9 +281,6 @@ class StoryCreatorViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Clear error state
-     */
     fun clearError() {
         _state.update { it.copy(error = null) }
     }

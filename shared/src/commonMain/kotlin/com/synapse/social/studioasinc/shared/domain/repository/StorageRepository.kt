@@ -1,4 +1,3 @@
-
 package com.synapse.social.studioasinc.shared.domain.repository
 
 import com.synapse.social.studioasinc.shared.domain.model.StorageConfig
@@ -17,4 +16,6 @@ interface StorageRepository {
     suspend fun updateCloudinaryConfig(cloudName: String, apiKey: String, apiSecret: String)
     suspend fun updateSupabaseConfig(url: String, key: String, bucket: String)
     suspend fun updateR2Config(accountId: String, accessKeyId: String, secretAccessKey: String, bucketName: String)
+
+    suspend fun ensureDefault()
 }

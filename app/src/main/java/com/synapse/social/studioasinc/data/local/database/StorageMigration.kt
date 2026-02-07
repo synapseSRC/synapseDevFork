@@ -2,7 +2,6 @@ package com.synapse.social.studioasinc.data.local.database
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
 import com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +32,7 @@ class StorageMigration @Inject constructor(
         when (fromVersion) {
             0 -> {
                 // Initial migration - ensure storage database is initialized
-                (storageRepository as? StorageRepositoryImpl)?.ensureDefault()
+                storageRepository.ensureDefault()
             }
         }
     }

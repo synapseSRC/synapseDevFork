@@ -5,6 +5,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.plugins.onUpload
+import io.ktor.http.encodeURLPathPart
+import io.ktor.http.isSuccess
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -26,8 +28,11 @@ class R2UploadService(private val client: HttpClient) : UploadService {
             throw Exception("R2 configuration is incomplete")
         }
 
+        // Encode fileName to handle special characters (e.g., spaces)
+        val encodedFileName = fileName.encodeURLPathPart()
+
         val host = "$accountId.r2.cloudflarestorage.com"
-        val path = "/$targetBucket/$fileName"
+        val path = "/$targetBucket/$encodedFileName"
         val url = "https://$host$path"
 
         val amzDate = getAmzDate()
@@ -44,7 +49,7 @@ class R2UploadService(private val client: HttpClient) : UploadService {
         )
 
         try {
-            client.put(url) {
+            val response = client.put(url) {
                 headers.forEach { (k, v) ->
                     this.headers.append(k, v)
                 }
@@ -55,6 +60,11 @@ class R2UploadService(private val client: HttpClient) : UploadService {
                     }
                 }
             }
+
+            if (!response.status.isSuccess()) {
+                throw Exception("Upload failed with status: ${response.status}")
+            }
+
             return url
         } catch (e: Exception) {
             throw Exception("R2 upload failed: ${e.message}")

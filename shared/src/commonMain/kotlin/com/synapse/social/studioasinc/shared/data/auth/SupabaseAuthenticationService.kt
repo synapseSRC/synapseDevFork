@@ -10,6 +10,7 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Count
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
@@ -91,11 +92,14 @@ class SupabaseAuthenticationService : IAuthenticationService {
         return try {
             withContext(Dispatchers.Default) {
                 // Check if profile exists
-                // For now, skip the existence check and create the profile
-                // TODO: Implement proper profile existence check
-                val existingProfile = null
+                val count = SupabaseClient.client.from("user_profiles").select(columns = Columns.list("id")) {
+                    count(Count.EXACT)
+                    filter {
+                        eq("id", userId)
+                    }
+                }.countOrNull()
                 
-                if (existingProfile == null) {
+                if (count == null || count == 0L) {
                     // Create basic profile
                     createUserProfile(userId, email, email.substringBefore("@"))
                 } else {

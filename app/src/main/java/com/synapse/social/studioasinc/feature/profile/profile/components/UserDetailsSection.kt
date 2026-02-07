@@ -1,5 +1,6 @@
 package com.synapse.social.studioasinc.feature.profile.profile.components
 
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -340,8 +341,18 @@ private fun SimpleDetailItem(
 
 @Composable
 private fun LinkedAccountChip(account: LinkedAccount) {
+    val uriHandler = LocalUriHandler.current
     AssistChip(
-        onClick = { /* TODO: Open link */ },
+        onClick = {
+            val url = getPlatformUrl(account.platform, account.username)
+            if (url.isNotEmpty()) {
+                try {
+                    uriHandler.openUri(url)
+                } catch (e: Exception) {
+                    // Handle invalid URL or no browser
+                }
+            }
+        },
         label = { Text(account.platform) },
         leadingIcon = {
             Icon(
@@ -351,6 +362,18 @@ private fun LinkedAccountChip(account: LinkedAccount) {
             )
         }
     )
+}
+
+private fun getPlatformUrl(platform: String, username: String): String {
+    return when (platform.lowercase()) {
+        "twitter", "x" -> "https://x.com/$username"
+        "instagram" -> "https://instagram.com/$username"
+        "facebook" -> "https://facebook.com/$username"
+        "linkedin" -> "https://linkedin.com/in/$username"
+        "github" -> "https://github.com/$username"
+        "youtube" -> "https://youtube.com/@$username"
+        else -> ""
+    }
 }
 
 private fun getPlatformIcon(platform: String): ImageVector {

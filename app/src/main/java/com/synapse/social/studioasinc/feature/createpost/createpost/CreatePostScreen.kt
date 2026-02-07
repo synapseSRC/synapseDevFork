@@ -38,6 +38,7 @@ import com.synapse.social.studioasinc.domain.model.LocationData
 import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageView
 import com.canhub.cropper.CropImageOptions
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -56,7 +57,6 @@ fun CreatePostScreen(
 
     val cropImage = rememberLauncherForActivityResult(contract = CropImageContract()) { result ->
         if (result.isSuccessful) {
-             // TODO: Implement explicit Save / Discard / Cancel controls for the crop screen
              editingMediaIndex?.let { index ->
                  result.uriContent?.let { uri ->
                      viewModel.updateMediaItem(index, uri)
@@ -275,7 +275,13 @@ fun CreatePostScreen(
                              cropImage.launch(
                                  CropImageContractOptions(
                                      uri = uri,
-                                     cropImageOptions = CropImageOptions()
+                                     cropImageOptions = CropImageOptions().apply {
+                                         guidelines = CropImageView.Guidelines.ON
+                                         activityTitle = "Edit Image"
+                                         cropMenuCropButtonTitle = "Save"
+                                         showCropOverlay = true
+                                         showProgressBar = true
+                                     }
                                  )
                              )
                          }

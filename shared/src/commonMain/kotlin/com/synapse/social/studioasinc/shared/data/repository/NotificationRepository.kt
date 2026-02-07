@@ -12,7 +12,6 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.realtime.realtime
 import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.realtime.PostgresAction
-import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.decodeRecord
 import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import kotlinx.serialization.json.JsonObject
@@ -23,6 +22,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import io.github.jan.supabase.realtime.channel
 
 class NotificationRepository(private val supabase: SupabaseClient) {
 
@@ -49,7 +49,7 @@ class NotificationRepository(private val supabase: SupabaseClient) {
     }
 
     fun getRealtimeNotifications(userId: String): Flow<NotificationDto> {
-        val channel = supabase.realtime.channel("notifications:$userId")
+        val channel = supabase.channel("notifications:$userId")
         val flow = channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
             table = "notifications"
             filter("recipient_id", FilterOperator.EQ, userId)

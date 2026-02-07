@@ -1,4 +1,3 @@
-
 package com.synapse.social.studioasinc.shared.di
 
 import com.synapse.social.studioasinc.shared.data.FileUploader
@@ -49,7 +48,7 @@ val storageModule = module {
     single { CloudinaryUploadService(get()) }
     single { ImgBBUploadService(get()) }
     single { SupabaseUploadService(get()) }
-    single { R2UploadService() }
+    single { R2UploadService(get()) }
 
     single { GetStorageConfigUseCase(get()) }
     single { UpdateStorageProviderUseCase(get()) }

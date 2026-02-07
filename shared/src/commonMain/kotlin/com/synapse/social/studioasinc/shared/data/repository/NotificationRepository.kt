@@ -62,14 +62,6 @@ class NotificationRepository(private val supabase: SupabaseClient) {
             filter("recipient_id", FilterOperator.EQ, userId)
         }
 
-        CoroutineScope(Dispatchers.Default).launch {
-            try {
-                channel.subscribe()
-            } catch (e: Exception) {
-                Napier.e("Failed to subscribe to realtime channel", e)
-            }
-        }
-
         return flow.map {
             it.decodeRecord<NotificationDto>()
         }

@@ -21,6 +21,21 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.github.jan.supabase.SupabaseClient as SupabaseClientType
 import javax.inject.Singleton
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
+import com.synapse.social.studioasinc.shared.data.FileUploader
+import com.synapse.social.studioasinc.shared.data.source.remote.ImgBBUploadService
+import com.synapse.social.studioasinc.shared.data.source.remote.CloudinaryUploadService
+import com.synapse.social.studioasinc.shared.data.source.remote.SupabaseUploadService
+import com.synapse.social.studioasinc.shared.data.source.remote.R2UploadService
+import com.synapse.social.studioasinc.shared.domain.usecase.ValidateProviderConfigUseCase
+import com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
+import com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase
+import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
+import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -184,47 +199,94 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideStorageRepository(
-        db: com.synapse.social.studioasinc.shared.data.database.StorageDatabase
-    ): com.synapse.social.studioasinc.shared.domain.repository.StorageRepository {
-        return com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl(db)
+        db: StorageDatabase
+    ): StorageRepository {
+        return StorageRepositoryImpl(db)
     }
 
     @Provides
     @Singleton
-    fun provideKtorHttpClient(): io.ktor.client.HttpClient {
-        return io.ktor.client.HttpClient()
+    fun provideKtorHttpClient(): HttpClient {
+        return HttpClient {
+            install(ContentNegotiation) {
+                json(Json {
+                    ignoreUnknownKeys = true
+                    prettyPrint = true
+                    isLenient = true
+                })
+            }
+        }
+    }
+
+    @Provides
+    @Singleton
+    fun provideFileUploader(): FileUploader {
+        return FileUploader()
+    }
+
+    @Provides
+    @Singleton
+    fun provideImgBBUploadService(httpClient: HttpClient): ImgBBUploadService {
+        return ImgBBUploadService(httpClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCloudinaryUploadService(httpClient: HttpClient): CloudinaryUploadService {
+        return CloudinaryUploadService(httpClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSupabaseUploadService(supabaseClient: SupabaseClientType): SupabaseUploadService {
+        return SupabaseUploadService(supabaseClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideR2UploadService(httpClient: HttpClient): R2UploadService {
+        return R2UploadService(httpClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideValidateProviderConfigUseCase(): ValidateProviderConfigUseCase {
+        return ValidateProviderConfigUseCase()
     }
 
     @Provides
     @Singleton
     fun provideGetStorageConfigUseCase(
-        repository: com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
-    ): com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseCase {
-        return com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseCase(repository)
+        repository: StorageRepository
+    ): GetStorageConfigUseCase {
+        return GetStorageConfigUseCase(repository)
     }
 
     @Provides
     @Singleton
     fun provideUpdateStorageProviderUseCase(
-        repository: com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
-    ): com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase {
-        return com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase(repository)
+        repository: StorageRepository
+    ): UpdateStorageProviderUseCase {
+        return UpdateStorageProviderUseCase(repository)
     }
 
     @Provides
     @Singleton
     fun provideUploadMediaUseCase(
-        repository: com.synapse.social.studioasinc.shared.domain.repository.StorageRepository,
-        httpClient: io.ktor.client.HttpClient,
-        supabaseClient: SupabaseClientType
-    ): com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase {
-        return com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase(
+        repository: StorageRepository,
+        fileUploader: FileUploader,
+        imgBBUploadService: ImgBBUploadService,
+        cloudinaryUploadService: CloudinaryUploadService,
+        supabaseUploadService: SupabaseUploadService,
+        r2UploadService: R2UploadService
+    ): UploadMediaUseCase {
+        return UploadMediaUseCase(
             repository,
-            com.synapse.social.studioasinc.shared.data.FileUploader(),
-            com.synapse.social.studioasinc.shared.data.source.remote.ImgBBUploadService(httpClient),
-            com.synapse.social.studioasinc.shared.data.source.remote.CloudinaryUploadService(httpClient),
-            com.synapse.social.studioasinc.shared.data.source.remote.SupabaseUploadService(supabaseClient),
-            com.synapse.social.studioasinc.shared.data.source.remote.R2UploadService(httpClient)
+            fileUploader,
+            imgBBUploadService,
+            cloudinaryUploadService,
+            supabaseUploadService,
+            r2UploadService
         )
     }
 }

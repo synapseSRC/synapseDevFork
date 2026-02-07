@@ -13,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
+import android.content.ActivityNotFoundException
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.feature.stories.creator.StoryCreatorActivity
 import com.synapse.social.studioasinc.feature.stories.creator.EXTRA_SHARED_POST_ID
@@ -109,7 +112,29 @@ fun PostFeed(
                 context.startActivity(intent)
                 showShareSheet = false
             },
-            onShareViaMessage = { /* TODO: Implement */ },
+            onShareViaMessage = {
+                val post = posts.find { it.id == selectedPostId }
+                post?.let {
+                    val shareText = buildString {
+                        if (!it.postText.isNullOrBlank()) {
+                            append(it.postText)
+                            append("\n\n")
+                        }
+                        append("https://web-synapse.pages.dev/post/${it.id}")
+                    }
+                    val intent = Intent(Intent.ACTION_SENDTO).apply {
+                        data = Uri.parse("smsto:")
+                        putExtra("sms_body", shareText)
+                        putExtra(Intent.EXTRA_TEXT, shareText)
+                    }
+                    try {
+                        context.startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        Toast.makeText(context, "No messaging app found", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                showShareSheet = false
+            },
             onShareExternal = {
                 val post = posts.find { it.id == selectedPostId }
                 post?.let {

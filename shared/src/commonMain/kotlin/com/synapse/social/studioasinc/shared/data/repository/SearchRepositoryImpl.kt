@@ -42,7 +42,7 @@ class SearchRepositoryImpl : ISearchRepository {
         val result = client.postgrest["posts"].select(columns = columns) {
             if (query.isNotBlank()) {
                 filter {
-                    ilike("post_text", "%%")
+                    ilike("post_text", "%$query%")
                 }
             }
             order("created_at", Order.DESCENDING)
@@ -69,7 +69,7 @@ class SearchRepositoryImpl : ISearchRepository {
         client.postgrest["hashtags"].select {
             if (query.isNotBlank()) {
                 filter {
-                    ilike("tag", "%%")
+                    ilike("tag", "%$query%")
                 }
             }
             order("usage_count", Order.DESCENDING)
@@ -93,7 +93,7 @@ class SearchRepositoryImpl : ISearchRepository {
         client.postgrest["news_articles"].select {
             if (query.isNotBlank()) {
                 filter {
-                    ilike("headline", "%%")
+                    ilike("headline", "%$query%")
                 }
             }
             order("published_at", Order.DESCENDING)
@@ -106,8 +106,8 @@ class SearchRepositoryImpl : ISearchRepository {
             if (query.isNotBlank()) {
                 filter {
                     or {
-                        ilike("username", "%%")
-                        ilike("display_name", "%%")
+                        ilike("username", "%$query%")
+                        ilike("display_name", "%$query%")
                     }
                 }
             } else {

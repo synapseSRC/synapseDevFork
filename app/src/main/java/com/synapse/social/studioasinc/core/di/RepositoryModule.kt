@@ -243,8 +243,8 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideFileUploader(): FileUploader {
-        return FileUploader()
+    fun provideFileUploader(@ApplicationContext context: Context): FileUploader {
+        return FileUploader(context)
     }
 
     @Provides

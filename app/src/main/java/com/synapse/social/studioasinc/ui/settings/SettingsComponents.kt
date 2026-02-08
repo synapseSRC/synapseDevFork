@@ -808,9 +808,6 @@ fun ProfileHeaderCard(
 ) {
     val profileAvatarDescription = stringResource(R.string.settings_profile_avatar_description)
 
-    // Debug logging
-    android.util.Log.d("ProfileHeaderCard", "Rendering profile card - avatarUrl: $avatarUrl, displayName: $displayName")
-
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = SettingsShapes.cardShape,
@@ -829,7 +826,6 @@ fun ProfileHeaderCard(
                 modifier = Modifier.size(SettingsSpacing.avatarSize)
             ) {
                 if (avatarUrl != null && avatarUrl.isNotBlank()) {
-                    android.util.Log.d("ProfileHeaderCard", "Loading image from URL: $avatarUrl")
                     AsyncImage(
                         model = ImageLoader.buildImageRequest(LocalContext.current, avatarUrl),
                         contentDescription = "$profileAvatarDescription, $displayName",

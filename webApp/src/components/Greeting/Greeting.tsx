@@ -1,11 +1,12 @@
 import './Greeting.css';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Greeting as KotlinGreeting } from 'shared';
 import type { AnimationEvent } from 'react';
 
 export function Greeting() {
-  const greeting = new KotlinGreeting();
+  // Memoize KotlinGreeting instantiation to prevent object creation on every render
+  const greeting = useMemo(() => new KotlinGreeting(), []);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 

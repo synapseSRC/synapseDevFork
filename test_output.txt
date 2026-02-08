@@ -1,0 +1,208 @@
+
+> Configure project :shared
+w: The following Kotlin/Native targets cannot be built on this machine and are disabled:
+iosArm64, iosSimulatorArm64, iosX64
+To hide this message, add 'kotlin.native.ignoreDisabledTargets=true' to the Gradle properties.
+
+
+> Task :app:preBuild UP-TO-DATE
+> Task :shared:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:preDebugBuild UP-TO-DATE
+> Task :shared:generateDebugResValues UP-TO-DATE
+> Task :shared:generateDebugResources UP-TO-DATE
+> Task :shared:packageDebugResources UP-TO-DATE
+> Task :shared:processDebugNavigationResources UP-TO-DATE
+> Task :shared:parseDebugLocalResources UP-TO-DATE
+> Task :shared:generateDebugRFile UP-TO-DATE
+> Task :shared:writeDebugAarMetadata UP-TO-DATE
+> Task :shared:extractDeepLinksDebug UP-TO-DATE
+> Task :shared:processDebugManifest UP-TO-DATE
+> Task :shared:compileDebugLibraryResources UP-TO-DATE
+> Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:generateCommonMainStorageDatabaseInterface UP-TO-DATE
+> Task :shared:generateDebugBuildConfig UP-TO-DATE
+> Task :shared:compileDebugKotlinAndroid UP-TO-DATE
+> Task :shared:javaPreCompileDebug UP-TO-DATE
+> Task :shared:compileDebugJavaWithJavac UP-TO-DATE
+> Task :shared:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :shared:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :shared:processDebugJavaRes UP-TO-DATE
+> Task :shared:createFullJarDebug UP-TO-DATE
+> Task :app:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesDebug UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:kspDebugKotlin UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :app:hiltAggregateDepsDebug
+> Task :app:hiltJavaCompileDebug
+> Task :app:processDebugJavaRes
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:transformDebugClassesWithAsm
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:kspDebugUnitTestKotlin
+
+> Task :app:compileDebugUnitTestKotlin FAILED
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:10:47 Unresolved reference 'PostgrestBuilder'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:11:47 Unresolved reference 'PostgrestResult'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:36:38 Unresolved reference 'PostgrestBuilder'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:37:38 Unresolved reference 'PostgrestBuilder'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:62:32 Unresolved reference 'PostgrestResult'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:63:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:63:30 Unresolved reference 'body'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:65:52 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:65:52 Too many arguments for 'fun StringBuilder.insert(index: Int, value: Short): StringBuilder'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:65:59 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:65:59 Too many arguments for 'fun StringBuilder.insert(index: Int, value: Short): StringBuilder'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:66:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:66:31 Unresolved reference 'update'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:66:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:66:45 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:66:52 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:66:59 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:67:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:67:31 Unresolved reference 'delete'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:67:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:67:45 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:67:52 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:67:59 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:76:31 Unresolved reference 'PostgrestResult'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:77:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:77:29 Unresolved reference 'body'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:78:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:78:31 Unresolved reference 'select'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:78:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:78:45 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:78:52 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:78:59 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:92:31 Unresolved reference 'PostgrestResult'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:93:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:93:29 Unresolved reference 'body'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:94:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:94:31 Unresolved reference 'select'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:94:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:94:45 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:94:52 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:94:59 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:107:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:107:31 Unresolved reference 'select'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:107:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:107:45 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:107:52 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:107:59 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:124:31 Unresolved reference 'PostgrestResult'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:125:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:125:29 Unresolved reference 'body'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:126:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:126:31 Unresolved reference 'select'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:126:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:126:45 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:126:52 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:126:59 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:128:31 Unresolved reference 'PostgrestResult'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:129:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:129:29 Unresolved reference 'body'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:130:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:130:31 Unresolved reference 'select'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:130:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:130:45 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:130:52 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:130:59 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:137:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:137:51 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:137:51 Too many arguments for 'fun StringBuilder.insert(index: Int, value: Short): StringBuilder'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:137:58 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:137:58 Too many arguments for 'fun StringBuilder.insert(index: Int, value: Short): StringBuilder'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:147:31 Unresolved reference 'PostgrestResult'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:148:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:148:29 Unresolved reference 'body'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:149:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:149:31 Unresolved reference 'select'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:149:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:149:45 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:149:52 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:149:59 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:151:31 Unresolved reference 'PostgrestResult'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:152:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:152:29 Unresolved reference 'body'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:153:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:153:31 Unresolved reference 'select'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:153:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:153:45 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:153:52 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:153:59 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:160:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:160:30 Unresolved reference 'update'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:160:37 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:160:44 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:160:51 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:160:58 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:169:31 Unresolved reference 'PostgrestResult'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:170:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:170:29 Unresolved reference 'body'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:171:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:171:31 Unresolved reference 'select'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:171:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:171:45 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:171:52 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:171:59 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:189:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:189:30 Unresolved reference 'delete'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:189:37 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:189:44 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:189:51 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:189:58 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:204:31 Unresolved reference 'PostgrestResult'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:205:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:205:29 Unresolved reference 'body'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:206:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:206:31 Unresolved reference 'select'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:206:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:206:45 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:206:52 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:206:59 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:208:32 Unresolved reference 'PostgrestResult'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:209:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:209:30 Unresolved reference 'body'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:210:9 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:210:31 Unresolved reference 'select'.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:210:38 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:210:45 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:210:52 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///app/app/src/test/java/com/synapse/social/studioasinc/data/repository/PollRepositoryTest.kt:210:59 Cannot infer type for this parameter. Please specify it explicitly.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugUnitTestKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 59s
+50 actionable tasks: 8 executed, 1 from cache, 41 up-to-date

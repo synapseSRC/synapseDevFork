@@ -12,7 +12,7 @@ import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import io.github.jan.supabase.SupabaseClient as SupabaseClientInterface
+import io.github.jan.supabase.SupabaseClient as SupabaseClientLib
 
 @Serializable
 private data class PostDto(
@@ -33,16 +33,9 @@ private data class AuthorDto(
     val avatar: String? = null
 )
 
-internal fun String.sanitizeForSearch(): String = this.trim().replace("%", "\\%").replace("_", "\\_")
-
 class SearchRepositoryImpl(
-    private val client: SupabaseClientInterface = SupabaseClient.client
+    private val client: SupabaseClientLib = SupabaseClient.client
 ) : ISearchRepository {
-
-    // Pre-generated mock data to avoid object creation on every query
-    private val mockSparklines = List(20) {
-        List(10) { (0..100).random().toFloat() }
-    }
 
     override suspend fun searchPosts(query: String): Result<List<SearchPost>> = runCatching {
         // Using 'users' as the relationship name. If it fails, we fallback to non-joined and empty author data.
@@ -119,8 +112,8 @@ class SearchRepositoryImpl(
             if (sanitizedQuery.isNotBlank()) {
                 filter {
                     or {
-                        ilike("username", "%${sanitizeSearchQuery(query)}%")
-                        ilike("display_name", "%${sanitizeSearchQuery(query)}%")
+                        ilike("username", "$query%")
+                        ilike("display_name", "$query%")
                     }
                 }
             } else {

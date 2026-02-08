@@ -38,16 +38,24 @@ class SearchRepositoryImpl(
     private val client: io.github.jan.supabase.SupabaseClient = SupabaseClient.client
 ) : ISearchRepository {
 
+    internal fun sanitizeSearchQuery(query: String): String {
+        return query.trim()
+            .take(100)
+            .replace("\\", "\\\\")
+            .replace("%", "\\%")
+            .replace("_", "\\_")
+    }
 
     override suspend fun searchPosts(query: String): Result<List<SearchPost>> = runCatching {
         // Using 'users' as the relationship name. If it fails, we fallback to non-joined and empty author data.
         val columns = Columns.raw("id, post_text, author_uid, likes_count, comments_count, reshares_count, created_at, author:users!posts_author_uid_fkey(display_name, username, avatar)")
 
         val sanitizedQuery = sanitizeSearchQuery(query)
+
         val result = client.postgrest["posts"].select(columns = columns) {
             if (sanitizedQuery.isNotBlank()) {
                 filter {
-                    ilike("post_text", "%${sanitizeSearchQuery(query)}%")
+                    ilike("post_text", "%$sanitizedQuery%")
                 }
             }
             order("created_at", Order.DESCENDING)
@@ -72,10 +80,11 @@ class SearchRepositoryImpl(
 
     override suspend fun searchHashtags(query: String): Result<List<SearchHashtag>> = runCatching {
         val sanitizedQuery = sanitizeSearchQuery(query)
+
         client.postgrest["hashtags"].select {
             if (sanitizedQuery.isNotBlank()) {
                 filter {
-                    ilike("tag", "${query.sanitizeForSearch()}%")
+                    ilike("tag", "$sanitizedQuery%")
                 }
             }
             order("usage_count", Order.DESCENDING)
@@ -97,10 +106,11 @@ class SearchRepositoryImpl(
 
     override suspend fun searchNews(query: String): Result<List<SearchNews>> = runCatching {
         val sanitizedQuery = sanitizeSearchQuery(query)
+
         client.postgrest["news_articles"].select {
             if (sanitizedQuery.isNotBlank()) {
                 filter {
-                    textSearch("headline", query, config = "english", textSearchType = TextSearchType.WEBSEARCH)
+                    ilike("headline", "%$sanitizedQuery%")
                 }
             }
             order("published_at", Order.DESCENDING)
@@ -109,13 +119,14 @@ class SearchRepositoryImpl(
     }
 
     override suspend fun getSuggestedAccounts(query: String): Result<List<SearchAccount>> = runCatching {
-        val sanitized = sanitizeSearchQuery(query)
+        val sanitizedQuery = sanitizeSearchQuery(query)
+
         client.postgrest["users"].select {
-            if (sanitized.isNotBlank()) {
+            if (sanitizedQuery.isNotBlank()) {
                 filter {
                     or {
-                        ilike("username", "$sanitized%")
-                        ilike("display_name", "$sanitized%")
+                        ilike("username", "%$sanitizedQuery%")
+                        ilike("display_name", "%$sanitizedQuery%")
                     }
                 }
             } else {

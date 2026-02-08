@@ -213,6 +213,14 @@ object FileManager {
      */
     fun getPathFromUri(context: Context, uri: Uri?): String? {
         uri ?: return null
+
+        // Android 10 (API 29) and above requires Scoped Storage.
+        // Direct file paths from external storage are restricted and unreliable.
+        // We copy the content to the app's cache directory to ensure valid File access.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return copyToCache(context, uri)
+        }
+
         var path: String? = null
 
         // DocumentProvider
@@ -354,11 +362,17 @@ object FileManager {
     private fun copyToCache(context: Context, uri: Uri): String? {
         return try {
             context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                var fileName = getFileName(context, uri)
-                if (fileName.isNullOrEmpty()) {
-                    fileName = "temp_file_${System.currentTimeMillis()}"
-                }
-                val cacheFile = File(context.cacheDir, fileName)
+                val fileName = getFileName(context, uri) ?: "temp_file"
+                // Extract extension and name
+                val ext = if (fileName.contains(".")) ".${fileName.substringAfterLast(".")}" else ".tmp"
+                val name = if (fileName.contains(".")) fileName.substringBeforeLast(".") else fileName
+
+                // Sanitize name part (allow only safe chars, shorten if too long)
+                val safeName = name.replace(Regex("[^a-zA-Z0-9_-]"), "_").take(50)
+
+                // Use createTempFile to handle uniqueness and safety in cacheDir
+                val cacheFile = File.createTempFile("${System.currentTimeMillis()}_$safeName", ext, context.cacheDir)
+
                 FileOutputStream(cacheFile).use { outputStream ->
                     inputStream.copyTo(outputStream, BUFFER_SIZE)
                 }

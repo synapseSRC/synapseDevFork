@@ -81,11 +81,8 @@ actual object PlatformUtils {
     }
 
     private fun CPointer<UByteVar>.toHex(length: Int): String {
-        val result = StringBuilder()
-        for (i in 0 until length) {
-            val hex = this[i].toString(16).padStart(2, '0')
-            result.append(hex)
+        return (0 until length).joinToString("") { i ->
+            this[i].toString(16).padStart(2, '0')
         }
-        return result.toString()
     }
 }

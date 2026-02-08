@@ -1,6 +1,7 @@
 package com.synapse.social.studioasinc.shared.data.repository
 
 import com.synapse.social.studioasinc.shared.core.network.SupabaseClient
+import com.synapse.social.studioasinc.shared.core.util.sanitizeSearchQuery
 import com.synapse.social.studioasinc.shared.domain.model.SearchAccount
 import com.synapse.social.studioasinc.shared.domain.model.SearchHashtag
 import com.synapse.social.studioasinc.shared.domain.model.SearchNews
@@ -43,7 +44,7 @@ class SearchRepositoryImpl(
         val result = client.postgrest["posts"].select(columns = columns) {
             if (query.isNotBlank()) {
                 filter {
-                    ilike("post_text", "%$query%")
+                    ilike("post_text", "%${sanitizeSearchQuery(query)}%")
                 }
             }
             order("created_at", Order.DESCENDING)
@@ -70,7 +71,7 @@ class SearchRepositoryImpl(
         client.postgrest["hashtags"].select {
             if (query.isNotBlank()) {
                 filter {
-                    ilike("tag", "$query%")
+                    ilike("tag", "${sanitizeSearchQuery(query)}%")
                 }
             }
             order("usage_count", Order.DESCENDING)
@@ -94,7 +95,7 @@ class SearchRepositoryImpl(
         client.postgrest["news_articles"].select {
             if (query.isNotBlank()) {
                 filter {
-                    ilike("headline", "%$query%")
+                    ilike("headline", "%${sanitizeSearchQuery(query)}%")
                 }
             }
             order("published_at", Order.DESCENDING)
@@ -107,8 +108,8 @@ class SearchRepositoryImpl(
             if (query.isNotBlank()) {
                 filter {
                     or {
-                        ilike("username", "%$query%")
-                        ilike("display_name", "%$query%")
+                        ilike("username", "%${sanitizeSearchQuery(query)}%")
+                        ilike("display_name", "%${sanitizeSearchQuery(query)}%")
                     }
                 }
             } else {

@@ -73,7 +73,7 @@ class FollowListActivity : ComponentActivity() {
 
                 Toast.makeText(this@FollowListActivity, "Chat feature not implemented", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
-                // Handle error silently
+
             }
         }
     }

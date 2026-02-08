@@ -28,7 +28,7 @@ class R2UploadService(private val client: HttpClient) : UploadService {
             throw Exception("R2 configuration is incomplete")
         }
 
-        // Encode fileName to handle special characters (e.g., spaces)
+
         val encodedFileName = fileName.encodeURLPathPart()
 
         val host = "$accountId.r2.cloudflarestorage.com"

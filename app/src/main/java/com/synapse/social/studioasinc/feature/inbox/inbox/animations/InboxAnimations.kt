@@ -12,10 +12,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.IntOffset
 import com.synapse.social.studioasinc.ui.inbox.theme.InboxAnimations as AnimSpecs
 
-/**
- * Staggered entrance animation for list items.
- * Items slide in from the right with a subtle fade.
- */
+
+
 @Composable
 fun AnimatedListItemEntrance(
     visible: Boolean,
@@ -56,10 +54,8 @@ fun AnimatedListItemEntrance(
     )
 }
 
-/**
- * Modifier for pulse animation on online indicator.
- * Creates a subtle breathing effect.
- */
+
+
 fun Modifier.pulseEffect(
     enabled: Boolean = true,
     minScale: Float = 0.9f,
@@ -78,10 +74,8 @@ fun Modifier.pulseEffect(
     this.scale(scale)
 }
 
-/**
- * Pop animation for badge count changes.
- * Uses spring physics for a bouncy effect.
- */
+
+
 @Composable
 fun BadgePopAnimation(
     targetCount: Int,
@@ -103,7 +97,7 @@ fun BadgePopAnimation(
         label = "badgeScale"
     )
 
-    // Reset scale after animation
+
     LaunchedEffect(trigger) {
         kotlinx.coroutines.delay(100)
     }
@@ -115,10 +109,8 @@ fun BadgePopAnimation(
     }
 }
 
-/**
- * Typing indicator dots animation.
- * Three dots bounce sequentially.
- */
+
+
 @Composable
 fun TypingDotsAnimation(): Triple<Float, Float, Float> {
     val infiniteTransition = rememberInfiniteTransition(label = "typingDots")
@@ -176,10 +168,8 @@ fun TypingDotsAnimation(): Triple<Float, Float, Float> {
     return Triple(dot1Offset, dot2Offset, dot3Offset)
 }
 
-/**
- * Modifier for item press scale animation.
- * Provides tactile feedback on tap.
- */
+
+
 fun Modifier.pressScale(
     pressed: Boolean,
     pressedScale: Float = 0.98f
@@ -196,10 +186,8 @@ fun Modifier.pressScale(
     this.scale(scale)
 }
 
-/**
- * Entrance animation for the entire screen.
- * Fades in with a slight upward motion.
- */
+
+
 fun Modifier.screenEntrance(): Modifier = composed {
     var visible by remember { mutableStateOf(false) }
 
@@ -230,10 +218,8 @@ fun Modifier.screenEntrance(): Modifier = composed {
         .offset { IntOffset(0, offsetY.toInt()) }
 }
 
-/**
- * Crossfade animation for content switching.
- * Smoother than default crossfade.
- */
+
+
 @Composable
 fun <T> SmoothCrossfade(
     targetState: T,
@@ -254,9 +240,8 @@ fun <T> SmoothCrossfade(
     )
 }
 
-/**
- * Shimmer animation modifier for loading states.
- */
+
+
 fun Modifier.shimmerAnimation(): Modifier = composed {
     val transition = rememberInfiniteTransition(label = "shimmer")
 
@@ -278,9 +263,8 @@ fun Modifier.shimmerAnimation(): Modifier = composed {
     }
 }
 
-/**
- * FAB expand/shrink animation.
- */
+
+
 @Composable
 fun AnimatedFABContent(
     expanded: Boolean,
@@ -291,7 +275,7 @@ fun AnimatedFABContent(
         targetState = expanded,
         transitionSpec = {
             if (targetState) {
-                // Expanding
+
                 (fadeIn(animationSpec = tween(150)) +
                     scaleIn(initialScale = 0.85f, animationSpec = spring(
                         dampingRatio = Spring.DampingRatioLowBouncy
@@ -300,7 +284,7 @@ fun AnimatedFABContent(
                         scaleOut(targetScale = 0.85f)
                 )
             } else {
-                // Collapsing
+
                 (fadeIn(animationSpec = tween(100)) +
                     scaleIn(initialScale = 0.85f)).togetherWith(
                     fadeOut(animationSpec = tween(150)) +

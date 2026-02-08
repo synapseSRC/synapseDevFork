@@ -10,10 +10,8 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-/**
- * Authentication feature theme.
- * Supports dynamic colors on Android 12+ and falls back to default Material 3 schemes.
- */
+
+
 @Composable
 fun AuthTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

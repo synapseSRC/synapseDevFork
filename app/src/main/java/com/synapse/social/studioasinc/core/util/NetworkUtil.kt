@@ -7,18 +7,14 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.util.Log
 
-/**
- * Utility class for network connectivity detection and monitoring
- */
+
+
 object NetworkUtil {
 
     private const val TAG = "NetworkUtil"
 
-    /**
-     * Check if network is currently available
-     * @param context Application context
-     * @return true if network is available, false otherwise
-     */
+
+
     fun isNetworkAvailable(context: Context): Boolean {
         val connectivityManager = context.getSystemService(ConnectivityManager::class.java)
             ?: return false
@@ -29,13 +25,8 @@ object NetworkUtil {
         return networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
-    /**
-     * Register a network callback to monitor connectivity changes
-     * @param context Application context
-     * @param onNetworkAvailable Callback when network becomes available
-     * @param onNetworkLost Callback when network is lost
-     * @return NetworkCallback that can be unregistered later
-     */
+
+
     fun registerNetworkCallback(
         context: Context,
         onNetworkAvailable: () -> Unit,
@@ -64,11 +55,8 @@ object NetworkUtil {
         return networkCallback
     }
 
-    /**
-     * Unregister a network callback
-     * @param context Application context
-     * @param callback The NetworkCallback to unregister
-     */
+
+
     fun unregisterNetworkCallback(context: Context, callback: ConnectivityManager.NetworkCallback) {
         try {
             val connectivityManager = context.getSystemService(ConnectivityManager::class.java)

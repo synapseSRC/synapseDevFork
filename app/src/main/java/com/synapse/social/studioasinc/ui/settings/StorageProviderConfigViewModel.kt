@@ -9,11 +9,11 @@ import kotlinx.coroutines.launch
 
 class StorageProviderConfigViewModel : ViewModel() {
 
-    // ========================================================================
-    // State
-    // ========================================================================
 
-    // Mock initial data
+
+
+
+
     private val _photoProviders = MutableStateFlow(setOf("ImgBB"))
     val photoProviders: StateFlow<Set<String>> = _photoProviders.asStateFlow()
 
@@ -23,9 +23,9 @@ class StorageProviderConfigViewModel : ViewModel() {
     private val _fileProviders = MutableStateFlow(setOf("Supabase"))
     val fileProviders: StateFlow<Set<String>> = _fileProviders.asStateFlow()
 
-    // ========================================================================
-    // Actions
-    // ========================================================================
+
+
+
 
     fun togglePhotoProvider(provider: String, enabled: Boolean) {
         viewModelScope.launch {
@@ -35,9 +35,9 @@ class StorageProviderConfigViewModel : ViewModel() {
             } else {
                 current.remove(provider)
             }
-            // Ensure at least one is selected? The requirement said "optional validation".
-            // I'll leave it flexible for now or enforce 1 if it empties.
-            // Let's enforce at least one for stability if user tries to uncheck the last one.
+
+
+
             if (current.isNotEmpty()) {
                 _photoProviders.value = current
             }

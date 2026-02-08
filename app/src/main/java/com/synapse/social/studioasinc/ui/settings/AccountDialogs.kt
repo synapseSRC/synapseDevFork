@@ -21,32 +21,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
 
-/**
- * Account-related dialog composables.
- *
- * This file contains all dialog components for account management:
- * - ChangeEmailDialog: For updating email address
- * - ChangePasswordDialog: For updating password with strength indicator
- * - DeleteAccountDialog: For account deletion confirmation
- *
- * All dialogs use AlertDialog with 28dp corner radius and 12dp input corners.
- *
- * Requirements: 2.3, 2.4, 2.6
- */
 
-/**
- * Dialog for changing email address.
- *
- * Displays an OutlinedTextField for new email with validation and a password
- * field for verification. Uses 12dp corner radius for inputs.
- *
- * @param onDismiss Callback when dialog is dismissed
- * @param onConfirm Callback when email change is confirmed (newEmail, password)
- * @param isLoading Whether the operation is in progress
- * @param error Optional error message to display
- *
- * Requirements: 2.3
- */
+
+
+
+
 @Composable
 fun ChangeEmailDialog(
     onDismiss: () -> Unit,
@@ -77,7 +56,7 @@ fun ChangeEmailDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                // New Email Field
+
                 OutlinedTextField(
                     value = newEmail,
                     onValueChange = { newEmail = it },
@@ -97,7 +76,7 @@ fun ChangeEmailDialog(
                     isError = error != null && error.contains("email", ignoreCase = true)
                 )
 
-                // Password Field
+
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
@@ -135,7 +114,7 @@ fun ChangeEmailDialog(
                     isError = error != null && error.contains("password", ignoreCase = true)
                 )
 
-                // Error message
+
                 if (error != null) {
                     Text(
                         text = error,
@@ -172,20 +151,8 @@ fun ChangeEmailDialog(
     )
 }
 
-/**
- * Dialog for changing password.
- *
- * Displays secure text fields for current password, new password, and confirmation.
- * Includes a password strength indicator that updates in real-time.
- *
- * @param onDismiss Callback when dialog is dismissed
- * @param onConfirm Callback when password change is confirmed (current, new, confirm)
- * @param isLoading Whether the operation is in progress
- * @param error Optional error message to display
- * @param calculatePasswordStrength Function to calculate password strength (0-4)
- *
- * Requirements: 2.4
- */
+
+
 @Composable
 fun ChangePasswordDialog(
     onDismiss: () -> Unit,
@@ -222,7 +189,7 @@ fun ChangePasswordDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                // Current Password Field
+
                 OutlinedTextField(
                     value = currentPassword,
                     onValueChange = { currentPassword = it },
@@ -254,7 +221,7 @@ fun ChangePasswordDialog(
                     }
                 )
 
-                // New Password Field
+
                 OutlinedTextField(
                     value = newPassword,
                     onValueChange = { newPassword = it },
@@ -287,12 +254,12 @@ fun ChangePasswordDialog(
                     isError = newPassword.isNotEmpty() && newPassword.length < 8
                 )
 
-                // Password Strength Indicator
+
                 if (newPassword.isNotEmpty()) {
                     PasswordStrengthIndicator(strength = passwordStrength)
                 }
 
-                // Confirm Password Field
+
                 OutlinedTextField(
                     value = confirmPassword,
                     onValueChange = { confirmPassword = it },
@@ -330,7 +297,7 @@ fun ChangePasswordDialog(
                     isError = confirmPassword.isNotEmpty() && confirmPassword != newPassword
                 )
 
-                // Error message
+
                 if (error != null) {
                     Text(
                         text = error,
@@ -369,13 +336,8 @@ fun ChangePasswordDialog(
     )
 }
 
-/**
- * Password strength indicator component.
- *
- * Displays a visual indicator of password strength with color-coded bars.
- *
- * @param strength Password strength level (0-4)
- */
+
+
 @Composable
 private fun PasswordStrengthIndicator(strength: Int) {
     Column(
@@ -434,19 +396,8 @@ private fun PasswordStrengthIndicator(strength: Int) {
     }
 }
 
-/**
- * Dialog for account deletion confirmation.
- *
- * Displays a warning icon and requires the user to type an exact confirmation
- * phrase to proceed with account deletion. Uses 28dp corner radius.
- *
- * @param onDismiss Callback when dialog is dismissed
- * @param onConfirm Callback when deletion is confirmed (confirmationText)
- * @param isLoading Whether the operation is in progress
- * @param error Optional error message to display
- *
- * Requirements: 2.6
- */
+
+
 @Composable
 fun DeleteAccountDialog(
     onDismiss: () -> Unit,
@@ -530,7 +481,7 @@ fun DeleteAccountDialog(
                     )
                 )
 
-                // Error message
+
                 if (error != null) {
                     Text(
                         text = error,

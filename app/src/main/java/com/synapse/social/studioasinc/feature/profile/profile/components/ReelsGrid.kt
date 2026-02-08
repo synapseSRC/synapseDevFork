@@ -27,10 +27,8 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import kotlinx.coroutines.delay
 
-/**
- * Grid component for displaying Reels (short videos).
- * Uses a 9:16 vertical aspect ratio.
- */
+
+
 @Composable
 fun ReelsGrid(
     items: List<MediaItem>,
@@ -108,7 +106,7 @@ private fun AnimatedReelItem(
             .clip(RoundedCornerShape(4.dp))
             .clickable { onClick() }
     ) {
-        // Image/Thumbnail
+
         AsyncImage(
             model = item.thumbnailUrl ?: item.url,
             contentDescription = null,
@@ -121,7 +119,7 @@ private fun AnimatedReelItem(
 
 
 
-        // Gradient overlay for text readability at bottom
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -137,7 +135,7 @@ private fun AnimatedReelItem(
                 )
         )
 
-        // Play icon with text (placeholder for view count if we had it)
+
         Row(
             modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -152,7 +150,7 @@ private fun AnimatedReelItem(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "Reel", // Placeholder since we don't have view count
+                text = "Reel",
                 style = MaterialTheme.typography.labelSmall,
                 color = Color.White
             )

@@ -10,21 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 
-/**
- * Privacy and Security Settings screen composable.
- *
- * Displays comprehensive privacy and security options including:
- * - Privacy Checkup: Quick privacy review
- * - Profile Settings: Last seen, profile photo, about, status visibility
- * - Message Privacy: Read receipts, disappearing messages
- * - Group Privacy: Group settings and permissions
- * - Security: App lock, chat lock, blocked contacts
- * - Active Sessions: Session management
- *
- * Uses MediumTopAppBar with back navigation and displays settings in grouped sections.
- *
- * Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrivacySecurityScreen(
@@ -118,12 +105,12 @@ fun PrivacySecurityContent(
                 .padding(horizontal = SettingsSpacing.screenPadding),
             verticalArrangement = Arrangement.spacedBy(SettingsSpacing.sectionSpacing)
         ) {
-            // Privacy Checkup Section
+
             item {
                 PrivacyCheckupSection(isLoading = isLoading)
             }
 
-            // Profile Privacy Section
+
             item {
                 ProfilePrivacySection(
                     privacySettings = privacySettings,
@@ -133,7 +120,7 @@ fun PrivacySecurityContent(
                 )
             }
 
-            // Message Privacy Section
+
             item {
                 MessagePrivacySection(
                     readReceiptsEnabled = privacySettings.readReceiptsEnabled,
@@ -142,7 +129,7 @@ fun PrivacySecurityContent(
                 )
             }
 
-            // Group Privacy Section
+
             item {
                 GroupPrivacySection(
                     privacySettings = privacySettings,
@@ -151,7 +138,7 @@ fun PrivacySecurityContent(
                 )
             }
 
-            // Security Section
+
             item {
                 SecuritySection(
                     appLockEnabled = privacySettings.appLockEnabled,
@@ -162,7 +149,7 @@ fun PrivacySecurityContent(
                 )
             }
 
-            // Blocked Contacts Section
+
             item {
                 ContactsSection(
                     onNavigateToBlockedUsers = onNavigateToBlockedUsers,
@@ -171,7 +158,7 @@ fun PrivacySecurityContent(
                 )
             }
 
-            // Bottom spacing
+
             item {
                 Spacer(modifier = Modifier.height(24.dp))
             }

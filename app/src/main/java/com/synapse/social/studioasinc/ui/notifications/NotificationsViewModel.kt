@@ -47,7 +47,7 @@ class NotificationsViewModel @Inject constructor(
                 val currentUserId = authRepository.getCurrentUserId()
 
                 if (currentUserId != null) {
-                    // Initial load (REST)
+
                     val dtos = notificationRepository.fetchNotifications(currentUserId)
                     val notifications = dtos.map { mapDtoToUi(it) }
 
@@ -59,7 +59,7 @@ class NotificationsViewModel @Inject constructor(
                         )
                     }
 
-                    // Subscribe to Realtime
+
                     launch {
                         try {
                             notificationRepository.getRealtimeNotifications(currentUserId).collect { dto ->
@@ -109,14 +109,14 @@ class NotificationsViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = authRepository.getCurrentUserId() ?: return@launch
 
-            // Optimistic update
+
             setNotificationReadState(notificationId, isRead = true)
 
             try {
                 notificationRepository.markAsRead(userId, notificationId)
             } catch (e: Exception) {
                 android.util.Log.e("NotificationsViewModel", "Failed to mark as read for notification $notificationId", e)
-                // Rollback optimistic update locally
+
                 setNotificationReadState(notificationId, isRead = false)
             }
         }

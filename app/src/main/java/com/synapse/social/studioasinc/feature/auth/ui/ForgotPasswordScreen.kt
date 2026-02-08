@@ -62,7 +62,7 @@ fun ForgotPasswordScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             if (state.emailSent) {
-                // Success state
+
                 Text(
                     text = "Check your email",
                     style = MaterialTheme.typography.titleMedium,
@@ -79,9 +79,9 @@ fun ForgotPasswordScreen(
                     onClick = onBackClick
                 )
             } else {
-                // Form state
+
                 ErrorCard(
-                    error = state.emailError // Reusing emailError for general error if needed, or need a general error field in state
+                    error = state.emailError
                 )
 
                 AuthTextField(

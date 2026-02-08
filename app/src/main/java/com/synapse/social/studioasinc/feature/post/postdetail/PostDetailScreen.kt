@@ -44,7 +44,7 @@ fun PostDetailScreen(
     viewModel: PostDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    // Fix: unwrap StateFlow<Flow<...>>
+
     val commentsFlow by viewModel.commentsPagingFlow.collectAsStateWithLifecycle()
     val pagingItems = commentsFlow.collectAsLazyPagingItems()
 
@@ -68,14 +68,14 @@ fun PostDetailScreen(
         viewModel.loadPost(postId)
     }
 
-    // Refresh comments when trigger changes
+
     LaunchedEffect(uiState.refreshTrigger) {
         if (uiState.refreshTrigger > 0) {
             pagingItems.refresh()
         }
     }
 
-    // Helper functions for actions
+
     fun sharePost() {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
@@ -99,7 +99,7 @@ fun PostDetailScreen(
         )
     }
 
-    // Reaction Picker for Post
+
     if (showReactionPicker) {
         ReactionPicker(
             onReactionSelected = { reaction ->
@@ -110,7 +110,7 @@ fun PostDetailScreen(
         )
     }
 
-    // Reaction Picker for Comment
+
     if (showReactionPickerForComment != null) {
         ReactionPicker(
             onReactionSelected = { reaction ->
@@ -121,7 +121,7 @@ fun PostDetailScreen(
         )
     }
 
-    // Report Dialog
+
     if (showReportDialog) {
         ReportPostDialog(
             onDismiss = { showReportDialog = false },
@@ -133,7 +133,7 @@ fun PostDetailScreen(
         )
     }
 
-    // Post Options
+
     if (showPostOptions && uiState.post != null) {
         PostOptionsBottomSheet(
             post = uiState.post!!.post,
@@ -167,7 +167,7 @@ fun PostDetailScreen(
         )
     }
 
-    // Comment Options
+
     if (showCommentOptions != null) {
         val comment = showCommentOptions!!
         CommentOptionsBottomSheet(

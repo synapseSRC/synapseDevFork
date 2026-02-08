@@ -17,23 +17,8 @@ import androidx.navigation.compose.rememberNavController
 import com.synapse.social.studioasinc.data.repository.SettingsRepositoryImpl
 import androidx.hilt.navigation.compose.hiltViewModel
 
-/**
- * Navigation host for the Settings feature.
- *
- * Manages navigation between all settings screens with consistent transitions
- * and state preservation. Uses Jetpack Compose Navigation with Material 3
- * motion design.
- *
- * Requirements: 1.2, 1.3
- *
- * @param modifier Modifier to be applied to the NavHost
- * @param navController Navigation controller for managing navigation state
- * @param startDestination Initial destination route (defaults to Settings Hub)
- * @param onBackClick Callback to exit the settings flow (finish activity)
- * @param onNavigateToProfileEdit Callback to navigate to ProfileEditActivity
- * @param onNavigateToChatPrivacy Callback to navigate to ChatPrivacySettingsActivity
- * @param onLogout Callback to perform logout
- */
+
+
 @Composable
 fun SettingsNavHost(
     modifier: Modifier = Modifier,
@@ -56,7 +41,7 @@ fun SettingsNavHost(
         popEnterTransition = { SettingsAnimations.popEnterTransition },
         popExitTransition = { SettingsAnimations.popExitTransition }
     ) {
-        // Settings Hub - Main screen with categorized settings
+
         composable(route = SettingsDestination.ROUTE_HUB) {
             val viewModel: SettingsHubViewModel = hiltViewModel()
             SettingsHubScreen(
@@ -68,7 +53,7 @@ fun SettingsNavHost(
             )
         }
 
-        // Account Settings Screen
+
         composable(route = SettingsDestination.ROUTE_ACCOUNT) {
             val viewModel: AccountSettingsViewModel = viewModel()
             AccountSettingsScreen(
@@ -90,7 +75,7 @@ fun SettingsNavHost(
             )
         }
 
-        // Request Account Information Screen
+
         composable(route = SettingsDestination.ROUTE_REQUEST_ACCOUNT_INFO) {
             val viewModel: RequestAccountInfoViewModel = viewModel()
             RequestAccountInfoScreen(
@@ -100,7 +85,7 @@ fun SettingsNavHost(
                 }
             )
         }
-        // Account Information Screen (Read-only)
+
         composable(route = SettingsDestination.ROUTE_ACCOUNT_INFO) {
             val viewModel: AccountInfoViewModel = hiltViewModel()
             AccountInfoScreen(
@@ -112,7 +97,7 @@ fun SettingsNavHost(
         }
 
 
-        // Privacy & Security Settings Screen
+
         composable(route = SettingsDestination.ROUTE_PRIVACY) {
             val viewModel: PrivacySecurityViewModel = viewModel()
             PrivacySecurityScreen(
@@ -121,18 +106,18 @@ fun SettingsNavHost(
                     navController.popBackStack()
                 },
                 onNavigateToBlockedUsers = {
-                    // Placeholder - navigate to blocked users screen
+
                 },
                 onNavigateToMutedUsers = {
-                    // Placeholder - navigate to muted users screen
+
                 },
                 onNavigateToActiveSessions = {
-                    // Placeholder - navigate to active sessions screen
+
                 }
             )
         }
 
-        // Appearance Settings Screen
+
         composable(route = SettingsDestination.ROUTE_APPEARANCE) {
             val viewModel: AppearanceViewModel = viewModel()
             AppearanceScreen(
@@ -141,12 +126,12 @@ fun SettingsNavHost(
                     navController.popBackStack()
                 },
                 onNavigateToChatCustomization = {
-                    // Navigate to chat customization screen
+
                 }
             )
         }
 
-        // Notification Settings Screen
+
         composable(route = SettingsDestination.ROUTE_NOTIFICATIONS) {
             val viewModel: NotificationSettingsViewModel = hiltViewModel()
             NotificationSettingsScreen(
@@ -185,7 +170,7 @@ fun SettingsNavHost(
             )
         }
 
-        // Storage & Data Settings Screen
+
         composable(route = SettingsDestination.ROUTE_STORAGE) {
             val viewModel: StorageDataViewModel = viewModel(
                 factory = StorageDataViewModelFactory(settingsRepository)
@@ -199,7 +184,7 @@ fun SettingsNavHost(
             )
         }
 
-        // Manage Storage Screen
+
         composable(route = SettingsDestination.ROUTE_MANAGE_STORAGE) {
             val viewModel: ManageStorageViewModel = hiltViewModel()
             ManageStorageScreen(
@@ -210,7 +195,7 @@ fun SettingsNavHost(
             )
         }
 
-        // Network Usage Screen
+
         composable(route = SettingsDestination.ROUTE_NETWORK_USAGE) {
             val viewModel: NetworkUsageViewModel = hiltViewModel()
             NetworkUsageScreen(
@@ -221,7 +206,7 @@ fun SettingsNavHost(
             )
         }
 
-        // Business Platform Screen
+
         composable(route = SettingsDestination.ROUTE_BUSINESS_PLATFORM) {
             val viewModel: BusinessPlatformViewModel = hiltViewModel()
             BusinessPlatformScreen(
@@ -232,7 +217,7 @@ fun SettingsNavHost(
             )
         }
 
-        // Storage Provider Configuration Screen
+
         composable(route = SettingsDestination.ROUTE_STORAGE_PROVIDER) {
             val viewModel: SettingsViewModel = hiltViewModel()
             StorageProviderScreen(
@@ -241,7 +226,7 @@ fun SettingsNavHost(
             )
         }
 
-        // Language & Region Settings Screen
+
         composable(route = SettingsDestination.ROUTE_LANGUAGE) {
             val viewModel: LanguageRegionViewModel = viewModel()
             LanguageRegionScreen(
@@ -252,7 +237,7 @@ fun SettingsNavHost(
             )
         }
 
-        // About & Support Settings Screen
+
         composable(route = SettingsDestination.ROUTE_ABOUT) {
             val viewModel: AboutSupportViewModel = viewModel()
             AboutSupportScreen(
@@ -266,7 +251,7 @@ fun SettingsNavHost(
             )
         }
 
-        // Open Source Licenses Screen
+
         composable(route = SettingsDestination.ROUTE_LICENSES) {
             LicensesScreen(
                 onBackClick = {
@@ -275,7 +260,7 @@ fun SettingsNavHost(
             )
         }
 
-        // API Key Settings Screen
+
         composable(route = SettingsDestination.ROUTE_API_KEY) {
             val viewModel: ApiKeySettingsViewModel = hiltViewModel()
             ApiKeySettingsScreen(
@@ -286,7 +271,7 @@ fun SettingsNavHost(
             )
         }
 
-        // Synapse Plus Settings Screen
+
         composable(route = SettingsDestination.ROUTE_SYNAPSE_PLUS) {
             SynapsePlusScreen(
                 onBackClick = {
@@ -295,7 +280,7 @@ fun SettingsNavHost(
             )
         }
 
-        // Avatar Settings Screen
+
         composable(route = SettingsDestination.ROUTE_AVATAR) {
             AvatarScreen(
                 onBackClick = {
@@ -304,7 +289,7 @@ fun SettingsNavHost(
             )
         }
 
-        // Favourites Settings Screen
+
         composable(route = SettingsDestination.ROUTE_FAVOURITES) {
             FavouritesScreen(
                 onBackClick = {
@@ -313,7 +298,7 @@ fun SettingsNavHost(
             )
         }
 
-        // Accessibility Settings Screen
+
         composable(route = SettingsDestination.ROUTE_ACCESSIBILITY) {
             AccessibilityScreen(
                 onBackClick = {
@@ -322,10 +307,10 @@ fun SettingsNavHost(
             )
         }
 
-        // Search Settings (Placeholder)
+
         composable(route = SettingsDestination.ROUTE_SEARCH) {
-            // For now, just show a blank screen or go back
-            // Ideally this would be SettingsSearchScreen()
+
+
             android.widget.Toast.makeText(LocalContext.current, "Search coming soon", android.widget.Toast.LENGTH_SHORT).show()
             LaunchedEffect(Unit) {
                 navController.popBackStack()
@@ -334,9 +319,8 @@ fun SettingsNavHost(
     }
 }
 
-/**
- * Placeholder screen for chat-related features that are not yet implemented.
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ChatPlaceholderScreen(

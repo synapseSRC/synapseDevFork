@@ -20,11 +20,11 @@ object MentionTextFormatter {
             val matches = MENTION_REGEX.findAll(text)
 
             for (match in matches) {
-                // Append text before match
+
                 append(text.substring(lastIndex, match.range.first))
 
-                // Append match with style
-                pushStringAnnotation(tag = "MENTION", annotation = match.value.substring(1)) // Remove @
+
+                pushStringAnnotation(tag = "MENTION", annotation = match.value.substring(1))
                 withStyle(
                     SpanStyle(
                         color = mentionColor,
@@ -38,7 +38,7 @@ object MentionTextFormatter {
 
                 lastIndex = match.range.last + 1
             }
-            // Append remaining text
+
             if (lastIndex < text.length) {
                 append(text.substring(lastIndex))
             }

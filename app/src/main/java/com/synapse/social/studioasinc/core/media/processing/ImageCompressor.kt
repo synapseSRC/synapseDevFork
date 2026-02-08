@@ -20,70 +20,55 @@ import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
 
-/**
- * ImageCompressor handles image compression with size and quality optimization.
- * Maintains aspect ratio while reducing file size to meet target requirements.
- */
+
+
 class ImageCompressor @Inject constructor(@ApplicationContext private val context: Context) {
 
     companion object {
         private const val MAX_WIDTH = 1920
         private const val MAX_HEIGHT = 1080
         private const val MAX_FILE_SIZE_MB = 2
-        private const val MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024L // 2MB
+        private const val MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024L
         private const val DEFAULT_COMPRESSION_QUALITY = 85
         private const val MIN_COMPRESSION_QUALITY = 50
     }
 
-    /**
-     * Compresses an image from a File.
-     *
-     * @param file The image file to compress
-     * @return Result containing the compressed image file or error
-     */
+
+
     suspend fun compressFile(file: File): Result<File> {
         return compress(Uri.fromFile(file), MAX_FILE_SIZE_BYTES)
     }
 
-    /**
-     * Compresses an image from URI to meet default size requirements.
-     *
-     * @param uri The URI of the image to compress
-     * @return Result containing the compressed image file or error
-     */
+
+
     suspend fun compress(uri: Uri): Result<File> {
         return compress(uri, MAX_FILE_SIZE_BYTES)
     }
 
-    /**
-     * Compresses an image from URI to meet specific size requirements.
-     *
-     * @param uri The URI of the image to compress
-     * @param maxSizeBytes Maximum file size in bytes
-     * @return Result containing the compressed image file or error
-     */
+
+
     suspend fun compress(uri: Uri, maxSizeBytes: Long): Result<File> = withContext(Dispatchers.IO) {
         try {
-            // Decode the image
+
             val decodedBitmap = decodeImage(uri, MAX_WIDTH, MAX_HEIGHT)
                 ?: return@withContext Result.failure(IOException("Failed to decode bitmap from $uri"))
 
-            // Apply EXIF orientation
+
             val orientedBitmap = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
                 try {
                     applyExifOrientation(uri, decodedBitmap)
                 } catch (e: Exception) {
-                    // If EXIF processing fails, use original bitmap
+
                     decodedBitmap
                 }
             } else {
                 decodedBitmap
             }
 
-            // Scale bitmap to target dimensions if needed
+
             val scaledBitmap = scaleToTargetSize(orientedBitmap, MAX_WIDTH, MAX_HEIGHT)
 
-            // Clean up intermediate bitmap if different
+
             if (scaledBitmap != orientedBitmap && scaledBitmap != decodedBitmap) {
                 orientedBitmap.recycle()
             }
@@ -91,16 +76,16 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
                 decodedBitmap.recycle()
             }
 
-            // Validate bitmap safety before compression
+
             if (!isBitmapSafeToProcess(scaledBitmap)) {
                 scaledBitmap.recycle()
                 return@withContext Result.failure(IOException("Bitmap too large to process safely"))
             }
 
-            // Compress iteratively to meet file size target
+
             val compressedFile = compressIteratively(scaledBitmap, maxSizeBytes)
 
-            // Clean up bitmap
+
             scaledBitmap.recycle()
 
             Result.success(compressedFile)
@@ -112,14 +97,13 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
         }
     }
 
-    // Legacy method kept for compatibility but redirected to main compress method
+
     suspend fun compressToSize(uri: Uri, maxSizeBytes: Long): Result<File> {
         return compress(uri, maxSizeBytes)
     }
 
-    /**
-     * Decodes an image from a URI, handling API level differences and large images.
-     */
+
+
     private fun decodeImage(uri: Uri, reqWidth: Int, reqHeight: Int): Bitmap? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             decodeImageApi28(uri, reqWidth, reqHeight)
@@ -128,9 +112,8 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
         }
     }
 
-    /**
-     * Decodes image using ImageDecoder (API 28+).
-     */
+
+
     private fun decodeImageApi28(uri: Uri, reqWidth: Int, reqHeight: Int): Bitmap? {
         return try {
             val source = ImageDecoder.createSource(context.contentResolver, uri)
@@ -145,7 +128,7 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
                     }
                 }
 
-                // For very large images (>4k), ensure we don't start with too little downsampling
+
                 var effectiveWidth = size.width / sampleSize
                 var effectiveHeight = size.height / sampleSize
 
@@ -157,7 +140,7 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
 
                 decoder.setTargetSampleSize(sampleSize)
 
-                // Check if image has transparency to decide config
+
                 val mimeType = info.mimeType
                 if (mimeType == "image/png" || mimeType == "image/webp") {
                     decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
@@ -174,9 +157,8 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
         }
     }
 
-    /**
-     * Decodes image using BitmapFactory (Legacy).
-     */
+
+
     private fun decodeImageLegacy(uri: Uri, reqWidth: Int, reqHeight: Int): Bitmap? {
         var inputStream: InputStream? = null
         try {
@@ -191,7 +173,7 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
 
             var sampleSize = calculateInSampleSize(options, reqWidth, reqHeight)
 
-            // Retry logic for OOM
+
             while (true) {
                 val newInputStream = context.contentResolver.openInputStream(uri)
                     ?: return null
@@ -199,7 +181,7 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
                 try {
                     val decodeOptions = BitmapFactory.Options().apply {
                         inSampleSize = sampleSize
-                        // Check mime type for transparency
+
                         val mimeType = options.outMimeType
                         if (mimeType == "image/png" || mimeType == "image/webp") {
                             inPreferredConfig = Bitmap.Config.ARGB_8888
@@ -214,7 +196,7 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
                 } catch (e: OutOfMemoryError) {
                     newInputStream.close()
                     sampleSize *= 2
-                    if (sampleSize > 64) { // Safety break
+                    if (sampleSize > 64) {
                         return null
                     }
                 }
@@ -227,9 +209,8 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
         }
     }
 
-    /**
-     * Calculates the optimal inSampleSize for efficient bitmap decoding.
-     */
+
+
     fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
         val height = options.outHeight
         val width = options.outWidth
@@ -256,9 +237,8 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
         return inSampleSize
     }
 
-    /**
-     * Applies EXIF orientation to the bitmap.
-     */
+
+
     private suspend fun applyExifOrientation(uri: Uri, bitmap: Bitmap): Bitmap = withContext(Dispatchers.IO) {
         try {
             val inputStream = context.contentResolver.openInputStream(uri)
@@ -305,9 +285,8 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
         }
     }
 
-    /**
-     * Scales bitmap to fit within target dimensions.
-     */
+
+
     private fun scaleToTargetSize(bitmap: Bitmap, maxWidth: Int, maxHeight: Int): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
@@ -339,9 +318,8 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
         }
     }
 
-    /**
-     * Compresses bitmap iteratively to meet target file size.
-     */
+
+
     private suspend fun compressIteratively(bitmap: Bitmap, targetSizeBytes: Long): File = withContext(Dispatchers.IO) {
         val tempFile = File.createTempFile("compressed_image_", ".jpg", context.cacheDir)
 
@@ -350,7 +328,7 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
         var bestQuality = minQuality
         var bestData: ByteArray? = null
 
-        // Check if compression needed at max quality
+
         val initialStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, maxQuality, initialStream)
         val initialData = initialStream.toByteArray()
@@ -359,7 +337,7 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
         if (initialData.size.toLong() <= targetSizeBytes) {
             bestData = initialData
         } else {
-            // Binary search for the best quality
+
             var attempts = 0
             val maxAttempts = 10
 
@@ -408,9 +386,8 @@ class ImageCompressor @Inject constructor(@ApplicationContext private val contex
         tempFile
     }
 
-    /**
-     * Validates if the bitmap can be safely processed without causing OOM.
-     */
+
+
     private fun isBitmapSafeToProcess(bitmap: Bitmap): Boolean {
         val runtime = Runtime.getRuntime()
         val maxMemory = runtime.maxMemory()

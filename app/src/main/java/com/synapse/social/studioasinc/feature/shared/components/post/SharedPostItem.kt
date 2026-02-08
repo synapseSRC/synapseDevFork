@@ -9,29 +9,24 @@ import com.synapse.social.studioasinc.domain.model.ReactionType
 
 import com.synapse.social.studioasinc.ui.settings.PostViewStyle
 
-/**
- * A wrapper component that reduces code duplication in Features (Home, Profile).
- * It handles the creation of PostCardState using PostMapper.
- */
+
+
 @Composable
 fun SharedPostItem(
     post: Post,
-    currentProfile: UserProfile? = null, // Optional, for Profile screen context
+    currentProfile: UserProfile? = null,
     postViewStyle: PostViewStyle = PostViewStyle.SWIPE,
     actions: PostActions,
-    isExpanded: Boolean = false, // Added parameter
+    isExpanded: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    // Use the shared mapper
+
     val state = remember(post, currentProfile, isExpanded) {
         PostMapper.mapToState(post, currentProfile, isExpanded)
     }
 
-    /**
-     * Bolt Optimization: Memoize lambdas that capture 'post' and 'actions'.
-     * Since Post is unstable, SharedPostItem will recompose whenever its parent does.
-     * By remembering these lambdas, we ensure PostCard (which is @Stable) is skipped.
-     */
+
+
     val onLikeClick = remember(post, actions) { { actions.onLike(post) } }
     val onCommentClick = remember(post, actions) { { actions.onComment(post) } }
     val onShareClick = remember(post, actions) { { actions.onShare(post) } }
@@ -69,7 +64,7 @@ fun SharedPostItem(
         onMediaClick = onMediaClick,
         onOptionsClick = onOptionsClick,
         onPollVote = onPollVote,
-        // Optional: Can extend PostActions if reaction picker is needed
+
         onReactionSelected = null,
         modifier = modifier
     )

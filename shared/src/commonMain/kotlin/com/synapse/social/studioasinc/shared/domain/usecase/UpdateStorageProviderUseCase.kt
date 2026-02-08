@@ -11,7 +11,7 @@ class UpdateStorageProviderUseCase(private val repository: StorageRepository) {
             MediaType.VIDEO -> repository.updateVideoProvider(provider)
             MediaType.OTHER -> repository.updateOtherProvider(provider)
             else -> {
-                // Ignore other media types
+
             }
         }
     }

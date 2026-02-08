@@ -11,13 +11,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
 
-/**
- * Accessibility settings screen.
- *
- * Displays visual accessibility and animation controls:
- * - Increase Contrast: Visual accessibility improvements
- * - Animation Toggles: Motion and animation controls
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccessibilityScreen(
@@ -49,7 +44,7 @@ fun AccessibilityScreen(
                 .padding(horizontal = SettingsSpacing.screenPadding),
             verticalArrangement = Arrangement.spacedBy(SettingsSpacing.sectionSpacing)
         ) {
-            // Increase Contrast Section
+
             item {
                 SettingsSection(title = "Increase Contrast") {
                     SettingsToggleItem(
@@ -70,7 +65,7 @@ fun AccessibilityScreen(
                 }
             }
 
-            // Animation Toggles Section
+
             item {
                 SettingsSection(title = "Animation Toggles") {
                     SettingsToggleItem(

@@ -97,11 +97,11 @@ fun EmailVerificationScreen(
                     onClick = onResendClick
                 )
             } else {
-                // Cooldown state
+
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    // Using standard CircularProgressIndicator for determinate progress as ExpressiveLoadingIndicator is for indeterminate
+
                     androidx.compose.material3.CircularProgressIndicator(
-                        progress = { state.resendCooldownSeconds / 60f }, // Assuming 60s max
+                        progress = { state.resendCooldownSeconds / 60f },
                         modifier = Modifier.size(48.dp),
                     )
                     Spacer(modifier = Modifier.height(8.dp))

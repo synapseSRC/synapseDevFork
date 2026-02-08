@@ -68,7 +68,7 @@ fun SelectRegionScreen(
     }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background, // Ensure background contrast
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             if (isSearchActive) {
                 SearchBar(
@@ -159,12 +159,12 @@ fun SelectRegionScreen(
 
 @Composable
 fun getShapeForItem(index: Int, size: Int): Shape {
-    val cornerRadius = 24.dp // Matching SettingsShapes.sectionShape
+    val cornerRadius = 24.dp
     return when {
         size == 1 -> RoundedCornerShape(cornerRadius)
         index == 0 -> RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius, bottomStart = 4.dp, bottomEnd = 4.dp)
         index == size - 1 -> RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = cornerRadius, bottomEnd = cornerRadius)
-        else -> RoundedCornerShape(4.dp) // Small radius for middle items to keep them distinct but connected
+        else -> RoundedCornerShape(4.dp)
     }
 }
 
@@ -175,11 +175,11 @@ fun RegionItem(
     onRegionSelected: (String) -> Unit,
     shape: Shape
 ) {
-    // Background color logic: Use card background normally, or primary/secondary container when selected
+
     val targetContainerColor = if (isSelected) {
         MaterialTheme.colorScheme.secondaryContainer
     } else {
-        MaterialTheme.colorScheme.surfaceContainer // Distinct from background
+        MaterialTheme.colorScheme.surfaceContainer
     }
 
     val containerColor by animateColorAsState(
@@ -197,7 +197,7 @@ fun RegionItem(
         color = containerColor,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 1.dp) // Slight separation between items
+            .padding(vertical = 1.dp)
             .clickable { onRegionSelected(region) }
     ) {
         ListItem(
@@ -227,7 +227,7 @@ fun RegionItem(
                 }
             },
             colors = ListItemDefaults.colors(
-                containerColor = Color.Transparent, // Let Surface handle color
+                containerColor = Color.Transparent,
                 headlineColor = contentColor,
                 leadingIconColor = contentColor,
                 trailingIconColor = contentColor

@@ -61,7 +61,7 @@ class EditProfileViewModel @Inject constructor(
                                 avatarUrl = profile.avatar,
                                 coverUrl = profile.profileCoverImage,
                                 selectedGender = profile.safeGender,
-                                selectedRegion = profile.region.takeIf { it != "null" } // Handle "null" string from DB sometimes
+                                selectedRegion = profile.region.takeIf { it != "null" }
                             )
                         }
                     },
@@ -128,7 +128,7 @@ class EditProfileViewModel @Inject constructor(
             return
         }
 
-        // Basic Regex Validation
+
         if (!username.matches(Regex("[a-z0-9_.]+"))) {
             _uiState.update { it.copy(usernameValidation = UsernameValidation.Error("Only lowercase letters, numbers, _ and . allowed")) }
             return
@@ -149,10 +149,10 @@ class EditProfileViewModel @Inject constructor(
         _uiState.update { it.copy(usernameValidation = UsernameValidation.Checking) }
 
         usernameValidationJob = viewModelScope.launch {
-            delay(500) // Debounce
+            delay(500)
             val userId = repository.getCurrentUserId() ?: return@launch
 
-            // Check if username is same as current (valid)
+
             if (username == _uiState.value.profile?.username) {
                  _uiState.update { it.copy(usernameValidation = UsernameValidation.Valid) }
                  return@launch
@@ -202,11 +202,11 @@ class EditProfileViewModel @Inject constructor(
                 val context = getApplication<Application>()
                 android.util.Log.d("EditProfile", "Processing avatar URI: $uri")
 
-                // Try to convert URI to file path
+
                 var realFilePath = FileManager.getPathFromUri(context, uri)
                 android.util.Log.d("EditProfile", "Converted file path: $realFilePath")
 
-                // If conversion failed, try to copy content to temp file
+
                 if (realFilePath == null) {
                     android.util.Log.d("EditProfile", "URI conversion failed, copying content to temp file")
                     val tempInputFile = File(context.cacheDir, "temp_input_avatar_${System.currentTimeMillis()}.jpg")
@@ -225,7 +225,7 @@ class EditProfileViewModel @Inject constructor(
                     }
                 }
 
-                // Validate file exists and is not empty
+
                 val sourceFile = File(realFilePath)
                 if (!sourceFile.exists()) {
                     throw Exception("Source file does not exist: $realFilePath")
@@ -234,20 +234,20 @@ class EditProfileViewModel @Inject constructor(
                     throw Exception("Source file is empty: $realFilePath")
                 }
 
-                // Create compressed version
+
                 val tempFile = File(context.cacheDir, "temp_avatar_${System.currentTimeMillis()}.jpg")
                 android.util.Log.d("EditProfile", "Compressing image to: ${tempFile.absolutePath}")
 
                 FileManager.resizeBitmapFileRetainRatio(realFilePath, tempFile.absolutePath, 1024)
 
-                // Validate compressed file
+
                 if (!tempFile.exists() || tempFile.length() == 0L) {
                     throw Exception("Image compression failed")
                 }
 
                 android.util.Log.d("EditProfile", "Image compressed successfully, size: ${tempFile.length()} bytes")
 
-                // Upload
+
                 uploadAvatar(tempFile.absolutePath)
 
             } catch (e: Exception) {
@@ -284,7 +284,7 @@ class EditProfileViewModel @Inject constructor(
                                 hasChanges = true
                             )
                         }
-                        // Add to history in background
+
                         viewModelScope.launch {
                             try {
                                 repository.addToProfileHistory(userId, url)
@@ -318,11 +318,11 @@ class EditProfileViewModel @Inject constructor(
                 val context = getApplication<Application>()
                 android.util.Log.d("EditProfile", "Processing cover URI: $uri")
 
-                // Try to convert URI to file path
+
                 var realFilePath = FileManager.getPathFromUri(context, uri)
                 android.util.Log.d("EditProfile", "Converted file path: $realFilePath")
 
-                // If conversion failed, try to copy content to temp file
+
                 if (realFilePath == null) {
                     android.util.Log.d("EditProfile", "URI conversion failed, copying content to temp file")
                     val tempInputFile = File(context.cacheDir, "temp_input_cover_${System.currentTimeMillis()}.jpg")
@@ -341,7 +341,7 @@ class EditProfileViewModel @Inject constructor(
                     }
                 }
 
-                // Validate file exists and is not empty
+
                 val sourceFile = File(realFilePath)
                 if (!sourceFile.exists()) {
                     throw Exception("Source file does not exist: $realFilePath")
@@ -350,20 +350,20 @@ class EditProfileViewModel @Inject constructor(
                     throw Exception("Source file is empty: $realFilePath")
                 }
 
-                // Create compressed version
+
                 val tempFile = File(context.cacheDir, "temp_cover_${System.currentTimeMillis()}.jpg")
                 android.util.Log.d("EditProfile", "Compressing image to: ${tempFile.absolutePath}")
 
                 FileManager.resizeBitmapFileRetainRatio(realFilePath, tempFile.absolutePath, 1024)
 
-                // Validate compressed file
+
                 if (!tempFile.exists() || tempFile.length() == 0L) {
                     throw Exception("Image compression failed")
                 }
 
                 android.util.Log.d("EditProfile", "Image compressed successfully, size: ${tempFile.length()} bytes")
 
-                // Upload
+
                 uploadCover(tempFile.absolutePath)
 
             } catch (e: Exception) {
@@ -400,7 +400,7 @@ class EditProfileViewModel @Inject constructor(
                                 hasChanges = true
                             )
                         }
-                        // Add to history in background
+
                         viewModelScope.launch {
                             try {
                                 repository.addToCoverHistory(userId, url)

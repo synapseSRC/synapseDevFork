@@ -18,10 +18,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-/**
- * Creates a shimmer effect brush for loading placeholders.
- * The shimmer smoothly animates across the component to indicate loading state.
- */
+
+
 @Composable
 fun shimmerBrush(
     showShimmer: Boolean = true,
@@ -60,9 +58,8 @@ fun shimmerBrush(
     }
 }
 
-/**
- * A shimmer placeholder box with customizable shape.
- */
+
+
 @Composable
 fun ShimmerBox(
     modifier: Modifier = Modifier,
@@ -75,9 +72,8 @@ fun ShimmerBox(
     )
 }
 
-/**
- * A circular shimmer placeholder, ideal for profile images.
- */
+
+
 @Composable
 fun ShimmerCircle(
     size: Dp,
@@ -91,9 +87,8 @@ fun ShimmerCircle(
     )
 }
 
-/**
- * A shimmer placeholder for text lines.
- */
+
+
 @Composable
 fun ShimmerText(
     width: Dp,
@@ -108,10 +103,8 @@ fun ShimmerText(
     )
 }
 
-/**
- * Profile skeleton screen showing shimmer placeholders for all profile elements.
- * Displays while the actual profile data is loading.
- */
+
+
 @Composable
 fun ProfileSkeletonScreen(
     modifier: Modifier = Modifier
@@ -121,7 +114,7 @@ fun ProfileSkeletonScreen(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        // Cover Photo Skeleton
+
         ShimmerBox(
             modifier = Modifier
                 .fillMaxWidth()
@@ -131,7 +124,7 @@ fun ProfileSkeletonScreen(
 
         Spacer(modifier = Modifier.height((-50).dp))
 
-        // Profile Image Skeleton
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start
@@ -142,17 +135,17 @@ fun ProfileSkeletonScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Name skeleton
+
         ShimmerText(width = 150.dp, height = 20.dp)
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Username skeleton
+
         ShimmerText(width = 100.dp, height = 14.dp)
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Bio skeleton
+
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             ShimmerText(width = 280.dp, height = 14.dp)
             ShimmerText(width = 200.dp, height = 14.dp)
@@ -160,7 +153,7 @@ fun ProfileSkeletonScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Stats skeleton
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -176,7 +169,7 @@ fun ProfileSkeletonScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Buttons skeleton
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)

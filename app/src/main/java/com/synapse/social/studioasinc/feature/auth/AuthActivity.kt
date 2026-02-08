@@ -19,10 +19,8 @@ import com.synapse.social.studioasinc.feature.shared.theme.AuthTheme
 import androidx.activity.enableEdgeToEdge
 import dagger.hilt.android.AndroidEntryPoint
 
-/**
- * Modern Compose-based AuthActivity.
- * Refactored for cleaner lifecycle management and deeper link handling.
- */
+
+
 @AndroidEntryPoint
 class AuthActivity : ComponentActivity() {
 
@@ -31,27 +29,27 @@ class AuthActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Setup edge-to-edge display before setContent
+
         enableEdgeToEdge()
 
-        // Configure URL Opener for Supabase
-        // Note: Consider moving this to a central initializer to avoid reassignment if possible,
-        // but keeping here as it might be activity-context dependent (though it's a lambda).
+
+
+
         SupabaseClient.openUrl = { url ->
             try {
                 val customTabsIntent = CustomTabsIntent.Builder().build()
                 customTabsIntent.launchUrl(this, Uri.parse(url))
             } catch (e: Exception) {
-                // Fallback to standard browser if Custom Tabs fail
+
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(intent)
             }
         }
 
-        // Initialize ViewModel with Hilt
+
         viewModel = ViewModelProvider(this)[AuthViewModel::class.java]
 
-        // Handle deep link if present
+
         intent?.let { handleDeepLink(it) }
 
         setContent {

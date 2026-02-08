@@ -14,9 +14,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
-/**
- * Top app bar for inbox screen.
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InboxTopAppBar(
@@ -53,7 +52,7 @@ fun InboxLargeTopAppBar(
             )
         },
         actions = {
-             // Avatar
+
              Box(
                  modifier = Modifier
                      .size(40.dp)
@@ -71,7 +70,7 @@ fun InboxLargeTopAppBar(
                      )
                  } else {
                      Text(
-                         text = "A", // Placeholder
+                         text = "A",
                          style = MaterialTheme.typography.titleMedium,
                          color = MaterialTheme.colorScheme.onPrimary
                      )

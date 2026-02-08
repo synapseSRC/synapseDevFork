@@ -22,13 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.feature.auth.ui.models.PasswordStrength
 import com.synapse.social.studioasinc.feature.auth.ui.util.AnimationUtil
 
-/**
- * Visual indicator for password strength.
- * Displays a progress bar and label with color coding.
- *
- * Design tokens:
- * - Animation: 300ms duration for progress change
- */
+
+
 @Composable
 fun PasswordStrengthIndicator(
     strength: PasswordStrength,

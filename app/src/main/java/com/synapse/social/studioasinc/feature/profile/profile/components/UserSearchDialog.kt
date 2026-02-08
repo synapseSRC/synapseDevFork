@@ -51,7 +51,7 @@ fun UserSearchDialog(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                // Header
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -68,7 +68,7 @@ fun UserSearchDialog(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Search Bar
+
                 OutlinedTextField(
                     value = query,
                     onValueChange = { query = it },
@@ -81,7 +81,7 @@ fun UserSearchDialog(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Results
+
                 Box(modifier = Modifier.fillMaxSize()) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
@@ -138,7 +138,7 @@ fun UserSearchItem(
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Avatar
+
         if (user.avatar != null) {
             CircularAvatar(
                 imageUrl = user.avatar,

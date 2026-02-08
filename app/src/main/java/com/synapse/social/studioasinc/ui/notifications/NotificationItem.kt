@@ -20,17 +20,17 @@ import androidx.compose.foundation.background
 import androidx.compose.runtime.Immutable
 import com.synapse.social.studioasinc.ui.components.CircularAvatar
 
-// Simple notification model for UI
+
 @Immutable
 data class UiNotification(
     val id: String,
-    val type: String, // like, comment, follow
+    val type: String,
     val actorName: String,
     val actorAvatar: String?,
     val message: String,
     val timestamp: String,
     val isRead: Boolean,
-    val targetId: String? = null // postId or userId
+    val targetId: String? = null
 )
 
 @Composable
@@ -79,7 +79,7 @@ fun NotificationItem(
 
         if (!notification.isRead) {
             Spacer(modifier = Modifier.width(8.dp))
-            // Unread indicator dot
+
              androidx.compose.foundation.layout.Box(
                 modifier = Modifier
                     .size(8.dp)

@@ -34,7 +34,7 @@ fun CommentInput(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 8.dp, end = 4.dp), // Slight internal padding adjustment
+                .padding(start = 8.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextField(

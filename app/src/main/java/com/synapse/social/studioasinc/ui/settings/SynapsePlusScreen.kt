@@ -24,9 +24,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
 
-/**
- * Synapse Plus settings screen for premium features and verification.
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SynapsePlusScreen(
@@ -130,7 +129,7 @@ private fun HeroCard() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Animated Verified Badge
+
                 Icon(
                     painter = painterResource(R.drawable.ic_verified),
                     contentDescription = null,
@@ -210,7 +209,7 @@ private fun FeatureGrid() {
                         modifier = Modifier.weight(1f)
                     )
                 }
-                // Handle case where chunk is less than 2
+
                 if (rowFeatures.size < 2) {
                     Spacer(modifier = Modifier.weight(1f))
                 }
@@ -222,7 +221,7 @@ private fun FeatureGrid() {
 data class FeatureItem(
     val title: String,
     val subtitle: String,
-    val icon: Any // Int (drawable res) or ImageVector
+    val icon: Any
 )
 
 @Composable
@@ -244,7 +243,7 @@ private fun FeatureCard(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.Start
         ) {
-            // Icon
+
             Surface(
                 shape = SettingsShapes.chipShape,
                 color = MaterialTheme.colorScheme.primaryContainer,

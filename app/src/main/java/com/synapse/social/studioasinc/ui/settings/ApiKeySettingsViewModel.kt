@@ -35,7 +35,7 @@ class ApiKeySettingsViewModel @Inject constructor(
                 val settings = apiKeySettingsService.getProviderSettings()
                 _providerSettings.value = settings
             } catch (e: Exception) {
-                // Handle error
+
             } finally {
                 _isLoading.value = false
             }
@@ -46,9 +46,9 @@ class ApiKeySettingsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 apiKeySettingsService.addApiKey(provider, keyName, apiKey)
-                loadSettings() // Refresh
+                loadSettings()
             } catch (e: Exception) {
-                // Handle error
+
             }
         }
     }
@@ -57,9 +57,9 @@ class ApiKeySettingsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 apiKeySettingsService.deleteApiKey(keyId)
-                loadSettings() // Refresh
+                loadSettings()
             } catch (e: Exception) {
-                // Handle error
+
             }
         }
     }
@@ -68,9 +68,9 @@ class ApiKeySettingsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 apiKeySettingsService.updatePreferredProvider(provider)
-                loadSettings() // Refresh
+                loadSettings()
             } catch (e: Exception) {
-                // Handle error
+
             }
         }
     }
@@ -79,9 +79,9 @@ class ApiKeySettingsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 apiKeySettingsService.updateFallbackSetting(fallbackToPlatform)
-                loadSettings() // Refresh
+                loadSettings()
             } catch (e: Exception) {
-                // Handle error
+
             }
         }
     }
@@ -91,7 +91,7 @@ class ApiKeySettingsViewModel @Inject constructor(
     }
 
     fun getAvailableProviders(): List<String> {
-        // Filter out platform since users don't add keys for it
+
         return apiKeySettingsService.getAvailableProviders().filter { it != "platform" }
     }
 }

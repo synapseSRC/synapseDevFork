@@ -33,7 +33,7 @@ class PollRepositoryTest {
     @Mock lateinit var auth: Auth
     @Mock lateinit var postgrest: Postgrest
 
-    // Corrected to PostgrestQueryBuilder
+
     @Mock lateinit var postsBuilder: PostgrestQueryBuilder
     @Mock lateinit var votesBuilder: PostgrestQueryBuilder
 
@@ -59,21 +59,21 @@ class PollRepositoryTest {
         val dummyResult = mock<PostgrestResult>()
         whenever(dummyResult.data).thenReturn("[]")
 
-        // Mocking the builder methods.
-        // Assuming select/insert/update/delete delegate to instance methods on PostgrestQueryBuilder
-        // or return a RequestBuilder.
-        // Note: Supabase-kt uses extension functions for select/insert/update/delete that create
-        // RequestBuilders. Mocking this is difficult with Mockito.
-        // For now, I'll attempt to mock the builder itself assuming methods exist or are mockable.
-        // If select is inline, we can't mock it directly.
-        // But let's fix the type first.
+
+
+
+
+
+
+
+
 
         whenever(votesBuilder.insert(any(), any(), any(), any())).thenReturn(dummyResult)
         whenever(votesBuilder.update(any(), any(), any(), any())).thenReturn(dummyResult)
         whenever(votesBuilder.delete(any(), any(), any(), any())).thenReturn(dummyResult)
 
-        // This select mocking is problematic if select is inline.
-        // We'll keep it for now as a "best effort" to fix types.
+
+
         whenever(postsBuilder.select(any(), any(), any(), any())).thenReturn(dummyResult)
         whenever(votesBuilder.select(any(), any(), any(), any())).thenReturn(dummyResult)
 

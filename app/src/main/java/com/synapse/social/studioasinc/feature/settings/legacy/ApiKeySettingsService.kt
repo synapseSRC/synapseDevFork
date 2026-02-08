@@ -98,7 +98,7 @@ class ApiKeySettingsService @Inject constructor(
 
             val result = Json.decodeFromString<Map<String, Any>>(response)
             if (result["success"] == true) {
-                loadApiKeys() // Refresh list
+                loadApiKeys()
                 Result.success(result["message"].toString())
             } else {
                 Result.failure(Exception(result["error"].toString()))
@@ -120,7 +120,7 @@ class ApiKeySettingsService @Inject constructor(
 
             val result = Json.decodeFromString<Map<String, Any>>(response)
             if (result["success"] == true) {
-                loadApiKeys() // Refresh list
+                loadApiKeys()
                 Result.success(result["message"].toString())
             } else {
                 Result.failure(Exception(result["error"].toString()))

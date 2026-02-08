@@ -19,15 +19,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.feature.auth.ui.util.AnimationUtil
 
-/**
- * Overlay component for loading states.
- * Applies a blur effect to the content (on supported devices) and shows a centered spinner.
- * Blocks user interaction when active.
- *
- * Design tokens:
- * - Blur radius: 10dp (Android 12+)
- * - Scrim: Black with 50% opacity
- */
+
+
 @Composable
 fun LoadingOverlay(
     isLoading: Boolean,
@@ -37,7 +30,7 @@ fun LoadingOverlay(
     val reducedMotion = AnimationUtil.rememberReducedMotion()
 
     Box(modifier = modifier.fillMaxSize()) {
-        // Content with conditional blur
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -52,7 +45,7 @@ fun LoadingOverlay(
             content()
         }
 
-        // Overlay
+
         AnimatedVisibility(
             visible = isLoading,
             enter = if (reducedMotion) androidx.compose.animation.EnterTransition.None else fadeIn(),
@@ -63,7 +56,7 @@ fun LoadingOverlay(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.5f))
-                    // Block clicks
+
                     .pointerInput(Unit) {}
             ) {
                 ExpressiveLoadingIndicator(

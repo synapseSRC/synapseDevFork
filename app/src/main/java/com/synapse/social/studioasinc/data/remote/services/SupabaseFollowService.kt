@@ -10,28 +10,25 @@ import kotlinx.serialization.json.JsonObject
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Supabase Follow Service
- * Handles follow/unfollow operations and follower management
- */
+
+
 @Singleton
 class SupabaseFollowService @Inject constructor() {
 
     private val client = SupabaseClient.client
     private val databaseService = SupabaseDatabaseService()
 
-    /**
-     * Follow a user
-     */
+
+
     suspend fun followUser(followerId: String, followingId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
-                // Check if Supabase is properly configured
+
                 if (!SupabaseClient.isConfigured()) {
                     return@withContext Result.failure(Exception("Supabase not configured"))
                 }
 
-                // Check if already following
+
                 val existingFollow = client.from("follows")
                     .select(columns = Columns.raw("id")) {
                         filter {
@@ -42,11 +39,11 @@ class SupabaseFollowService @Inject constructor() {
                     .decodeList<JsonObject>()
 
                 if (existingFollow.isNotEmpty()) {
-                    // Already following - return success instead of failure
+
                     return@withContext Result.success(Unit)
                 }
 
-                // Create follow relationship
+
                 val followData = mapOf(
                     "follower_id" to followerId,
                     "following_id" to followingId
@@ -56,7 +53,7 @@ class SupabaseFollowService @Inject constructor() {
 
                 insertResult.fold(
                     onSuccess = {
-                        // Update follower counts
+
                         updateFollowerCounts(followerId, followingId, true)
                         return@withContext Result.success(Unit)
                     },
@@ -71,18 +68,17 @@ class SupabaseFollowService @Inject constructor() {
         }
     }
 
-    /**
-     * Unfollow a user
-     */
+
+
     suspend fun unfollowUser(followerId: String, followingId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
-                // Check if Supabase is properly configured
+
                 if (!SupabaseClient.isConfigured()) {
                     return@withContext Result.failure(Exception("Supabase not configured"))
                 }
 
-                // Delete follow relationship
+
                 client.from("follows").delete {
                     filter {
                         eq("follower_id", followerId)
@@ -90,7 +86,7 @@ class SupabaseFollowService @Inject constructor() {
                     }
                 }
 
-                // Update follower counts
+
                 updateFollowerCounts(followerId, followingId, false)
 
                 Result.success(Unit)
@@ -101,13 +97,12 @@ class SupabaseFollowService @Inject constructor() {
         }
     }
 
-    /**
-     * Check if user is following another user
-     */
+
+
     suspend fun isFollowing(followerId: String, followingId: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             try {
-                // Check if Supabase is properly configured
+
                 if (!SupabaseClient.isConfigured()) {
                     return@withContext Result.success(false)
                 }
@@ -129,18 +124,17 @@ class SupabaseFollowService @Inject constructor() {
         }
     }
 
-    /**
-     * Get user's followers
-     */
+
+
     suspend fun getFollowers(userId: String, limit: Int = 50): Result<List<Map<String, Any?>>> {
         return withContext(Dispatchers.IO) {
             try {
-                // Check if Supabase is properly configured
+
                 if (!SupabaseClient.isConfigured()) {
                     return@withContext Result.success(emptyList())
                 }
 
-                // Get follower IDs
+
                 val followsResult = client.from("follows")
                     .select(columns = Columns.raw("follower_id")) {
                         filter { eq("following_id", userId) }
@@ -156,7 +150,7 @@ class SupabaseFollowService @Inject constructor() {
                     return@withContext Result.success(emptyList())
                 }
 
-                // Get user details for followers
+
                 val usersResult = client.from("users")
                     .select(columns = Columns.raw("uid, username, display_name, avatar, verify")) {
                         filter { isIn("uid", followerIds) }
@@ -177,18 +171,17 @@ class SupabaseFollowService @Inject constructor() {
         }
     }
 
-    /**
-     * Get users that the user is following
-     */
+
+
     suspend fun getFollowing(userId: String, limit: Int = 50): Result<List<Map<String, Any?>>> {
         return withContext(Dispatchers.IO) {
             try {
-                // Check if Supabase is properly configured
+
                 if (!SupabaseClient.isConfigured()) {
                     return@withContext Result.success(emptyList())
                 }
 
-                // Get following IDs
+
                 val followsResult = client.from("follows")
                     .select(columns = Columns.raw("following_id")) {
                         filter { eq("follower_id", userId) }
@@ -204,7 +197,7 @@ class SupabaseFollowService @Inject constructor() {
                     return@withContext Result.success(emptyList())
                 }
 
-                // Get user details for following
+
                 val usersResult = client.from("users")
                     .select(columns = Columns.raw("uid, username, display_name, avatar, verify")) {
                         filter { isIn("uid", followingIds) }
@@ -225,13 +218,12 @@ class SupabaseFollowService @Inject constructor() {
         }
     }
 
-    /**
-     * Get follow statistics for a user
-     */
+
+
     suspend fun getFollowStats(userId: String): Result<Map<String, Int>> {
         return withContext(Dispatchers.IO) {
             try {
-                // Check if Supabase is properly configured
+
                 if (!SupabaseClient.isConfigured()) {
                     return@withContext Result.success(mapOf(
                         "followers_count" to 0,
@@ -239,7 +231,7 @@ class SupabaseFollowService @Inject constructor() {
                     ))
                 }
 
-                // Get user's current counts from users table
+
                 val userResult = databaseService.selectWhere("users", "followers_count, following_count", "uid", userId)
 
                 userResult.fold(
@@ -264,12 +256,11 @@ class SupabaseFollowService @Inject constructor() {
         }
     }
 
-    /**
-     * Update follower counts for both users
-     */
+
+
     private suspend fun updateFollowerCounts(followerId: String, followingId: String, isFollow: Boolean) {
         try {
-            // Update follower's following count
+
             val followerStats = getFollowStats(followerId).getOrNull()
             if (followerStats != null) {
                 val newFollowingCount = if (isFollow) {
@@ -286,7 +277,7 @@ class SupabaseFollowService @Inject constructor() {
                 )
             }
 
-            // Update following user's followers count
+
             val followingStats = getFollowStats(followingId).getOrNull()
             if (followingStats != null) {
                 val newFollowersCount = if (isFollow) {
@@ -307,18 +298,17 @@ class SupabaseFollowService @Inject constructor() {
         }
     }
 
-    /**
-     * Get suggested users to follow (users not currently followed)
-     */
+
+
     suspend fun getSuggestedUsers(userId: String, limit: Int = 20): Result<List<Map<String, Any?>>> {
         return withContext(Dispatchers.IO) {
             try {
-                // Check if Supabase is properly configured
+
                 if (!SupabaseClient.isConfigured()) {
                     return@withContext Result.success(emptyList())
                 }
 
-                // Get users that the current user is already following
+
                 val followingResult = client.from("follows")
                     .select(columns = Columns.raw("following_id")) {
                         filter { eq("follower_id", userId) }
@@ -329,18 +319,18 @@ class SupabaseFollowService @Inject constructor() {
                     it["following_id"].toString().removeSurrounding("\"")
                 }.toMutableList()
 
-                // Add current user to exclude list
+
                 followingIds.add(userId)
 
-                // Get suggested users (excluding already followed and self)
-                // Note: We'll get all users and filter client-side since Supabase doesn't support NOT IN easily
+
+
                 val allUsersResult = client.from("users")
                     .select(columns = Columns.raw("uid, username, display_name, avatar, verify, followers_count")) {
-                        limit(100) // Get more users to filter from
+                        limit(100)
                     }
                     .decodeList<JsonObject>()
 
-                // Filter out already followed users and self
+
                 val suggestedResult = allUsersResult.filter { jsonObject ->
                     val uid = jsonObject["uid"].toString().removeSurrounding("\"")
                     !followingIds.contains(uid)

@@ -16,19 +16,13 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.booleanOrNull
 
-/**
- * ViewModel for the Account Settings screen.
- *
- * Manages the state for account-related settings including linked accounts,
- * email changes, password changes, and account deletion flows.
- *
- * Requirements: 2.1, 2.3, 2.4, 2.5, 2.6
- */
+
+
 class AccountSettingsViewModel(application: Application) : AndroidViewModel(application) {
 
-    // ========================================================================
-    // State
-    // ========================================================================
+
+
+
 
     private val _linkedAccounts = MutableStateFlow<LinkedAccountsState>(LinkedAccountsState())
     val linkedAccounts: StateFlow<LinkedAccountsState> = _linkedAccounts.asStateFlow()
@@ -42,7 +36,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    // Dialog states
+
     private val _showChangeEmailDialog = MutableStateFlow(false)
     val showChangeEmailDialog: StateFlow<Boolean> = _showChangeEmailDialog.asStateFlow()
 
@@ -57,13 +51,12 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
         loadSecurityNotificationsSettings()
     }
 
-    // ========================================================================
-    // Security Settings
-    // ========================================================================
 
-    /**
-     * Loads the security notifications setting.
-     */
+
+
+
+
+
     private fun loadSecurityNotificationsSettings() {
         viewModelScope.launch {
             try {
@@ -81,19 +74,16 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
                 }
             } catch (e: Exception) {
                 android.util.Log.e("AccountSettingsViewModel", "Failed to load security notifications settings", e)
-                // Fallback to default true if table not found or error
+
             }
         }
     }
 
-    /**
-     * Toggles the security notifications setting.
-     *
-     * @param enabled The new state
-     */
+
+
     fun toggleSecurityNotifications(enabled: Boolean) {
         viewModelScope.launch {
-            // Optimistic update
+
             _securityNotificationsEnabled.value = enabled
 
             try {
@@ -111,7 +101,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
                     }
                 }
             } catch (e: Exception) {
-                // Revert on failure
+
                 _securityNotificationsEnabled.value = !enabled
                 android.util.Log.e("AccountSettingsViewModel", "Failed to update security notifications", e)
                 _error.value = "Failed to update security notifications"
@@ -119,23 +109,20 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    // ========================================================================
-    // Linked Accounts
-    // ========================================================================
 
-    /**
-     * Loads the current state of linked social accounts.
-     *
-     * Requirements: 2.5
-     */
+
+
+
+
+
     private fun loadLinkedAccounts() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                // Fetch identities from the database view for the most up-to-date information
+
                 val supabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
 
-                // We use the 'user_identities' view which is filtered to only show the current user's identities
+
                 val identities = supabaseClient.from("user_identities")
                     .select()
                     .decodeList<JsonObject>()
@@ -146,7 +133,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
                     appleLinked = identities.any { it["provider"]?.jsonPrimitive?.contentOrNull == "apple" }
                 )
 
-                // Log for debugging
+
                 android.util.Log.d("AccountSettingsViewModel", "Loaded ${identities.size} linked accounts")
             } catch (e: Exception) {
                 android.util.Log.e("AccountSettingsViewModel", "Failed to load linked accounts", e)
@@ -157,12 +144,8 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    /**
-     * Connects a social account provider.
-     *
-     * @param provider The social provider to connect (google, facebook, apple)
-     * Requirements: 2.5
-     */
+
+
     fun connectSocialAccount(provider: SocialProvider) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -178,12 +161,12 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
                         supabaseClient.auth.linkIdentity(io.github.jan.supabase.auth.providers.Facebook)
                     }
                     SocialProvider.APPLE -> {
-                        // Apple linking would require platform-specific implementation
+
                         throw UnsupportedOperationException("Apple linking not yet supported")
                     }
                 }
 
-                // Reload linked accounts to reflect changes
+
                 loadLinkedAccounts()
             } catch (e: Exception) {
                 android.util.Log.e("AccountSettingsViewModel", "Failed to connect $provider", e)
@@ -194,12 +177,8 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    /**
-     * Disconnects a social account provider.
-     *
-     * @param provider The social provider to disconnect
-     * Requirements: 2.5
-     */
+
+
     fun disconnectSocialAccount(provider: SocialProvider) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -216,7 +195,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
 
                     if (targetIdentity != null) {
                         supabaseClient.auth.unlinkIdentity(targetIdentity.id)
-                        // Reload linked accounts to reflect changes
+
                         loadLinkedAccounts()
                     } else {
                         _error.value = "${provider.displayName} account is not linked"
@@ -233,40 +212,31 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    // ========================================================================
-    // Email Change
-    // ========================================================================
 
-    /**
-     * Shows the change email dialog.
-     *
-     * Requirements: 2.3
-     */
+
+
+
+
+
     fun showChangeEmailDialog() {
         _showChangeEmailDialog.value = true
     }
 
-    /**
-     * Dismisses the change email dialog.
-     */
+
+
     fun dismissChangeEmailDialog() {
         _showChangeEmailDialog.value = false
         _error.value = null
     }
 
-    /**
-     * Handles email change request.
-     *
-     * @param newEmail The new email address
-     * @param password Current password for verification
-     * Requirements: 2.3
-     */
+
+
     fun changeEmail(newEmail: String, password: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                // Validate email format
+
                 if (!isValidEmail(newEmail)) {
                     _error.value = "Invalid email format"
                     return@launch
@@ -277,7 +247,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
                     return@launch
                 }
 
-                // Get current user email
+
                 val supabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
                 val currentUser = supabaseClient.auth.currentUserOrNull()
                 val currentEmail = currentUser?.email
@@ -287,7 +257,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
                     return@launch
                 }
 
-                // Verify current password by attempting to sign in
+
                 try {
                     supabaseClient.auth.signInWith(Email) {
                         this.email = currentEmail
@@ -304,7 +274,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
                     return@launch
                 }
 
-                // Update email with backend
+
                 android.util.Log.d("AccountSettingsViewModel", "Changing email to: $newEmail")
                 supabaseClient.auth.updateUser {
                     email = newEmail
@@ -320,41 +290,31 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    // ========================================================================
-    // Password Change
-    // ========================================================================
 
-    /**
-     * Shows the change password dialog.
-     *
-     * Requirements: 2.4
-     */
+
+
+
+
+
     fun showChangePasswordDialog() {
         _showChangePasswordDialog.value = true
     }
 
-    /**
-     * Dismisses the change password dialog.
-     */
+
+
     fun dismissChangePasswordDialog() {
         _showChangePasswordDialog.value = false
         _error.value = null
     }
 
-    /**
-     * Handles password change request.
-     *
-     * @param currentPassword Current password for verification
-     * @param newPassword New password
-     * @param confirmPassword Confirmation of new password
-     * Requirements: 2.4
-     */
+
+
     fun changePassword(currentPassword: String, newPassword: String, confirmPassword: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                // Validate inputs
+
                 if (currentPassword.isBlank()) {
                     _error.value = "Current password is required"
                     return@launch
@@ -370,7 +330,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
                     return@launch
                 }
 
-                // Get current user email
+
                 val supabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
                 val currentUser = supabaseClient.auth.currentUserOrNull()
                 val email = currentUser?.email
@@ -380,7 +340,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
                     return@launch
                 }
 
-                // Verify current password by attempting to sign in
+
                 try {
                     supabaseClient.auth.signInWith(Email) {
                         this.email = email
@@ -388,7 +348,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
                     }
                 } catch (e: Exception) {
                     android.util.Log.e("AccountSettingsViewModel", "Failed to verify password", e)
-                    // Basic check to distinguish auth failure from other errors
+
                     if (e.message?.contains("invalid", ignoreCase = true) == true ||
                         e.message?.contains("credential", ignoreCase = true) == true) {
                         _error.value = "Incorrect current password"
@@ -398,7 +358,7 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
                     return@launch
                 }
 
-                // Update password
+
                 supabaseClient.auth.updateUser {
                     password = newPassword
                 }
@@ -415,12 +375,8 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    /**
-     * Calculates password strength for visual indicator.
-     *
-     * @param password The password to evaluate
-     * @return Strength level from 0 (weak) to 4 (very strong)
-     */
+
+
     fun calculatePasswordStrength(password: String): Int {
         var strength = 0
 
@@ -433,39 +389,31 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
         return strength.coerceIn(0, 4)
     }
 
-    // ========================================================================
-    // Account Deletion
-    // ========================================================================
 
-    /**
-     * Shows the delete account confirmation dialog.
-     *
-     * Requirements: 2.6
-     */
+
+
+
+
+
     fun showDeleteAccountDialog() {
         _showDeleteAccountDialog.value = true
     }
 
-    /**
-     * Dismisses the delete account dialog.
-     */
+
+
     fun dismissDeleteAccountDialog() {
         _showDeleteAccountDialog.value = false
         _error.value = null
     }
 
-    /**
-     * Handles account deletion request.
-     *
-     * @param confirmationText User must type exact confirmation phrase
-     * Requirements: 2.6
-     */
+
+
     fun deleteAccount(confirmationText: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                // Validate confirmation text
+
                 if (confirmationText != DELETE_ACCOUNT_CONFIRMATION) {
                     _error.value = "Please type the exact confirmation phrase"
                     return@launch
@@ -475,15 +423,15 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
 
                 val supabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
 
-                // Call Edge Function to delete user
+
                 supabaseClient.functions.invoke(function = "delete-account")
 
-                // Sign out locally
+
                 supabaseClient.auth.signOut()
 
                 _showDeleteAccountDialog.value = false
-                // Note: Navigation to login screen is typically observed via auth state changes
-                // in the main activity or navigation graph
+
+
             } catch (e: Exception) {
                 android.util.Log.e("AccountSettingsViewModel", "Failed to delete account", e)
                 _error.value = "Failed to delete account: ${e.message}"
@@ -493,20 +441,18 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    // ========================================================================
-    // Helper Methods
-    // ========================================================================
 
-    /**
-     * Validates email format.
-     */
+
+
+
+
+
     private fun isValidEmail(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
-    /**
-     * Clears any error messages.
-     */
+
+
     fun clearError() {
         _error.value = null
     }
@@ -516,18 +462,16 @@ class AccountSettingsViewModel(application: Application) : AndroidViewModel(appl
     }
 }
 
-/**
- * State class for linked social accounts.
- */
+
+
 data class LinkedAccountsState(
     val googleLinked: Boolean = false,
     val facebookLinked: Boolean = false,
     val appleLinked: Boolean = false
 )
 
-/**
- * Enum for social account providers.
- */
+
+
 enum class SocialProvider {
     GOOGLE,
     FACEBOOK,

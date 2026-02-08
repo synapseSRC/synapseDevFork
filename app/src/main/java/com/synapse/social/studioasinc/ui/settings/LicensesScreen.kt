@@ -25,9 +25,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.data.model.License
 
-/**
- * Screen displaying open source licenses for third-party libraries used in the app.
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LicensesScreen(
@@ -35,7 +34,7 @@ fun LicensesScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    // Hardcoded list of licenses
+
     val licenses = remember { getLicenses() }
 
     Scaffold(
@@ -141,11 +140,11 @@ fun LicenseItem(license: License) {
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // License Text Area
+
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(max = 300.dp), // Limit height for very long licenses
+                            .heightIn(max = 300.dp),
                         color = MaterialTheme.colorScheme.surface,
                         shape = MaterialTheme.shapes.small,
                         border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
@@ -181,14 +180,14 @@ fun LicenseItem(license: License) {
     }
 }
 
-// ========================================================================
-// License Data Source
-// ========================================================================
+
+
+
 
 private const val APACHE_2_0 = """
                                  Apache License
                            Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+                        http:
 
    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
@@ -456,7 +455,7 @@ private fun getLicenses(): List<License> {
             year = "2024",
             licenseType = "BSD, part MIT and Apache 2.0",
             licenseUrl = "https://github.com/bumptech/glide/blob/master/LICENSE",
-            licenseContent = APACHE_2_0 // Simplified
+            licenseContent = APACHE_2_0
         )
     )
 }

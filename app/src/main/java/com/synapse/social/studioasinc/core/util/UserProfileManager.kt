@@ -8,20 +8,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-/**
- * Manages user profile operations and caching
- */
+
+
 object UserProfileManager {
 
     private val dbService = SupabaseDatabaseService()
     private val authService = SupabaseAuthenticationService()
     private val profileCache = java.util.concurrent.ConcurrentHashMap<String, User>()
 
-    /**
-     * Gets a user profile by UID, with caching
-     */
+
+
     suspend fun getUserProfile(uid: String): User? {
-        // Check cache first
+
         profileCache[uid]?.let { return it }
 
         return try {
@@ -39,7 +37,7 @@ object UserProfileManager {
                     followingCount = (result["following_count"] as? String)?.toIntOrNull() ?: 0,
                     postsCount = (result["posts_count"] as? String)?.toIntOrNull() ?: 0
                 )
-                // Cache the user
+
                 profileCache[uid] = user
                 user
             } else {
@@ -50,13 +48,12 @@ object UserProfileManager {
         }
     }
 
-    /**
-     * Updates a user profile
-     */
+
+
     suspend fun updateUserProfile(uid: String, updates: Map<String, Any?>): Boolean {
         return try {
             dbService.update("users", updates, "uid", uid)
-            // Clear cache for this user
+
             profileCache.remove(uid)
             true
         } catch (e: Exception) {
@@ -64,25 +61,22 @@ object UserProfileManager {
         }
     }
 
-    /**
-     * Gets the current user's profile
-     */
+
+
     suspend fun getCurrentUserProfile(): User? {
         val currentUid = authService.getCurrentUserId() ?: return null
         return getUserProfile(currentUid)
     }
 
-    /**
-     * Updates the current user's profile
-     */
+
+
     suspend fun updateCurrentUserProfile(updates: Map<String, Any?>): Boolean {
         val currentUid = authService.getCurrentUserId() ?: return false
         return updateUserProfile(currentUid, updates)
     }
 
-    /**
-     * Searches for users by username or display name
-     */
+
+
     suspend fun searchUsers(query: String, limit: Int = 20): List<User> {
         return try {
             val results = dbService.selectWithFilter("users", "*", "username", "%$query%").getOrNull() ?: emptyList()
@@ -109,13 +103,12 @@ object UserProfileManager {
         }
     }
 
-    /**
-     * Gets multiple user profiles by UIDs
-     */
+
+
     suspend fun getUserProfiles(uids: List<String>): List<User> {
         if (uids.isEmpty()) return emptyList()
 
-        // Check cache for all UIDs
+
         val cachedUsers = uids.mapNotNull { profileCache[it] }
         val missingUids = uids.filter { !profileCache.containsKey(it) }
 
@@ -124,7 +117,7 @@ object UserProfileManager {
         }
 
         return try {
-            // Fetch missing users
+
             val results = dbService.selectWhereIn("users", "*", "uid", missingUids).getOrNull() ?: emptyList()
 
             val fetchedUsers = results.mapNotNull { result ->
@@ -140,7 +133,7 @@ object UserProfileManager {
                         followingCount = (result["following_count"] as? String)?.toIntOrNull() ?: 0,
                         postsCount = (result["posts_count"] as? String)?.toIntOrNull() ?: 0
                     )
-                    // Cache the user
+
                     profileCache[user.uid] = user
                     user
                 } catch (e: Exception) {
@@ -148,30 +141,27 @@ object UserProfileManager {
                 }
             }
 
-            // Return combined list (cached + fetched) - Note: this might not return users that don't exist
+
             cachedUsers + fetchedUsers
         } catch (e: Exception) {
             cachedUsers
         }
     }
 
-    /**
-     * Clears the profile cache
-     */
+
+
     fun clearCache() {
         profileCache.clear()
     }
 
-    /**
-     * Clears cache for a specific user
-     */
+
+
     fun clearUserCache(uid: String) {
         profileCache.remove(uid)
     }
 
-    /**
-     * Checks if a user exists
-     */
+
+
     suspend fun userExists(uid: String): Boolean {
         return try {
             val result = dbService.getSingle("users", "uid", uid).getOrNull()
@@ -181,9 +171,8 @@ object UserProfileManager {
         }
     }
 
-    /**
-     * Checks if a username is available
-     */
+
+
     suspend fun isUsernameAvailable(username: String): Boolean {
         return try {
             val results = dbService.selectWithFilter("users", "*", "username", username).getOrNull() ?: emptyList()

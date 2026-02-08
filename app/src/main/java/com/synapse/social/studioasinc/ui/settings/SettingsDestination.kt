@@ -1,133 +1,103 @@
 package com.synapse.social.studioasinc.ui.settings
 
-/**
- * Sealed class defining all navigation destinations for the Settings feature.
- *
- * This provides type-safe navigation routes for the settings hub-and-spoke
- * navigation model, where the main Settings Hub provides categorized access
- * to dedicated sub-screens.
- *
- * Requirements: 1.1, 1.2
- */
+
+
 sealed class SettingsDestination(val route: String) {
 
-    /**
-     * Main settings hub screen displaying categorized setting groups.
-     */
+
+
     object Hub : SettingsDestination(ROUTE_HUB)
 
-    /**
-     * Account settings screen for profile, email, password, and account management.
-     */
+
+
     object Account : SettingsDestination(ROUTE_ACCOUNT)
 
-    /**
-     * Privacy and security settings screen for visibility, 2FA, biometric lock, and blocking.
-     */
+
+
     object Privacy : SettingsDestination(ROUTE_PRIVACY)
 
-    /**
-     * Appearance settings screen for theme, dynamic color, and font customization.
-     */
+
+
     object Appearance : SettingsDestination(ROUTE_APPEARANCE)
 
-    /**
-     * Notification settings screen for push notifications and in-app alerts.
-     */
+
+
     object Notifications : SettingsDestination(ROUTE_NOTIFICATIONS)
 
-    /**
-     * Chat settings screen for read receipts, typing indicators, and media download.
-     */
+
+
     object Chat : SettingsDestination(ROUTE_CHAT)
 
-    /**
-     * Storage and data settings screen for cache, data saver, and storage providers.
-     */
+
+
     object Storage : SettingsDestination(ROUTE_STORAGE)
 
-    /**
-     * Language and region settings screen for language selection and regional preferences.
-     */
+
+
     object Language : SettingsDestination(ROUTE_LANGUAGE)
 
-    /**
-     * About and support settings screen for app info, legal, and feedback.
-     */
+
+
     object About : SettingsDestination(ROUTE_ABOUT)
 
-    /**
-     * Storage Provider configuration screen.
-     */
+
+
     object StorageProvider : SettingsDestination(ROUTE_STORAGE_PROVIDER)
 
-    /**
-     * Chat History Deletion screen for managing chat history deletion operations.
-     */
+
+
     object ChatHistoryDeletion : SettingsDestination(ROUTE_CHAT_HISTORY_DELETION)
 
-    /**
-     * Open Source Licenses screen.
-     */
+
+
     object Licenses : SettingsDestination(ROUTE_LICENSES)
 
-    /**
-     * Synapse Plus settings screen for premium features and verification.
-     */
+
+
     object SynapsePlus : SettingsDestination(ROUTE_SYNAPSE_PLUS)
 
-    /**
-     * Avatar settings screen for creating and editing profile avatars.
-     */
+
+
     object Avatar : SettingsDestination(ROUTE_AVATAR)
 
-    /**
-     * Favourites settings screen for managing favorite contacts and content.
-     */
+
+
     object Favourites : SettingsDestination(ROUTE_FAVOURITES)
 
-    /**
-     * Accessibility settings screen for contrast, animations, and accessibility features.
-     */
+
+
     object Accessibility : SettingsDestination(ROUTE_ACCESSIBILITY)
 
-    /**
-     * Settings search screen for finding specific settings quickly.
-     */
+
+
     object Search : SettingsDestination(ROUTE_SEARCH)
 
-    /**
-     * API Key settings screen for managing AI provider keys.
-     */
+
+
     object ApiKey : SettingsDestination(ROUTE_API_KEY)
 
-    /**
-     * Request Account Information screen.
-     */
+
+
     object RequestAccountInfo : SettingsDestination(ROUTE_REQUEST_ACCOUNT_INFO)
 
-    /**
-     * Account Information screen (Read-only view).
-     */
+
+
     object AccountInfo : SettingsDestination(ROUTE_ACCOUNT_INFO)
 
-    /**
-     * Manage Storage screen.
-     */
+
+
     object ManageStorage : SettingsDestination(ROUTE_MANAGE_STORAGE)
 
-    /**
-     * Network Usage screen.
-     */
+
+
     object NetworkUsage : SettingsDestination(ROUTE_NETWORK_USAGE)
 
-    /**
-     * Business Platform features for creators and business accounts.
-     */
+
+
     object BusinessPlatform : SettingsDestination(ROUTE_BUSINESS_PLATFORM)
 
     companion object {
-        // Route constants for navigation
+
         const val ROUTE_HUB = "settings_hub"
         const val ROUTE_ACCOUNT = "settings_account"
         const val ROUTE_PRIVACY = "settings_privacy"
@@ -154,9 +124,8 @@ sealed class SettingsDestination(val route: String) {
         const val ROUTE_NETWORK_USAGE = "settings_network_usage"
         const val ROUTE_BUSINESS_PLATFORM = "settings_business_platform"
 
-        /**
-         * Returns all available settings destinations.
-         */
+
+
         fun allDestinations(): List<SettingsDestination> = listOf(
             Hub,
             Account,
@@ -182,11 +151,8 @@ sealed class SettingsDestination(val route: String) {
             BusinessPlatform
         )
 
-        /**
-         * Returns a destination by its route string.
-         * @param route The route string to look up
-         * @return The matching SettingsDestination or null if not found
-         */
+
+
         fun fromRoute(route: String): SettingsDestination? = when (route) {
             ROUTE_HUB -> Hub
             ROUTE_ACCOUNT -> Account

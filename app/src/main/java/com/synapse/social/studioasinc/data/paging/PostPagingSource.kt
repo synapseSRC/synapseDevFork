@@ -54,15 +54,15 @@ class PostPagingSource(
                 }
                 post.isVerified = userData?.get("verify")?.jsonPrimitive?.booleanOrNull ?: false
 
-                // Manually parse the latest comment since decoding strictly to Post won't catch the embedded list
+
                 val commentsArray = jsonElement["latest_comments"]?.jsonArray
                 if (!commentsArray.isNullOrEmpty()) {
-                    // Sort comments by createdAt descending to find the latest
+
                     val latestComment = commentsArray.map { it.jsonObject }
                         .maxByOrNull { it["created_at"]?.jsonPrimitive?.contentOrNull ?: "" }
 
                     if (latestComment != null) {
-                        // Fixed: Map 'content' column to latestCommentText
+
                         post.latestCommentText = latestComment["content"]?.jsonPrimitive?.contentOrNull
                         val commentUser = latestComment["users"]?.jsonObject
                         post.latestCommentAuthor = commentUser?.get("username")?.jsonPrimitive?.contentOrNull
@@ -72,7 +72,7 @@ class PostPagingSource(
                 post
             }
 
-            // Populate reactions
+
             val postsWithReactions = reactionRepository.populatePostReactions(parsedPosts)
             val postsWithPolls = populatePostPolls(postsWithReactions)
 
@@ -100,11 +100,11 @@ class PostPagingSource(
 
         val postIds = pollPosts.map { it.id }
 
-        // Fetch user votes
+
         val userVotesResult = pollRepository.getBatchUserVotes(postIds)
         val userVotes = userVotesResult.getOrNull() ?: emptyMap()
 
-        // Fetch poll vote counts
+
         val pollCountsResult = pollRepository.getBatchPollVotes(postIds)
         val pollCounts = pollCountsResult.getOrNull() ?: emptyMap()
 
@@ -113,7 +113,7 @@ class PostPagingSource(
                 val userVote = userVotes[post.id]
                 val counts = pollCounts[post.id] ?: emptyMap()
 
-                // Update poll options with new counts
+
                 val updatedOptions = post.pollOptions?.mapIndexed { index, option ->
                     option.copy(votes = counts[index] ?: 0)
                 }

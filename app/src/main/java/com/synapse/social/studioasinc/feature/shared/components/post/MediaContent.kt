@@ -69,10 +69,10 @@ fun MediaContent(
             }
         }
     } else if (postViewStyle == PostViewStyle.GRID) {
-        // Grid Layout logic
+
         PostMediaGrid(mediaUrls, onMediaClick, modifier)
     } else {
-        // Horizontal Pager for multiple images
+
         val pagerState = androidx.compose.foundation.pager.rememberPagerState(pageCount = { mediaUrls.size })
         Box(modifier = modifier.fillMaxWidth()) {
             androidx.compose.foundation.pager.HorizontalPager(
@@ -97,7 +97,7 @@ fun MediaContent(
                 }
             }
 
-            // Page Indicator
+
             if (mediaUrls.size > 1) {
                 androidx.compose.material3.Text(
                     text = "${pagerState.currentPage + 1}/${mediaUrls.size}",
@@ -141,7 +141,7 @@ fun PostMediaGrid(
                 }
             }
             3 -> {
-                // One big top, two small bottom
+
                 MediaGridItem(url = mediaUrls[0], modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp, max = 350.dp), onClick = { onMediaClick(0) })
                 Spacer(modifier = Modifier.height(spacing))
                 Row(modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp, max = 200.dp)) {
@@ -151,7 +151,7 @@ fun PostMediaGrid(
                 }
             }
             else -> {
-                // 4 or more: 2x2 grid
+
                 Row(modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp, max = 250.dp)) {
                     MediaGridItem(url = mediaUrls[0], modifier = Modifier.weight(1f).fillMaxSize(), onClick = { onMediaClick(0) })
                     Spacer(modifier = Modifier.width(spacing))

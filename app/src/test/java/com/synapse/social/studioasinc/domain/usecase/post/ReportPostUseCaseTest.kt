@@ -28,33 +28,33 @@ class ReportPostUseCaseTest {
 
     @Test
     fun `invoke should emit success when repository returns success`() = runTest {
-        // Arrange
+
         val postId = "post123"
         val reason = "spam"
         val description = "Some description"
         whenever(repository.createReport(postId, reason, description)).thenReturn(Result.success(Unit))
 
-        // Act
+
         val result = useCase(postId, reason, description).first()
 
-        // Assert
+
         assertTrue(result.isSuccess)
         assertEquals(Unit, result.getOrNull())
     }
 
     @Test
     fun `invoke should emit failure when repository returns failure`() = runTest {
-        // Arrange
+
         val postId = "post123"
         val reason = "spam"
         val description = "Some description"
         val exception = Exception("Network error")
         whenever(repository.createReport(postId, reason, description)).thenReturn(Result.failure(exception))
 
-        // Act
+
         val result = useCase(postId, reason, description).first()
 
-        // Assert
+
         assertTrue(result.isFailure)
         assertEquals(exception, result.exceptionOrNull())
     }

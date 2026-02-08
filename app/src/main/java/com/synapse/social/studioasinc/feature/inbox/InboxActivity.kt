@@ -23,27 +23,23 @@ import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 import com.synapse.social.studioasinc.core.ui.animation.ActivityTransitions
 import androidx.activity.enableEdgeToEdge
 
-/**
- * Activity for the Inbox screen.
- * Built with Jetpack Compose.
- *
- * @deprecated Use [com.synapse.social.studioasinc.ui.inbox.InboxScreen] within [MainActivity] navigation graph instead.
- */
+
+
 @Deprecated("Use InboxScreen within MainActivity navigation graph instead")
 @AndroidEntryPoint
 class InboxActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Setup edge-to-edge display before setContent
+
         enableEdgeToEdge()
 
         setContent {
-            // Get appearance settings to apply theme preferences
+
             val appearanceViewModel: AppearanceViewModel = viewModel()
             val appearanceSettings by appearanceViewModel.appearanceSettings.collectAsState()
 
-            // Determine dark theme based on settings
+
             val darkTheme = when (appearanceSettings.themeMode) {
                 com.synapse.social.studioasinc.ui.settings.ThemeMode.LIGHT -> false
                 com.synapse.social.studioasinc.ui.settings.ThemeMode.DARK -> true
@@ -51,7 +47,7 @@ class InboxActivity : ComponentActivity() {
                     isSystemInDarkTheme()
             }
 
-            // Apply dynamic color only if enabled and supported (Android 12+)
+
             val dynamicColor = appearanceSettings.dynamicColorEnabled &&
                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
@@ -65,7 +61,7 @@ class InboxActivity : ComponentActivity() {
                 ) {
                     InboxScreen(
                         onNavigateToProfile = { userId ->
-                            // Deprecated activity, navigation handled in main graph
+
                             Log.d("InboxActivity", "Navigate to profile: $userId")
                         }
                     )

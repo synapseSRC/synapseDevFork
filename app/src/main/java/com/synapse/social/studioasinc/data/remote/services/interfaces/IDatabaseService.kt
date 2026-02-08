@@ -1,8 +1,7 @@
 package com.synapse.social.studioasinc.data.remote.services.interfaces
 
-/**
- * Database Service Interface
- */
+
+
 interface IDatabaseService {
     suspend fun update(table: String, data: Map<String, Any?>, filter: String, value: Any): Result<Unit>
     suspend fun select(table: String, columns: String = "*"): Result<List<Map<String, Any?>>>

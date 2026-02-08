@@ -49,7 +49,7 @@ class FollowListViewModelTest {
 
     @Test
     fun `loadUsers success should update state with users`() = runTest {
-        // Arrange
+
         val userId = "user123"
         val mockUsers = listOf(
             mapOf("uid" to "follower1", "username" to "user1", "verify" to "true"),
@@ -57,11 +57,11 @@ class FollowListViewModelTest {
         )
         whenever(followService.getFollowers(eq(userId), any())).thenReturn(Result.success(mockUsers))
 
-        // Act
+
         viewModel.loadUsers(userId, "followers")
         advanceUntilIdle()
 
-        // Assert Success
+
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
         assertEquals(2, state.users.size)
@@ -70,16 +70,16 @@ class FollowListViewModelTest {
 
     @Test
     fun `loadUsers failure should update state with error`() = runTest {
-        // Arrange
+
         val userId = "user123"
         val errorMessage = "Network Error"
         whenever(followService.getFollowing(eq(userId), any())).thenReturn(Result.failure(Exception(errorMessage)))
 
-        // Act
+
         viewModel.loadUsers(userId, "following")
         advanceUntilIdle()
 
-        // Assert Failure
+
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
         assertTrue(state.users.isEmpty())
@@ -89,14 +89,14 @@ class FollowListViewModelTest {
 
     @Test
     fun `loadUsers with unknown type should result in empty list and no error`() = runTest(testDispatcher) {
-        // Arrange
+
         val userId = "user123"
 
-        // Act
+
         viewModel.loadUsers(userId, "some_invalid_type")
         advanceUntilIdle()
 
-        // Assert
+
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
         assertTrue(state.users.isEmpty())

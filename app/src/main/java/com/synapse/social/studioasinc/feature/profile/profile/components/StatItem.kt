@@ -31,16 +31,16 @@ fun StatItem(
 ) {
     val haptic = LocalHapticFeedback.current
     var isPressed by remember { mutableStateOf(false) }
-    
+
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
         animationSpec = tween(durationMillis = 100),
         label = "statItemScale"
     )
-    
+
     val formattedCount = NumberFormatter.formatCount(count)
     val contentDesc = "$formattedCount $label"
-    
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -50,7 +50,7 @@ fun StatItem(
                 onClick()
             }
             .padding(horizontal = Spacing.SmallMedium, vertical = Spacing.Small)
-            .minimumInteractiveComponentSize() // Ensures 48dp touch target
+            .minimumInteractiveComponentSize()
             .scale(scale)
             .semantics {
                 contentDescription = contentDesc
@@ -59,7 +59,7 @@ fun StatItem(
         Text(
             text = formattedCount,
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.ExtraBold, // Emphasized
+            fontWeight = FontWeight.ExtraBold,
             color = if (enabled) {
                 MaterialTheme.colorScheme.onSurface
             } else {
@@ -67,7 +67,7 @@ fun StatItem(
             },
             textAlign = TextAlign.Center
         )
-        
+
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,

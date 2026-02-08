@@ -63,7 +63,7 @@ fun NetworkUsageScreen(
                 contentPadding = PaddingValues(vertical = 16.dp)
             ) {
                 item {
-                    // Total Usage Header
+
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -155,10 +155,10 @@ fun NetworkUsageScreen(
                 }
 
                 item {
-                    // Reset Statistics Button
+
                      Box(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                         TextButton(
-                            onClick = { /* Reset Logic */ },
+                            onClick = {  },
                             modifier = Modifier.align(Alignment.CenterEnd)
                         ) {
                             Text("Reset Statistics")

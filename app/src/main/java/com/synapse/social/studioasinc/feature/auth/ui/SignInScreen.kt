@@ -60,7 +60,7 @@ fun SignInScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Branding Side
+
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -71,7 +71,7 @@ fun SignInScreen(
                     SignInHeader()
                 }
 
-                // Form Side
+
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -93,7 +93,7 @@ fun SignInScreen(
                 }
             }
         } else {
-            // Single Column
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -152,7 +152,7 @@ private fun SignInForm(
 
     ErrorCard(
         error = state.generalError,
-        onDismiss = { /* Optional: Clear error in VM */ }
+        onDismiss = {  }
     )
 
     AuthTextField(
@@ -199,9 +199,9 @@ private fun SignInForm(
             .fillMaxWidth()
             .clickable { onForgotPasswordClick() }
             .padding(vertical = 4.dp),
-            // Align end logic depends on layout. Text composable takes full width if specified or align.
-            // But Text itself aligns content left by default.
-            // We can wrap in Box or use textAlign.
+
+
+
             textAlign = androidx.compose.ui.text.style.TextAlign.End
     )
 
@@ -243,7 +243,7 @@ private fun SignInForm(
 
     Spacer(modifier = Modifier.height(24.dp))
 
-    // OAuth Buttons
+
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         OAuthButton(
             provider = "Google",

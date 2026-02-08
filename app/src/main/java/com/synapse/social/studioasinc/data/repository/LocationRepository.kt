@@ -17,7 +17,7 @@ class LocationRepository @Inject constructor() {
     companion object {
         private const val CONNECT_TIMEOUT = 10000
         private const val READ_TIMEOUT = 10000
-        private const val MAX_RESPONSE_SIZE = 1024 * 1024 // 1 MB
+        private const val MAX_RESPONSE_SIZE = 1024 * 1024
     }
 
     suspend fun searchLocations(query: String): Result<List<LocationData>> = withContext(Dispatchers.IO) {
@@ -61,7 +61,7 @@ class LocationRepository @Inject constructor() {
                     val lat = obj.optString("lat").toDoubleOrNull()
                     val lon = obj.optString("lon").toDoubleOrNull()
 
-                    // Extract nicer address
+
                     val address = obj.optJSONObject("address")
                     val city = address?.optString("city") ?: address?.optString("town") ?: address?.optString("village")
                     val country = address?.optString("country")

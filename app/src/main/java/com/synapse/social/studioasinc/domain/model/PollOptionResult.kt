@@ -3,12 +3,8 @@ package com.synapse.social.studioasinc.domain.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * Poll option result model for displaying poll results.
- * Contains vote count and percentage for each option.
- *
- * Requirements: 7.1
- */
+
+
 @Serializable
 data class PollOptionResult(
     val index: Int,
@@ -18,9 +14,8 @@ data class PollOptionResult(
     val percentage: Float = 0f
 ) {
     companion object {
-        /**
-         * Calculate poll results from vote counts
-         */
+
+
         fun calculateResults(
             options: List<String>,
             voteCounts: Map<Int, Int>

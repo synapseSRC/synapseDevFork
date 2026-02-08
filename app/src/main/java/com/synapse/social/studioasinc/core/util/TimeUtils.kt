@@ -40,14 +40,13 @@ object TimeUtils {
         }
     }
 
-    /**
-     * Format timestamp to relative time string (e.g., "2h", "3d")
-     */
+
+
     fun formatTimestamp(timestamp: Long, now: Long = System.currentTimeMillis()): String {
         val diff = now - timestamp
 
         return when {
-            diff < 0 -> "1s" // Future time? treat as just now
+            diff < 0 -> "1s"
             diff < 60_000 -> "${(diff / 1000).coerceAtLeast(1)}s"
             diff < 3600_000 -> "${diff / 60_000}m"
             diff < 86400_000 -> "${diff / 3600_000}h"
@@ -56,18 +55,16 @@ object TimeUtils {
         }
     }
 
-    /**
-     * Bolt Optimization: Using java.time (available in minSdk 26) is significantly faster
-     * than SimpleDateFormat and avoids expensive object allocation on every call.
-     */
+
+
     fun getTimeAgo(isoTimestamp: String): String {
         if (isoTimestamp.isBlank()) return "1s"
         return try {
-            // java.time.OffsetDateTime is thread-safe and more efficient than SimpleDateFormat
+
             val odt = java.time.OffsetDateTime.parse(isoTimestamp)
             formatTimestamp(odt.toInstant().toEpochMilli())
         } catch (e: java.time.format.DateTimeParseException) {
-            // Fallback for formats that might not be strict ISO
+
             try {
                 val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).apply {
                     timeZone = TimeZone.getTimeZone("UTC")

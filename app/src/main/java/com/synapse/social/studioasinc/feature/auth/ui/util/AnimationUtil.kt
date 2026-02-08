@@ -7,14 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 
-/**
- * Utility for handling animations and reduced motion settings.
- */
+
+
 object AnimationUtil {
 
-    /**
-     * Checks if the user has enabled "Remove animations" or "Reduce motion" in system settings.
-     */
+
+
     @Composable
     fun rememberReducedMotion(): Boolean {
         val context = LocalContext.current
@@ -33,13 +31,8 @@ object AnimationUtil {
         }
     }
 
-    /**
-     * Returns a scale value that animates when enabled is true.
-     * Respects reduced motion settings.
-     *
-     * @param pressed Whether the element is currently pressed
-     * @return Float scale value (usually 1f to 0.95f)
-     */
+
+
     @Composable
     fun animatedScale(pressed: Boolean): Float {
         val reducedMotion = rememberReducedMotion()

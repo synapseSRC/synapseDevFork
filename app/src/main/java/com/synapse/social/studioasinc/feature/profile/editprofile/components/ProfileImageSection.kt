@@ -60,7 +60,7 @@ fun ProfileImageSection(
         tonalElevation = 2.dp
     ) {
         Column {
-            // Cover Photo
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -80,7 +80,7 @@ fun ProfileImageSection(
                         contentScale = ContentScale.Crop
                     )
 
-                    // Upload state overlay for cover
+
                     when (coverUploadState) {
                         is com.synapse.social.studioasinc.presentation.editprofile.UploadState.Uploading -> {
                             Box(
@@ -141,7 +141,7 @@ fun ProfileImageSection(
                     }
             }
 
-            // Profile Avatar
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -182,7 +182,7 @@ fun ProfileImageSection(
                         }
                     }
 
-                    // Upload state overlay for avatar
+
                     when (avatarUploadState) {
                         is com.synapse.social.studioasinc.presentation.editprofile.UploadState.Uploading -> {
                             Box(
@@ -224,7 +224,7 @@ fun ProfileImageSection(
                             }
                         }
                         else -> {
-                            // No overlay for success or idle state
+
                         }
                     }
                 }

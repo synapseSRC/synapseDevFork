@@ -36,8 +36,8 @@ class StorageRepositoryImpl(
             .map { row ->
                 if (row == null) return@map StorageConfig()
 
-                // Retrieve secrets from SecureStorage, falling back to DB (if migration failed or for legacy support)
-                // Note: migrateSecrets() in ensureDefault() should have moved them to SecureStorage and cleared DB.
+
+
 
                 val imgBBKey = secureStorage.getString(KEY_IMGBB)?.takeIf { it.isNotBlank() } ?: row.imgbb_key
 
@@ -69,7 +69,7 @@ class StorageRepositoryImpl(
     }
 
     override suspend fun saveStorageConfig(config: StorageConfig) = withContext(Dispatchers.IO) {
-        // Save secrets to SecureStorage
+
         secureStorage.save(KEY_IMGBB, config.imgBBKey)
         secureStorage.save(KEY_CLOUDINARY_API_KEY, config.cloudinaryApiKey)
         secureStorage.save(KEY_CLOUDINARY_API_SECRET, config.cloudinaryApiSecret)
@@ -81,7 +81,7 @@ class StorageRepositoryImpl(
             queries.updatePhotoProvider(config.photoProvider.name)
             queries.updateVideoProvider(config.videoProvider.name)
             queries.updateOtherProvider(config.otherProvider.name)
-            // Save non-secrets to DB, clear secrets
+
             queries.updateImgBB("")
             queries.updateCloudinary(config.cloudinaryCloudName, "", "")
             queries.updateSupabase(config.supabaseUrl, "", config.supabaseBucket)

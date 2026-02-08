@@ -27,14 +27,14 @@ class AndroidSignalProtocolManager(context: Context, private val deviceId: Int =
     }
 
     override suspend fun generateIdentityAndKeys(): SignalIdentityKeys {
-        // Generate Identity Key Pair
+
         val identityKeyPair: IdentityKeyPair = KeyHelper.generateIdentityKeyPair()
         val registrationId = KeyHelper.generateRegistrationId(false)
 
         store.saveIdentityKeyPair(identityKeyPair)
         store.saveLocalRegistrationId(registrationId)
 
-        // Generate Signed Pre Key
+
         val lastSignedId = store.getLastSignedPreKeyId()
         val signedPreKeyId = lastSignedId + 1
         val signedPreKey: SignedPreKeyRecord = KeyHelper.generateSignedPreKey(identityKeyPair, signedPreKeyId)

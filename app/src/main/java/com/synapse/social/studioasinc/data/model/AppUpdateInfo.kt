@@ -3,9 +3,8 @@ package com.synapse.social.studioasinc.data.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * Data class representing app update information fetched from the backend.
- */
+
+
 @Serializable
 data class AppUpdateInfo(
     @SerialName("version_code")

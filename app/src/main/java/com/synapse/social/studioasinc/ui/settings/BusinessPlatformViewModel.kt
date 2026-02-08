@@ -12,11 +12,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.datetime.*
 
-/**
- * ViewModel for the Business Platform screen.
- *
- * Manages state for business features, analytics, monetization, and verification.
- */
+
+
 class BusinessPlatformViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _state = MutableStateFlow(
@@ -50,7 +47,7 @@ class BusinessPlatformViewModel(application: Application) : AndroidViewModel(app
                 val user = supabaseClient.auth.currentUserOrNull()
 
                 if (user != null) {
-                    // Fetch Business Account Info
+
                     val businessAccounts = supabaseClient.from("business_accounts")
                         .select {
                             filter {
@@ -70,10 +67,10 @@ class BusinessPlatformViewModel(application: Application) : AndroidViewModel(app
                         AccountType.PERSONAL
                     }
 
-                    // Fetch Analytics (Mocked for now as per requirements, or fetch from analytics_daily)
+
                     val analytics = fetchAnalytics(user.id)
 
-                    // Fetch Revenue
+
                     val revenue = fetchRevenue(user.id)
 
                     _state.value = _state.value.copy(
@@ -99,8 +96,8 @@ class BusinessPlatformViewModel(application: Application) : AndroidViewModel(app
     }
 
     private suspend fun fetchAnalytics(userId: String): AnalyticsData {
-        // In a real implementation, query 'analytics_daily' table
-        // For now, returning dummy data for visualization
+
+
         val points = (0..6).map { dayOffset ->
              DataPoint(
                  date = "2024-01-${dayOffset + 1}",
@@ -121,11 +118,11 @@ class BusinessPlatformViewModel(application: Application) : AndroidViewModel(app
     }
 
     private suspend fun fetchRevenue(userId: String): RevenueData {
-        // Query 'revenue_transactions' table
+
         return RevenueData(
             totalEarnings = 1500.00,
             pendingPayout = 250.00,
-            lastPayoutDate = System.currentTimeMillis() - 86400000 * 5 // 5 days ago
+            lastPayoutDate = System.currentTimeMillis() - 86400000 * 5
         )
     }
 
@@ -173,7 +170,7 @@ class BusinessPlatformViewModel(application: Application) : AndroidViewModel(app
                 _state.value = _state.value.copy(monetizationEnabled = enabled)
             } catch (e: Exception) {
                 _error.value = "Failed to update monetization settings: ${e.message}"
-                // Revert state if failed
+
                 loadBusinessData()
             } finally {
                 _isLoading.value = false
@@ -212,9 +209,9 @@ class BusinessPlatformViewModel(application: Application) : AndroidViewModel(app
     }
 }
 
-// ============================================================================
-// Data Models
-// ============================================================================
+
+
+
 
 data class BusinessPlatformState(
     val accountType: AccountType,

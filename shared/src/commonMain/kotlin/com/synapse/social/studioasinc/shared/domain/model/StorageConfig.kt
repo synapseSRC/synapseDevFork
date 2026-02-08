@@ -9,20 +9,20 @@ data class StorageConfig(
     val videoProvider: StorageProvider = StorageProvider.DEFAULT,
     val otherProvider: StorageProvider = StorageProvider.DEFAULT,
 
-    // ImgBB
+
     val imgBBKey: String = "",
 
-    // Cloudinary
+
     val cloudinaryCloudName: String = "",
     val cloudinaryApiKey: String = "",
     val cloudinaryApiSecret: String = "",
 
-    // Supabase (Custom Bucket)
+
     val supabaseUrl: String = "",
     val supabaseKey: String = "",
     val supabaseBucket: String = "",
 
-    // Cloudflare R2
+
     val r2AccountId: String = "",
     val r2AccessKeyId: String = "",
     val r2SecretAccessKey: String = "",

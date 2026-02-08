@@ -26,45 +26,45 @@ class SynapseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // Initialize OneSignal
+
         initializeOneSignal()
 
-        // Initialize authentication service
+
         SupabaseAuthenticationService.initialize(this)
 
-        // Initialize background maintenance services
+
         initializeMaintenanceServices()
 
-        // Apply saved theme on app startup
+
         applyThemeOnStartup()
 
-        // Log authentication configuration in development builds
+
         if (AuthDevelopmentUtils.isDevelopmentBuild()) {
             AuthDevelopmentUtils.logAuthConfig(this)
         }
     }
 
     private fun initializeOneSignal() {
-        // Enable debug logging only in debug builds and if configured
+
         if (com.synapse.social.studioasinc.BuildConfig.DEBUG && NotificationConfig.ENABLE_DEBUG_LOGGING) {
             OneSignal.Debug.logLevel = LogLevel.VERBOSE
         }
 
-        // Initialize OneSignal
+
         OneSignal.initWithContext(this, NotificationConfig.ONESIGNAL_APP_ID)
 
-        // Prompt for notification permission on Android 13+
+
         CoroutineScope(Dispatchers.Main).launch {
             OneSignal.Notifications.requestPermission(true)
 
-            // Link existing session to OneSignal if available
+
             try {
                 val authService = SupabaseAuthenticationService.getInstance(this@SynapseApplication)
                 authService.getCurrentUserId()?.let { userId ->
                     OneSignal.login(userId)
                     android.util.Log.d("SynapseApplication", "Restored OneSignal session for user: $userId")
 
-                    // Sync OneSignal Player ID
+
                     val subscriptionId = OneSignal.User.pushSubscription.id
                     if (!subscriptionId.isNullOrEmpty()) {
                         withContext(Dispatchers.IO) {
@@ -97,7 +97,7 @@ class SynapseApplication : Application() {
     }
 
     private fun initializeMaintenanceServices() {
-        // Initialize media cache cleanup
+
         mediaCacheCleanupManager = MediaCacheCleanupManager(this)
         mediaCacheCleanupManager.initialize()
     }
@@ -105,7 +105,7 @@ class SynapseApplication : Application() {
     override fun onTerminate() {
         super.onTerminate()
 
-        // Clean up maintenance services
+
         if (::mediaCacheCleanupManager.isInitialized) {
             mediaCacheCleanupManager.shutdown()
         }

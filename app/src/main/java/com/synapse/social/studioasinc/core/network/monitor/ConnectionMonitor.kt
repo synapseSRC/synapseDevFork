@@ -12,10 +12,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Network connection monitor with real-time status updates
- * Provides connection state and quality information
- */
+
+
 @Singleton
 class ConnectionMonitor @Inject constructor(
     @ApplicationContext context: Context
@@ -65,9 +63,8 @@ class ConnectionMonitor @Inject constructor(
     )
     val connectionInfo: StateFlow<ConnectionInfo> = _connectionInfo.asStateFlow()
 
-    /**
-     * Get the initial connection state by checking the active network
-     */
+
+
     private fun getInitialConnectionState(): ConnectionState {
         val activeNetwork = connectivityManager.activeNetwork
         val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
@@ -161,32 +158,28 @@ class ConnectionMonitor @Inject constructor(
         }
     }
 
-    /**
-     * Check if currently connected (includes poor connection since network is still available)
-     */
+
+
     fun isConnected(): Boolean {
         return _connectionState.value == ConnectionState.CONNECTED ||
                _connectionState.value == ConnectionState.POOR_CONNECTION
     }
 
-    /**
-     * Check if connection is metered (cellular data)
-     */
+
+
     fun isConnectionMetered(): Boolean {
         return connectivityManager.isActiveNetworkMetered
     }
 
-    /**
-     * Check if connection quality is good enough for media
-     */
+
+
     fun isGoodForMedia(): Boolean {
         val info = _connectionInfo.value
         return info.quality in listOf(ConnectionQuality.EXCELLENT, ConnectionQuality.GOOD)
     }
 
-    /**
-     * Get connection type string for display
-     */
+
+
     fun getConnectionTypeString(): String {
         return when (_connectionInfo.value.type) {
             ConnectionType.WIFI -> "Wi-Fi"
@@ -196,14 +189,13 @@ class ConnectionMonitor @Inject constructor(
         }
     }
 
-    /**
-     * Cleanup resources
-     */
+
+
     fun cleanup() {
         try {
             connectivityManager.unregisterNetworkCallback(networkCallback)
         } catch (e: Exception) {
-            // Callback might not be registered
+
         }
     }
 }

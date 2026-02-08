@@ -47,16 +47,16 @@ fun StorageProviderConfigScreen(
              modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 16.dp), // Using hardcoded 16.dp as safe default if SettingsSpacing is not visible, but likely is.
-                 // Actually, let's try to use SettingsSpacing.screenPadding if available.
-                 // If not, it will be a compile error. I'll stick to 16.dp for safety in this blind generation
-                 // unless I am 100% sure.
-                 // Usage in StorageDataScreen was SettingsSpacing.screenPadding.
-                 // I will assume SettingsSpacing is available since I am in the same package.
-            verticalArrangement = Arrangement.spacedBy(24.dp), // SettingsSpacing.sectionSpacing
+                .padding(horizontal = 16.dp),
+
+
+
+
+
+            verticalArrangement = Arrangement.spacedBy(24.dp),
             contentPadding = PaddingValues(vertical = 16.dp)
         ) {
-            // Photos Section
+
             item {
                 SettingsSection(title = "Photos") {
                     val options = listOf("ImgBB", "Cloudinary", "Supabase")
@@ -73,7 +73,7 @@ fun StorageProviderConfigScreen(
                 }
             }
 
-            // Videos Section
+
             item {
                 SettingsSection(title = "Videos") {
                     val options = listOf("Cloudinary", "Supabase")
@@ -90,7 +90,7 @@ fun StorageProviderConfigScreen(
                 }
             }
 
-            // Files & Audio Section
+
             item {
                 SettingsSection(title = "Files & Audio") {
                     val options = listOf("Supabase", "Cloudflare")

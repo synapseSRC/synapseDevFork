@@ -13,14 +13,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel for the Settings Hub screen.
- *
- * Manages the state for the main settings hub, including user profile summary
- * and the list of settings categories. Handles navigation events to sub-screens.
- *
- * Requirements: 1.5
- */
+
+
 @HiltViewModel
 class SettingsHubViewModel @Inject constructor(
     application: Application
@@ -40,11 +34,8 @@ class SettingsHubViewModel @Inject constructor(
         loadSettingsCategories()
     }
 
-    /**
-     * Loads the current user's profile summary from UserProfileManager.
-     *
-     * Requirements: 1.5
-     */
+
+
     private fun loadUserProfile() {
         viewModelScope.launch {
             _isLoading.value = true
@@ -63,7 +54,7 @@ class SettingsHubViewModel @Inject constructor(
                         avatarUrl = currentUser.avatar
                     )
                 } else {
-                    // Fallback to Auth Service if profile is missing in DB
+
                     try {
                         val authService = SupabaseAuthenticationService.getInstance(getApplication())
                         val authUser = authService.getCurrentUser()
@@ -71,12 +62,12 @@ class SettingsHubViewModel @Inject constructor(
                         if (authUser != null) {
                             _userProfileSummary.value = UserProfileSummary(
                                 id = authUser.id,
-                                displayName = "User", // Fallback name
+                                displayName = "User",
                                 email = authUser.email,
                                 avatarUrl = null
                             )
                         } else {
-                            // Set default profile if no user found in Auth
+
                             _userProfileSummary.value = UserProfileSummary(
                                 id = "",
                                 displayName = "User",
@@ -96,7 +87,7 @@ class SettingsHubViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 android.util.Log.e("SettingsHubViewModel", "Failed to load user profile", e)
-                // Set default profile if loading fails
+
                 _userProfileSummary.value = UserProfileSummary(
                     id = "",
                     displayName = "User",
@@ -109,13 +100,10 @@ class SettingsHubViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Loads the list of settings categories for the hub.
-     *
-     * Requirements: 1.1, 1.4
-     */
+
+
     private fun loadSettingsCategories() {
-        // Group A: Premium & Profile
+
         val groupA = SettingsGroup(
             id = "group_a",
             title = null,
@@ -144,7 +132,7 @@ class SettingsHubViewModel @Inject constructor(
             )
         )
 
-        // Group B: Privacy & Personalization
+
         val groupB = SettingsGroup(
             id = "group_b",
             title = null,
@@ -173,7 +161,7 @@ class SettingsHubViewModel @Inject constructor(
             )
         )
 
-        // Group C: Communication & Media
+
         val groupC = SettingsGroup(
             id = "group_c",
             title = null,
@@ -202,7 +190,7 @@ class SettingsHubViewModel @Inject constructor(
             )
         )
 
-        // Group D: Accessibility & Support
+
         val groupD = SettingsGroup(
             id = "group_d",
             title = null,
@@ -231,7 +219,7 @@ class SettingsHubViewModel @Inject constructor(
             )
         )
 
-        // Group E: Experiments
+
         val groupE = SettingsGroup(
             id = "group_e",
             title = "Experiments",
@@ -256,22 +244,18 @@ class SettingsHubViewModel @Inject constructor(
         _settingsGroups.value = listOf(groupA, groupB, groupC, groupD, groupE)
     }
 
-    /**
-     * Handles navigation to a settings category.
-     *
-     * @param destination The destination to navigate to
-     */
+
+
     fun onNavigateToCategory(destination: SettingsDestination) {
-        // Navigation is handled by the composable through callbacks
-        // This method can be used for analytics or side effects
+
+
         android.util.Log.d("SettingsHubViewModel", "Navigating to: ${destination.route}")
     }
 
-    /**
-     * Refreshes the user profile data.
-     */
+
+
     fun refreshUserProfile() {
-        // Clear cache to force fresh data
+
         UserProfileManager.clearCache()
         loadUserProfile()
     }

@@ -61,18 +61,18 @@ fun ReelItem(
     val scope = rememberCoroutineScope()
     val swipeThreshold = with(density) { 100.dp.toPx() }
 
-    // Initialize player when active
+
     LaunchedEffect(isActive) {
         if (isActive) {
             videoViewModel.initializePlayer(reel.videoUrl)
             videoViewModel.play()
         } else {
-            // When not active, we pause.
+
             videoViewModel.pause()
         }
     }
 
-    // Auto-hide controls
+
     LaunchedEffect(showControls) {
         if (showControls) {
             delay(3000)
@@ -80,7 +80,7 @@ fun ReelItem(
         }
     }
 
-    // Release player when item is disposed
+
     DisposableEffect(Unit) {
         onDispose {
             videoViewModel.releasePlayer()
@@ -137,7 +137,7 @@ fun ReelItem(
                 )
             }
     ) {
-        // Video Player
+
         val player = videoViewModel.getPlayerInstance()
         if (isActive || player != null) {
             AndroidView(
@@ -155,7 +155,7 @@ fun ReelItem(
             )
         }
 
-        // Overlay Gradient
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -167,7 +167,7 @@ fun ReelItem(
                 )
         )
 
-        // Playback Controls Overlay
+
         AnimatedVisibility(
             visible = (showControls || !videoState.isPlaying) && !isLongPressing,
             enter = fadeIn(),
@@ -195,7 +195,7 @@ fun ReelItem(
             }
         }
 
-        // Mute Toggle (Top Right)
+
         if (showControls && !isLongPressing) {
             IconButton(
                 onClick = { videoViewModel.toggleMute() },
@@ -211,7 +211,7 @@ fun ReelItem(
             }
         }
 
-        // Right side controls
+
         AnimatedVisibility(
             visible = !isLongPressing,
             enter = fadeIn(),
@@ -273,7 +273,7 @@ fun ReelItem(
             }
         }
 
-        // Bottom Info
+
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)

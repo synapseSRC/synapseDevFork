@@ -29,24 +29,20 @@ import kotlinx.serialization.json.jsonPrimitive
 import java.time.Instant
 
 interface StoryRepository {
-    /**
-     * Check if a user has any active (non-expired) stories
-     */
+
+
     suspend fun hasActiveStory(userId: String): Result<Boolean>
 
-    /**
-     * Get all active stories from friends and self as a flow
-     */
+
+
     fun getActiveStories(currentUserId: String): Flow<List<StoryWithUser>>
 
-    /**
-     * Get stories for a specific user
-     */
+
+
     suspend fun getUserStories(userId: String): Result<List<Story>>
 
-    /**
-     * Create a new story with media upload
-     */
+
+
     suspend fun createStory(
         userId: String,
         mediaUri: Uri,
@@ -55,24 +51,20 @@ interface StoryRepository {
         duration: Int = 5
     ): Result<Story>
 
-    /**
-     * Delete a story by ID
-     */
+
+
     suspend fun deleteStory(storyId: String): Result<Unit>
 
-    /**
-     * Mark a story as seen by the current user
-     */
+
+
     suspend fun markAsSeen(storyId: String, viewerId: String): Result<Unit>
 
-    /**
-     * Get the list of users who viewed a specific story
-     */
+
+
     suspend fun getStoryViewers(storyId: String): Result<List<StoryViewWithUser>>
 
-    /**
-     * Check if current user has seen a specific story
-     */
+
+
     suspend fun hasSeenStory(storyId: String, viewerId: String): Result<Boolean>
 }
 
@@ -109,7 +101,7 @@ class StoryRepositoryImpl @Inject constructor(
         try {
             val now = Instant.now().toString()
 
-            // Get list of users the current user is following
+
             val followingList = try {
                 client.from("follows")
                     .select(columns = Columns.raw("following_id")) {
@@ -124,12 +116,12 @@ class StoryRepositoryImpl @Inject constructor(
                 mutableListOf<String>()
             }
 
-            // Include current user in the list to fetch own stories
+
             if (!followingList.contains(currentUserId)) {
                 followingList.add(currentUserId)
             }
 
-            // Get all active stories with user data
+
             val stories = client.from(TABLE_STORIES)
                 .select(columns = Columns.raw("*, users:users!user_id(*)")) {
                     filter {
@@ -140,7 +132,7 @@ class StoryRepositoryImpl @Inject constructor(
                 }
                 .decodeList<JsonObject>()
 
-            // Group stories by user
+
             val storiesByUser = mutableMapOf<String, MutableList<Story>>()
             val usersMap = mutableMapOf<String, User>()
 
@@ -185,7 +177,7 @@ class StoryRepositoryImpl @Inject constructor(
 
                 storiesByUser.getOrPut(userId) { mutableListOf() }.add(story)
 
-                // Parse user data if not already done
+
                 if (!usersMap.containsKey(userId)) {
                     val userJson = storyJson["users"] as? JsonObject
                     if (userJson != null) {
@@ -201,24 +193,24 @@ class StoryRepositoryImpl @Inject constructor(
                 }
             }
 
-            // Build StoryWithUser list, putting current user first
+
             val result = mutableListOf<StoryWithUser>()
 
-            // Add current user's stories first if they exist
+
             storiesByUser[currentUserId]?.let { userStories ->
                 usersMap[currentUserId]?.let { user ->
                     result.add(
                         StoryWithUser(
                             user = user,
                             stories = userStories.sortedByDescending { it.createdAt },
-                            hasUnseenStories = false, // Own stories are always "seen"
+                            hasUnseenStories = false,
                             latestStoryTime = userStories.maxOfOrNull { it.createdAt ?: "" }
                         )
                     )
                 }
             }
 
-            // Add other users' stories
+
             for ((userId, userStories) in storiesByUser) {
                 if (userId == currentUserId) continue
                 usersMap[userId]?.let { user ->
@@ -226,7 +218,7 @@ class StoryRepositoryImpl @Inject constructor(
                         StoryWithUser(
                             user = user,
                             stories = userStories.sortedByDescending { it.createdAt },
-                            hasUnseenStories = true, // Will be updated when we check seen status
+                            hasUnseenStories = true,
                             latestStoryTime = userStories.maxOfOrNull { it.createdAt ?: "" }
                         )
                     )
@@ -265,11 +257,11 @@ class StoryRepositoryImpl @Inject constructor(
         privacy: StoryPrivacy,
         duration: Int
     ): Result<Story> = try {
-        // Convert URI to file path
+
         val filePath = FileManager.getPathFromUri(context, mediaUri)
             ?: throw Exception("Could not convert URI to file path")
 
-        // Upload media
+
         val mediaUrl = try {
             val sharedMediaType = when (mediaType) {
                 StoryMediaType.PHOTO -> MediaType.PHOTO
@@ -286,11 +278,11 @@ class StoryRepositoryImpl @Inject constructor(
             null
         } ?: throw Exception("Media upload failed")
 
-        // Calculate expiry (24 hours from now)
+
         val now = Instant.now()
         val expiresAt = now.plusSeconds(24 * 60 * 60)
 
-        // Create story record with explicit fields matching database schema
+
         val storyData = StoryCreateRequest(
             userId = userId,
             mediaUrl = mediaUrl,
@@ -337,7 +329,7 @@ class StoryRepositoryImpl @Inject constructor(
     }
 
     override suspend fun markAsSeen(storyId: String, viewerId: String): Result<Unit> = try {
-        // Check if already viewed
+
         val existingView = client.from(TABLE_STORY_VIEWS)
             .select {
                 filter {
@@ -349,7 +341,7 @@ class StoryRepositoryImpl @Inject constructor(
             .countOrNull() ?: 0
 
         if (existingView == 0L) {
-            // Insert new view record
+
             val view = StoryView(
                 storyId = storyId,
                 viewerId = viewerId,
@@ -358,8 +350,8 @@ class StoryRepositoryImpl @Inject constructor(
 
             client.from(TABLE_STORY_VIEWS).insert(view)
 
-            // Increment view count on story
-            // Note: This could be done with a database trigger instead
+
+
         }
 
         Result.success(Unit)

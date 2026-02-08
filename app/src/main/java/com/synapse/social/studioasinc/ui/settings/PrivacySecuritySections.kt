@@ -3,9 +3,8 @@ package com.synapse.social.studioasinc.ui.settings
 import androidx.compose.runtime.Composable
 import com.synapse.social.studioasinc.R
 
-/**
- * Privacy Checkup Section
- */
+
+
 @Composable
 internal fun PrivacyCheckupSection(isLoading: Boolean) {
     SettingsSection(title = "Privacy Checkup") {
@@ -19,9 +18,8 @@ internal fun PrivacyCheckupSection(isLoading: Boolean) {
     }
 }
 
-/**
- * Profile Privacy Section
- */
+
+
 @Composable
 internal fun ProfilePrivacySection(
     privacySettings: PrivacySettings,
@@ -92,9 +90,8 @@ internal fun ProfilePrivacySection(
     }
 }
 
-/**
- * Message Privacy Section
- */
+
+
 @Composable
 internal fun MessagePrivacySection(
     readReceiptsEnabled: Boolean,
@@ -121,9 +118,8 @@ internal fun MessagePrivacySection(
     }
 }
 
-/**
- * Group Privacy Section
- */
+
+
 @Composable
 internal fun GroupPrivacySection(
     privacySettings: PrivacySettings,
@@ -148,9 +144,8 @@ internal fun GroupPrivacySection(
     }
 }
 
-/**
- * Security Section
- */
+
+
 @Composable
 internal fun SecuritySection(
     appLockEnabled: Boolean,
@@ -180,9 +175,8 @@ internal fun SecuritySection(
     }
 }
 
-/**
- * Active Sessions Section
- */
+
+
 @Composable
 internal fun ActiveSessionsSection(
     onNavigateToActiveSessions: () -> Unit,
@@ -199,9 +193,8 @@ internal fun ActiveSessionsSection(
     }
 }
 
-/**
- * Contacts Section (Blocked & Muted)
- */
+
+
 @Composable
 internal fun ContactsSection(
     onNavigateToBlockedUsers: () -> Unit,

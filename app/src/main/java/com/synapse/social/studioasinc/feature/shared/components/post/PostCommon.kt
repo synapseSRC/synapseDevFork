@@ -8,13 +8,11 @@ import com.synapse.social.studioasinc.data.model.UserProfile
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-/**
- * Shared Mapper logic for converting Post domain model to UI State.
- * This ensures Home and Profile screens render posts identically.
- */
+
+
 object PostMapper {
     fun mapToState(post: Post, currentProfile: UserProfile? = null, isExpanded: Boolean = false): PostCardState {
-        // Resolve User Info: Default to Post fields, fallback to provided Profile if ID matches
+
         val resolvedUsername = when {
             !post.username.isNullOrBlank() -> post.username!!
             currentProfile?.id == post.authorUid -> currentProfile?.username ?: "Unknown"
@@ -42,7 +40,7 @@ object PostMapper {
 
         val mediaUrls = post.mediaItems?.mapNotNull { it.url } ?: listOfNotNull(post.postImage)
 
-        // Poll Mapping
+
         val mappedPollOptions = post.pollOptions?.mapIndexed { index, option ->
             PollOption(
                 id = index.toString(),
@@ -58,7 +56,7 @@ object PostMapper {
             isLiked = post.userReaction == ReactionType.LIKE,
             likeCount = post.likesCount,
             commentCount = post.commentsCount,
-            isBookmarked = false, // To be populated if Model supports it
+            isBookmarked = false,
             hideLikeCount = post.postHideLikeCount == "true",
             mediaUrls = mediaUrls,
             isVideo = post.postType == "VIDEO",
@@ -73,9 +71,8 @@ object PostMapper {
     }
 }
 
-/**
- * Event for Post interactions to sync state across screens.
- */
+
+
 sealed class PostEvent {
     data class Liked(val postId: String, val isLiked: Boolean, val newLikeCount: Int) : PostEvent()
     data class PollVoted(val postId: String, val optionIndex: Int, val pollOptions: List<com.synapse.social.studioasinc.domain.model.PollOption>, val userVote: Int?) : PostEvent()
@@ -84,10 +81,8 @@ sealed class PostEvent {
     data class Error(val message: String) : PostEvent()
 }
 
-/**
- * Global Bus for Post Events.
- * ViewModels should emit to this when they change post state, and listen to it to update their local lists.
- */
+
+
 object PostEventBus {
     private val _events = MutableSharedFlow<PostEvent>(extraBufferCapacity = 64)
     val events = _events.asSharedFlow()
@@ -97,12 +92,8 @@ object PostEventBus {
     }
 }
 
-/**
- * Interface to standardize actions passed from UI to ViewModel.
- *
- * Optimization: Annotated with @Stable to allow Compose to skip recomposition
- * when the actions instance remains identical, significantly improving list performance.
- */
+
+
 @Stable
 data class PostActions(
     val onLike: (Post) -> Unit,

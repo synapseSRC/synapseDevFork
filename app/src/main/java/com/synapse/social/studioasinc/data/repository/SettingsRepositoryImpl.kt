@@ -23,14 +23,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.io.File
 
-/**
- * Implementation of SettingsRepository that uses SettingsDataStore for persistence.
- *
- * This class provides the concrete implementation of all settings operations,
- * delegating persistence to SettingsDataStore and handling cache management.
- *
- * Requirements: 7.2, 10.1, 10.3
- */
+
+
 class SettingsRepositoryImpl private constructor(
     private val context: Context,
     private val settingsDataStore: SettingsDataStore
@@ -54,12 +48,12 @@ class SettingsRepositoryImpl private constructor(
     }
 
 
-    // Cache size state for reactive updates
+
     private val _cacheSize = MutableStateFlow(0L)
 
-    // ========================================================================
-    // Theme Settings (Device-level - preserved on logout)
-    // ========================================================================
+
+
+
 
     override val themeMode: Flow<ThemeMode> = settingsDataStore.themeMode
 
@@ -91,9 +85,9 @@ class SettingsRepositoryImpl private constructor(
         settingsDataStore.setLanguage(languageCode)
     }
 
-    // ========================================================================
-    // Privacy Settings (User-level - cleared on logout)
-    // ========================================================================
+
+
+
 
     override val profileVisibility: Flow<ProfileVisibility> = settingsDataStore.profileVisibility
 
@@ -125,9 +119,9 @@ class SettingsRepositoryImpl private constructor(
         settingsDataStore.setTwoFactorEnabled(enabled)
     }
 
-    // ========================================================================
-    // Notification Settings (User-level - cleared on logout)
-    // ========================================================================
+
+
+
 
     override val notificationPreferences: Flow<NotificationPreferences> =
         settingsDataStore.notificationPreferences
@@ -140,9 +134,9 @@ class SettingsRepositoryImpl private constructor(
         settingsDataStore.setInAppNotificationsEnabled(enabled)
     }
 
-    // ========================================================================
-    // Chat Settings (User-level - cleared on logout)
-    // ========================================================================
+
+
+
 
     override val chatSettings: Flow<ChatSettings> = settingsDataStore.chatSettings
 
@@ -171,10 +165,10 @@ class SettingsRepositoryImpl private constructor(
     }
 
 
-    // ========================================================================
-    // Storage and Cache Management
-    // Requirements: 7.2
-    // ========================================================================
+
+
+
+
 
     override val mediaUploadQuality: Flow<com.synapse.social.studioasinc.ui.settings.MediaUploadQuality> = settingsDataStore.mediaUploadQuality
 
@@ -199,31 +193,23 @@ class SettingsRepositoryImpl private constructor(
 
     override val cacheSize: Flow<Long> = _cacheSize.asStateFlow()
 
-    /**
-     * Clears the app cache and returns the amount of space freed.
-     *
-     * This method clears:
-     * - Internal cache directory
-     * - External cache directory (if available)
-     * - Code cache directory
-     *
-     * @return The number of bytes freed by clearing the cache
-     */
+
+
     override suspend fun clearCache(): Long {
         val sizeBefore = calculateCacheSize()
 
         try {
-            // Clear internal cache
+
             context.cacheDir?.let { cacheDir ->
                 deleteDirectory(cacheDir)
             }
 
-            // Clear external cache if available
+
             context.externalCacheDir?.let { externalCacheDir ->
                 deleteDirectory(externalCacheDir)
             }
 
-            // Clear code cache
+
             context.codeCacheDir?.let { codeCacheDir ->
                 deleteDirectory(codeCacheDir)
             }
@@ -234,33 +220,30 @@ class SettingsRepositoryImpl private constructor(
         val sizeAfter = calculateCacheSize()
         val freedSpace = sizeBefore - sizeAfter
 
-        // Update the cache size state
+
         _cacheSize.value = sizeAfter
 
         Log.d(TAG, "Cache cleared: freed ${freedSpace / 1024}KB")
         return freedSpace
     }
 
-    /**
-     * Calculates and returns the current cache size.
-     *
-     * @return The current cache size in bytes
-     */
+
+
     override suspend fun calculateCacheSize(): Long {
         var totalSize = 0L
 
         try {
-            // Internal cache
+
             context.cacheDir?.let { cacheDir ->
                 totalSize += getDirectorySize(cacheDir)
             }
 
-            // External cache
+
             context.externalCacheDir?.let { externalCacheDir ->
                 totalSize += getDirectorySize(externalCacheDir)
             }
 
-            // Code cache
+
             context.codeCacheDir?.let { codeCacheDir ->
                 totalSize += getDirectorySize(codeCacheDir)
             }
@@ -268,15 +251,14 @@ class SettingsRepositoryImpl private constructor(
             Log.e(TAG, "Error calculating cache size", e)
         }
 
-        // Update the cache size state
+
         _cacheSize.value = totalSize
 
         return totalSize
     }
 
-    /**
-     * Recursively calculates the size of a directory.
-     */
+
+
     private fun getDirectorySize(directory: File): Long {
         var size = 0L
 
@@ -293,9 +275,8 @@ class SettingsRepositoryImpl private constructor(
         return size
     }
 
-    /**
-     * Recursively deletes all files in a directory without deleting the directory itself.
-     */
+
+
     private fun deleteDirectory(directory: File): Boolean {
         if (directory.exists() && directory.isDirectory) {
             directory.listFiles()?.forEach { file ->
@@ -309,9 +290,9 @@ class SettingsRepositoryImpl private constructor(
     }
 
 
-    // ========================================================================
-    // Data Saver Settings
-    // ========================================================================
+
+
+
 
     override val dataSaverEnabled: Flow<Boolean> = settingsDataStore.dataSaverEnabled
 
@@ -355,40 +336,25 @@ class SettingsRepositoryImpl private constructor(
         settingsDataStore.setChatLockEnabled(enabled)
     }
 
-    // ========================================================================
-    // Settings Lifecycle Management
-    // Requirements: 10.3
-    // ========================================================================
 
-    /**
-     * Clears user-specific settings while preserving device-level preferences.
-     * Called on user logout to reset user data while keeping theme preferences.
-     *
-     * Device-level settings preserved:
-     * - Theme mode
-     * - Dynamic color
-     * - Font scale
-     *
-     * User-level settings cleared:
-     * - Privacy settings
-     * - Notification preferences
-     * - Chat settings
-     */
+
+
+
+
+
+
     override suspend fun clearUserSettings() {
         settingsDataStore.clearUserSettings()
     }
 
-    /**
-     * Clears all settings including device-level preferences.
-     * Use with caution - typically only for complete app reset.
-     */
+
+
     override suspend fun clearAllSettings() {
         settingsDataStore.clearAllSettings()
     }
 
-    /**
-     * Restores default values for all settings.
-     */
+
+
     override suspend fun restoreDefaults() {
         settingsDataStore.restoreDefaults()
     }

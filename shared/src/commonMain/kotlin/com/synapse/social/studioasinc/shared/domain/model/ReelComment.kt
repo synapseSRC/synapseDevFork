@@ -12,7 +12,7 @@ data class ReelComment(
     @SerialName("created_at") val createdAt: String,
     @SerialName("updated_at") val updatedAt: String,
 
-    // UI joins
+
     val userUsername: String? = null,
     val userAvatarUrl: String? = null
 )

@@ -21,15 +21,12 @@ import kotlinx.coroutines.launch
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-/**
- * Utility class for handling user mentions in text with Supabase backend.
- * Provides functionality for clickable mentions and mention notifications.
- */
+
+
 object MentionUtils {
 
-    /**
-     * Make mentions in text clickable and navigate to user profiles
-     */
+
+
     fun handleMentions(context: Context, textView: TextView, text: String) {
         val spannableString = SpannableString(text)
         val pattern = Pattern.compile("@(\\w+)")
@@ -43,7 +40,7 @@ object MentionUtils {
 
                 val clickableSpan = object : ClickableSpan() {
                     override fun onClick(widget: View) {
-                        // Use Supabase to find user by username
+
                         CoroutineScope(Dispatchers.IO).launch {
                             try {
                                 val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
@@ -83,9 +80,8 @@ object MentionUtils {
         textView.movementMethod = android.text.method.LinkMovementMethod.getInstance()
     }
 
-    /**
-     * Send notifications to mentioned users
-     */
+
+
     fun sendMentionNotifications(
         context: Context,
         text: String,
@@ -109,7 +105,7 @@ object MentionUtils {
 
         if (mentionedUsernames.isEmpty()) return
 
-        // Send notifications using Supabase
+
         coroutineScope.launch(Dispatchers.IO) {
             try {
                 val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
@@ -133,9 +129,8 @@ object MentionUtils {
         }
     }
 
-    /**
-     * Send a mention notification to a specific user
-     */
+
+
     private suspend fun sendMentionNotification(
         context: Context,
         mentionedUid: String,
@@ -173,9 +168,8 @@ object MentionUtils {
         }
     }
 
-    /**
-     * Extract mentioned usernames from text
-     */
+
+
     fun extractMentions(text: String): List<String> {
         val pattern = Pattern.compile("@(\\w+)")
         val matcher = pattern.matcher(text)

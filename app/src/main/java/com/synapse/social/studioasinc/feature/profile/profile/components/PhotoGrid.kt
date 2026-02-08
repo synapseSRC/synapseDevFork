@@ -37,16 +37,8 @@ data class MediaItem(
     val thumbnailUrl: String? = null
 )
 
-/**
- * Enhanced Photo Grid with staggered animations and improved styling.
- *
- * Features:
- * - Staggered fade-in animation for items
- * - Rounded corners on grid items
- * - Video and multiple media indicators
- * - Shimmer loading placeholder
- * - Scale animation on press
- */
+
+
 @Composable
 fun PhotoGrid(
     items: List<MediaItem>,
@@ -73,7 +65,7 @@ fun PhotoGrid(
                 AnimatedGridItem(
                     item = item,
                     onClick = { onItemClick(item) },
-                    animationDelay = (index % 9) * 50 // Stagger within viewport
+                    animationDelay = (index % 9) * 50
                 )
             }
 
@@ -82,9 +74,8 @@ fun PhotoGrid(
     }
 }
 
-/**
- * Animated grid item with fade-in and scale animations.
- */
+
+
 @Composable
 private fun AnimatedGridItem(
     item: MediaItem,
@@ -127,7 +118,7 @@ private fun AnimatedGridItem(
             .clip(RoundedCornerShape(4.dp))
             .clickable { onClick() }
     ) {
-        // Image
+
         AsyncImage(
             model = item.thumbnailUrl ?: item.url,
             contentDescription = null,
@@ -140,7 +131,7 @@ private fun AnimatedGridItem(
 
 
 
-        // Video indicator
+
         if (item.isVideo) {
             VideoIndicator(
                 modifier = Modifier
@@ -149,7 +140,7 @@ private fun AnimatedGridItem(
             )
         }
 
-        // Multiple media indicator
+
         if (item.isMultiple) {
             MultipleMediaIndicator(
                 modifier = Modifier
@@ -158,7 +149,7 @@ private fun AnimatedGridItem(
             )
         }
 
-        // Subtle gradient overlay at bottom
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -176,9 +167,8 @@ private fun AnimatedGridItem(
     }
 }
 
-/**
- * Video indicator badge.
- */
+
+
 @Composable
 private fun VideoIndicator(modifier: Modifier = Modifier) {
     Box(
@@ -197,9 +187,8 @@ private fun VideoIndicator(modifier: Modifier = Modifier) {
     }
 }
 
-/**
- * Multiple media (carousel) indicator badge.
- */
+
+
 @Composable
 private fun MultipleMediaIndicator(modifier: Modifier = Modifier) {
     Box(
@@ -218,9 +207,8 @@ private fun MultipleMediaIndicator(modifier: Modifier = Modifier) {
     }
 }
 
-/**
- * Shimmer placeholder for loading grid items.
- */
+
+
 @Composable
 private fun ShimmerGridItem(animationDelay: Int = 0) {
     var visible by remember { mutableStateOf(false) }
@@ -245,9 +233,8 @@ private fun ShimmerGridItem(animationDelay: Int = 0) {
     )
 }
 
-/**
- * Empty state when no photos exist.
- */
+
+
 @Composable
 private fun PhotoGridEmptyState(modifier: Modifier = Modifier) {
     Box(

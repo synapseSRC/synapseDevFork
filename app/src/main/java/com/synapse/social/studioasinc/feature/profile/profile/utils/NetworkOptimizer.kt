@@ -7,7 +7,7 @@ import kotlin.math.pow
 object NetworkOptimizer {
 
     private val requestCache = mutableMapOf<String, Pair<Long, Any>>()
-    private const val CACHE_DURATION_MS = 60_000L // 1 minute
+    private const val CACHE_DURATION_MS = 60_000L
 
     suspend fun <T> withRetry(
         maxRetries: Int = 3,

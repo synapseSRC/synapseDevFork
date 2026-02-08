@@ -64,9 +64,9 @@ fun FeedEmpty() {
 
 @Composable
 fun PostShimmer() {
-    // Basic Shimmer Placeholder using standard Composables with gray background
-    // Or wrap Android View ShimmerFrameLayout if preferred.
-    // Using a simple loading indicator for append state is often enough.
+
+
+
      Box(
         modifier = Modifier
             .fillMaxWidth()

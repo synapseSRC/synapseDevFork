@@ -20,31 +20,26 @@ import com.synapse.social.studioasinc.domain.model.User
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.ui.settings.PostViewStyle
 
-/**
- * UI state for the PostCard component.
- *
- * Optimization: Annotated with @Stable to enable skippable recompositions in LazyColumn.
- * This ensures that when a post item's state hasn't changed, the entire card is skipped
- * during the recomposition phase of the parent list.
- */
+
+
 @Stable
 data class PostCardState(
     val post: Post,
-    val user: User, // Add User here as it's needed for Header
+    val user: User,
     val isLiked: Boolean,
     val likeCount: Int,
     val commentCount: Int,
     val isBookmarked: Boolean,
     val hideLikeCount: Boolean = false,
-    val mediaUrls: List<String> = emptyList(), // Extract from post
+    val mediaUrls: List<String> = emptyList(),
     val isVideo: Boolean = false,
     val pollQuestion: String? = null,
     val pollOptions: List<PollOption>? = null,
-    val userPollVote: Int? = null, // Track user's vote for poll
+    val userPollVote: Int? = null,
     val topCommentAuthor: String? = null,
     val topCommentText: String? = null,
-    val formattedTimestamp: String = "", // Bolt: Cache formatted time to avoid re-calculating during composition
-    val isExpanded: Boolean = false // Added for detail view
+    val formattedTimestamp: String = "",
+    val isExpanded: Boolean = false
 )
 
 @Composable
@@ -94,7 +89,7 @@ fun PostCard(
                 isExpanded = state.isExpanded
             )
 
-            // Comment Preview Section
+
             if (state.commentCount > 0) {
                  CommentPreview(
                     commentCount = state.commentCount,

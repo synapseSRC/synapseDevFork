@@ -9,9 +9,8 @@ import kotlinx.coroutines.test.setMain
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
-/**
- * A JUnit rule that sets the Main dispatcher to a [TestDispatcher] for unit testing.
- */
+
+
 @ExperimentalCoroutinesApi
 class MainCoroutineRule(
     val testDispatcher: TestDispatcher = StandardTestDispatcher()

@@ -78,7 +78,7 @@ fun ManageStorageScreen(
 
                 chatListSection(
                     chatList = chatList,
-                    onChatClick = { /* Navigate to chat details */ }
+                    onChatClick = {  }
                 )
             }
         }

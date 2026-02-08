@@ -27,13 +27,8 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.feature.auth.ui.util.AnimationUtil
 
-/**
- * Card component for displaying form-level errors.
- *
- * Design tokens:
- * - Colors: Error Container / On Error Container
- * - Accessibility: Announces content on appearance
- */
+
+
 @Composable
 fun ErrorCard(
     error: String?,
@@ -60,7 +55,7 @@ fun ErrorCard(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
                     .semantics {
-                        liveRegion = LiveRegionMode.Assertive // Requirement 8.2: Announce error
+                        liveRegion = LiveRegionMode.Assertive
                     }
             ) {
                 Row(

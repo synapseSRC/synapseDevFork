@@ -6,18 +6,16 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-/**
- * Window size classes for adaptive layouts.
- */
+
+
 sealed class WindowWidthSizeClass {
     object Compact : WindowWidthSizeClass()
     object Medium : WindowWidthSizeClass()
     object Expanded : WindowWidthSizeClass()
 }
 
-/**
- * Calculates the window size class based on screen width.
- */
+
+
 @Composable
 fun calculateWindowSizeClass(): WindowWidthSizeClass {
     val configuration = LocalConfiguration.current

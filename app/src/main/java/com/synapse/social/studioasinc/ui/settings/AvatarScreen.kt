@@ -11,9 +11,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
 
-/**
- * Avatar settings screen for creating and editing profile avatars.
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AvatarScreen(

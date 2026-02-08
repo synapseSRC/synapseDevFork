@@ -64,7 +64,7 @@ fun NewsCard(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(news.imageUrl)
                     .crossfade(true)
-                    .placeholder(R.drawable.default_image) // Ensure this exists or use null
+                    .placeholder(R.drawable.default_image)
                     .error(R.drawable.default_image)
                     .build(),
                 contentDescription = null,

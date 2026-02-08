@@ -3,9 +3,8 @@ package com.synapse.social.studioasinc.domain.model
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 
-/**
- * Represents a pending message action that needs to be executed when online
- */
+
+
 @Serializable
 data class PendingAction(
     val id: String,

@@ -349,7 +349,7 @@ private fun LinkedAccountChip(account: LinkedAccount) {
                 try {
                     uriHandler.openUri(url)
                 } catch (e: Exception) {
-                    // Handle invalid URL or no browser
+
                 }
             }
         },

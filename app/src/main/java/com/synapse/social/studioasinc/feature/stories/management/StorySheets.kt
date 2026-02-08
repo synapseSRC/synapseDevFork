@@ -21,10 +21,8 @@ import com.synapse.social.studioasinc.domain.model.User
 import java.time.Duration
 import java.time.Instant
 
-/**
- * Bottom sheet showing the list of users who viewed a story segment.
- * Only visible to the story creator.
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ViewerListSheet(
@@ -46,7 +44,7 @@ fun ViewerListSheet(
                 .fillMaxWidth()
                 .padding(bottom = 32.dp)
         ) {
-            // Header
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -134,7 +132,7 @@ private fun ViewerListItem(
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Avatar
+
         if (viewer?.avatar != null) {
             AsyncImage(
                 model = viewer.avatar,
@@ -150,7 +148,7 @@ private fun ViewerListItem(
                     .size(44.dp)
                     .clip(CircleShape)
                     .then(
-                        Modifier.padding(0.dp) // Placeholder background would go here
+                        Modifier.padding(0.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -178,7 +176,7 @@ private fun ViewerListItem(
             }
         }
 
-        // Time ago
+
         Text(
             text = formatTimeAgo(viewedAt),
             style = MaterialTheme.typography.bodySmall,
@@ -187,9 +185,8 @@ private fun ViewerListItem(
     }
 }
 
-/**
- * Bottom sheet with story options (delete, etc.)
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StoryOptionsSheet(
@@ -213,7 +210,7 @@ fun StoryOptionsSheet(
                 .padding(bottom = 32.dp)
         ) {
             if (isOwnStory) {
-                // Options for own story
+
                 ListItem(
                     headlineContent = { Text("Delete story") },
                     leadingContent = {
@@ -226,7 +223,7 @@ fun StoryOptionsSheet(
                     modifier = Modifier.clickable { onDelete() }
                 )
             } else {
-                // Options for others' stories
+
                 ListItem(
                     headlineContent = { Text("Mute this person's stories") },
                     leadingContent = {

@@ -26,13 +26,13 @@ class SearchActivity : ComponentActivity() {
 
         enableEdgeToEdge()
 
-        // Handle intents
+
         chatMode = intent.getBooleanExtra("mode", false) || intent.getStringExtra("mode") == "chat"
         origin = intent.getStringExtra("origin") ?: ""
 
         setContent {
             SynapseTheme {
-                // A surface container using the 'background' color from the theme
+
                 Surface(color = MaterialTheme.colorScheme.background) {
                     val viewModel: SearchViewModel = hiltViewModel()
 

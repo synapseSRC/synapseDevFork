@@ -4,9 +4,8 @@ import android.content.Context
 import android.util.Log
 import com.synapse.social.studioasinc.BuildConfig
 
-/**
- * Authentication configuration data class for authentication settings
- */
+
+
 data class AuthConfig(
     val requireEmailVerification: Boolean = true,
     val resendCooldownSeconds: Int = 60,
@@ -27,13 +26,12 @@ data class AuthConfig(
         private const val KEY_AUTO_RETRY_ATTEMPTS = "auto_retry_attempts"
         private const val KEY_RETRY_DELAY_MS = "retry_delay_ms"
 
-        /**
-         * Create AuthConfig from build variants, properties, and runtime settings
-         */
+
+
         fun create(context: Context): AuthConfig {
             val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-            // Determine if we're in development mode based on build variant and BuildConfig
+
             val isDevelopmentMode = try {
                 BuildConfig.AUTH_DEVELOPMENT_MODE
             } catch (e: Exception) {
@@ -42,7 +40,7 @@ data class AuthConfig(
                 System.getProperty("auth.development.mode")?.toBoolean() == true ||
                 prefs.getBoolean(KEY_DEVELOPMENT_MODE, BuildConfig.DEBUG)
 
-            // Enable debug logging from BuildConfig or runtime settings
+
             val enableDebugLogging = try {
                 BuildConfig.AUTH_ENABLE_DEBUG_LOGGING
             } catch (e: Exception) {
@@ -50,15 +48,15 @@ data class AuthConfig(
             } || System.getProperty("auth.debug.logging")?.toBoolean() == true ||
                 prefs.getBoolean(KEY_ENABLE_DEBUG_LOGGING, BuildConfig.DEBUG)
 
-            // Email verification configuration from BuildConfig or runtime settings
+
             val requireEmailVerification = try {
-                // Use BuildConfig value if available
+
                 val buildConfigValue = BuildConfig.AUTH_REQUIRE_EMAIL_VERIFICATION
-                // Allow runtime override
+
                 System.getProperty("auth.require.email.verification")?.toBoolean()
                     ?: prefs.getBoolean(KEY_REQUIRE_EMAIL_VERIFICATION, buildConfigValue)
             } catch (e: Exception) {
-                // Fallback logic if BuildConfig fields are not available
+
                 if (isDevelopmentMode) {
                     System.getProperty("auth.require.email.verification")?.toBoolean()
                         ?: prefs.getBoolean(KEY_REQUIRE_EMAIL_VERIFICATION, false)
@@ -68,7 +66,7 @@ data class AuthConfig(
                 }
             }
 
-            // Get other configuration values from BuildConfig, system properties, or preferences
+
             val resendCooldownSeconds = try {
                 System.getProperty("auth.resend.cooldown.seconds")?.toIntOrNull()
                     ?: prefs.getInt(KEY_RESEND_COOLDOWN_SECONDS, BuildConfig.AUTH_RESEND_COOLDOWN_SECONDS)
@@ -120,9 +118,8 @@ data class AuthConfig(
             return config
         }
 
-        /**
-         * Save configuration to preferences for runtime changes
-         */
+
+
         fun save(context: Context, config: AuthConfig) {
             val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             prefs.edit().apply {
@@ -141,9 +138,8 @@ data class AuthConfig(
             }
         }
 
-        /**
-         * Reset configuration to defaults
-         */
+
+
         fun reset(context: Context): AuthConfig {
             val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             prefs.edit().clear().apply()
@@ -153,9 +149,8 @@ data class AuthConfig(
             return config
         }
 
-        /**
-         * Enable development mode bypass for email verification
-         */
+
+
         fun enableDevelopmentMode(context: Context): AuthConfig {
             val currentConfig = create(context)
             val devConfig = currentConfig.copy(
@@ -169,9 +164,8 @@ data class AuthConfig(
             return devConfig
         }
 
-        /**
-         * Disable development mode and restore production settings
-         */
+
+
         fun disableDevelopmentMode(context: Context): AuthConfig {
             val currentConfig = create(context)
             val prodConfig = currentConfig.copy(
@@ -186,44 +180,38 @@ data class AuthConfig(
         }
     }
 
-    /**
-     * Check if email verification should be bypassed
-     */
+
+
     fun shouldBypassEmailVerification(): Boolean {
         return developmentMode && !requireEmailVerification
     }
 
-    /**
-     * Check if debug logging is enabled
-     */
+
+
     fun isDebugLoggingEnabled(): Boolean {
         return enableDebugLogging || BuildConfig.DEBUG
     }
 
-    /**
-     * Get effective retry attempts (minimum 1, maximum 10)
-     */
+
+
     fun getEffectiveRetryAttempts(): Int {
         return autoRetryAttempts.coerceIn(1, 10)
     }
 
-    /**
-     * Get effective retry delay (minimum 500ms, maximum 10000ms)
-     */
+
+
     fun getEffectiveRetryDelay(): Long {
         return retryDelayMs.coerceIn(500L, 10000L)
     }
 
-    /**
-     * Get effective resend cooldown (minimum 30 seconds, maximum 300 seconds)
-     */
+
+
     fun getEffectiveResendCooldown(): Int {
         return resendCooldownSeconds.coerceIn(30, 300)
     }
 
-    /**
-     * Get effective max resend attempts (minimum 3, maximum 10)
-     */
+
+
     fun getEffectiveMaxResendAttempts(): Int {
         return maxResendAttempts.coerceIn(3, 10)
     }

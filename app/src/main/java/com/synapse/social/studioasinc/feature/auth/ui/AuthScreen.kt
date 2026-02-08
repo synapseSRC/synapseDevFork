@@ -29,10 +29,10 @@ fun AuthScreen(
     val reducedMotion = AnimationUtil.rememberReducedMotion()
     val context = androidx.compose.ui.platform.LocalContext.current
 
-    // Logic to preserve content during loading to avoid flicker
+
     var lastContentState by remember { mutableStateOf<AuthUiState>(AuthUiState.Initial) }
 
-    // Update content state only if not loading
+
     if (uiState !is AuthUiState.Loading) {
         lastContentState = uiState
     }
@@ -150,8 +150,8 @@ fun AuthScreen(
                          onPasswordChanged = viewModel::onPasswordChanged,
                          onConfirmPasswordChanged = viewModel::onConfirmPasswordChanged,
                          onResetPasswordClick = {
-                             // Use empty token here, VM handles it internally or we pass it if we had it.
-                             // We'll update VM to use stored token.
+
+
                              viewModel.onResetPasswordClick(state.password, state.confirmPassword, "")
                          }
                      )

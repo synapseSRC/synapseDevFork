@@ -39,7 +39,7 @@ class FeedViewModelTest {
 
     @Before
     fun setUp() {
-        // Mock required flows
+
         whenever(postRepository.getPostsPaged()).thenReturn(flowOf(PagingData.empty()))
         whenever(settingsRepository.appearanceSettings).thenReturn(flowOf(AppearanceSettings()))
 
@@ -55,19 +55,19 @@ class FeedViewModelTest {
 
     @Test
     fun `testModifiedPostsLimit enforces max size`() = runTest {
-        // Given
-        val maxPosts = 100 // Should match MAX_MODIFIED_POSTS in ViewModel
+
+        val maxPosts = 100
         val totalPosts = 150
 
-        // When: Like 150 different posts
+
         for (i in 1..totalPosts) {
             val post = Post(id = "post_$i", authorUid = "author_$i", likesCount = 0)
             viewModel.likePost(post)
-            // Advance dispatcher to allow coroutine to run
+
             mainCoroutineRule.testDispatcher.scheduler.advanceUntilIdle()
         }
 
-        // Then: Size should be capped at 100
+
         assertEquals(maxPosts, viewModel.getModifiedPostsCount())
     }
 }

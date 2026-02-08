@@ -3,10 +3,8 @@ package com.synapse.social.studioasinc.domain.model
 import com.synapse.social.studioasinc.R
 import kotlinx.serialization.Serializable
 
-/**
- * Enum representing different types of reactions for posts
- * Similar to Facebook's reaction system
- */
+
+
 @Serializable
 enum class ReactionType(
     val displayName: String,
@@ -21,16 +19,14 @@ enum class ReactionType(
     ANGRY("Angry", "😡", R.drawable.ic_reaction_angry);
 
     companion object {
-        /**
-         * Get ReactionType from string value, default to LIKE if not found
-         */
+
+
         fun fromString(value: String?): ReactionType {
             return values().find { it.name.equals(value, ignoreCase = true) } ?: LIKE
         }
 
-        /**
-         * Get all reaction types as a list
-         */
+
+
         fun getAllReactions(): List<ReactionType> {
             return values().toList()
         }

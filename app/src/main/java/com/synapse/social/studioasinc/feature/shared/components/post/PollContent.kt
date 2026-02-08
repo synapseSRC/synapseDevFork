@@ -47,13 +47,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 
-/**
- * Data class representing a poll option for UI rendering.
- * Used in both PostCard (Feed) and PostDetailScreen.
- *
- * Optimization: Annotated with @Stable to ensure nested poll items are skippable
- * during recomposition, reducing UI thread load on busy screens.
- */
+
+
 @Stable
 data class PollOption(
     val id: String,
@@ -62,10 +57,8 @@ data class PollOption(
     val isSelected: Boolean
 )
 
-/**
- * Modern animated poll component with smooth animations and visual feedback.
- * Works in both Home Feed and Post Detail screens.
- */
+
+
 @Composable
 fun PollContent(
     question: String,
@@ -82,7 +75,7 @@ fun PollContent(
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
-        // Poll Question
+
         if (question.isNotBlank()) {
             Text(
                 text = question,
@@ -93,7 +86,7 @@ fun PollContent(
             )
         }
 
-        // Poll Options
+
         options.forEach { option ->
             AnimatedPollOptionItem(
                 option = option,
@@ -107,7 +100,7 @@ fun PollContent(
             Spacer(modifier = Modifier.height(10.dp))
         }
 
-        // Vote Count Summary
+
         Text(
             text = if (totalVotes == 1) "$totalVotes vote" else "$totalVotes votes",
             style = MaterialTheme.typography.labelMedium,
@@ -117,9 +110,8 @@ fun PollContent(
     }
 }
 
-/**
- * Animated poll option with progress bar, selection state, and smooth transitions.
- */
+
+
 @Composable
 fun AnimatedPollOptionItem(
     option: PollOption,
@@ -130,7 +122,7 @@ fun AnimatedPollOptionItem(
     val percentage = if (totalVotes > 0) option.voteCount.toFloat() / totalVotes else 0f
     val percentageText = if (hasVoted && totalVotes > 0) "${(percentage * 100).roundToInt()}%" else ""
 
-    // Animation states
+
     var showProgress by remember { mutableStateOf(false) }
     val animatedProgress by animateFloatAsState(
         targetValue = if (showProgress && hasVoted) percentage else 0f,
@@ -169,12 +161,12 @@ fun AnimatedPollOptionItem(
         label = "checkScale"
     )
 
-    // Trigger progress animation when component appears or vote state changes
+
     LaunchedEffect(hasVoted) {
         showProgress = hasVoted
     }
 
-    // Gradient colors for progress bar
+
     val progressGradient = Brush.horizontalGradient(
         colors = listOf(
             if (option.isSelected) {
@@ -209,7 +201,7 @@ fun AnimatedPollOptionItem(
                 onClick = onClick
             )
     ) {
-        // Animated Progress Background
+
         if (hasVoted) {
             Box(
                 modifier = Modifier
@@ -219,7 +211,7 @@ fun AnimatedPollOptionItem(
             )
         }
 
-        // Content Row
+
         Row(
             modifier = Modifier
                 .fillMaxSize()
@@ -227,12 +219,12 @@ fun AnimatedPollOptionItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Left section: Check icon + Text
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.weight(1f)
             ) {
-                // Animated Check Icon
+
                 if (option.isSelected) {
                     Box(
                         modifier = Modifier
@@ -256,7 +248,7 @@ fun AnimatedPollOptionItem(
                 )
             }
 
-            // Right section: Vote count and Percentage
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -286,10 +278,8 @@ fun AnimatedPollOptionItem(
     }
 }
 
-/**
- * Legacy PollOptionItem for backward compatibility.
- * Use AnimatedPollOptionItem for new implementations.
- */
+
+
 @Composable
 fun PollOptionItem(
     option: PollOption,

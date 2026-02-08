@@ -301,7 +301,7 @@ private fun QuietHoursItem(
     onShowStartTimePicker: () -> Unit
 ) {
     val enabled = notificationPreferences.globalEnabled
-    // Custom implementation to separate Row click (config) from Switch toggle (enable)
+
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = SettingsShapes.itemShape,

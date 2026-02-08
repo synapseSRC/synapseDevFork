@@ -7,19 +7,12 @@ import android.os.Build
 import androidx.core.app.ActivityOptionsCompat
 import com.synapse.social.studioasinc.R
 
-/**
- * Utility object for premium activity transition animations.
- * Provides smooth slide, scale, and fade transitions between activities.
- */
+
+
 object ActivityTransitions {
 
-    /**
-     * Start an activity with premium enter transition.
-     * The new activity slides in from the right with scale and fade.
-     *
-     * @param context The context (usually an Activity)
-     * @param intent The intent for the activity to start
-     */
+
+
     fun startActivityWithTransition(context: Context, intent: Intent) {
         context.startActivity(intent)
         if (context is Activity) {
@@ -39,12 +32,8 @@ object ActivityTransitions {
         }
     }
 
-    /**
-     * Finish the current activity with premium exit transition.
-     * The activity slides out to the right with scale and fade.
-     *
-     * @param activity The activity to finish
-     */
+
+
     fun finishWithTransition(activity: Activity) {
         activity.finish()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -63,16 +52,14 @@ object ActivityTransitions {
     }
 }
 
-/**
- * Extension function to start an activity with premium transition.
- */
+
+
 fun Activity.startActivityWithPremiumTransition(intent: Intent) {
     ActivityTransitions.startActivityWithTransition(this, intent)
 }
 
-/**
- * Extension function to finish with premium transition.
- */
+
+
 fun Activity.finishWithPremiumTransition() {
     ActivityTransitions.finishWithTransition(this)
 }

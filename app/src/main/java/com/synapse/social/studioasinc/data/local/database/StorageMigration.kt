@@ -20,7 +20,7 @@ class StorageMigration @Inject constructor(
 
     suspend fun migrateIfNeeded() = withContext(Dispatchers.IO) {
         val currentVersion = prefs.getInt(MIGRATION_VERSION_KEY, 0)
-        
+
         if (currentVersion < CURRENT_VERSION) {
             performMigration(currentVersion)
             prefs.edit().putInt(MIGRATION_VERSION_KEY, CURRENT_VERSION).apply()
@@ -28,10 +28,10 @@ class StorageMigration @Inject constructor(
     }
 
     private suspend fun performMigration(fromVersion: Int) {
-        // Perform any necessary data migrations here
+
         when (fromVersion) {
             0 -> {
-                // Initial migration - ensure storage database is initialized
+
                 storageRepository.ensureDefault()
             }
         }

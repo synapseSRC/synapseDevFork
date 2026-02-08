@@ -25,15 +25,8 @@ import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-/**
- * Main Settings Activity for the comprehensive settings feature.
- *
- * This activity hosts the SettingsNavHost which manages navigation between
- * all settings screens. It integrates with existing activities (ProfileEditActivity,
- * ChatPrivacySettingsActivity) and applies the SynapseTheme with dynamic color support.
- *
- * Requirements: 1.2, 2.2, 6.6
- */
+
+
 @AndroidEntryPoint
 class SettingsActivity : ComponentActivity() {
 
@@ -48,11 +41,11 @@ class SettingsActivity : ComponentActivity() {
         try {
             android.util.Log.d("SettingsActivity", "Setting up content")
             setContent {
-                // Get appearance settings to apply theme preferences
+
                 val appearanceViewModel: AppearanceViewModel = viewModel()
                 val appearanceSettings by appearanceViewModel.appearanceSettings.collectAsState()
 
-                // Determine dark theme based on settings
+
                 val darkTheme = when (appearanceSettings.themeMode) {
                     com.synapse.social.studioasinc.ui.settings.ThemeMode.LIGHT -> false
                     com.synapse.social.studioasinc.ui.settings.ThemeMode.DARK -> true
@@ -60,7 +53,7 @@ class SettingsActivity : ComponentActivity() {
                         androidx.compose.foundation.isSystemInDarkTheme()
                 }
 
-                // Apply dynamic color only if enabled and supported (Android 12+)
+
                 val dynamicColor = appearanceSettings.dynamicColorEnabled &&
                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
@@ -74,11 +67,11 @@ class SettingsActivity : ComponentActivity() {
                     ) {
                         SettingsNavHost(
                             onBackClick = {
-                                // Exit settings and return to previous screen
+
                                 finish()
                             },
                             onNavigateToProfileEdit = {
-                                // Navigate to existing ProfileEditActivity
+
                                 startActivity(Intent(this@SettingsActivity, ProfileEditActivity::class.java))
                             },
                             onNavigateToChatPrivacy = {
@@ -97,10 +90,8 @@ class SettingsActivity : ComponentActivity() {
         }
     }
 
-    /**
-     * Performs user logout by signing out from auth repository
-     * and navigating to AuthActivity.
-     */
+
+
     private fun performLogout() {
         lifecycleScope.launch {
             authRepository.signOut()

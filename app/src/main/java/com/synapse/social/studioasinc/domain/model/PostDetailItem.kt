@@ -1,8 +1,7 @@
 package com.synapse.social.studioasinc.domain.model
 
-/**
- * Sealed class representing different types of items in post detail view
- */
+
+
 sealed class PostDetailItem {
     data class Caption(
         val postId: String,

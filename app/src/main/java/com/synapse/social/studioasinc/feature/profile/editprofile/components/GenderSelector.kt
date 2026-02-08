@@ -187,7 +187,7 @@ fun GenderOption(
 
             RadioButton(
                 selected = selected,
-                onClick = null // Handled by Surface
+                onClick = null
             )
         }
     }

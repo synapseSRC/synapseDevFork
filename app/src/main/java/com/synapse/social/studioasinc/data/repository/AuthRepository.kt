@@ -8,46 +8,39 @@ import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Android AuthRepository - Simplified facade over shared module.
- * All business logic now delegated to shared AuthRepository.
- */
+
+
 @Singleton
 class AuthRepository @Inject constructor(
-    private val sharedAuthRepository: SharedAuthRepository // Shared Logic Delegate
+    private val sharedAuthRepository: SharedAuthRepository
 ) {
 
-    /**
-     * Register a new user. Delegates to Shared Module.
-     */
+
+
     suspend fun signUp(email: String, password: String): Result<String> {
         return sharedAuthRepository.signUp(email, password)
     }
 
-    /**
-     * Create user account with profile. Delegates to Shared Module.
-     */
+
+
     suspend fun signUpWithProfile(email: String, password: String, username: String): Result<String> {
         return sharedAuthRepository.signUpWithProfile(email, password, username)
     }
 
-    /**
-     * Sign in. Delegates to Shared Module.
-     */
+
+
     suspend fun signIn(email: String, password: String): Result<String> {
         return sharedAuthRepository.signIn(email, password)
     }
 
-    /**
-     * Sign out. Delegates to Shared Module.
-     */
+
+
     suspend fun signOut(): Result<Unit> {
         return sharedAuthRepository.signOut()
     }
 
-    /**
-     * Get current user ID. Delegates to Shared Module.
-     */
+
+
     fun getCurrentUserId(): String? {
         return runBlocking { sharedAuthRepository.getCurrentUserId() }
     }
@@ -88,7 +81,7 @@ class AuthRepository @Inject constructor(
         return flowOf(isUserLoggedIn())
     }
 
-    // Platform-specific OAuth methods (if needed)
+
     suspend fun getOAuthUrl(provider: String, redirectUrl: String): Result<String> {
         return sharedAuthRepository.getOAuthUrl(provider, redirectUrl)
     }
@@ -101,7 +94,7 @@ class AuthRepository @Inject constructor(
         return sharedAuthRepository.signInWithOAuth(provider, redirectUrl)
     }
 
-    // Legacy compatibility methods
+
     suspend fun getCurrentUserUid(): String? = getCurrentUserId()
 
     suspend fun ensureProfileExists(userId: String, email: String): Result<Unit> {

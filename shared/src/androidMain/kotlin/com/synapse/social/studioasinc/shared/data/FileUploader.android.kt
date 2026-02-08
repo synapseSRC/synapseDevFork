@@ -33,7 +33,7 @@ actual class FileUploader(private val context: Context) {
                          }
                      }
                  } catch (e: Exception) {
-                     // Ignore and fallback
+
                  }
             }
             if (result == null) {

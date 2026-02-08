@@ -25,25 +25,21 @@ import coil.compose.AsyncImage
 import com.synapse.social.studioasinc.domain.model.StoryWithUser
 import com.synapse.social.studioasinc.domain.model.User
 
-/**
- * Gradient colors for the unseen story ring
- */
+
+
 private val storyGradientColors = listOf(
-    Color(0xFFE040FB), // Purple
-    Color(0xFFFF4081), // Pink
-    Color(0xFFFF6E40), // Orange
-    Color(0xFFFFAB00)  // Amber
+    Color(0xFFE040FB),
+    Color(0xFFFF4081),
+    Color(0xFFFF6E40),
+    Color(0xFFFFAB00)
 )
 
-/**
- * Color for seen story ring
- */
+
+
 private val seenStoryRingColor = Color(0xFF424242)
 
-/**
- * Horizontal Story Tray component displayed at the top of the feed.
- * Uses Material 3 Carousel with rectangular cards.
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StoryTray(
@@ -61,13 +57,13 @@ fun StoryTray(
         return
     }
 
-    // Determine if "My Story" should be shown (active stories exist)
+
     val hasActiveStory = myStory != null && myStory.stories.isNotEmpty()
 
-    // Calculate total items:
-    // 1. Add Story Button (Always)
-    // 2. My Story (Only if active)
-    // 3. Friend Stories
+
+
+
+
     val totalItems = 1 + (if (hasActiveStory) 1 else 0) + friendStories.size
     val state = rememberCarouselState { totalItems }
 
@@ -80,35 +76,35 @@ fun StoryTray(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
-                .height(180.dp) // Height for 2:3 aspect ratio with 120.dp width
+                .height(180.dp)
         ) { index ->
             if (index == 0) {
-                // Add Story Item (Always first)
+
                 StoryCard(
                     imageUrl = currentUser?.avatar,
                     avatarUrl = currentUser?.avatar,
-                    title = "My Story", // Text below card. For Add button, logic below overrides this to "Create Story"
+                    title = "My Story",
                     isAddButton = true,
                     hasUnseen = false,
                     onClick = onAddStoryClick,
                     modifier = Modifier.clip(MaterialTheme.shapes.large)
                 )
             } else if (hasActiveStory && index == 1) {
-                // My Story Item (Active) - Shown second if active
+
                 val latestStory = myStory?.stories?.lastOrNull()
 
                 StoryCard(
-                    imageUrl = latestStory?.mediaUrl, // Show latest story media as background
+                    imageUrl = latestStory?.mediaUrl,
                     avatarUrl = currentUser?.avatar,
                     title = "My Story",
                     isAddButton = false,
-                    hasUnseen = false, // Assumed seen by self
+                    hasUnseen = false,
                     onClick = onMyStoryClick,
                     modifier = Modifier.clip(MaterialTheme.shapes.large)
                 )
             } else {
-                // Friend Story Item
-                // Calculate index offset based on presence of My Story item
+
+
                 val friendIndex = index - (if (hasActiveStory) 2 else 1)
 
                 if (friendIndex in friendStories.indices) {
@@ -128,7 +124,7 @@ fun StoryTray(
             }
         }
 
-        // Subtle divider
+
         HorizontalDivider(
             modifier = Modifier.padding(top = 8.dp),
             thickness = 0.5.dp,
@@ -154,7 +150,7 @@ private fun StoryCard(
             .clickable { onClick() }
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            // Background Image
+
             if (imageUrl != null) {
                 AsyncImage(
                     model = imageUrl,
@@ -163,7 +159,7 @@ private fun StoryCard(
                     contentScale = ContentScale.Crop
                 )
             } else {
-                // Fallback background if no image
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -171,7 +167,7 @@ private fun StoryCard(
                 )
             }
 
-            // Gradient Overlay
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -183,17 +179,17 @@ private fun StoryCard(
                     )
             )
 
-            // Content Overlay
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(8.dp)
             ) {
-                // Top Left: Avatar
+
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .size(32.dp) // Small avatar
+                        .size(32.dp)
                 ) {
                     Box(
                         modifier = Modifier
@@ -206,19 +202,19 @@ private fun StoryCard(
                                         shape = CircleShape
                                     )
                                 } else if (!isAddButton) {
-                                     // Seen ring
+
                                      Modifier.border(
                                         width = 1.dp,
-                                        color = seenStoryRingColor, // Or transparent? Usually seen is subtle
+                                        color = seenStoryRingColor,
                                         shape = CircleShape
                                      )
                                 } else {
-                                    Modifier // No border for add button avatar itself, maybe?
+                                    Modifier
                                 }
                             )
-                            .padding(2.dp) // Spacing between ring and avatar
+                            .padding(2.dp)
                             .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.surface) // Fallback bg
+                            .background(MaterialTheme.colorScheme.surface)
                     ) {
                          if (avatarUrl != null) {
                             AsyncImage(
@@ -228,7 +224,7 @@ private fun StoryCard(
                                 contentScale = ContentScale.Crop
                             )
                         } else {
-                             // Initials placeholder
+
                              Box(
                                 modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.primaryContainer),
                                 contentAlignment = Alignment.Center
@@ -239,7 +235,7 @@ private fun StoryCard(
                     }
                 }
 
-                // Add Button (Center)
+
                 if (isAddButton) {
                      Box(
                         modifier = Modifier
@@ -258,7 +254,7 @@ private fun StoryCard(
                     }
                 }
 
-                // Bottom Left: Name
+
                 Text(
                     text = if (isAddButton) "Create Story" else title,
                     style = MaterialTheme.typography.labelMedium,

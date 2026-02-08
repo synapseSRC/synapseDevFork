@@ -43,7 +43,7 @@ fun AppNavigation(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        // Auth
+
         composable(AppDestination.Auth.route) {
             val viewModel: com.synapse.social.studioasinc.feature.auth.presentation.viewmodel.AuthViewModel = hiltViewModel()
             AuthScreen(
@@ -56,7 +56,7 @@ fun AppNavigation(
             )
         }
 
-        // Home
+
         composable(AppDestination.Home.route) {
             HomeScreen(
                 reelUploadManager = reelUploadManager,
@@ -70,7 +70,7 @@ fun AppNavigation(
                     try {
                         navController.navigate(AppDestination.Inbox.route)
                     } catch (e: IllegalArgumentException) {
-                        // Navigation graph not ready, ignore
+
                     }
                 },
                 onNavigateToCreatePost = { postId ->
@@ -85,7 +85,7 @@ fun AppNavigation(
             )
         }
 
-        // Profile
+
         composable(
             route = "profile/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.StringType })
@@ -142,7 +142,7 @@ fun AppNavigation(
             )
         }
 
-        // Post Detail
+
         composable(
             route = "post_detail/{postId}",
             arguments = listOf(navArgument("postId") { type = NavType.StringType })
@@ -160,7 +160,7 @@ fun AppNavigation(
             )
         }
 
-        // Create Post / Reel
+
         composable(
             route = AppDestination.CreatePost.route,
             arguments = listOf(
@@ -193,7 +193,7 @@ fun AppNavigation(
             )
         }
 
-        // Settings
+
         composable(AppDestination.Settings.route) {
             com.synapse.social.studioasinc.ui.settings.SettingsNavHost(
                 onBackClick = { navController.popBackStack() },
@@ -204,7 +204,7 @@ fun AppNavigation(
                     navController.navigate("chat_privacy")
                 },
                 onLogout = {
-                    // Navigate to Auth and clear backstack
+
                     navController.navigate(AppDestination.Auth.route) {
                         popUpTo(0) { inclusive = true }
                     }
@@ -212,7 +212,7 @@ fun AppNavigation(
             )
         }
 
-        // Edit Profile
+
         composable(AppDestination.EditProfile.route) {
             val viewModel: EditProfileViewModel = hiltViewModel()
 
@@ -238,7 +238,7 @@ fun AppNavigation(
             )
         }
 
-        // Photo History
+
         composable(
             route = AppDestination.PhotoHistory.route,
             arguments = listOf(navArgument("type") { type = NavType.StringType })
@@ -256,7 +256,7 @@ fun AppNavigation(
             )
         }
 
-        // Region Selection
+
         composable(AppDestination.RegionSelection.route) {
             RegionSelectionScreen(
                 onBackClick = { navController.popBackStack() },
@@ -267,7 +267,7 @@ fun AppNavigation(
             )
         }
 
-        // Follow List
+
         composable(
             route = "follow_list/{userId}/{type}",
             arguments = listOf(
@@ -292,7 +292,7 @@ fun AppNavigation(
             )
         }
 
-        // Story Viewer
+
         composable(
             route = AppDestination.StoryViewer.route,
             arguments = listOf(navArgument("userId") { type = NavType.StringType })

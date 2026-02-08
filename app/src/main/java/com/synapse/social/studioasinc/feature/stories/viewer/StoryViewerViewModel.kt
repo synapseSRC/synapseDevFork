@@ -24,7 +24,7 @@ data class StoryViewerState(
     val stories: List<Story> = emptyList(),
     val user: User? = null,
     val currentStoryIndex: Int = 0,
-    val progress: Float = 0f, // 0.0 to 1.0
+    val progress: Float = 0f,
     val isPaused: Boolean = false,
     val isFinished: Boolean = false
 )
@@ -40,13 +40,13 @@ class StoryViewerViewModel @Inject constructor(
     val uiState: StateFlow<StoryViewerState> = _uiState.asStateFlow()
 
     private var progressJob: Job? = null
-    private val defaultStoryDuration = 5000L // Default duration 5 seconds
-    private val progressUpdateInterval = 50L // Update every 50ms
+    private val defaultStoryDuration = 5000L
+    private val progressUpdateInterval = 50L
 
     fun loadStories(userId: String) {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            // Fetch User
+
             val userResult = userRepository.getUserById(userId)
             val user = userResult.getOrNull()
 
@@ -55,7 +55,7 @@ class StoryViewerViewModel @Inject constructor(
                 return@launch
             }
 
-            // Fetch Stories
+
             val storiesResult = storyRepository.getUserStories(userId)
             storiesResult.onSuccess { stories ->
                 if (stories.isEmpty()) {
@@ -99,7 +99,7 @@ class StoryViewerViewModel @Inject constructor(
             val steps = duration / progressUpdateInterval
             val stepSize = 1.0f / steps
 
-            // Resume from current progress
+
             var currentProgress = _uiState.value.progress
 
             while (currentProgress < 1.0f) {
@@ -110,7 +110,7 @@ class StoryViewerViewModel @Inject constructor(
                 _uiState.update { it.copy(progress = currentProgress.coerceAtMost(1.0f)) }
             }
 
-            // Finished current story
+
             nextStory()
         }
     }
@@ -159,7 +159,7 @@ class StoryViewerViewModel @Inject constructor(
             }
             markAsSeen(prevStory.id)
         } else {
-            // Start of first story, just reset progress
+
              _uiState.update { it.copy(progress = 0f) }
              val currentStory = currentState.stories.getOrNull(0)
              if (currentStory?.mediaType != StoryMediaType.VIDEO) {
@@ -175,35 +175,35 @@ class StoryViewerViewModel @Inject constructor(
 
     fun resume() {
         _uiState.update { it.copy(isPaused = false) }
-        // For video, we don't auto-resume progress here if we rely on onVideoReady/playing.
-        // But for image we do.
-        // And even for video, if it was playing, we should resume progress.
-        // The check in startProgress will handle duration.
-        // However, if we paused a video, we need to know the duration again?
-        // Actually, startProgress re-calculates duration from story metadata or override.
-        // We lost the override.
-        // But the video duration should be in the story object? No, only if we updated it.
-        // We should probably update the story object in onVideoReady so we persist the duration.
-        // But Stories are immutable data classes.
 
-        // Simpler approach: resume() blindly calls startProgress().
-        // If it's a video, onVideoReady might have already fired.
-        // If we don't have duration, we default to 5s.
-        // Ideally we should cache duration.
 
-        // Check if current story is video. If so, wait for player to be ready?
-        // The Player in UI will stay ready/paused. When we resume, it plays.
-        // So we should resume progress.
-        // But we might lose the "real" duration if we rely on override.
-        // Let's rely on default or metadata for resume for now to avoid overcomplicating.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         startProgress()
     }
 
     fun onVideoReady(durationMs: Long) {
-        // Only start if not paused (or if we were waiting for this)
+
         if (_uiState.value.isPaused || _uiState.value.isFinished) return
 
-        // Start progress with actual duration
+
         startProgress(durationOverride = durationMs)
     }
 

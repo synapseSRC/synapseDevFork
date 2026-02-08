@@ -29,7 +29,7 @@ sealed class AppDestination(val route: String) {
             if (userId != null) "chat/$chatId?userId=$userId" else "chat/$chatId"
     }
 
-    // Story destinations
+
     object StoryViewer : AppDestination("story_viewer/{userId}") {
         fun createRoute(userId: String) = "story_viewer/$userId"
     }

@@ -69,7 +69,7 @@ class SearchViewModel @Inject constructor(
 
     init {
         loadHistory()
-        // Initial load for "For You" or default content
+
         refreshCurrentTab()
     }
 
@@ -116,7 +116,7 @@ class SearchViewModel @Inject constructor(
         _uiState.update { it.copy(query = query) }
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            delay(500) // Debounce
+            delay(500)
             if (query.isNotEmpty() || uiState.value.selectedTab == SearchTab.HASHTAGS || uiState.value.selectedTab == SearchTab.FOR_YOU) {
                 performSearch(query)
             }
@@ -170,9 +170,9 @@ class SearchViewModel @Inject constructor(
                     SearchTab.FOR_YOU -> {
                         val result = getSuggestedAccountsUseCase(query)
                         val currentUserId = authRepository.getCurrentUserId()
-                        result.onSuccess { data -> 
+                        result.onSuccess { data ->
                             val filtered = data.filter { it.id != currentUserId }
-                            _uiState.update { it.copy(accounts = filtered, isLoading = false) } 
+                            _uiState.update { it.copy(accounts = filtered, isLoading = false) }
                         }
                         result.onFailure { err -> _uiState.update { it.copy(error = err.message, isLoading = false) } }
                     }
@@ -187,13 +187,13 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             val currentUserId = authRepository.getCurrentUserId() ?: return@launch
             val account = uiState.value.accounts.find { it.id == accountId } ?: return@launch
-            
+
             val result = if (account.isFollowing) {
                 unfollowUserUseCase(currentUserId, accountId)
             } else {
                 followUserUseCase(currentUserId, accountId)
             }
-            
+
             result.onSuccess {
                 _uiState.update { state ->
                     state.copy(
@@ -208,7 +208,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    // Post interaction methods
+
     fun likePost(post: com.synapse.social.studioasinc.domain.model.Post) {
         viewModelScope.launch {
             val userId = authRepository.getCurrentUserId() ?: return@launch
@@ -225,7 +225,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun sharePost(post: com.synapse.social.studioasinc.domain.model.Post) {
-        // Share is typically handled in UI with Intent
+
     }
 
     fun votePoll(post: com.synapse.social.studioasinc.domain.model.Post, optionIndex: Int) {
@@ -243,7 +243,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun copyPostLink(post: com.synapse.social.studioasinc.domain.model.Post) {
-        // Handled in UI with ClipboardManager
+
     }
 
     fun toggleComments(post: com.synapse.social.studioasinc.domain.model.Post) {
@@ -254,7 +254,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun reportPost(post: com.synapse.social.studioasinc.domain.model.Post) {
-        // Handled via dialog in UI
+
     }
 
     fun blockUser(userId: String) {

@@ -19,15 +19,8 @@ import org.json.JSONObject
 import java.io.IOException
 import java.time.LocalTime
 
-/**
- * Enhanced notification system supporting both server-side and client-side OneSignal notifications.
- *
- * Features:
- * - Toggle between server-side (Cloudflare Workers) and client-side (OneSignal REST API) notification sending
- * - Smart notification suppression when both users are actively chatting
- * - Fallback mechanisms for reliability
- * - Configurable notification settings
- */
+
+
 object NotificationHelper {
 
     private const val TAG = "NotificationHelper"
@@ -38,15 +31,8 @@ object NotificationHelper {
     private val dbService = SupabaseDatabaseService()
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    /**
-     * Sends a notification to a user.
-     *
-     * @param recipientUid The UID of the user to send the notification to.
-     * @param senderUid The UID of the user sending the notification.
-     * @param message The message to send in the notification.
-     * @param notificationType The type of notification to send.
-     * @param data A map of additional data to send with the notification.
-     */
+
+
     @JvmStatic
     fun sendNotification(
         recipientUid: String,
@@ -60,19 +46,19 @@ object NotificationHelper {
             return
         }
         if (recipientUid == senderUid) {
-            // Don't send notification to self
+
             return
         }
 
         scope.launch {
-            // Persist notification to Supabase DB for Activity Feed
-            // Note: We skip persisting chat messages as they are part of the chat history
+
+
             if (notificationType != "chat_message") {
                 persistNotification(recipientUid, senderUid, message, notificationType, data)
             }
 
             try {
-                // Fetch recipient data from Supabase
+
                 val userResult = dbService.getSingle("users", "uid", recipientUid)
                 val userData = userResult.getOrNull()
 
@@ -81,7 +67,7 @@ object NotificationHelper {
                     return@launch
                 }
 
-                // Check Quiet Hours & DND
+
                 if (shouldSuppressPush(recipientUid)) {
                     Log.i(TAG, "Notification suppressed: Quiet Hours or DND active for user $recipientUid")
                     return@launch
@@ -90,7 +76,7 @@ object NotificationHelper {
                 val status = userData["status"] as? String
                 val lastSeenStr = userData["last_seen"] as? String
 
-                // Check presence to suppress notification
+
                 if (shouldSuppressNotification(status, lastSeenStr, senderUid)) {
                     Log.i(TAG, "Notification suppressed: User $recipientUid is active/chatting.")
                     return@launch
@@ -99,7 +85,7 @@ object NotificationHelper {
                 Log.i(TAG, "Sending notification to user $recipientUid via ${NotificationConfig.getNotificationSystemDescription()}")
 
                 if (NotificationConfig.USE_CLIENT_SIDE_NOTIFICATIONS) {
-                    // SECURE FLOW: Calling Supabase Edge Function instead of direct OneSignal REST API
+
                     sendPushViaEdgeFunction(recipientUid, message, senderUid, notificationType, data)
                 } else {
                     Log.i(TAG, "Server-side notifications configured (logic not in helper).")
@@ -114,13 +100,13 @@ object NotificationHelper {
     private suspend fun shouldSuppressPush(recipientUid: String): Boolean {
         try {
             val result = dbService.getSingle("notification_preferences", "user_id", recipientUid)
-            val prefs = result.getOrNull() ?: return false // Default to allow if no prefs
+            val prefs = result.getOrNull() ?: return false
 
             val dnd = prefs["do_not_disturb"] as? Boolean ?: false
             if (dnd) return true
 
-            // The JSON structure from Supabase might come as Map or JSONObject depending on dbService implementation
-            // Assuming Map<String, Any> for JSONB
+
+
             val quietHours = prefs["quiet_hours"]
             if (quietHours is Map<*, *>) {
                 val enabled = quietHours["enabled"] as? Boolean ?: false
@@ -135,7 +121,7 @@ object NotificationHelper {
             return false
         } catch (e: Exception) {
             Log.e(TAG, "Failed to check notification preferences", e)
-            return false // Default to allow
+            return false
         }
     }
 
@@ -148,7 +134,7 @@ object NotificationHelper {
             return if (startTime.isBefore(endTime)) {
                 now.isAfter(startTime) && now.isBefore(endTime)
             } else {
-                // Crosses midnight (e.g. 22:00 to 08:00)
+
                 now.isAfter(startTime) || now.isBefore(endTime)
             }
         } catch (e: Exception) {
@@ -159,10 +145,10 @@ object NotificationHelper {
 
     @JvmStatic
     private fun shouldSuppressNotification(status: String?, lastSeenStr: String?, chattingWith: String?): Boolean {
-        // Basic Smart Suppression: If user is online or was active recently
-        // Ideally we check 'chatting_with' field if available, but here we reuse existing params
-        // For strict 'chatting_with' logic, we would need that field from userData.
-        // The original code probably had more logic here. I'll implement a safe default.
+
+
+
+
         if (status == "online") return true
         return false
     }
@@ -185,7 +171,7 @@ object NotificationHelper {
                 "data" to data
             )
 
-            // Call the Edge Function securely
+
             scope.launch {
                 try {
                     val response = SupabaseClient.client.functions.invoke(
@@ -202,10 +188,8 @@ object NotificationHelper {
         }
     }
 
-    /**
-     * Persists the notification to the Supabase "notifications" table.
-     * This ensures the notification appears in the user's Activity Feed/Notification Screen.
-     */
+
+
     private suspend fun persistNotification(
         recipientUid: String,
         senderUid: String,
@@ -214,23 +198,23 @@ object NotificationHelper {
         data: Map<String, String>?
     ) {
         try {
-            // Extract target ID based on notification type
+
             val targetId = data?.get("postId")
                 ?: data?.get("commentId")
                 ?: data?.get("followerId")
                 ?: data?.get("chat_id")
 
-            // Map to database schema
+
             val notificationData = mutableMapOf<String, Any?>(
-                "recipient_id" to recipientUid, // Corrected from receiver_id to recipient_id based on schema
+                "recipient_id" to recipientUid,
                 "sender_id" to senderUid,
                 "type" to notificationType,
-                // "body" to mapOf("en" to message), // Schema has body as JSONB
-                // "content" was used in previous code, but schema has body/title/data.
-                // Let's stick to what works or adapt. The schema created has 'body' (jsonb).
-                // But typically clients map 'content' to 'body' text.
-                // I will put message in 'data' or 'body' as expected.
-                // Let's assume 'body' column stores the text in a JSON structure or we use 'data'.
+
+
+
+
+
+
                 "data" to (data?.toMutableMap() ?: mutableMapOf()).apply {
                     put("message", message)
                     if (targetId != null) put("target_id", targetId)
@@ -238,7 +222,7 @@ object NotificationHelper {
                 "is_read" to false,
                 "created_at" to java.time.Instant.now().toString()
             )
-            // Add body column if needed
+
             notificationData["body"] = mapOf("en" to message)
 
             val result = dbService.insert("notifications", notificationData)
@@ -253,13 +237,8 @@ object NotificationHelper {
         }
     }
 
-    /**
-     * Generates a deep link URL based on notification type and data.
-     * @param notificationType The type of notification
-     * @param senderUid The sender's UID (optional)
-     * @param data Additional notification data (optional)
-     * @return Deep link URL string
-     */
+
+
     @JvmStatic
     private fun generateDeepLinkUrl(
         notificationType: String,
@@ -305,7 +284,7 @@ object NotificationHelper {
         }
     }
 
-    // Stub for legacy support if needed
+
     @JvmStatic
     fun sendMessageAndNotifyIfNeeded(chatId: String, senderId: String, recipientId: String, message: String) {
         sendNotification(recipientId, senderId, message, "chat_message", mapOf("chat_id" to chatId))

@@ -23,10 +23,8 @@ import org.mockito.kotlin.*
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-/**
- * Unit tests for [NotificationsViewModel] verifying state transitions,
- * notification loading, and optimistic updates for marking as read.
- */
+
+
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
@@ -58,7 +56,7 @@ class NotificationsViewModelTest {
 
     @Test
     fun `initialization should load notifications for current user`() = runTest(testDispatcher) {
-        // Arrange
+
         val userId = "user123"
         whenever(authRepository.getCurrentUserId()).thenReturn(userId)
         val mockNotifications = listOf(
@@ -67,18 +65,18 @@ class NotificationsViewModelTest {
         )
         whenever(notificationRepository.fetchNotifications(userId)).thenReturn(mockNotifications)
 
-        // Act
+
         createViewModel()
         whenever(context.getString(any())).thenReturn("Mock String")
         advanceUntilIdle()
 
-        // Assert
+
         val state = viewModel.uiState.value
         assertFalse("Loading should be false after completion", state.isLoading)
         assertEquals("Should have 2 notifications", 2, state.notifications.size)
         assertEquals("Should have 2 unread notifications", 2, state.unreadCount)
 
-        // Robust assertion: Find by ID instead of index
+
         val likeNotif = state.notifications.first { it.id == "1" }
         assertEquals("Notification with ID '1' should have correct message", "Message for like", likeNotif.message)
 
@@ -87,15 +85,15 @@ class NotificationsViewModelTest {
 
     @Test
     fun `initialization with no user should set loading to false and not fetch`() = runTest(testDispatcher) {
-        // Arrange
+
         whenever(authRepository.getCurrentUserId()).thenReturn(null)
 
-        // Act
+
         createViewModel()
         whenever(context.getString(any())).thenReturn("Mock String")
         advanceUntilIdle()
 
-        // Assert
+
         val state = viewModel.uiState.value
         assertFalse("Loading should be false even if no user", state.isLoading)
         assertTrue("Notifications list should be empty", state.notifications.isEmpty())
@@ -104,17 +102,17 @@ class NotificationsViewModelTest {
 
     @Test
     fun `loadNotifications failure should handle exception and stop loading`() = runTest(testDispatcher) {
-        // Arrange
+
         val userId = "user123"
         whenever(authRepository.getCurrentUserId()).thenReturn(userId)
         whenever(notificationRepository.fetchNotifications(userId)).thenThrow(RuntimeException("Network error"))
 
-        // Act
+
         createViewModel()
         whenever(context.getString(any())).thenReturn("Mock String")
         advanceUntilIdle()
 
-        // Assert
+
         val state = viewModel.uiState.value
         assertFalse("Loading should be false after error", state.isLoading)
         assertTrue("Notifications list should be empty on error", state.notifications.isEmpty())
@@ -122,7 +120,7 @@ class NotificationsViewModelTest {
 
     @Test
     fun `markAsRead should perform optimistic update and call repository`() = runTest(testDispatcher) {
-        // Arrange
+
         val userId = "user123"
         val notificationId = "notif1"
         whenever(authRepository.getCurrentUserId()).thenReturn(userId)
@@ -134,23 +132,23 @@ class NotificationsViewModelTest {
         advanceUntilIdle()
         assertEquals(1, viewModel.uiState.value.unreadCount)
 
-        // Act
+
         viewModel.markAsRead(notificationId)
 
-        // Assert Optimistic Update (Immediate state change)
-        runCurrent() // Execute up to the suspension point (optimistic update happens before repo call)
+
+        runCurrent()
         val stateAfterAct = viewModel.uiState.value
         assertTrue("Notification should be marked as read optimistically", stateAfterAct.notifications.first { it.id == notificationId }.isRead)
         assertEquals("Unread count should decrease optimistically", 0, stateAfterAct.unreadCount)
 
-        // Advance to complete repository call
+
         advanceUntilIdle()
         verify(notificationRepository).markAsRead(userId, notificationId)
     }
 
     @Test
     fun `markAsRead failure should revert state by reloading notifications`() = runTest(testDispatcher) {
-        // Arrange
+
         val userId = "user123"
         val notificationId = "notif1"
         whenever(authRepository.getCurrentUserId()).thenReturn(userId)
@@ -161,66 +159,66 @@ class NotificationsViewModelTest {
         whenever(context.getString(any())).thenReturn("Mock String")
         advanceUntilIdle()
 
-        // Mock repository failure
+
         whenever(notificationRepository.markAsRead(userId, notificationId)).thenThrow(RuntimeException("Update failed"))
 
-        // Act
-        viewModel.markAsRead(notificationId)
-        runCurrent() // Apply optimistic update
-        advanceUntilIdle() // Complete the flow (including failure and revert)
 
-        // Assert - verify fetchNotifications was called again to revert (once in init, once in revert)
+        viewModel.markAsRead(notificationId)
+        runCurrent()
+        advanceUntilIdle()
+
+
         verify(notificationRepository, times(1)).fetchNotifications(userId)
     }
 
     @Test
     fun `markAsRead failure followed by reload failure should handle gracefully`() = runTest(testDispatcher) {
-        // Arrange
+
         val userId = "user123"
         val notificationId = "notif1"
         whenever(authRepository.getCurrentUserId()).thenReturn(userId)
 
-        // Mock notifications are not read yet (isRead = false) to test optimistic update to true and rollback to false
+
         val mockNotifications = listOf(createMockNotificationDto(notificationId, "like", isRead = false))
 
-        // Define sequence of behaviors for fetchNotifications:
-        // 1. Initial load succeeds to populate state
-        // 2. Subsequent reload attempt (revert sync) fails
+
+
+
         whenever(notificationRepository.fetchNotifications(userId))
-            .thenReturn(mockNotifications) // For initial load
-            .thenThrow(RuntimeException("Revert failed during fetchNotifications")) // For reload on failure
+            .thenReturn(mockNotifications)
+            .thenThrow(RuntimeException("Revert failed during fetchNotifications"))
 
         createViewModel()
         whenever(context.getString(any())).thenReturn("Mock String")
         advanceUntilIdle()
 
-        // Mock the primary action failure (marking as read fails)
+
         whenever(notificationRepository.markAsRead(userId, notificationId))
             .thenThrow(RuntimeException("Update failed during markAsRead"))
 
-        // Act
-        viewModel.markAsRead(notificationId)
-        runCurrent() // Apply optimistic update (isRead becomes true)
-        advanceUntilIdle() // Fail markAsRead repo call and fail the subsequent reload sync
 
-        // Assert
+        viewModel.markAsRead(notificationId)
+        runCurrent()
+        advanceUntilIdle()
+
+
         val state = viewModel.uiState.value
 
-        // Ensure the loading state is cleared even after multiple failures
+
         assertFalse("Loading should be false after all attempts", state.isLoading)
 
-        // Assert that the local UI state is manually reverted to isRead = false,
-        // ensuring consistency even when the network-based sync (loadNotifications) also fails.
+
+
         val notif = state.notifications.first { it.id == notificationId }
         assertFalse("UI state should be reverted even if reload sync fails", notif.isRead)
 
-        // Verify we attempted to reload exactly once (init + 1 retry)
+
         verify(notificationRepository, times(1)).fetchNotifications(userId)
     }
 
     @Test
     fun `refresh should trigger reload of notifications`() = runTest(testDispatcher) {
-        // Arrange
+
         val userId = "user123"
         whenever(authRepository.getCurrentUserId()).thenReturn(userId)
         whenever(notificationRepository.fetchNotifications(userId)).thenReturn(emptyList())
@@ -230,11 +228,11 @@ class NotificationsViewModelTest {
         advanceUntilIdle()
         verify(notificationRepository, times(1)).fetchNotifications(userId)
 
-        // Act
+
         viewModel.refresh()
         advanceUntilIdle()
 
-        // Assert
+
         verify(notificationRepository, times(2)).fetchNotifications(userId)
     }
 

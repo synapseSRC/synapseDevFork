@@ -43,7 +43,7 @@ class NotificationSettingsViewModel @Inject constructor(
                 if (dto != null) {
                     val prefs = mapDtoToPreferences(dto)
                     _notificationPreferences.value = prefs
-                    // Sync with OneSignal on load
+
                     updateOneSignalTags(prefs)
                 }
             } catch (e: Exception) {
@@ -89,7 +89,7 @@ class NotificationSettingsViewModel @Inject constructor(
 
             try {
                 notificationRepository.updatePreferences(userId, mapPreferencesToDto(userId, newPrefs))
-                // Sync with OneSignal Data Tags
+
                 updateOneSignalTags(newPrefs)
             } catch (e: Exception) {
                 android.util.Log.e("NotificationSettingsViewModel", "Failed to update preferences", e)

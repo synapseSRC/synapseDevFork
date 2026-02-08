@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
             viewModel.isCheckingAuth.value
         }
 
-        // Enable edge-to-edge display
+
         enableEdgeToEdge()
 
         setContent {
@@ -109,7 +109,7 @@ class MainActivity : ComponentActivity() {
 
         createNotificationChannels()
 
-        // Check for updates
+
         viewModel.checkForUpdates()
     }
 
@@ -167,14 +167,14 @@ fun MainScreen(
     val updateState by viewModel.updateState.observeAsState()
     val authState by viewModel.authState.observeAsState()
 
-    // Handle state changes
+
     LaunchedEffect(updateState) {
         when (updateState) {
             is UpdateState.NoUpdate -> viewModel.checkUserAuthentication()
             is UpdateState.Error -> {
-                // Error will be shown in dialog
+
             }
-            else -> { /* UpdateAvailable will be shown in dialog */ }
+            else -> {  }
         }
     }
 
@@ -187,7 +187,7 @@ fun MainScreen(
                 onSignOut()
                 onFinish()
             }
-            else -> { /* Error will be shown in dialog */ }
+            else -> {  }
         }
     }
 
@@ -209,10 +209,10 @@ fun MainScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Top spacer
+
             Spacer(modifier = Modifier.weight(1f))
 
-            // App logo
+
             Image(
                 painter = painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = "App Logo",
@@ -227,7 +227,7 @@ fun MainScreen(
 
             Spacer(modifier = Modifier.weight(3f))
 
-            // Company trademark
+
             Image(
                 painter = painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = "Company Trademark",
@@ -240,7 +240,7 @@ fun MainScreen(
             Spacer(modifier = Modifier.weight(1f))
         }
 
-        // Show dialogs based on state
+
         updateState?.let { state ->
             when (state) {
                 is UpdateState.UpdateAvailable -> {
@@ -270,7 +270,7 @@ fun MainScreen(
                         }
                     )
                 }
-                else -> { /* No dialog needed */ }
+                else -> {  }
             }
         }
 
@@ -289,7 +289,7 @@ fun MainScreen(
             }
         }
 
-        // Check Supabase configuration
+
         if (!SupabaseClient.isConfigured()) {
             ErrorDialog(
                 message = "Supabase Configuration Missing\n\nThe app is not properly configured. Please contact the developer to set up the backend services.\n\nConfiguration needed:\n• Supabase URL\n• Supabase API Key\n\nThis is a development/deployment issue that needs to be resolved by the app developer.",

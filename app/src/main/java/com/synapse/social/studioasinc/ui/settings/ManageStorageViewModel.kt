@@ -35,13 +35,13 @@ class ManageStorageViewModel @Inject constructor(
     private fun loadData() {
         viewModelScope.launch {
             _isLoading.value = true
-            // Simulate loading delay
+
             delay(1000)
 
-            // Mock Data
-            val total = 128L * 1024 * 1024 * 1024 // 128 GB
-            val free = 45L * 1024 * 1024 * 1024 // 45 GB
-            val synapse = 2L * 1024 * 1024 * 1024 + 500L * 1024 * 1024 // 2.5 GB
+
+            val total = 128L * 1024 * 1024 * 1024
+            val free = 45L * 1024 * 1024 * 1024
+            val synapse = 2L * 1024 * 1024 * 1024 + 500L * 1024 * 1024
             val apps = total - free - synapse
 
             _storageUsage.value = StorageUsageBreakdown(

@@ -59,7 +59,7 @@ data class CommentUserDto(
 @Serializable
 data class CommentSelectDto(
     val id: String,
-    @SerialName("content") val comment: String? = null, // Mapped to 'content' column
+    @SerialName("content") val comment: String? = null,
     @SerialName("user_id") val userId: String,
     @SerialName("created_at") val createdAt: String? = null,
     @SerialName("users") val user: CommentUserDto? = null
@@ -99,14 +99,14 @@ data class PostSelectDto(
     @SerialName("youtube_url") val youtubeUrl: String? = null,
     @SerialName("metadata") val metadata: PostMetadata? = null,
 
-    // Nested user data from join
+
     @SerialName("users") val user: UserSummaryDto? = null,
 
-    // Nested latest comment
+
     @SerialName("latest_comments") val comments: List<CommentSelectDto>? = null
 )
 
-// Mappers
+
 
 fun Post.toInsertDto(): PostInsertDto {
     return PostInsertDto(
@@ -123,7 +123,7 @@ fun Post.toInsertDto(): PostInsertDto {
         postDisableComments = this.postDisableComments,
         publishDate = this.publishDate,
         timestamp = this.timestamp,
-        likesCount = 0, // Reset counts for new post
+        likesCount = 0,
         commentsCount = 0,
         viewsCount = 0,
         resharesCount = 0,
@@ -145,7 +145,7 @@ fun Post.toInsertDto(): PostInsertDto {
 }
 
 fun Post.toUpdateDto(): PostInsertDto {
-    // For update, we use the same DTO but include all current values
+
     return PostInsertDto(
         id = this.id,
         key = this.key,
@@ -159,7 +159,7 @@ fun Post.toUpdateDto(): PostInsertDto {
         postHideCommentsCount = this.postHideCommentsCount,
         postDisableComments = this.postDisableComments,
         publishDate = this.publishDate,
-        timestamp = this.timestamp, // Original timestamp
+        timestamp = this.timestamp,
         likesCount = this.likesCount,
         commentsCount = this.commentsCount,
         viewsCount = this.viewsCount,
@@ -221,14 +221,14 @@ fun PostSelectDto.toDomain(constructMediaUrl: (String) -> String, constructAvata
         metadata = this.metadata
     )
 
-    // Populate user data from join
+
     this.user?.let { u ->
         post.username = u.username
         post.avatarUrl = u.avatarUrl?.let { constructAvatarUrl(it) }
         post.isVerified = u.isVerified ?: false
     }
 
-    // Populate latest comment data - Sort by createdAt desc to get the latest since we can't limit/order in embedding
+
     this.comments?.sortedByDescending { it.createdAt }?.firstOrNull()?.let { comment ->
         post.latestCommentText = comment.comment
         post.latestCommentAuthor = comment.user?.username

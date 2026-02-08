@@ -47,7 +47,7 @@ class CommentsViewModel @Inject constructor(
             return
         }
 
-        // Optimistic update
+
         val tempComment = ReelComment(
             id = "temp_${System.currentTimeMillis()}",
             reelId = reelId,

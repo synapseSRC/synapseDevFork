@@ -60,7 +60,7 @@ fun EditProfileScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    // Image Pickers
+
     val avatarPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
@@ -77,7 +77,7 @@ fun EditProfileScreen(
         }
     }
 
-    // Navigation Events
+
     LaunchedEffect(viewModel) {
         viewModel.navigationEvents.collect { event ->
             when (event) {
@@ -95,7 +95,7 @@ fun EditProfileScreen(
         }
     }
 
-    // Error Handling
+
     LaunchedEffect(uiState.error) {
         uiState.error?.let { error ->
             snackbarHostState.showSnackbar(error)
@@ -158,7 +158,7 @@ fun EditProfileScreen(
                     ),
                     verticalArrangement = Arrangement.spacedBy(SettingsSpacing.sectionSpacing)
                 ) {
-                    // Image Section
+
                     item {
                         ProfileImageSection(
                             coverUrl = uiState.coverUrl,
@@ -180,7 +180,7 @@ fun EditProfileScreen(
                         )
                     }
 
-                    // Form Fields
+
                     item {
                         ProfileFormFields(
                             username = uiState.username,
@@ -195,7 +195,7 @@ fun EditProfileScreen(
                         )
                     }
 
-                    // Gender Section
+
                     item {
                         GenderSelector(
                             selectedGender = uiState.selectedGender,
@@ -203,13 +203,13 @@ fun EditProfileScreen(
                         )
                     }
 
-                    // Region Section
+
                     item {
                         SettingsCard {
                             SettingsNavigationItem(
                                 title = "Region",
                                 subtitle = uiState.selectedRegion ?: "Not set",
-                                icon = R.drawable.ic_location, // Need to verify if this exists or use fallback
+                                icon = R.drawable.ic_location,
                                 onClick = {
                                     onNavigateToRegionSelection(uiState.selectedRegion ?: "")
                                 }
@@ -217,7 +217,7 @@ fun EditProfileScreen(
                         }
                     }
 
-                    // History Section
+
                     item {
                         SettingsCard {
                             SettingsNavigationItem(

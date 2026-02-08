@@ -7,10 +7,8 @@ import io.github.jan.supabase.postgrest.from
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * Repository for submitting user feedback.
- * Requirement: 9.5
- */
+
+
 class FeedbackRepository {
     private val client = SupabaseClient.client
 
@@ -24,9 +22,8 @@ class FeedbackRepository {
         @SerialName("device_info") val deviceInfo: String
     )
 
-    /**
-     * Submit user feedback.
-     */
+
+
     suspend fun submitFeedback(
         category: String,
         description: String,

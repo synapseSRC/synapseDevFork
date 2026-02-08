@@ -70,7 +70,7 @@ fun NotificationsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val swipeRefreshState = rememberSwipeRefreshState(uiState.isLoading)
 
-    // Bolt Optimization: Memoize lambdas to make NotificationItem skippable.
+
     val currentOnNotificationClick by rememberUpdatedState(onNotificationClick)
     val currentOnUserClick by rememberUpdatedState(onUserClick)
 

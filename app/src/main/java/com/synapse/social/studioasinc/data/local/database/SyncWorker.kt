@@ -19,7 +19,7 @@ class SyncWorker(appContext: Context, workerParams: WorkerParameters):
         val postRepository = entryPoint.postRepository()
 
         return try {
-            postRepository.refreshPosts(0, 20) // Refresh the first page of posts
+            postRepository.refreshPosts(0, 20)
             Result.success()
         } catch (e: Exception) {
             Result.failure()

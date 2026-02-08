@@ -54,9 +54,9 @@ fun PostInteractionBar(
     val haptic = LocalHapticFeedback.current
 
     Column(modifier = modifier.fillMaxWidth()) {
-        // Divider at the top of the interaction bar - keep or remove based on preference.
-        // PostCard adds one at the bottom, so this one effectively separates content from actions.
-        // In flat design, this is sometimes omitted, but keeping for now as a subtle separator.
+
+
+
         HorizontalDivider(
             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f),
             thickness = 0.5.dp
@@ -65,7 +65,7 @@ fun PostInteractionBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                // Removed background and rounded corners for flat design
+
                 .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween

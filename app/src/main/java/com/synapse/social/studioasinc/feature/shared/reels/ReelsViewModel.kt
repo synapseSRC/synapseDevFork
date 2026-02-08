@@ -112,7 +112,7 @@ class ReelsViewModel @Inject constructor(
 
         viewModelScope.launch {
              reelRepository.likeReel(reelId).onFailure {
-                 // Revert on failure
+
                  _uiState.update { state ->
                     val updatedReels = state.reels.map { reel ->
                         if (reel.id == reelId) {
@@ -141,7 +141,7 @@ class ReelsViewModel @Inject constructor(
 
         viewModelScope.launch {
             reelRepository.opposeReel(reelId).onFailure {
-                 // Revert on failure
+
                  _uiState.update { state ->
                     val updatedReels = state.reels.map { reel ->
                         if (reel.id == reelId) {
@@ -167,7 +167,7 @@ class ReelsViewModel @Inject constructor(
     fun blockCreator(creatorId: String) {
         viewModelScope.launch {
             reelRepository.blockCreator(creatorId).onSuccess {
-                // Refresh feed to remove reels from blocked user
+
                 loadReels()
             }.onFailure { e ->
                 _uiState.update { it.copy(error = "Failed to block: ${e.message}") }

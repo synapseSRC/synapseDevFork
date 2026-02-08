@@ -44,7 +44,7 @@ fun UserListItem(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Avatar
+
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(user.avatar)
@@ -59,7 +59,7 @@ fun UserListItem(
                 error = painterResource(R.drawable.ic_profile_placeholder)
             )
 
-            // User info
+
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -96,7 +96,7 @@ fun UserListItem(
                 )
             }
 
-            // Action buttons
+
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {

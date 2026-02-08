@@ -70,7 +70,7 @@ fun CommentsBottomSheet(
                 }
             }
 
-            // Input field
+
             Surface(
                 tonalElevation = 2.dp,
                 modifier = Modifier.fillMaxWidth()

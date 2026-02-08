@@ -8,15 +8,13 @@ import com.synapse.social.studioasinc.shared.data.auth.SupabaseAuthenticationSer
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel for the Inbox screen.
- * Note: Chat functionality removed - shows empty state UI
- */
+
+
 class InboxViewModel(
     private val authService: SupabaseAuthenticationService = SupabaseAuthenticationService()
 ) : ViewModel() {
 
-    // Current user profile
+
     private val _currentUserProfile = MutableStateFlow<User?>(null)
     val currentUserProfile: StateFlow<User?> = _currentUserProfile.asStateFlow()
 
@@ -31,7 +29,7 @@ class InboxViewModel(
             val profile = UserProfileManager.getCurrentUserProfile()
             _currentUserProfile.value = profile
         } catch (e: Exception) {
-            // Handle error silently
+
         }
     }
 }

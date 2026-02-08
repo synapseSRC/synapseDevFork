@@ -26,5 +26,5 @@ data class Reel(
     val locationAddress: String? = null,
     val locationLatitude: Double? = null,
     val locationLongitude: Double? = null,
-    val metadata: String? = null // JSON string or specific metadata class if shared
+    val metadata: String? = null
 )

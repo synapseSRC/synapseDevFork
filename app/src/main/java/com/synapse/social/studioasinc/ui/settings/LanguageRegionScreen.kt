@@ -13,18 +13,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
 
-/**
- * Language and Region Settings screen for managing language preferences.
- *
- * Displays:
- * - Current language with checkmark indicator
- * - Available languages list with native script names (e.g., "日本語", "Español")
- * - Region preferences navigation (placeholder)
- *
- * Uses Material 3 Expressive design with MediumTopAppBar and RadioButton selection.
- *
- * Requirements: 8.1, 8.2, 8.3, 8.4
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LanguageRegionScreen(
@@ -62,7 +52,7 @@ fun LanguageRegionScreen(
             )
         },
         snackbarHost = {
-            // Show error snackbar if there's an error
+
             error?.let { errorMessage ->
                 Snackbar(
                     modifier = Modifier.padding(16.dp),
@@ -85,10 +75,10 @@ fun LanguageRegionScreen(
             verticalArrangement = Arrangement.spacedBy(SettingsSpacing.sectionSpacing),
             contentPadding = PaddingValues(vertical = 16.dp)
         ) {
-            // Language Selection Section
+
             item {
                 SettingsSection(title = "App Language") {
-                    // Display available languages with RadioButton selection
+
                     availableLanguages.forEachIndexed { index, languageOption ->
                         LanguageSelectionItem(
                             languageOption = languageOption,
@@ -101,7 +91,7 @@ fun LanguageRegionScreen(
                             enabled = !isLoading
                         )
 
-                        // Add divider between items (except after last item)
+
                         if (index < availableLanguages.size - 1) {
                             SettingsDivider()
                         }
@@ -109,7 +99,7 @@ fun LanguageRegionScreen(
                 }
             }
 
-            // Region Preferences Section (Placeholder)
+
             item {
                 SettingsSection(title = "Region") {
                     SettingsNavigationItem(
@@ -122,7 +112,7 @@ fun LanguageRegionScreen(
                 }
             }
 
-            // Bottom spacing
+
             item {
                 Spacer(modifier = Modifier.height(32.dp))
             }
@@ -130,19 +120,8 @@ fun LanguageRegionScreen(
     }
 }
 
-/**
- * Composable for displaying a language selection item with RadioButton.
- *
- * Shows the language name in its native script with a radio button indicator
- * for the currently selected language.
- *
- * @param languageOption The language option to display
- * @param isSelected Whether this language is currently selected
- * @param onClick Callback when the item is clicked
- * @param enabled Whether the item is enabled for interaction
- *
- * Requirements: 8.1, 8.4
- */
+
+
 @Composable
 private fun LanguageSelectionItem(
     languageOption: LanguageOption,
@@ -163,11 +142,11 @@ private fun LanguageSelectionItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Language name in native script
+
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                // Native name (primary display)
+
                 Text(
                     text = languageOption.nativeName,
                     style = MaterialTheme.typography.bodyLarge,
@@ -178,7 +157,7 @@ private fun LanguageSelectionItem(
                     }
                 )
 
-                // English name (secondary, if different from native)
+
                 if (languageOption.name != languageOption.nativeName) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
@@ -193,7 +172,7 @@ private fun LanguageSelectionItem(
                 }
             }
 
-            // Radio button indicator
+
             RadioButton(
                 selected = isSelected,
                 onClick = onClick,

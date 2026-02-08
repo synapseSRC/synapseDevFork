@@ -15,21 +15,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
 
-/**
- * Account Settings screen composable.
- *
- * Displays comprehensive account management options including:
- * - Security: Security notifications, passkeys, two-step verification
- * - Account Information: Email, phone number, account details
- * - Business: Business platform features
- * - Linked Accounts: Google, Facebook, Apple integration
- * - Session Management: Logout functionality
- * - Account Deletion: Delete account option
- *
- * Uses MediumTopAppBar with back navigation and displays settings in grouped sections.
- *
- * Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountSettingsScreen(
@@ -93,7 +80,7 @@ fun AccountSettingsScreen(
                 .padding(horizontal = SettingsSpacing.screenPadding),
             verticalArrangement = Arrangement.spacedBy(SettingsSpacing.sectionSpacing)
         ) {
-            // Security Section
+
             item {
                 SettingsSection(title = "Security") {
                     SettingsToggleItem(
@@ -119,7 +106,7 @@ fun AccountSettingsScreen(
                 }
             }
 
-            // Account Information Section
+
             item {
                 SettingsSection(title = "Account Information") {
                     SettingsNavigationItem(
@@ -152,7 +139,7 @@ fun AccountSettingsScreen(
                 }
             }
 
-            // Business Section
+
             item {
                 SettingsSection(title = "Business") {
                     SettingsNavigationItem(
@@ -164,10 +151,10 @@ fun AccountSettingsScreen(
                 }
             }
 
-            // Linked Accounts Section
+
             item {
                 SettingsSection(title = "Linked Accounts") {
-                    // Google Account
+
                     LinkedAccountItem(
                         provider = SocialProvider.GOOGLE,
                         isLinked = linkedAccounts.googleLinked,
@@ -176,7 +163,7 @@ fun AccountSettingsScreen(
                         enabled = !isLoading
                     )
                     SettingsDivider()
-                    // Facebook Account
+
                     LinkedAccountItem(
                         provider = SocialProvider.FACEBOOK,
                         isLinked = linkedAccounts.facebookLinked,
@@ -185,7 +172,7 @@ fun AccountSettingsScreen(
                         enabled = !isLoading
                     )
                     SettingsDivider()
-                    // Apple Account
+
                     LinkedAccountItem(
                         provider = SocialProvider.APPLE,
                         isLinked = linkedAccounts.appleLinked,
@@ -196,7 +183,7 @@ fun AccountSettingsScreen(
                 }
             }
 
-            // Session Section
+
             item {
                 SettingsSection(title = "Session") {
                     SettingsButtonItem(
@@ -208,7 +195,7 @@ fun AccountSettingsScreen(
                 }
             }
 
-            // Danger Zone Section
+
             item {
                 SettingsSection(title = "Danger Zone") {
                     SettingsButtonItem(
@@ -220,13 +207,13 @@ fun AccountSettingsScreen(
                 }
             }
 
-            // Bottom spacing
+
             item {
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
 
-        // Dialogs
+
         if (showChangeEmailDialog) {
             ChangeEmailDialog(
                 onDismiss = { viewModel.dismissChangeEmailDialog() },
@@ -263,17 +250,8 @@ fun AccountSettingsScreen(
     }
 }
 
-/**
- * Composable for displaying a linked social account item.
- *
- * Shows the provider icon, name, connection status, and connect/disconnect button.
- *
- * @param provider The social provider
- * @param isLinked Whether the account is currently linked
- * @param onConnect Callback when connect button is clicked
- * @param onDisconnect Callback when disconnect button is clicked
- * @param enabled Whether the item is interactive
- */
+
+
 @Composable
 private fun LinkedAccountItem(
     provider: SocialProvider,
@@ -295,7 +273,7 @@ private fun LinkedAccountItem(
             modifier = Modifier.weight(1f),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Provider icon
+
             Icon(
                 painter = painterResource(getProviderIcon(provider)),
                 contentDescription = null,
@@ -303,7 +281,7 @@ private fun LinkedAccountItem(
                 tint = SettingsColors.itemIcon
             )
 
-            // Provider name and status
+
             Column {
                 Text(
                     text = provider.displayName,
@@ -321,7 +299,7 @@ private fun LinkedAccountItem(
             }
         }
 
-        // Connect/Disconnect button
+
         FilledTonalButton(
             onClick = if (isLinked) onDisconnect else onConnect,
             enabled = enabled,
@@ -341,9 +319,8 @@ private fun LinkedAccountItem(
     }
 }
 
-/**
- * Returns the appropriate icon resource for a social provider.
- */
+
+
 private fun getProviderIcon(provider: SocialProvider): Int = when (provider) {
     SocialProvider.GOOGLE -> R.drawable.ic_google_logo
     SocialProvider.FACEBOOK -> R.drawable.ic_facebook_logo

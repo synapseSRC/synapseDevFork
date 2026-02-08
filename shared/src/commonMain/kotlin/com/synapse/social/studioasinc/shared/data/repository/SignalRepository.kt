@@ -56,14 +56,14 @@ class SignalRepository(private val supabase: SupabaseClient) {
     }
 
     suspend fun fetchPreKeyBundle(userId: String): PreKeyBundle? {
-        // Fetch Identity Key (Currently fetching for default device 1, logic needs to expand for multi-device)
+
         val identityKeyResult = try {
             supabase.postgrest.from("signal_identity_keys")
                 .select(columns = Columns.list("user_id", "device_id", "registration_id", "identity_key", "signed_pre_key_id", "signed_pre_key", "signed_pre_key_signature")) {
                     filter {
                         eq("user_id", userId)
                     }
-                    limit(1) // Just get one device for now
+                    limit(1)
                 }.decodeSingleOrNull<IdentityKeyDto>()
         } catch (e: Exception) {
             Napier.e("Failed to fetch identity key for user $userId", e)
@@ -72,8 +72,8 @@ class SignalRepository(private val supabase: SupabaseClient) {
 
         if (identityKeyResult == null) return null
 
-        // Fetch One-Time PreKey (Claim it)
-        // Using RPC 'claim_one_time_pre_key'
+
+
         val preKeyResult = try {
             supabase.postgrest.rpc("claim_one_time_pre_key", mapOf("target_user_id" to userId))
                 .decodeAsOrNull<PreKeyDto>()

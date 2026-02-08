@@ -96,9 +96,8 @@ class StoryTrayViewModel @Inject constructor(
         loadStories()
     }
 
-    /**
-     * Mark a story as seen when the user views it
-     */
+
+
     fun markStoryAsSeen(storyId: String) {
         val viewerId = currentUserId ?: return
 
@@ -107,9 +106,8 @@ class StoryTrayViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Update the seen status of a story collection after viewing
-     */
+
+
     fun markStoriesAsSeen(storyWithUser: StoryWithUser) {
         _storyTrayState.update { state ->
             val updatedFriends = state.friendStories.map { story ->

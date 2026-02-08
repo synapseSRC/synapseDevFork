@@ -16,10 +16,8 @@ import kotlinx.coroutines.Dispatchers
 import io.github.aakira.napier.Napier
 import kotlin.time.ExperimentalTime
 
-/**
- * Shared Authentication Repository
- * Simplified version using direct Supabase calls
- */
+
+
 class AuthRepository {
     private val TAG = "AuthRepository"
 
@@ -30,7 +28,7 @@ class AuthRepository {
                     this.email = email
                     this.password = password
                 }
-                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id 
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
                     ?: throw Exception("User ID not found")
                 Napier.d("User signed up: $userId", tag = TAG)
                 Result.success(userId)
@@ -59,7 +57,7 @@ class AuthRepository {
     suspend fun ensureProfileExists(userId: String, email: String, username: String? = null): Result<Unit> {
         return try {
             withContext(Dispatchers.Default) {
-                // Check if profile exists
+
                 val count = SupabaseClient.client.from("user_profiles").select(columns = Columns.list("id")) {
                     count(Count.EXACT)
                     filter {
@@ -70,7 +68,7 @@ class AuthRepository {
                 if (count == null || count == 0L) {
                     val actualUsername = username ?: email.substringBefore("@")
 
-                    // Create profile
+
                     val profileInsert = UserProfileInsert(
                         username = actualUsername,
                         email = email,
@@ -88,11 +86,11 @@ class AuthRepository {
                     )
                     SupabaseClient.client.from("user_profiles").insert(profileInsert)
 
-                    // Create settings
+
                     val settingsInsert = UserSettingsInsert(user_id = userId)
                     SupabaseClient.client.from("user_settings").insert(settingsInsert)
 
-                    // Create presence
+
                     val presenceInsert = UserPresenceInsert(user_id = userId)
                     SupabaseClient.client.from("user_presence").insert(presenceInsert)
 
@@ -113,7 +111,7 @@ class AuthRepository {
                     this.email = email
                     this.password = password
                 }
-                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id 
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
                     ?: throw Exception("User ID not found")
                 Napier.d("User signed in: $userId", tag = TAG)
                 Result.success(userId)
@@ -201,7 +199,7 @@ class AuthRepository {
     }
 
     suspend fun resendVerificationEmail(email: String): Result<Unit> {
-        return sendPasswordResetEmail(email) // Simplified
+        return sendPasswordResetEmail(email)
     }
 
     suspend fun updatePassword(password: String): Result<Unit> {

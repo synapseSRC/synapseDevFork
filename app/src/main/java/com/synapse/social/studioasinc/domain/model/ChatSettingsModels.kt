@@ -1,8 +1,7 @@
 package com.synapse.social.studioasinc.domain.model
 
-/**
- * Chat theme presets.
- */
+
+
 enum class ChatThemePreset {
     DEFAULT,
     OCEAN,
@@ -19,19 +18,17 @@ enum class ChatThemePreset {
     }
 }
 
-/**
- * Wallpaper types.
- */
+
+
 enum class WallpaperType {
     DEFAULT,
     SOLID_COLOR,
     IMAGE_URI
 }
 
-/**
- * Chat wallpaper configuration.
- */
+
+
 data class ChatWallpaper(
     val type: WallpaperType = WallpaperType.DEFAULT,
-    val value: String? = null // Color Int string or URI string
+    val value: String? = null
 )

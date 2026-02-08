@@ -3,10 +3,8 @@ package com.synapse.social.studioasinc.ui.inbox
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-/**
- * Factory for creating InboxViewModel instances.
- * Note: Dependencies removed as chat functionality is disabled.
- */
+
+
 class InboxViewModelFactory : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")

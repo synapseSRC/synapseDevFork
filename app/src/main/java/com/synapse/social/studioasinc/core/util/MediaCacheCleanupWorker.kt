@@ -7,10 +7,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
-/**
- * Background worker for performing media cache cleanup tasks.
- * Uses WorkManager to schedule periodic cleanup of expired and LRU files.
- */
+
+
 class MediaCacheCleanupWorker(
     context: Context,
     workerParams: WorkerParameters
@@ -19,17 +17,14 @@ class MediaCacheCleanupWorker(
     companion object {
         private const val TAG = "MediaCacheCleanupWorker"
         const val WORK_NAME = "media_cache_cleanup"
-        private const val CLEANUP_INTERVAL_HOURS = 24L // Daily cleanup
+        private const val CLEANUP_INTERVAL_HOURS = 24L
 
-        /**
-         * Schedule periodic media cache cleanup.
-         *
-         * @param context Application context
-         */
+
+
         fun schedulePeriodicCleanup(context: Context) {
             val constraints = Constraints.Builder()
                 .setRequiresBatteryNotLow(true)
-                // Removed setRequiresDeviceIdle(true) because it conflicts with backoff criteria
+
                 .build()
 
             val cleanupRequest = PeriodicWorkRequestBuilder<MediaCacheCleanupWorker>(
@@ -53,21 +48,15 @@ class MediaCacheCleanupWorker(
             Log.i(TAG, "Scheduled periodic media cache cleanup every $CLEANUP_INTERVAL_HOURS hours")
         }
 
-        /**
-         * Cancel scheduled media cache cleanup.
-         *
-         * @param context Application context
-         */
+
+
         fun cancelPeriodicCleanup(context: Context) {
             WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
             Log.i(TAG, "Cancelled periodic media cache cleanup")
         }
 
-        /**
-         * Run cleanup immediately (one-time).
-         *
-         * @param context Application context
-         */
+
+
         fun runCleanupNow(context: Context) {
             val immediateRequest = OneTimeWorkRequestBuilder<MediaCacheCleanupWorker>()
                 .build()
@@ -86,10 +75,10 @@ class MediaCacheCleanupWorker(
 
             Log.d(TAG, "Cache stats before cleanup: ${initialStats.fileCount} files, ${initialStats.totalSize}B")
 
-            // Perform expired file cleanup
+
             mediaCache.evictExpired()
 
-            // Perform LRU cleanup if still over size limit
+
             mediaCache.evictLRU()
 
             val finalStats = mediaCache.getCacheStats()
@@ -101,7 +90,7 @@ class MediaCacheCleanupWorker(
             Log.i(TAG, "- Bytes freed: ${bytesFreed}B")
             Log.i(TAG, "- Final cache size: ${finalStats.totalSize}B (${finalStats.fileCount} files)")
 
-            // Return success with cleanup summary
+
             Result.success(
                 workDataOf(
                     "cleanup_performed" to true,
@@ -116,7 +105,7 @@ class MediaCacheCleanupWorker(
         } catch (e: Exception) {
             Log.e(TAG, "Media cache cleanup failed", e)
 
-            // Return retry for transient errors, failure for permanent errors
+
             when {
                 runAttemptCount < 3 -> {
                     Log.w(TAG, "Cache cleanup failed, attempt $runAttemptCount, will retry")
@@ -137,47 +126,37 @@ class MediaCacheCleanupWorker(
     }
 }
 
-/**
- * Helper class for managing media cache cleanup scheduling and monitoring.
- */
+
+
 class MediaCacheCleanupManager(private val context: Context) {
 
     companion object {
         private const val TAG = "MediaCacheCleanupManager"
     }
 
-    /**
-     * Initialize media cache cleanup scheduling.
-     * Should be called from Application.onCreate().
-     */
+
+
     fun initialize() {
         Log.d(TAG, "Initializing media cache cleanup manager")
         MediaCacheCleanupWorker.schedulePeriodicCleanup(context)
     }
 
-    /**
-     * Shutdown media cache cleanup.
-     * Should be called when the app is being destroyed.
-     */
+
+
     fun shutdown() {
         Log.d(TAG, "Shutting down media cache cleanup manager")
         MediaCacheCleanupWorker.cancelPeriodicCleanup(context)
     }
 
-    /**
-     * Trigger immediate cleanup.
-     * Can be called from settings or when cache is full.
-     */
+
+
     fun runCleanupNow() {
         Log.d(TAG, "Running immediate media cache cleanup")
         MediaCacheCleanupWorker.runCleanupNow(context)
     }
 
-    /**
-     * Get the status of the last cleanup work.
-     *
-     * @return WorkInfo for the last cleanup work, or null if none found
-     */
+
+
     suspend fun getLastCleanupStatus(): WorkInfo? = withContext(Dispatchers.IO) {
         try {
             val workInfos = WorkManager.getInstance(context)
@@ -191,11 +170,8 @@ class MediaCacheCleanupManager(private val context: Context) {
         }
     }
 
-    /**
-     * Check if cleanup is currently running.
-     *
-     * @return true if cleanup work is running
-     */
+
+
     suspend fun isCleanupRunning(): Boolean = withContext(Dispatchers.IO) {
         try {
             val status = getLastCleanupStatus()
@@ -206,11 +182,8 @@ class MediaCacheCleanupManager(private val context: Context) {
         }
     }
 
-    /**
-     * Get cleanup statistics from the last run.
-     *
-     * @return Map of cleanup statistics, or empty map if unavailable
-     */
+
+
     suspend fun getCleanupStats(): Map<String, Any> = withContext(Dispatchers.IO) {
         try {
             val status = getLastCleanupStatus()

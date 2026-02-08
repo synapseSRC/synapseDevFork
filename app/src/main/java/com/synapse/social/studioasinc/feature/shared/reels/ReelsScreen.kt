@@ -39,7 +39,7 @@ fun ReelsScreen(
         if (uiState.isEndReached) reels.size else reels.size + 1
     })
 
-    // Preload next reels
+
     LaunchedEffect(pagerState.currentPage, reels) {
         val index = pagerState.currentPage
         if (index < reels.size) {
@@ -50,7 +50,7 @@ fun ReelsScreen(
         }
     }
 
-    // Infinite scroll trigger
+
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             if (page >= reels.size - 2 && !uiState.isEndReached && !uiState.isLoadMoreLoading) {
@@ -59,7 +59,7 @@ fun ReelsScreen(
         }
     }
 
-    // Release players on navigation away
+
     DisposableEffect(Unit) {
         onDispose {
             viewModel.releaseAllPlayers()
@@ -103,7 +103,7 @@ fun ReelsScreen(
 
     }
 
-    // Bottom Sheets
+
     showCommentsForReelId?.let { reelId ->
         CommentsBottomSheet(
             reelId = reelId,
@@ -183,7 +183,7 @@ fun ReelShimmerItem() {
             ShimmerBox(modifier = Modifier.fillMaxWidth(0.4f).height(16.dp))
         }
 
-        // Right side stubs
+
         Column(
             modifier = Modifier
                 .align(Alignment.BottomEnd)

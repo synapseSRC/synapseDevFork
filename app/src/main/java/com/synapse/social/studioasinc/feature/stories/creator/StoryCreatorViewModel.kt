@@ -58,7 +58,7 @@ class StoryCreatorViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
-        private const val MAX_VIDEO_DURATION_MS = 15_000L // 15 seconds
+        private const val MAX_VIDEO_DURATION_MS = 15_000L
     }
 
     private val _state = MutableStateFlow(StoryCreatorState())
@@ -205,7 +205,7 @@ class StoryCreatorViewModel @Inject constructor(
         }
     }
 
-    // Drawing methods
+
     fun addDrawing(path: DrawingPath) {
         _state.update { state ->
             state.copy(drawings = state.drawings + path)
@@ -218,7 +218,7 @@ class StoryCreatorViewModel @Inject constructor(
         }
     }
 
-    // Sticker methods
+
     fun addSticker(emoji: String) {
         _state.update { state ->
             state.copy(

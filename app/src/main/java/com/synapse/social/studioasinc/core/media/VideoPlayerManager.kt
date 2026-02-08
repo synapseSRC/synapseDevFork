@@ -33,16 +33,16 @@ class VideoPlayerManager @Inject constructor(
 
     companion object {
         private const val TAG = "VideoPlayerManager"
-        private const val CACHE_SIZE_BYTES: Long = 200 * 1024 * 1024 // 200MB
+        private const val CACHE_SIZE_BYTES: Long = 200 * 1024 * 1024
         private const val MAX_PLAYER_POOL_SIZE = 3
-        private const val PRELOAD_SIZE_BYTES: Long = 5 * 1024 * 1024 // 5MB
+        private const val PRELOAD_SIZE_BYTES: Long = 5 * 1024 * 1024
         private const val MEDIA_CACHE_DIR = "media_cache"
     }
 
     private val cacheEvictor = LeastRecentlyUsedCacheEvictor(CACHE_SIZE_BYTES)
     private val databaseProvider = StandaloneDatabaseProvider(context)
 
-    // SimpleCache should be a singleton.
+
     private val simpleCache: SimpleCache by lazy {
         SimpleCache(File(context.cacheDir, MEDIA_CACHE_DIR), cacheEvictor, databaseProvider)
     }
@@ -55,13 +55,13 @@ class VideoPlayerManager @Inject constructor(
             .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
     }
 
-    // Pool of players
+
     private val playerPool = LinkedList<ExoPlayer>()
     private val activePlayers = mutableMapOf<String, ExoPlayer>()
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     fun getPlayer(url: String): ExoPlayer {
-        // If we already have a player for this URL, return it
+
         if (activePlayers.containsKey(url)) {
             return activePlayers[url]!!
         }
@@ -74,7 +74,7 @@ class VideoPlayerManager @Inject constructor(
 
         activePlayers[url] = player
 
-        // Prepare the player
+
         val mediaItem = MediaItem.fromUri(Uri.parse(url))
         val mediaSource = DefaultMediaSourceFactory(cacheDataSourceFactory)
             .createMediaSource(mediaItem)

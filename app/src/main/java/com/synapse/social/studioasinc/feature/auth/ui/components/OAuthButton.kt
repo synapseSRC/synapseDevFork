@@ -25,14 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
 import com.synapse.social.studioasinc.feature.auth.ui.util.AnimationUtil
 
-/**
- * Button for OAuth providers (Google, Facebook, Apple).
- *
- * Design tokens:
- * - Height: 48dp
- * - Haptic feedback: On press
- * - Styling: Outlined with icon
- */
+
+
 @Composable
 fun OAuthButton(
     provider: String,
@@ -48,7 +42,7 @@ fun OAuthButton(
         "google" -> R.drawable.ic_google_logo to "Continue with Google"
         "facebook" -> R.drawable.ic_facebook_logo to "Continue with Facebook"
         "github" -> R.drawable.ic_github_logo to "Continue with GitHub"
-        else -> R.drawable.ic_google_logo to "Continue with $provider" // Fallback
+        else -> R.drawable.ic_google_logo to "Continue with $provider"
     }
 
     OutlinedButton(

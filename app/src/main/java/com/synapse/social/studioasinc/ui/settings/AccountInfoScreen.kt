@@ -106,7 +106,7 @@ fun AccountInfoContent(
         modifier = Modifier.fillMaxSize(),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 24.dp)
     ) {
-        // Basic Information
+
         item {
             SettingsSection(title = "Basic Information") {
                 SettingsInfoItem(
@@ -143,13 +143,13 @@ fun AccountInfoContent(
             }
         }
 
-        // Account Status
+
         item {
             SettingsSection(title = "Account Status") {
                 SettingsInfoItem(
                     title = "Account Type",
                     value = data.accountType.name
-                    // icon removed to be safe
+
                 )
                 SettingsDivider()
                 if (data.isVerified) {
@@ -162,7 +162,7 @@ fun AccountInfoContent(
 
                 val createdDate = try {
                     if (data.createdAt != null) {
-                         // Attempt to parse ISO string
+
                          java.time.Instant.parse(data.createdAt).atZone(ZoneId.systemDefault()).format(dateFormatter)
                     } else "Unknown"
                 } catch (e: Exception) {
@@ -187,7 +187,7 @@ fun AccountInfoContent(
             }
         }
 
-        // Statistics
+
         item {
             SettingsSection(title = "Statistics") {
                 SettingsInfoItem(title = "Posts", value = data.postsCount.toString())
@@ -202,7 +202,7 @@ fun AccountInfoContent(
             }
         }
 
-        // Technical Info
+
         item {
             SettingsSection(title = "Technical Info") {
                 SettingsInfoItem(
@@ -225,5 +225,3 @@ fun AccountInfoContent(
         }
     }
 }
-
-// Verified clean

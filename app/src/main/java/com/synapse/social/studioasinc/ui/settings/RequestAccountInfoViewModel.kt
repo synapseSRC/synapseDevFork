@@ -14,18 +14,16 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-/**
- * Request Status for the report generation process.
- */
+
+
 sealed class RequestStatus {
     object Idle : RequestStatus()
     object Processing : RequestStatus()
     data class Ready(val availableUntil: String) : RequestStatus()
 }
 
-/**
- * UI State for Request Account Info screen.
- */
+
+
 data class RequestAccountInfoUiState(
     val isAccountInfoSelected: Boolean = false,
     val isChannelActivitySelected: Boolean = false,
@@ -34,19 +32,15 @@ data class RequestAccountInfoUiState(
     val error: String? = null
 )
 
-/**
- * ViewModel for Request Account Info screen.
- *
- * Manages state for requesting account reports and toggling auto-creation.
- * Simulates API calls for report generation.
- */
+
+
 class RequestAccountInfoViewModel(application: Application) : AndroidViewModel(application) {
 
     private val settingsDataStore = SettingsDataStore.getInstance(application)
 
-    // ========================================================================
-    // State
-    // ========================================================================
+
+
+
 
     private val _uiState = MutableStateFlow(RequestAccountInfoUiState())
     val uiState: StateFlow<RequestAccountInfoUiState> = _uiState.asStateFlow()
@@ -55,15 +49,14 @@ class RequestAccountInfoViewModel(application: Application) : AndroidViewModel(a
         loadSettings()
     }
 
-    /**
-     * Loads initial settings from DataStore.
-     */
+
+
     private fun loadSettings() {
         viewModelScope.launch {
             val accountAuto = settingsDataStore.accountReportsAutoCreate.first()
             val channelsAuto = settingsDataStore.channelsReportsAutoCreate.first()
 
-            // If either is enabled, we show the master toggle as enabled
+
             _uiState.value = _uiState.value.copy(
                 isAutoReportEnabled = accountAuto || channelsAuto
             )
@@ -89,7 +82,7 @@ class RequestAccountInfoViewModel(application: Application) : AndroidViewModel(a
     fun toggleAutoReport(enabled: Boolean) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isAutoReportEnabled = enabled)
-            // Update both preferences to match the single simplified toggle
+
             settingsDataStore.setAccountReportsAutoCreate(enabled)
             settingsDataStore.setChannelsReportsAutoCreate(enabled)
         }
@@ -100,10 +93,10 @@ class RequestAccountInfoViewModel(application: Application) : AndroidViewModel(a
             _uiState.value = _uiState.value.copy(status = RequestStatus.Processing)
 
             try {
-                // Simulate network delay
+
                 delay(3000)
 
-                // Calculate ready date (3 days from now)
+
                 val calendar = Calendar.getInstance()
                 calendar.add(Calendar.DAY_OF_YEAR, 3)
                 val readyDate = SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(calendar.time)
@@ -120,9 +113,8 @@ class RequestAccountInfoViewModel(application: Application) : AndroidViewModel(a
         }
     }
 
-    /**
-     * Clears error message.
-     */
+
+
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
     }

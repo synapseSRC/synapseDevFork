@@ -58,11 +58,11 @@ class FeedViewModel @Inject constructor(
     private val _modifiedPosts = MutableStateFlow<Map<String, Post>>(emptyMap())
     private val MAX_MODIFIED_POSTS = 100
 
-    // Cache the raw PagingData FIRST to prevent "Attempt to collect twice from pageEventFlow"
+
     private val cachedPosts = postRepository.getPostsPaged()
         .cachedIn(viewModelScope)
 
-    // Using PagingData for infinite scroll with modifications overlay
+
     val posts: Flow<PagingData<Post>> = cachedPosts
         .combine(_modifiedPosts) { pagingData, modifications ->
             pagingData.map { post ->
@@ -73,42 +73,42 @@ class FeedViewModel @Inject constructor(
     private var savedScrollPosition: ScrollPositionState? = null
 
     init {
-        // Observe Settings
+
         viewModelScope.launch {
             settingsRepository.appearanceSettings.collect { settings ->
                 _uiState.update { it.copy(postViewStyle = settings.postViewStyle) }
             }
         }
 
-        // Observe Global Post Events for Synchronization
+
         viewModelScope.launch {
             PostEventBus.events.collect { event ->
                 when (event) {
                     is PostEvent.Liked -> {
                         val current = _modifiedPosts.value[event.postId]
-                        // We only need to update if we have the post in PagingData or current view
-                        // Since PagingData is a flow, we can't easily peek, but _modifiedPosts stores overrides.
-                        // We can blindly update _modifiedPosts if we want to ensure sync,
-                        // but better to only update if we know about the post.
-                        // However, Paging requires us to know the previous state to copy it.
-                        // A simpler approach: we cannot easily update PagingData from outside without a refresh
-                        // unless we keep a cache of 'latest state' for every post ID we've seen.
-                        // For now, we'll try to update ONLY if it's already in _modifiedPosts, OR we assume we can't fully sync
-                        // PagingData without more complex caching.
 
-                        // BUT, if the user liked it in Profile, they expect to see it liked in Feed.
-                        // _modifiedPosts is used to override PagingData.
-                        // We can add a "Pending Modification" for this ID.
-                        // But we need the original Post object to copy() it. We don't have it here if it's not in _modifiedPosts.
-                        // So full bidirectional sync with Paging is hard.
-                        // LUCKILY: PostEvent.Updated(post) carries the full post.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     }
                     is PostEvent.Updated -> {
                         cacheModifiedPost(event.post)
                     }
                     is PostEvent.Deleted -> {
-                         // Removing from feed is hard with PagingData without refresh.
-                         // We can mark it as deleted in _modifiedPosts if we handle that in UI (e.g. filter or show hidden).
+
+
                     }
                     else -> {}
                 }
@@ -120,11 +120,11 @@ class FeedViewModel @Inject constructor(
         _modifiedPosts.update { currentMap ->
             val newMap = currentMap.toMutableMap()
             newMap.remove(post.id)
-            newMap[post.id] = post // Update or add
+            newMap[post.id] = post
 
-            // Limit size to prevent unbounded growth
+
             while (newMap.size > MAX_MODIFIED_POSTS) {
-                // Remove oldest entry (first key in LinkedHashMap)
+
                 val iterator = newMap.iterator()
                 if (iterator.hasNext()) {
                     iterator.next()
@@ -150,17 +150,17 @@ class FeedViewModel @Inject constructor(
 
     private fun performReaction(post: Post, reactionType: ReactionType) {
          viewModelScope.launch {
-             // 1. Calculate Optimistic Update
+
              val currentReaction = post.userReaction
 
-             // Toggle logic: If selecting same reaction -> Remove. If different -> Update/Add.
+
              val isRemoving = currentReaction == reactionType
              val newReaction = if (isRemoving) null else reactionType
 
-             // Calculate count change
-             // If removing: -1
-             // If adding (was null): +1
-             // If changing (was A, now B): 0
+
+
+
+
              val countChange = when {
                  isRemoving -> -1
                  currentReaction == null -> 1
@@ -169,42 +169,42 @@ class FeedViewModel @Inject constructor(
 
              val newCount = post.likesCount + countChange
 
-             // Update reactions summary map locally
+
              val updatedReactions = post.reactions?.toMutableMap() ?: mutableMapOf()
              if (isRemoving) {
                  val currentCount = updatedReactions[reactionType] ?: 1
                  updatedReactions[reactionType] = maxOf(0, currentCount - 1)
              } else {
-                 // Decrement old if exists
+
                  if (currentReaction != null) {
                      val oldTypeCount = updatedReactions[currentReaction] ?: 1
                      updatedReactions[currentReaction] = maxOf(0, oldTypeCount - 1)
                  }
-                 // Increment new
+
                  val newTypeCount = updatedReactions[reactionType] ?: 0
                  updatedReactions[reactionType] = newTypeCount + 1
              }
 
-             // Create Updated Post
+
              val updatedPost = post.copy(
                  likesCount = maxOf(0, newCount),
                  userReaction = newReaction,
                  reactions = updatedReactions
              )
 
-             // 2. Apply Local Update
+
              cacheModifiedPost(updatedPost)
              PostEventBus.emit(PostEvent.Updated(updatedPost))
 
-             // 3. Remote Update
+
              try {
                   reactionRepository.toggleReaction(post.id, "post", reactionType).onFailure {
-                      // Revert on failure
+
                       cacheModifiedPost(post)
                       PostEventBus.emit(PostEvent.Updated(post))
                   }
              } catch (e: Exception) {
-                  // Revert on exception
+
                   cacheModifiedPost(post)
                   PostEventBus.emit(PostEvent.Updated(post))
              }
@@ -212,9 +212,9 @@ class FeedViewModel @Inject constructor(
     }
 
     fun votePoll(post: Post, optionIndex: Int) {
-        // Optimistic update
+
         val currentOptions = post.pollOptions ?: return
-        if (post.userPollVote != null) return // Already voted
+        if (post.userPollVote != null) return
 
         val updatedOptions = currentOptions.mapIndexed { index, option ->
             if (index == optionIndex) option.copy(votes = option.votes + 1) else option
@@ -233,9 +233,9 @@ class FeedViewModel @Inject constructor(
                 pollRepository.submitVote(post.id, optionIndex)
             } catch (e: Exception) {
                 e.printStackTrace()
-                // Revert optimistic update
+
                 _modifiedPosts.update { it - post.id }
-                // We should also emit Reverted event
+
             }
         }
     }
@@ -244,7 +244,7 @@ class FeedViewModel @Inject constructor(
         val currentVoteIndex = post.userPollVote ?: return
         val currentOptions = post.pollOptions ?: return
 
-        // Optimistic update
+
         val updatedOptions = currentOptions.mapIndexed { index, option ->
             if (index == currentVoteIndex) option.copy(votes = maxOf(0, option.votes - 1)) else option
         }
@@ -261,7 +261,7 @@ class FeedViewModel @Inject constructor(
                 pollRepository.revokeVote(post.id)
             } catch (e: Exception) {
                 e.printStackTrace()
-                // Revert
+
                 _modifiedPosts.update { it - post.id }
             }
         }
@@ -270,7 +270,7 @@ class FeedViewModel @Inject constructor(
     fun bookmarkPost(post: Post) {
         viewModelScope.launch {
             try {
-                // Using direct Supabase client call for bookmarks as fallback
+
                 val client = com.synapse.social.studioasinc.core.network.SupabaseClient.client
                 val currentUserId = authRepository.getCurrentUserId()
                 if (currentUserId != null) {
@@ -286,16 +286,14 @@ class FeedViewModel @Inject constructor(
     }
 
     fun refresh() {
-        // Let the UI handle isRefreshing state via PullToRefreshBox
-        // The paging refresh will be handled by posts.refresh() in the UI
+
+
     }
 
-    /**
-     * Helper to convert Post model to PostCardState for UI
-     */
-    /**
-     * Helper to convert Post model to PostCardState for UI
-     */
+
+
+
+
     fun mapPostToState(post: Post): PostCardState {
         return PostMapper.mapToState(post)
     }
@@ -323,7 +321,7 @@ class FeedViewModel @Inject constructor(
     }
 
     fun editPost(post: Post) {
-        // Navigation handled by UI callback
+
     }
 
     fun deletePost(post: Post) {
@@ -337,11 +335,11 @@ class FeedViewModel @Inject constructor(
     }
 
     fun sharePost(post: Post) {
-        // Handled by Activity/Fragment with Intent
+
     }
 
     fun copyPostLink(post: Post) {
-        // Handled by Activity/Fragment with ClipboardManager
+
     }
 
     fun toggleComments(post: Post) {
@@ -356,10 +354,10 @@ class FeedViewModel @Inject constructor(
     }
 
     fun reportPost(post: Post) {
-        // Report logic
+
     }
 
     fun blockUser(userId: String) {
-        // Block logic
+
     }
 }

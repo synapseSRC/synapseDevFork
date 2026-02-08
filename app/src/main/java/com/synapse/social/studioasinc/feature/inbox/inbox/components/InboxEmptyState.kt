@@ -17,10 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.ui.inbox.models.EmptyStateType
 
-/**
- * Beautiful empty state component for inbox tabs.
- * Shows icon with animation, title, description, and optional CTA.
- */
+
+
 @Composable
 fun InboxEmptyState(
     type: EmptyStateType,
@@ -69,7 +67,7 @@ fun InboxEmptyState(
         }
     }
 
-    // Entrance animation
+
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         visible = true
@@ -100,21 +98,21 @@ fun InboxEmptyState(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Animated icon
+
         Box(
             modifier = Modifier
                 .size(120.dp)
                 .scale(iconScale),
             contentAlignment = Alignment.Center
         ) {
-            // Background circle
+
             Surface(
                 modifier = Modifier.size(100.dp),
                 shape = androidx.compose.foundation.shape.CircleShape,
                 color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
             ) {}
 
-            // Icon
+
             Icon(
                 imageVector = icon,
                 contentDescription = null,
@@ -125,7 +123,7 @@ fun InboxEmptyState(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Title
+
         Text(
             text = title,
             style = MaterialTheme.typography.headlineSmall,
@@ -136,7 +134,7 @@ fun InboxEmptyState(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Description
+
         Text(
             text = description,
             style = MaterialTheme.typography.bodyMedium,
@@ -147,7 +145,7 @@ fun InboxEmptyState(
                 .padding(horizontal = 24.dp)
         )
 
-        // Action button
+
         if (actionText != null) {
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -173,9 +171,8 @@ fun InboxEmptyState(
     }
 }
 
-/**
- * Data class for empty state content.
- */
+
+
 private data class EmptyStateContent(
     val icon: ImageVector,
     val title: String,
@@ -183,9 +180,8 @@ private data class EmptyStateContent(
     val actionText: String?
 )
 
-/**
- * Compact empty state for inline usage.
- */
+
+
 @Composable
 fun CompactEmptyState(
     icon: ImageVector,

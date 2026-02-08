@@ -48,7 +48,7 @@ fun ProfileFormFields(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            // Username Field
+
             UsernameField(
                 value = username,
                 onValueChange = onUsernameChange,
@@ -57,7 +57,7 @@ fun ProfileFormFields(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Nickname Field
+
             OutlinedTextField(
                 value = nickname,
                 onValueChange = onNicknameChange,
@@ -85,7 +85,7 @@ fun ProfileFormFields(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Biography Field
+
             OutlinedTextField(
                 value = bio,
                 onValueChange = onBiographyChange,

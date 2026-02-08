@@ -59,11 +59,11 @@ fun HomeNavGraph(
                 onMediaClick = { },
                 onEditPost = onNavigateToEditPost,
                 onStoryClick = { userId ->
-                    // Navigate to story viewer
+
                     onNavigateToStoryViewer(userId)
                 },
                 onAddStoryClick = {
-                    // Launch Story Creator Activity
+
                     context.startActivity(Intent(context, StoryCreatorActivity::class.java))
                 },
                 contentPadding = PaddingValues(bottom = bottomPadding)
@@ -106,7 +106,7 @@ fun HomeNavGraph(
             }
             LaunchedEffect(Unit) {
                 onNavigateToCreateReel()
-                // Pop create_reel from back stack to prevent navigation loop when returning
+
                 navController.popBackStack()
             }
         }

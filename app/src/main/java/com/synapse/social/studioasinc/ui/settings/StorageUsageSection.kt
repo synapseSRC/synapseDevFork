@@ -54,12 +54,12 @@ fun StorageUsageSection(storageUsage: StorageUsageBreakdown) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Visual Storage Bar
+
         StorageBar(usage = storageUsage)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Legend
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Badge(color = MaterialTheme.colorScheme.primary)
             Spacer(modifier = Modifier.width(8.dp))
@@ -86,21 +86,21 @@ private fun StorageBar(usage: StorageUsageBreakdown) {
         val synapseWidth = (usage.synapseSize.toFloat() / usage.totalSize) * totalWidth
         val otherWidth = (usage.appsAndOtherSize.toFloat() / usage.totalSize) * totalWidth
 
-        // Draw background (Free)
+
         drawRect(color = Color.LightGray.copy(alpha = 0.3f))
 
-        // Draw Synapse usage
+
         drawLine(
-            color = Color(0xFF6750A4), // Primary
+            color = Color(0xFF6750A4),
             start = Offset(0f, size.height / 2),
             end = Offset(synapseWidth, size.height / 2),
             strokeWidth = size.height,
             cap = StrokeCap.Round
         )
 
-        // Draw Apps/Other usage
+
         drawLine(
-            color = Color(0xFF7D5260), // Tertiary
+            color = Color(0xFF7D5260),
             start = Offset(synapseWidth, size.height / 2),
             end = Offset(synapseWidth + otherWidth, size.height / 2),
             strokeWidth = size.height,

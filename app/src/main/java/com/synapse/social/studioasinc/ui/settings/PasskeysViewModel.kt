@@ -13,6 +13,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.functions.functions
+import io.ktor.client.call.body
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -103,9 +105,10 @@ class PasskeysViewModel @Inject constructor(
                 }
                 val userEmail = user?.email ?: "user"
 
-                // 1. Generate challenge (In production, this MUST come from the server)
-                // We use dummy challenge for client-side API demonstration
-                val challenge = Base64.getUrlEncoder().withoutPadding().encodeToString(UUID.randomUUID().toString().toByteArray())
+                // 1. Generate challenge from server (Secure implementation)
+                // We fetch the challenge from the backend function.
+                // Note: The "generate-passkey-challenge" function must be deployed on Supabase.
+                val challenge = SupabaseClient.client.functions.invoke("generate-passkey-challenge").body<Map<String, String>>()["challenge"] ?: throw IllegalStateException("Invalid challenge response")
                 val userIdEncoded = Base64.getUrlEncoder().withoutPadding().encodeToString(userId.toByteArray())
 
                 // IMPORTANT: RP ID must match the domain or be a suffix.

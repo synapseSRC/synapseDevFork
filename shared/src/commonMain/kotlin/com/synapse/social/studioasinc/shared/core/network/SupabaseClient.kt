@@ -6,6 +6,7 @@ import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.storage.Storage
+import io.github.jan.supabase.functions.Functions
 import io.github.jan.supabase.annotations.SupabaseInternal
 import io.github.aakira.napier.Napier
 import io.ktor.client.plugins.HttpTimeout
@@ -33,6 +34,7 @@ object SupabaseClient {
                 }
                 install(Postgrest)
                 install(Realtime)
+                install(Functions)
                 install(Storage) {
                     if (SynapseConfig.SUPABASE_SYNAPSE_S3_ENDPOINT_URL.isNotBlank()) {
                         customUrl = SynapseConfig.SUPABASE_SYNAPSE_S3_ENDPOINT_URL

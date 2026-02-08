@@ -98,3 +98,5 @@ After completing the assigned task:
 ```
 > [!Tip]
 > Keep PR description focused, and reviewable.
+### 🍏 iOS Development
+- **Crypto Implementation:** Use `CoreCrypto` (C API) via Kotlin/Native cinterop for cryptographic functions on iOS. It avoids the need for Swift/Objective-C bridges required by `CryptoKit`. Ensure to handle empty byte arrays safely (avoid pinning empty arrays) to prevent runtime crashes.

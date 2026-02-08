@@ -24,12 +24,59 @@ fun StorageDataScreen(
     val useLessDataCalls by viewModel.useLessDataCalls.collectAsState()
     val showMediaQualitySheet by viewModel.showMediaQualitySheet.collectAsState()
 
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-
     // State for Auto-Download Dialogs
     var showMobileDialog by remember { mutableStateOf(false) }
     var showWifiDialog by remember { mutableStateOf(false) }
     var showRoamingDialog by remember { mutableStateOf(false) }
+
+    StorageDataContent(
+        mediaUploadQuality = mediaUploadQuality,
+        autoDownloadRules = autoDownloadRules,
+        useLessDataCalls = useLessDataCalls,
+        onBackClick = onBackClick,
+        onNavigateToStorageManage = { navController?.navigate("settings_storage_manage") },
+        onNavigateToNetworkUsage = { navController?.navigate("settings_network_usage") },
+        onNavigateToProxy = { /* Placeholder */ },
+        onUseLessDataCallsChanged = { viewModel.setUseLessDataCalls(it) },
+        onOpenMobileDialog = { showMobileDialog = true },
+        onOpenWifiDialog = { showWifiDialog = true },
+        onOpenRoamingDialog = { showRoamingDialog = true },
+        onOpenMediaQualitySheet = { viewModel.openMediaQualitySheet() }
+    )
+
+    StorageDataScreenDialogs(
+        showMediaQualitySheet = showMediaQualitySheet,
+        mediaUploadQuality = mediaUploadQuality,
+        autoDownloadRules = autoDownloadRules,
+        showMobileDialog = showMobileDialog,
+        showWifiDialog = showWifiDialog,
+        showRoamingDialog = showRoamingDialog,
+        onCloseMediaQualitySheet = { viewModel.closeMediaQualitySheet() },
+        onSetMediaUploadQuality = { viewModel.setMediaUploadQuality(it) },
+        onSetAutoDownloadRule = { type, rules -> viewModel.setAutoDownloadRule(type, rules) },
+        onDismissMobileDialog = { showMobileDialog = false },
+        onDismissWifiDialog = { showWifiDialog = false },
+        onDismissRoamingDialog = { showRoamingDialog = false }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun StorageDataContent(
+    mediaUploadQuality: MediaUploadQuality,
+    autoDownloadRules: AutoDownloadRules,
+    useLessDataCalls: Boolean,
+    onBackClick: () -> Unit,
+    onNavigateToStorageManage: () -> Unit,
+    onNavigateToNetworkUsage: () -> Unit,
+    onNavigateToProxy: () -> Unit,
+    onUseLessDataCallsChanged: (Boolean) -> Unit,
+    onOpenMobileDialog: () -> Unit,
+    onOpenWifiDialog: () -> Unit,
+    onOpenRoamingDialog: () -> Unit,
+    onOpenMediaQualitySheet: () -> Unit
+) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -62,109 +109,43 @@ fun StorageDataScreen(
         ) {
             // Section 1: Storage Management
             item {
-                SettingsSection(title = "Storage Management") {
-                    SettingsNavigationItem(
-                        title = "Manage storage",
-                        subtitle = "2.4 GB", // Mocked as per original
-                        icon = R.drawable.file_save_24px,
-                        onClick = { navController?.navigate("settings_storage_manage") },
-                        position = SettingsItemPosition.Top
-                    )
-                    SettingsDivider()
-                    SettingsNavigationItem(
-                        title = "Network usage",
-                        subtitle = "1.8 GB sent • 2.1 GB received",
-                        icon = R.drawable.ic_network_check,
-                        onClick = { navController?.navigate("settings_network_usage") },
-                        position = SettingsItemPosition.Bottom
-                    )
-                }
+                StorageManagementSection(
+                    onNavigateToStorageManage = onNavigateToStorageManage,
+                    onNavigateToNetworkUsage = onNavigateToNetworkUsage
+                )
             }
 
             // Section 2: Call Settings
             item {
-                SettingsSection(title = "Call Settings") {
-                    SettingsToggleItem(
-                        title = "Use less data for calls",
-                        icon = R.drawable.ic_call,
-                        checked = useLessDataCalls,
-                        onCheckedChange = { viewModel.setUseLessDataCalls(it) },
-                        position = SettingsItemPosition.Single
-                    )
-                }
+                CallSettingsSection(
+                    useLessDataCalls = useLessDataCalls,
+                    onUseLessDataCallsChanged = onUseLessDataCallsChanged
+                )
             }
 
             // Section 3: Network
             item {
-                SettingsSection(title = "Network") {
-                    SettingsNavigationItem(
-                        title = "Proxy",
-                        subtitle = "Off",
-                        icon = R.drawable.ic_vpn_key,
-                        onClick = { /* Placeholder */ },
-                        position = SettingsItemPosition.Single
-                    )
-                }
+                NetworkSection(
+                    onNavigateToProxy = onNavigateToProxy
+                )
             }
 
             // Section 4: Media auto-download
             item {
-                SettingsSection(title = "Media auto-download") {
-                    Text(
-                        text = "Voice messages are always automatically downloaded",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(
-                            start = SettingsSpacing.itemHorizontalPadding,
-                            end = SettingsSpacing.itemHorizontalPadding,
-                            top = SettingsSpacing.itemVerticalPadding,
-                            bottom = Spacing.ExtraSmall
-                        )
-                    )
-                    SettingsNavigationItem(
-                        title = "When using mobile data",
-                        subtitle = getAutoDownloadSummary(autoDownloadRules.mobileData),
-                        onClick = { showMobileDialog = true },
-                        position = SettingsItemPosition.Top
-                    )
-                    SettingsDivider()
-                    SettingsNavigationItem(
-                        title = "When connected on Wi-Fi",
-                        subtitle = getAutoDownloadSummary(autoDownloadRules.wifi),
-                        onClick = { showWifiDialog = true },
-                        position = SettingsItemPosition.Middle
-                    )
-                    SettingsDivider()
-                    SettingsNavigationItem(
-                        title = "When roaming",
-                        subtitle = getAutoDownloadSummary(autoDownloadRules.roaming),
-                        onClick = { showRoamingDialog = true },
-                        position = SettingsItemPosition.Bottom
-                    )
-                }
+                MediaAutoDownloadSection(
+                    autoDownloadRules = autoDownloadRules,
+                    onOpenMobileDialog = onOpenMobileDialog,
+                    onOpenWifiDialog = onOpenWifiDialog,
+                    onOpenRoamingDialog = onOpenRoamingDialog
+                )
             }
 
             // Section 5: Media upload quality
             item {
-                SettingsSection(title = "Media upload quality") {
-                    Text(
-                        text = "Choose the quality of media files to be sent",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(
-                            start = SettingsSpacing.itemHorizontalPadding,
-                            end = SettingsSpacing.itemHorizontalPadding,
-                            top = SettingsSpacing.itemVerticalPadding,
-                            bottom = Spacing.ExtraSmall
-                        )
-                    )
-                    SettingsClickableItem(
-                        title = "Photo upload quality",
-                        subtitle = mediaUploadQuality.displayName(),
-                        onClick = { viewModel.openMediaQualitySheet() },
-                        position = SettingsItemPosition.Single
-                    )
-                }
+                MediaUploadQualitySection(
+                    mediaUploadQuality = mediaUploadQuality,
+                    onOpenMediaQualitySheet = onOpenMediaQualitySheet
+                )
             }
 
             // Bottom padding
@@ -173,22 +154,129 @@ fun StorageDataScreen(
             }
         }
     }
+}
 
+@Composable
+private fun StorageManagementSection(
+    onNavigateToStorageManage: () -> Unit,
+    onNavigateToNetworkUsage: () -> Unit
+) {
+    SettingsSection(title = "Storage Management") {
+        SettingsNavigationItem(
+            title = "Manage storage",
+            subtitle = "2.4 GB", // Mocked as per original
+            icon = R.drawable.file_save_24px,
+            onClick = onNavigateToStorageManage,
+            position = SettingsItemPosition.Top
+        )
+        SettingsDivider()
+        SettingsNavigationItem(
+            title = "Network usage",
+            subtitle = "1.8 GB sent • 2.1 GB received",
+            icon = R.drawable.ic_network_check,
+            onClick = onNavigateToNetworkUsage,
+            position = SettingsItemPosition.Bottom
+        )
+    }
+}
 
-    StorageDataScreenDialogs(
-        showMediaQualitySheet = showMediaQualitySheet,
-        mediaUploadQuality = mediaUploadQuality,
-        autoDownloadRules = autoDownloadRules,
-        showMobileDialog = showMobileDialog,
-        showWifiDialog = showWifiDialog,
-        showRoamingDialog = showRoamingDialog,
-        onCloseMediaQualitySheet = { viewModel.closeMediaQualitySheet() },
-        onSetMediaUploadQuality = { viewModel.setMediaUploadQuality(it) },
-        onSetAutoDownloadRule = { type, rules -> viewModel.setAutoDownloadRule(type, rules) },
-        onDismissMobileDialog = { showMobileDialog = false },
-        onDismissWifiDialog = { showWifiDialog = false },
-        onDismissRoamingDialog = { showRoamingDialog = false }
-    )
+@Composable
+private fun CallSettingsSection(
+    useLessDataCalls: Boolean,
+    onUseLessDataCallsChanged: (Boolean) -> Unit
+) {
+    SettingsSection(title = "Call Settings") {
+        SettingsToggleItem(
+            title = "Use less data for calls",
+            icon = R.drawable.ic_call,
+            checked = useLessDataCalls,
+            onCheckedChange = onUseLessDataCallsChanged,
+            position = SettingsItemPosition.Single
+        )
+    }
+}
+
+@Composable
+private fun NetworkSection(
+    onNavigateToProxy: () -> Unit
+) {
+    SettingsSection(title = "Network") {
+        SettingsNavigationItem(
+            title = "Proxy",
+            subtitle = "Off",
+            icon = R.drawable.ic_vpn_key,
+            onClick = onNavigateToProxy,
+            position = SettingsItemPosition.Single
+        )
+    }
+}
+
+@Composable
+private fun MediaAutoDownloadSection(
+    autoDownloadRules: AutoDownloadRules,
+    onOpenMobileDialog: () -> Unit,
+    onOpenWifiDialog: () -> Unit,
+    onOpenRoamingDialog: () -> Unit
+) {
+    SettingsSection(title = "Media auto-download") {
+        Text(
+            text = "Voice messages are always automatically downloaded",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(
+                start = SettingsSpacing.itemHorizontalPadding,
+                end = SettingsSpacing.itemHorizontalPadding,
+                top = SettingsSpacing.itemVerticalPadding,
+                bottom = Spacing.ExtraSmall
+            )
+        )
+        SettingsNavigationItem(
+            title = "When using mobile data",
+            subtitle = getAutoDownloadSummary(autoDownloadRules.mobileData),
+            onClick = onOpenMobileDialog,
+            position = SettingsItemPosition.Top
+        )
+        SettingsDivider()
+        SettingsNavigationItem(
+            title = "When connected on Wi-Fi",
+            subtitle = getAutoDownloadSummary(autoDownloadRules.wifi),
+            onClick = onOpenWifiDialog,
+            position = SettingsItemPosition.Middle
+        )
+        SettingsDivider()
+        SettingsNavigationItem(
+            title = "When roaming",
+            subtitle = getAutoDownloadSummary(autoDownloadRules.roaming),
+            onClick = onOpenRoamingDialog,
+            position = SettingsItemPosition.Bottom
+        )
+    }
+}
+
+@Composable
+private fun MediaUploadQualitySection(
+    mediaUploadQuality: MediaUploadQuality,
+    onOpenMediaQualitySheet: () -> Unit
+) {
+    SettingsSection(title = "Media upload quality") {
+        Text(
+            text = "Choose the quality of media files to be sent",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(
+                start = SettingsSpacing.itemHorizontalPadding,
+                end = SettingsSpacing.itemHorizontalPadding,
+                top = SettingsSpacing.itemVerticalPadding,
+                bottom = Spacing.ExtraSmall
+            )
+        )
+        SettingsClickableItem(
+            title = "Photo upload quality",
+            subtitle = mediaUploadQuality.displayName(),
+            onClick = onOpenMediaQualitySheet,
+            position = SettingsItemPosition.Single
+        )
+    }
 }
 
 private fun getAutoDownloadSummary(selectedTypes: Set<MediaType>): String {

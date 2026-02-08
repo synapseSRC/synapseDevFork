@@ -1,12 +1,13 @@
 import './Greeting.css';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Greeting as KotlinGreeting } from 'shared';
 import type { AnimationEvent } from 'react';
 
+// Instantiate KotlinGreeting once at module level to avoid re-creation on renders
+const greeting = new KotlinGreeting();
+
 export function Greeting() {
-  // Memoize KotlinGreeting instantiation to prevent object creation on every render
-  const greeting = useMemo(() => new KotlinGreeting(), []);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 

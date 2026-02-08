@@ -24,11 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
-// import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
-// import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
-// import com.patrykandpatrick.vico.compose.chart.Chart
-// import com.patrykandpatrick.vico.compose.chart.line.lineChart
-// import com.patrykandpatrick.vico.core.entry.entryModelOf
 
 /**
  * Business Platform Screen.
@@ -235,19 +230,6 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    /*
-                    val chartEntryModel = entryModelOf(*analytics.followerGrowth.map { it.value }.toTypedArray())
-
-                    Chart(
-                        chart = lineChart(),
-                        model = chartEntryModel,
-                        startAxis = rememberStartAxis(),
-                        bottomAxis = rememberBottomAxis(),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                    )
-                    */
                     
                     Text(
                         text = "Chart visualization coming soon",

@@ -13,9 +13,6 @@ import com.synapse.social.studioasinc.shared.data.database.postMetadataAdapter
 import com.synapse.social.studioasinc.shared.data.database.intAdapter
 import com.synapse.social.studioasinc.shared.data.database.booleanAdapter
 import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
-import com.synapse.social.studioasinc.shared.data.repository.PostRepository
-import com.synapse.social.studioasinc.shared.data.repository.ReactionRepository
-import com.synapse.social.studioasinc.shared.data.repository.BookmarkRepository
 import com.synapse.social.studioasinc.shared.data.source.remote.CloudinaryUploadService
 import com.synapse.social.studioasinc.shared.data.source.remote.ImgBBUploadService
 import com.synapse.social.studioasinc.shared.data.source.remote.R2UploadService
@@ -25,8 +22,6 @@ import com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseC
 import com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.ValidateProviderConfigUseCase
-import com.synapse.social.studioasinc.shared.domain.usecase.ReactToPostUseCase
-import com.synapse.social.studioasinc.shared.domain.usecase.BookmarkPostUseCase
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
@@ -37,10 +32,12 @@ import app.cash.sqldelight.db.SqlDriver
 
 expect val storageDriverModule: Module
 expect val fileUploaderModule: Module
+expect val secureStorageModule: Module
 
 val storageModule = module {
     includes(storageDriverModule)
     includes(fileUploaderModule)
+    includes(secureStorageModule)
 
     single {
         StorageDatabase(
@@ -69,10 +66,7 @@ val storageModule = module {
         )
     }
 
-    single<StorageRepository> { StorageRepositoryImpl(get()) }
-    single { PostRepository(get()) }
-    single { ReactionRepository(get()) }
-    single { BookmarkRepository(get()) }
+    single<StorageRepository> { StorageRepositoryImpl(get(), get()) }
 
     single {
         HttpClient {
@@ -95,6 +89,4 @@ val storageModule = module {
     single { UpdateStorageProviderUseCase(get()) }
     single { ValidateProviderConfigUseCase() }
     single { UploadMediaUseCase(get(), get(), get(), get(), get(), get()) }
-    single { ReactToPostUseCase(get()) }
-    single { BookmarkPostUseCase(get()) }
 }

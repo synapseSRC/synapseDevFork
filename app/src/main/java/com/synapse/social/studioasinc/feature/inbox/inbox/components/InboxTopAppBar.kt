@@ -23,14 +23,7 @@ fun InboxTopAppBar(
     title: String = "Inbox",
     avatarUrl: String? = null,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    // Kept for compatibility but unused
-    selectionMode: Boolean = false,
-    selectedCount: Int = 0,
-    onSearchClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
-    onSelectionClose: () -> Unit = {},
-    onDeleteSelected: () -> Unit = {},
-    onArchiveSelected: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     InboxLargeTopAppBar(

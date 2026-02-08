@@ -16,7 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.synapse.social.studioasinc.ui.inbox.models.InboxUiState
 import com.synapse.social.studioasinc.ui.inbox.components.InboxTopAppBar
 import com.synapse.social.studioasinc.ui.inbox.screens.CallsTabScreen
 import com.synapse.social.studioasinc.ui.inbox.screens.ChatsTabScreen
@@ -32,7 +31,6 @@ fun InboxScreen(
     onNavigateToProfile: (String) -> Unit,
     viewModel: InboxViewModel = viewModel(factory = InboxViewModelFactory())
 ) {
-    val uiState by viewModel.uiState.collectAsState()
     val currentUserProfile by viewModel.currentUserProfile.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
@@ -48,12 +46,6 @@ fun InboxScreen(
                 title = "Inbox",
                 avatarUrl = currentUserProfile?.avatar,
                 scrollBehavior = scrollBehavior,
-                selectionMode = false,
-                selectedCount = 0,
-                onSearchClick = { /* No-op */ },
-                onSelectionClose = { /* No-op */ },
-                onDeleteSelected = { /* No-op */ },
-                onArchiveSelected = { /* No-op */ },
                 onProfileClick = { currentUserProfile?.id?.let(onNavigateToProfile) }
             )
         },

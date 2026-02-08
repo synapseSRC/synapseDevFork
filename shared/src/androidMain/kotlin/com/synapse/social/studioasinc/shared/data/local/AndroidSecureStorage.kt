@@ -1,0 +1,42 @@
+package com.synapse.social.studioasinc.shared.data.local
+
+import android.content.Context
+import android.content.SharedPreferences
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
+import java.io.IOException
+
+class AndroidSecureStorage(private val context: Context) : SecureStorage {
+
+    private val prefs: SharedPreferences by lazy {
+        try {
+            val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+
+            EncryptedSharedPreferences.create(
+                "secure_storage_prefs",
+                masterKeyAlias,
+                context,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+        } catch (e: Exception) {
+            throw RuntimeException("Failed to initialize encrypted storage", e)
+        }
+    }
+
+    override fun save(key: String, value: String) {
+        if (!prefs.edit().putString(key, value).commit()) {
+            throw IOException("Failed to save key $key to secure storage")
+        }
+    }
+
+    override fun getString(key: String): String? {
+        return prefs.getString(key, null)
+    }
+
+    override fun clear(key: String) {
+        if (!prefs.edit().remove(key).commit()) {
+            throw IOException("Failed to clear key $key from secure storage")
+        }
+    }
+}

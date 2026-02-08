@@ -1,4 +1,3 @@
-
 package com.synapse.social.studioasinc.shared.domain.usecase
 
 import com.synapse.social.studioasinc.shared.domain.model.MediaType
@@ -11,6 +10,9 @@ class UpdateStorageProviderUseCase(private val repository: StorageRepository) {
             MediaType.PHOTO -> repository.updatePhotoProvider(provider)
             MediaType.VIDEO -> repository.updateVideoProvider(provider)
             MediaType.OTHER -> repository.updateOtherProvider(provider)
+            else -> {
+                // Ignore other media types
+            }
         }
     }
 }

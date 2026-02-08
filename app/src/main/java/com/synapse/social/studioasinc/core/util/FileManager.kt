@@ -213,6 +213,14 @@ object FileManager {
      */
     fun getPathFromUri(context: Context, uri: Uri?): String? {
         uri ?: return null
+
+        // Android 10 (API 29) and above requires Scoped Storage.
+        // Direct file paths from external storage are restricted and unreliable.
+        // We copy the content to the app's cache directory to ensure valid File access.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return copyToCache(context, uri)
+        }
+
         var path: String? = null
 
         // DocumentProvider
@@ -356,9 +364,11 @@ object FileManager {
             context.contentResolver.openInputStream(uri)?.use { inputStream ->
                 var fileName = getFileName(context, uri)
                 if (fileName.isNullOrEmpty()) {
-                    fileName = "temp_file_${System.currentTimeMillis()}"
+                    fileName = "temp_file"
                 }
-                val cacheFile = File(context.cacheDir, fileName)
+                // Prepend timestamp to ensure uniqueness and prevent collisions
+                val uniqueFileName = "${System.currentTimeMillis()}_$fileName"
+                val cacheFile = File(context.cacheDir, uniqueFileName)
                 FileOutputStream(cacheFile).use { outputStream ->
                     inputStream.copyTo(outputStream, BUFFER_SIZE)
                 }

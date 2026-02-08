@@ -93,6 +93,13 @@ kotlin {
             }
         }
 
+        val androidUnitTest by getting {
+            dependencies {
+                implementation("junit:junit:4.13.2")
+                implementation("org.mockito:mockito-core:5.11.0")
+            }
+        }
+
         val iosMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-darwin:3.2.2")

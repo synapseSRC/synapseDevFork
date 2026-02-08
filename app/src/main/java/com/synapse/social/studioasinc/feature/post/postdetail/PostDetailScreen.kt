@@ -209,10 +209,10 @@ fun PostDetailScreen(
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets.safeDrawing.union(WindowInsets.ime),
         bottomBar = {
             Column(
                  modifier = Modifier
-                     .imePadding()
                      .fillMaxWidth()
             ) {
 

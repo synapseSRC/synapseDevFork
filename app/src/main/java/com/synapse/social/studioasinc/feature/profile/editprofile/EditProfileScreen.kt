@@ -1,6 +1,7 @@
 package com.synapse.social.studioasinc.presentation.editprofile
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -74,6 +75,22 @@ fun EditProfileScreen(
     ) { uri ->
         if (uri != null) {
             viewModel.onEvent(EditProfileEvent.CoverSelected(uri))
+        }
+    }
+
+    fun launchAvatarPicker() {
+        try {
+            avatarPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        } catch (e: android.content.ActivityNotFoundException) {
+            Toast.makeText(context, "No photo picker app found. Please install a file manager.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun launchCoverPicker() {
+        try {
+            coverPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        } catch (e: android.content.ActivityNotFoundException) {
+            Toast.makeText(context, "No photo picker app found. Please install a file manager.", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -165,12 +182,8 @@ fun EditProfileScreen(
                             avatarUrl = uiState.avatarUrl,
                             avatarUploadState = uiState.avatarUploadState,
                             coverUploadState = uiState.coverUploadState,
-                            onCoverClick = {
-                                coverPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                            },
-                            onAvatarClick = {
-                                avatarPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                            },
+                            onCoverClick = { launchCoverPicker() },
+                            onAvatarClick = { launchAvatarPicker() },
                             onRetryAvatarUpload = {
                                 viewModel.onEvent(EditProfileEvent.RetryAvatarUpload)
                             },

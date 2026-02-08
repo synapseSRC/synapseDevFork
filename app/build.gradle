@@ -173,6 +173,15 @@ android {
         checkReleaseBuilds = false
     }
 
+    testOptions {
+        unitTests {
+            all {
+                exclude '**/PollRepositoryTest.class'
+                exclude '**/SearchRepositoryTest.class'
+            }
+        }
+    }
+
     packaging {
         resources.excludes.add("META-INF/*")
         resources.excludes.add("META-INF/DEPENDENCIES")

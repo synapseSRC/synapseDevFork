@@ -63,8 +63,6 @@ object PostMapper {
             pollQuestion = post.pollQuestion,
             pollOptions = mappedPollOptions,
             userPollVote = post.userPollVote,
-            topCommentAuthor = post.latestCommentAuthor,
-            topCommentText = post.latestCommentText,
             formattedTimestamp = com.synapse.social.studioasinc.core.util.TimeUtils.getTimeAgo(post.publishDate ?: ""),
             isExpanded = isExpanded
         )

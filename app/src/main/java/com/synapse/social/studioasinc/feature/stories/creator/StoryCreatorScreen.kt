@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -113,6 +114,14 @@ fun StoryCreatorScreen(
         uri?.let { viewModel.setMediaFromGallery(it) }
     }
 
+    fun launchGallery() {
+        try {
+            galleryLauncher.launch("image/*")
+        } catch (e: android.content.ActivityNotFoundException) {
+            Toast.makeText(context, "No gallery app found. Please install a file manager.", Toast.LENGTH_LONG).show()
+        }
+    }
+
     LaunchedEffect(Unit) {
         if (!hasCameraPermission) {
             cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
@@ -140,7 +149,7 @@ fun StoryCreatorScreen(
 
 
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Button(onClick = { galleryLauncher.launch("image/*") }) {
+                    Button(onClick = { launchGallery() }) {
                         Text("Open Gallery")
                     }
                 }

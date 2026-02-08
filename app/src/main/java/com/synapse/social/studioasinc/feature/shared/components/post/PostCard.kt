@@ -36,8 +36,6 @@ data class PostCardState(
     val pollQuestion: String? = null,
     val pollOptions: List<PollOption>? = null,
     val userPollVote: Int? = null,
-    val topCommentAuthor: String? = null,
-    val topCommentText: String? = null,
     val formattedTimestamp: String = "",
     val isExpanded: Boolean = false
 )
@@ -88,17 +86,6 @@ fun PostCard(
                 onPollVote = onPollVote,
                 isExpanded = state.isExpanded
             )
-
-
-            if (state.commentCount > 0) {
-                 CommentPreview(
-                    commentCount = state.commentCount,
-                    topCommentAuthor = state.topCommentAuthor,
-                    topCommentText = state.topCommentText,
-                    onViewAllClick = onCommentClick,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
         }
 
         PostInteractionBar(

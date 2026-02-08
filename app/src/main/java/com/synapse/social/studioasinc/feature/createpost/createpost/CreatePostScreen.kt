@@ -124,7 +124,11 @@ fun CreatePostScreen(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         if (permissions.values.all { it }) {
-            mediaLauncher.launch("**")
+            try {
+                mediaLauncher.launch("**")
+            } catch (e: android.content.ActivityNotFoundException) {
+                Toast.makeText(context, "No file picker app found. Please install a file manager.", Toast.LENGTH_LONG).show()
+            }
         } else {
             Toast.makeText(context, "Permissions required to access media", Toast.LENGTH_SHORT).show()
         }

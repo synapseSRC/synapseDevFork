@@ -145,6 +145,14 @@
 			android:theme="@style/AppTheme.FullScreen"
 			android:windowSoftInputMode="adjustResize" />
 
+		<!-- Story Creator Activity -->
+		<activity
+			android:name=".feature.stories.creator.StoryCreatorActivity"
+			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+			android:hardwareAccelerated="true"
+			android:screenOrientation="portrait"
+			android:windowSoftInputMode="adjustResize" />
+
 		<activity
 			android:name=".AuthActivity"
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"

@@ -61,6 +61,8 @@ debug.keystore
 # ---------------------------------------------------
 # Log files
 *.log
+# Text files in root
+/*.txt
 # macOS specific
 xcuserdata/
 # Windows specific

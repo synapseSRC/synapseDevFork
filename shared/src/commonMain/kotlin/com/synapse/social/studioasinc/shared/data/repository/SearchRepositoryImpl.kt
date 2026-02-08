@@ -8,6 +8,7 @@ import com.synapse.social.studioasinc.shared.domain.model.SearchNews
 import com.synapse.social.studioasinc.shared.domain.model.SearchPost
 import com.synapse.social.studioasinc.shared.domain.repository.ISearchRepository
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.filter.TextSearchType
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.serialization.SerialName
@@ -34,8 +35,9 @@ private data class AuthorDto(
 )
 
 class SearchRepositoryImpl(
-    private val client: SupabaseClientLib = SupabaseClient.client
+    private val client: io.github.jan.supabase.SupabaseClient = SupabaseClient.client
 ) : ISearchRepository {
+
 
     override suspend fun searchPosts(query: String): Result<List<SearchPost>> = runCatching {
         // Using 'users' as the relationship name. If it fails, we fallback to non-joined and empty author data.
@@ -98,7 +100,7 @@ class SearchRepositoryImpl(
         client.postgrest["news_articles"].select {
             if (sanitizedQuery.isNotBlank()) {
                 filter {
-                    ilike("headline", "${query.sanitizeForSearch()}%")
+                    textSearch("headline", query, config = "english", textSearchType = TextSearchType.WEBSEARCH)
                 }
             }
             order("published_at", Order.DESCENDING)

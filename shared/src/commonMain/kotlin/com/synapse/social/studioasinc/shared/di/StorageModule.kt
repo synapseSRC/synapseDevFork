@@ -37,7 +37,7 @@ import app.cash.sqldelight.db.SqlDriver
 
 expect val storageDriverModule: Module
 expect val fileUploaderModule: Module
-expect val secureStorageModule: Module
+// expect val secureStorageModule: Module // Defined in SecureStorageModule.kt
 
 val storageModule = module {
     includes(storageDriverModule)

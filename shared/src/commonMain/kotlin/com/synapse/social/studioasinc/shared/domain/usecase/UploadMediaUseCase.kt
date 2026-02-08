@@ -64,11 +64,9 @@ class UploadMediaUseCase(
 
     private fun getProviderForMediaType(config: StorageConfig, mediaType: MediaType): StorageProvider {
         return when (mediaType) {
-            MediaType.PHOTO -> config.photoProvider
+            MediaType.PHOTO, MediaType.IMAGE -> config.photoProvider
             MediaType.VIDEO -> config.videoProvider
-            MediaType.OTHER -> config.otherProvider
-            MediaType.IMAGE -> config.photoProvider // Map IMAGE to PHOTO provider
-            MediaType.AUDIO -> config.otherProvider // Map AUDIO to OTHER provider
+            MediaType.OTHER, MediaType.AUDIO -> config.otherProvider
         }
     }
 

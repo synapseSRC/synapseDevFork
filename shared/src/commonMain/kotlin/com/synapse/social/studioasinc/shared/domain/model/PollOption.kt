@@ -3,10 +3,7 @@ package com.synapse.social.studioasinc.shared.domain.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class MediaType {
-    IMAGE,
-    PHOTO,
-    VIDEO,
-    AUDIO,
-    OTHER
-}
+data class PollOption(
+    val text: String,
+    val votes: Int = 0
+)

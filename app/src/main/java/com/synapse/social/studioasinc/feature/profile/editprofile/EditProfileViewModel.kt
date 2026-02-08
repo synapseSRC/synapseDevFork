@@ -59,7 +59,7 @@ class EditProfileViewModel @Inject constructor(
                                 bio = profile.bio ?: "",
                                 avatarUrl = profile.avatar,
                                 coverUrl = profile.profileCoverImage,
-                                selectedGender = parseGender(profile.gender),
+                                selectedGender = Gender.fromString(profile.gender),
                                 selectedRegion = profile.region.takeIf { it != "null" } // Handle "null" string from DB sometimes
                             )
                         }
@@ -69,25 +69,6 @@ class EditProfileViewModel @Inject constructor(
                     }
                 )
             }
-        }
-    }
-
-    // Helper to parse gender. The UserProfile model doesn't have 'gender' field.
-    // ProfileEditActivity used `user["gender"]`.
-    // I should probably add gender to UserProfile or handle it separately.
-    // Given I cannot easily change UserProfile, I'll assume it's part of the profile map in repository or add it to my local state logic.
-    // But repository returned UserProfile.
-    // I'll stick to what I have, but realize 'gender' might be missing in UserProfile.
-    // The activity used: val gender = user["gender"]?.toString() ?: "hidden"
-    // I will assume for now 'status' is not gender.
-    // I might need to update UserProfile or fetch raw JSON to get gender.
-    // The repository method getUserProfile manually maps JSON to UserProfile. I can add gender there if I modify UserProfile, or just fetch it.
-    // For now I'll default to Hidden if not found.
-    private fun parseGender(genderStr: String?): Gender {
-        return when (genderStr?.lowercase()) {
-            "male" -> Gender.Male
-            "female" -> Gender.Female
-            else -> Gender.Hidden
         }
     }
 

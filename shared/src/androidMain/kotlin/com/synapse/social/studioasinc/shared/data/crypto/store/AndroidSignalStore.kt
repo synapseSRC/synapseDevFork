@@ -18,10 +18,10 @@ import org.whispersystems.libsignal.state.SignedPreKeyStore
 import org.whispersystems.libsignal.state.SignalProtocolStore
 import java.io.IOException
 
-class AndroidSignalStore(context: Context) : SignalProtocolStore {
+class AndroidSignalStore(context: Context, private val sharedPreferences: SharedPreferences? = null) : SignalProtocolStore {
 
     private val prefs: SharedPreferences by lazy {
-        try {
+        sharedPreferences ?: try {
             val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
 
             EncryptedSharedPreferences.create(

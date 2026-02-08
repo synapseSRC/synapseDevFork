@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -60,6 +61,75 @@ fun SettingsToggleItem(
     enabled: Boolean = true,
     position: SettingsItemPosition = SettingsItemPosition.Single
 ) {
+    SettingsToggleItemContent(
+        title = title,
+        subtitle = subtitle,
+        iconContent = icon?.let {
+            {
+                Icon(
+                    painter = painterResource(it),
+                    contentDescription = null, // Merged into parent semantics
+                    modifier = Modifier.size(SettingsSpacing.iconSize),
+                    tint = SettingsColors.itemIcon
+                )
+            }
+        },
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        enabled = enabled,
+        position = position
+    )
+}
+
+/**
+ * Enhanced toggle settings item with Material 3 Expressive corner radius support (Vector Icon).
+ *
+ * @param title The main title text
+ * @param subtitle Optional descriptive text below the title
+ * @param imageVector Optional leading icon vector
+ * @param checked Current toggle state
+ * @param onCheckedChange Callback when toggle state changes
+ * @param enabled Whether the item is interactive
+ * @param position Position in group for corner radius styling
+ */
+@Composable
+fun SettingsToggleItem(
+    title: String,
+    subtitle: String? = null,
+    imageVector: ImageVector,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    enabled: Boolean = true,
+    position: SettingsItemPosition = SettingsItemPosition.Single
+) {
+    SettingsToggleItemContent(
+        title = title,
+        subtitle = subtitle,
+        iconContent = {
+            Icon(
+                imageVector = imageVector,
+                contentDescription = null, // Merged into parent semantics
+                modifier = Modifier.size(SettingsSpacing.iconSize),
+                tint = SettingsColors.itemIcon
+            )
+        },
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        enabled = enabled,
+        position = position
+    )
+}
+
+@Composable
+private fun SettingsToggleItemContent(
+    title: String,
+    subtitle: String?,
+    iconContent: (@Composable () -> Unit)?,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    enabled: Boolean,
+    position: SettingsItemPosition
+) {
     val toggleDescription = stringResource(R.string.settings_toggle_description)
     val fullDescription = "$title, $toggleDescription, ${if (checked) "enabled" else "disabled"}"
 
@@ -83,13 +153,8 @@ fun SettingsToggleItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Leading icon
-            if (icon != null) {
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = null, // Merged into parent semantics
-                    modifier = Modifier.size(SettingsSpacing.iconSize),
-                    tint = SettingsColors.itemIcon
-                )
+            if (iconContent != null) {
+                iconContent()
                 Spacer(modifier = Modifier.width(SettingsSpacing.iconTextSpacing))
             }
 
@@ -153,6 +218,70 @@ fun SettingsClickableItem(
     enabled: Boolean = true,
     position: SettingsItemPosition = SettingsItemPosition.Single
 ) {
+    SettingsClickableItemContent(
+        title = title,
+        subtitle = subtitle,
+        iconContent = icon?.let {
+            {
+                Icon(
+                    painter = painterResource(it),
+                    contentDescription = null,
+                    modifier = Modifier.size(SettingsSpacing.iconSize),
+                    tint = SettingsColors.itemIcon
+                )
+            }
+        },
+        onClick = onClick,
+        enabled = enabled,
+        position = position
+    )
+}
+
+/**
+ * Enhanced clickable settings item with Material 3 Expressive corner radius support (Vector Icon).
+ *
+ * @param title The main title text
+ * @param subtitle Optional descriptive text below the title
+ * @param imageVector Optional leading icon vector
+ * @param onClick Callback when the item is clicked
+ * @param enabled Whether the item is interactive
+ * @param position Position in group for corner radius styling
+ */
+@Composable
+fun SettingsClickableItem(
+    title: String,
+    subtitle: String? = null,
+    imageVector: ImageVector,
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+    position: SettingsItemPosition = SettingsItemPosition.Single
+) {
+    SettingsClickableItemContent(
+        title = title,
+        subtitle = subtitle,
+        iconContent = {
+            Icon(
+                imageVector = imageVector,
+                contentDescription = null,
+                modifier = Modifier.size(SettingsSpacing.iconSize),
+                tint = SettingsColors.itemIcon
+            )
+        },
+        onClick = onClick,
+        enabled = enabled,
+        position = position
+    )
+}
+
+@Composable
+private fun SettingsClickableItemContent(
+    title: String,
+    subtitle: String?,
+    iconContent: (@Composable () -> Unit)?,
+    onClick: () -> Unit,
+    enabled: Boolean,
+    position: SettingsItemPosition
+) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = position.getShape(),
@@ -170,13 +299,8 @@ fun SettingsClickableItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Leading icon
-            if (icon != null) {
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = null,
-                    modifier = Modifier.size(SettingsSpacing.iconSize),
-                    tint = SettingsColors.itemIcon
-                )
+            if (iconContent != null) {
+                iconContent()
                 Spacer(modifier = Modifier.width(SettingsSpacing.iconTextSpacing))
             }
 
@@ -225,71 +349,23 @@ fun SettingsNavigationItem(
     enabled: Boolean = true,
     position: SettingsItemPosition = SettingsItemPosition.Single
 ) {
-    val chevronDescription = stringResource(R.string.settings_chevron_description)
-    val fullDescription = "$title, $chevronDescription"
-
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = position.getShape(),
-        color = SettingsColors.cardBackground
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(enabled = enabled, onClick = onClick)
-                .semantics(mergeDescendants = true) {
-                    contentDescription = fullDescription
-                }
-                .padding(
-                    horizontal = SettingsSpacing.itemHorizontalPadding,
-                    vertical = SettingsSpacing.itemVerticalPadding
-                )
-                .heightIn(min = SettingsSpacing.minTouchTarget),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Leading icon
-            if (icon != null) {
+    SettingsNavigationItemContent(
+        title = title,
+        subtitle = subtitle,
+        iconContent = icon?.let {
+            {
                 Icon(
-                    painter = painterResource(icon),
+                    painter = painterResource(it),
                     contentDescription = null, // Merged into parent semantics
                     modifier = Modifier.size(SettingsSpacing.iconSize),
                     tint = SettingsColors.itemIcon
                 )
-                Spacer(modifier = Modifier.width(SettingsSpacing.iconTextSpacing))
             }
-
-            // Title and subtitle
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = title,
-                    style = SettingsTypography.itemTitle,
-                    color = if (enabled) MaterialTheme.colorScheme.onSurface
-                           else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                )
-                if (subtitle != null) {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = subtitle,
-                        style = SettingsTypography.itemSubtitle,
-                        color = if (enabled) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
-                               else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Chevron icon with onSurfaceVariant at 0.5 alpha
-            Icon(
-                painter = painterResource(R.drawable.ic_chevron_right),
-                contentDescription = null, // Merged into parent semantics
-                modifier = Modifier.size(SettingsSpacing.iconSize),
-                tint = SettingsColors.chevronIcon
-            )
-        }
-    }
+        },
+        onClick = onClick,
+        enabled = enabled,
+        position = position
+    )
 }
 
 /**
@@ -306,10 +382,36 @@ fun SettingsNavigationItem(
 fun SettingsNavigationItem(
     title: String,
     subtitle: String? = null,
-    imageVector: androidx.compose.ui.graphics.vector.ImageVector,
+    imageVector: ImageVector,
     onClick: () -> Unit,
     enabled: Boolean = true,
     position: SettingsItemPosition = SettingsItemPosition.Single
+) {
+    SettingsNavigationItemContent(
+        title = title,
+        subtitle = subtitle,
+        iconContent = {
+            Icon(
+                imageVector = imageVector,
+                contentDescription = null, // Merged into parent semantics
+                modifier = Modifier.size(SettingsSpacing.iconSize),
+                tint = SettingsColors.itemIcon
+            )
+        },
+        onClick = onClick,
+        enabled = enabled,
+        position = position
+    )
+}
+
+@Composable
+private fun SettingsNavigationItemContent(
+    title: String,
+    subtitle: String?,
+    iconContent: (@Composable () -> Unit)?,
+    onClick: () -> Unit,
+    enabled: Boolean,
+    position: SettingsItemPosition
 ) {
     val chevronDescription = stringResource(R.string.settings_chevron_description)
     val fullDescription = "$title, $chevronDescription"
@@ -334,13 +436,10 @@ fun SettingsNavigationItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Leading icon
-            Icon(
-                imageVector = imageVector,
-                contentDescription = null, // Merged into parent semantics
-                modifier = Modifier.size(SettingsSpacing.iconSize),
-                tint = SettingsColors.itemIcon
-            )
-            Spacer(modifier = Modifier.width(SettingsSpacing.iconTextSpacing))
+            if (iconContent != null) {
+                iconContent()
+                Spacer(modifier = Modifier.width(SettingsSpacing.iconTextSpacing))
+            }
 
             // Title and subtitle
             Column(
@@ -350,7 +449,7 @@ fun SettingsNavigationItem(
                     text = title,
                     style = SettingsTypography.itemTitle,
                     color = if (enabled) MaterialTheme.colorScheme.onSurface
-                    else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                           else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                 )
                 if (subtitle != null) {
                     Spacer(modifier = Modifier.height(4.dp))
@@ -358,7 +457,7 @@ fun SettingsNavigationItem(
                         text = subtitle,
                         style = SettingsTypography.itemSubtitle,
                         color = if (enabled) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
-                        else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
+                               else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
                     )
                 }
             }

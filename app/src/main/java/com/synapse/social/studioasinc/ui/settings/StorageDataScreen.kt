@@ -161,3 +161,162 @@ private fun getAutoDownloadSummary(selectedTypes: Set<MediaType>): String {
     if (selectedTypes.size == MediaType.values().size) return "All media"
     return selectedTypes.joinToString(", ") { it.displayName() }
 }
+
+@Composable
+private fun StorageDataScreenDialogs(
+    showMediaQualitySheet: Boolean,
+    mediaUploadQuality: MediaUploadQuality,
+    autoDownloadRules: AutoDownloadRules,
+    showMobileDialog: Boolean,
+    showWifiDialog: Boolean,
+    showRoamingDialog: Boolean,
+    onCloseMediaQualitySheet: () -> Unit,
+    onSetMediaUploadQuality: (MediaUploadQuality) -> Unit,
+    onSetAutoDownloadRule: (String, Set<MediaType>) -> Unit,
+    onDismissMobileDialog: () -> Unit,
+    onDismissWifiDialog: () -> Unit,
+    onDismissRoamingDialog: () -> Unit
+) {
+    if (showMediaQualitySheet) {
+        MediaQualityBottomSheet(
+            onDismissRequest = onCloseMediaQualitySheet,
+            currentQuality = mediaUploadQuality,
+            onQualitySelected = {
+                onSetMediaUploadQuality(it)
+                onCloseMediaQualitySheet()
+            }
+        )
+    }
+
+    if (showMobileDialog) {
+        AutoDownloadDialog(
+            title = "When using mobile data",
+            selectedTypes = autoDownloadRules.mobileData,
+            onConfirm = { 
+                onSetAutoDownloadRule("mobile", it)
+                onDismissMobileDialog()
+            },
+            onDismiss = onDismissMobileDialog
+        )
+    }
+
+    if (showWifiDialog) {
+        AutoDownloadDialog(
+            title = "When connected on Wi-Fi",
+            selectedTypes = autoDownloadRules.wifi,
+            onConfirm = { 
+                onSetAutoDownloadRule("wifi", it)
+                onDismissWifiDialog()
+            },
+            onDismiss = onDismissWifiDialog
+        )
+    }
+
+    if (showRoamingDialog) {
+        AutoDownloadDialog(
+            title = "When roaming",
+            selectedTypes = autoDownloadRules.roaming,
+            onConfirm = { 
+                onSetAutoDownloadRule("roaming", it)
+                onDismissRoamingDialog()
+            },
+            onDismiss = onDismissRoamingDialog
+        )
+    }
+}
+
+@Composable
+private fun StorageManagementSection(
+    onNavigateToStorageManage: () -> Unit,
+    onNavigateToNetworkUsage: () -> Unit
+) {
+    SettingsSection(title = "Storage Management") {
+        SettingsNavigationItem(
+            title = "Manage storage",
+            subtitle = "Free up space",
+            icon = R.drawable.ic_archive,
+            onClick = onNavigateToStorageManage
+        )
+        SettingsDivider()
+        SettingsNavigationItem(
+            title = "Network usage",
+            subtitle = "View data usage",
+            icon = R.drawable.ic_network_check,
+            onClick = onNavigateToNetworkUsage
+        )
+    }
+}
+
+@Composable
+private fun CallSettingsSection(
+    useLessDataCalls: Boolean,
+    onUseLessDataCallsChanged: (Boolean) -> Unit
+) {
+    SettingsSection(title = "Call Settings") {
+        SettingsToggleItem(
+            title = "Use less data for calls",
+            subtitle = "Lower call quality to use less data",
+            icon = R.drawable.ic_call,
+            checked = useLessDataCalls,
+            onCheckedChange = onUseLessDataCallsChanged
+        )
+    }
+}
+
+@Composable
+private fun NetworkSection(onNavigateToProxy: () -> Unit) {
+    SettingsSection(title = "Network") {
+        SettingsNavigationItem(
+            title = "Proxy",
+            subtitle = "Configure proxy settings",
+            icon = R.drawable.ic_network_check,
+            onClick = onNavigateToProxy
+        )
+    }
+}
+
+@Composable
+private fun MediaAutoDownloadSection(
+    autoDownloadRules: AutoDownloadRules,
+    onOpenMobileDialog: () -> Unit,
+    onOpenWifiDialog: () -> Unit,
+    onOpenRoamingDialog: () -> Unit
+) {
+    SettingsSection(title = "Media auto-download") {
+        SettingsNavigationItem(
+            title = "When using mobile data",
+            subtitle = getAutoDownloadSummary(autoDownloadRules.mobileData),
+            icon = R.drawable.ic_phone,
+            onClick = onOpenMobileDialog
+        )
+        SettingsDivider()
+        SettingsNavigationItem(
+            title = "When connected on Wi-Fi",
+            subtitle = getAutoDownloadSummary(autoDownloadRules.wifi),
+            icon = R.drawable.ic_network_check,
+            onClick = onOpenWifiDialog
+        )
+        SettingsDivider()
+        SettingsNavigationItem(
+            title = "When roaming",
+            subtitle = getAutoDownloadSummary(autoDownloadRules.roaming),
+            icon = R.drawable.ic_phone,
+            onClick = onOpenRoamingDialog
+        )
+    }
+}
+
+@Composable
+private fun MediaUploadQualitySection(
+    mediaUploadQuality: MediaUploadQuality,
+    onOpenMediaQualitySheet: () -> Unit
+) {
+    SettingsSection(title = "Media upload quality") {
+        SettingsNavigationItem(
+            title = "Photo upload quality",
+            subtitle = mediaUploadQuality.displayName(),
+            icon = R.drawable.ic_image,
+            onClick = onOpenMediaQualitySheet
+        )
+    }
+}

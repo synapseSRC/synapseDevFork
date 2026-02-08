@@ -63,7 +63,12 @@ class SearchRepositoryTest {
         // select(...) returns PostgrestResult (suspend function).
         // decodeList is extension on PostgrestResult.
 
-        whenever(newsBuilder.select(any(), any(), any(), selectCaptor.capture())).thenReturn(dummyResult)
+        whenever(newsBuilder.select(
+            columns = any(),
+            head = any(),
+            count = any(),
+            block = selectCaptor.capture()
+        )).thenReturn(dummyResult)
 
         // Also mock filter to return the builder so usage chaining works if needed.
         // filter is suspend? No, usually builder methods are not suspend, only execute/select are.
@@ -91,13 +96,24 @@ class SearchRepositoryTest {
 
         // Mock other methods to avoid NullPointerException if they return something used.
         // order and limit return PostgrestBuilder.
-        whenever(newsBuilder.order(any(), any(), any())).thenReturn(newsBuilder)
-        whenever(newsBuilder.limit(any())).thenReturn(newsBuilder)
+        whenever(newsBuilder.order(
+            column = any(),
+            ascending = any(),
+            nullsFirst = any()
+        )).thenReturn(newsBuilder)
+        whenever(newsBuilder.limit(
+            count = any()
+        )).thenReturn(newsBuilder)
 
         // Run the repository method
         repository.searchNews(query)
 
         // Now verify ilike was called on newsBuilder
-        verify(newsBuilder).textSearch(eq("headline"), eq(query), eq("english"), eq(TextSearchType.WEBSEARCH))
+        verify(newsBuilder).textSearch(
+            column = eq("headline"),
+            query = eq(query),
+            config = eq("english"),
+            type = eq(TextSearchType.WEBSEARCH)
+        )
     }
 }

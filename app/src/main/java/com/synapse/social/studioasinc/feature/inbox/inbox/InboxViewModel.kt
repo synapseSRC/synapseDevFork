@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.domain.model.User
 import com.synapse.social.studioasinc.UserProfileManager
+import com.synapse.social.studioasinc.shared.data.auth.SupabaseAuthenticationService
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -12,9 +13,7 @@ import kotlinx.coroutines.launch
  * Note: Chat functionality removed - shows empty state UI
  */
 class InboxViewModel(
-    private val authService: SupabaseAuthenticationService = SupabaseAuthenticationService(),
-    // Kept for compatibility with factory, even if unused
-    private val databaseService: SupabaseDatabaseService = SupabaseDatabaseService()
+    private val authService: SupabaseAuthenticationService = SupabaseAuthenticationService()
 ) : ViewModel() {
 
     // Current user profile

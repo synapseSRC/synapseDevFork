@@ -33,6 +33,8 @@ private data class AuthorDto(
     val avatar: String? = null
 )
 
+internal fun String.sanitizeForSearch(): String = this.trim().replace("%", "\\%").replace("_", "\\_")
+
 class SearchRepositoryImpl(
     private val client: SupabaseClientInterface = SupabaseClient.client
 ) : ISearchRepository {
@@ -78,7 +80,7 @@ class SearchRepositoryImpl(
         client.postgrest["hashtags"].select {
             if (sanitizedQuery.isNotBlank()) {
                 filter {
-                    ilike("tag", "${sanitizeSearchQuery(query)}%")
+                    ilike("tag", "${query.sanitizeForSearch()}%")
                 }
             }
             order("usage_count", Order.DESCENDING)
@@ -103,7 +105,7 @@ class SearchRepositoryImpl(
         client.postgrest["news_articles"].select {
             if (sanitizedQuery.isNotBlank()) {
                 filter {
-                    ilike("headline", "%${sanitizeSearchQuery(query)}%")
+                    ilike("headline", "${query.sanitizeForSearch()}%")
                 }
             }
             order("published_at", Order.DESCENDING)

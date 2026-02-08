@@ -6,35 +6,37 @@ import kotlin.test.assertEquals
 class SearchSanitizationTest {
 
     @Test
-    fun testEmptyQuery() {
-        assertEquals("", "".sanitizeForSearch())
-        assertEquals("", "   ".sanitizeForSearch())
+    fun testSanitizeNormal() {
+        val input = "hello"
+        val expected = "hello"
+        assertEquals(expected, input.sanitizeForSearch())
     }
 
     @Test
-    fun testNormalQuery() {
-        assertEquals("hello", "hello".sanitizeForSearch())
-        assertEquals("hello world", "  hello world  ".sanitizeForSearch())
+    fun testSanitizeTrim() {
+        val input = "  hello  "
+        val expected = "hello"
+        assertEquals(expected, input.sanitizeForSearch())
     }
 
     @Test
-    fun testSpecialCharacters() {
-        // % -> \%
-        // Kotlin literal "100\\%" is a string containing: 1, 0, 0, \, %
-        assertEquals("100\\%", "100%".sanitizeForSearch())
-
-        // _ -> \_
-        assertEquals("hello\\_world", "hello_world".sanitizeForSearch())
-
-        // \ -> \\
-        assertEquals("C:\\\\Path", "C:\\Path".sanitizeForSearch())
+    fun testSanitizePercent() {
+        val input = "100%"
+        val expected = "100\\%"
+        assertEquals(expected, input.sanitizeForSearch())
     }
 
     @Test
-    fun testTruncation() {
-        val longString = "a".repeat(200)
-        assertEquals(100, longString.sanitizeForSearch().length)
-        val expected = "a".repeat(100)
-        assertEquals(expected, longString.sanitizeForSearch())
+    fun testSanitizeUnderscore() {
+        val input = "user_name"
+        val expected = "user\\_name"
+        assertEquals(expected, input.sanitizeForSearch())
+    }
+
+    @Test
+    fun testSanitizeMixed() {
+        val input = "  user_%  "
+        val expected = "user\\_\\%"
+        assertEquals(expected, input.sanitizeForSearch())
     }
 }

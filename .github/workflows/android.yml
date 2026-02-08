@@ -2,7 +2,13 @@ name: Compiler
 
 on:
   push:
-    branches: [ "main", "master" ]
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '**.pdf'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.gitignore'
   workflow_dispatch:
 
 jobs:

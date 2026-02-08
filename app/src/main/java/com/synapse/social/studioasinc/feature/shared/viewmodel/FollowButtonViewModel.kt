@@ -19,9 +19,9 @@ data class FollowButtonUiState(
 
 @HiltViewModel
 class FollowButtonViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val followService: SupabaseFollowService
 ) : ViewModel() {
-    private val followService = SupabaseFollowService()
 
     private val _uiState = MutableStateFlow(FollowButtonUiState())
     val uiState: StateFlow<FollowButtonUiState> = _uiState.asStateFlow()

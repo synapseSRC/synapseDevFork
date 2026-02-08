@@ -2,6 +2,7 @@ package com.synapse.social.studioasinc.presentation.editprofile
 
 import android.net.Uri
 import com.synapse.social.studioasinc.domain.model.UserProfile
+import com.synapse.social.studioasinc.domain.model.Gender
 import kotlinx.serialization.Serializable
 
 data class EditProfileUiState(
@@ -23,21 +24,6 @@ data class EditProfileUiState(
     val hasChanges: Boolean = false,
     val error: String? = null
 )
-
-@Serializable
-enum class Gender {
-    Male, Female, Hidden;
-
-    companion object {
-        fun fromString(value: String?): Gender {
-            return when (value?.lowercase()) {
-                "male" -> Male
-                "female" -> Female
-                else -> Hidden
-            }
-        }
-    }
-}
 
 sealed class UploadState {
     object Idle : UploadState()

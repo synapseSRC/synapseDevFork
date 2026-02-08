@@ -10,6 +10,7 @@ import com.synapse.social.studioasinc.core.network.SupabaseClient
 
 import com.synapse.social.studioasinc.domain.model.UserProfile
 import com.synapse.social.studioasinc.domain.model.UserStatus
+import com.synapse.social.studioasinc.domain.model.Gender
 import com.synapse.social.studioasinc.presentation.editprofile.photohistory.HistoryItem
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
@@ -63,7 +64,7 @@ class EditProfileRepository @Inject constructor(
                     bio = result["bio"]?.jsonPrimitive?.contentOrNull,
                     avatar = result["avatar"]?.jsonPrimitive?.contentOrNull,
                     profileCoverImage = result["profile_cover_image"]?.jsonPrimitive?.contentOrNull,
-                    gender = result["gender"]?.jsonPrimitive?.contentOrNull,
+                    gender = Gender.fromString(result["gender"]?.jsonPrimitive?.contentOrNull),
                     region = result["region"]?.jsonPrimitive?.contentOrNull,
                     status = UserStatus.fromString(result["status"]?.jsonPrimitive?.contentOrNull),
                     followersCount = result["followers_count"]?.jsonPrimitive?.intOrNull ?: 0,

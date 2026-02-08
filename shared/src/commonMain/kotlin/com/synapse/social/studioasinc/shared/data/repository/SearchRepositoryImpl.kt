@@ -107,13 +107,13 @@ class SearchRepositoryImpl(
     }
 
     override suspend fun getSuggestedAccounts(query: String): Result<List<SearchAccount>> = runCatching {
-        val sanitizedQuery = sanitizeSearchQuery(query)
+        val sanitized = sanitizeSearchQuery(query)
         client.postgrest["users"].select {
-            if (sanitizedQuery.isNotBlank()) {
+            if (sanitized.isNotBlank()) {
                 filter {
                     or {
-                        ilike("username", "$query%")
-                        ilike("display_name", "$query%")
+                        ilike("username", "$sanitized%")
+                        ilike("display_name", "$sanitized%")
                     }
                 }
             } else {
@@ -138,6 +138,13 @@ internal fun String.sanitizeForSearch(): String {
     return this.trim()
         .take(100)
         .replace("\\", "\\\\")
+        .replace("%", "\\%")
+        .replace("_", "\\_")
+}
+
+internal fun sanitizeSearchQuery(query: String): String {
+    return query.trim()
+        .take(100)
         .replace("%", "\\%")
         .replace("_", "\\_")
 }

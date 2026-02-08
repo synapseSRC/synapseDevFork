@@ -6,37 +6,20 @@ import kotlin.test.assertEquals
 class SearchSanitizationTest {
 
     @Test
-    fun testSanitizeNormal() {
-        val input = "hello"
-        val expected = "hello"
-        assertEquals(expected, input.sanitizeForSearch())
-    }
+    fun testSanitizeSearchQuery() {
+        // Standard
+        assertEquals("john", sanitizeSearchQuery("john"))
 
-    @Test
-    fun testSanitizeTrim() {
-        val input = "  hello  "
-        val expected = "hello"
-        assertEquals(expected, input.sanitizeForSearch())
-    }
+        // Trimming
+        assertEquals("john", sanitizeSearchQuery("  john  "))
 
-    @Test
-    fun testSanitizePercent() {
-        val input = "100%"
-        val expected = "100\\%"
-        assertEquals(expected, input.sanitizeForSearch())
-    }
+        // Special chars escaping
+        assertEquals("100\\%", sanitizeSearchQuery("100%"))
+        assertEquals("user\\_name", sanitizeSearchQuery("user_name"))
 
-    @Test
-    fun testSanitizeUnderscore() {
-        val input = "user_name"
-        val expected = "user\\_name"
-        assertEquals(expected, input.sanitizeForSearch())
-    }
-
-    @Test
-    fun testSanitizeMixed() {
-        val input = "  user_%  "
-        val expected = "user\\_\\%"
-        assertEquals(expected, input.sanitizeForSearch())
+        // Length limit
+        val longString = "a".repeat(150)
+        val expected = "a".repeat(100)
+        assertEquals(expected, sanitizeSearchQuery(longString))
     }
 }

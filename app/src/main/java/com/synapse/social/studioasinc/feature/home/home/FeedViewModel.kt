@@ -119,6 +119,7 @@ class FeedViewModel @Inject constructor(
     private fun cacheModifiedPost(post: Post) {
         _modifiedPosts.update { currentMap ->
             val newMap = currentMap.toMutableMap()
+            newMap.remove(post.id)
             newMap[post.id] = post // Update or add
 
             // Limit size to prevent unbounded growth

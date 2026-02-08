@@ -103,6 +103,8 @@ class AuthRepository @Inject constructor(
 
     // Legacy compatibility methods
     suspend fun getCurrentUserUid(): String? = getCurrentUserId()
-    suspend fun recoverSession(accessToken: String): Result<Unit> = Result.success(Unit)
-    suspend fun ensureProfileExistsPublic(userId: String, email: String) = Unit
+
+    suspend fun ensureProfileExists(userId: String, email: String): Result<Unit> {
+        return sharedAuthRepository.ensureProfileExists(userId, email)
+    }
 }

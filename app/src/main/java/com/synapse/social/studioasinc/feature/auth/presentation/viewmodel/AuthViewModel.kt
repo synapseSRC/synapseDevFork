@@ -92,7 +92,7 @@ class AuthViewModel @Inject constructor(
             val currentEmail = authRepository.getCurrentUserEmail()
 
             if (currentUserId != null && currentEmail != null) {
-                authRepository.ensureProfileExistsPublic(currentUserId, currentEmail)
+                authRepository.ensureProfileExists(currentUserId, currentEmail)
             }
         }
     }
@@ -378,13 +378,15 @@ class AuthViewModel @Inject constructor(
                  if (parts.size == 2) parts[0] to parts[1] else "" to ""
              }
 
-             val token = params["access_token"]
-             if (!token.isNullOrEmpty()) {
-                 recoveryToken = token
+             val accessToken = params["access_token"]
+             val refreshToken = params["refresh_token"]
+
+             if (!accessToken.isNullOrEmpty()) {
+                 recoveryToken = accessToken
                  viewModelScope.launch {
-                     authRepository.recoverSession(token)
+                     authRepository.handleOAuthCallback(null, accessToken, refreshToken)
                      _uiState.value = AuthUiState.ResetPassword()
-                     _navigationEvent.emit(AuthNavigationEvent.NavigateToResetPassword(token))
+                     _navigationEvent.emit(AuthNavigationEvent.NavigateToResetPassword(accessToken))
                  }
              }
         } else {

@@ -1,9 +1,16 @@
 package com.synapse.social.studioasinc.shared.data.repository
 
 import com.synapse.social.studioasinc.shared.core.network.SupabaseClient
+import com.synapse.social.studioasinc.shared.core.util.getCurrentIsoTime
+import com.synapse.social.studioasinc.shared.data.model.UserProfileInsert
+import com.synapse.social.studioasinc.shared.data.model.UserSettingsInsert
+import com.synapse.social.studioasinc.shared.data.model.UserPresenceInsert
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.OAuthProvider
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Count
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 import io.github.aakira.napier.Napier
@@ -35,7 +42,68 @@ class AuthRepository {
     }
 
     suspend fun signUpWithProfile(email: String, password: String, username: String): Result<String> {
-        return signUp(email, password) // Simplified for now
+        return try {
+            val signUpResult = signUp(email, password)
+            if (signUpResult.isSuccess) {
+                val userId = signUpResult.getOrThrow()
+                ensureProfileExists(userId, email, username).map { userId }
+            } else {
+                signUpResult
+            }
+        } catch (e: Exception) {
+            Napier.e("Sign up with profile failed", e, tag = TAG)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun ensureProfileExists(userId: String, email: String, username: String? = null): Result<Unit> {
+        return try {
+            withContext(Dispatchers.Default) {
+                // Check if profile exists
+                val count = SupabaseClient.client.from("user_profiles").select(columns = Columns.list("id")) {
+                    count(Count.EXACT)
+                    filter {
+                        eq("id", userId)
+                    }
+                }.countOrNull()
+
+                if (count == null || count == 0L) {
+                    val actualUsername = username ?: email.substringBefore("@")
+
+                    // Create profile
+                    val profileInsert = UserProfileInsert(
+                        username = actualUsername,
+                        email = email,
+                        created_at = getCurrentIsoTime(),
+                        updated_at = getCurrentIsoTime(),
+                        join_date = getCurrentIsoTime(),
+                        account_premium = false,
+                        verify = false,
+                        banned = false,
+                        followers_count = 0,
+                        following_count = 0,
+                        posts_count = 0,
+                        user_level_xp = 0,
+                        status = "active"
+                    )
+                    SupabaseClient.client.from("user_profiles").insert(profileInsert)
+
+                    // Create settings
+                    val settingsInsert = UserSettingsInsert(user_id = userId)
+                    SupabaseClient.client.from("user_settings").insert(settingsInsert)
+
+                    // Create presence
+                    val presenceInsert = UserPresenceInsert(user_id = userId)
+                    SupabaseClient.client.from("user_presence").insert(presenceInsert)
+
+                    Napier.d("User profile created: $userId", tag = TAG)
+                }
+                Result.success(Unit)
+            }
+        } catch (e: Exception) {
+            Napier.e("Ensure profile exists failed", e, tag = TAG)
+            Result.failure(e)
+        }
     }
 
     suspend fun signIn(email: String, password: String): Result<String> {

@@ -95,3 +95,66 @@ fun AutoDownloadDialog(
         }
     )
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StorageDataScreenDialogs(
+    showMediaQualitySheet: Boolean,
+    mediaUploadQuality: MediaUploadQuality,
+    autoDownloadRules: AutoDownloadRules,
+    showMobileDialog: Boolean,
+    showWifiDialog: Boolean,
+    showRoamingDialog: Boolean,
+    onCloseMediaQualitySheet: () -> Unit,
+    onSetMediaUploadQuality: (MediaUploadQuality) -> Unit,
+    onSetAutoDownloadRule: (String, Set<MediaType>) -> Unit,
+    onDismissMobileDialog: () -> Unit,
+    onDismissWifiDialog: () -> Unit,
+    onDismissRoamingDialog: () -> Unit
+) {
+    // Media Quality Bottom Sheet
+    if (showMediaQualitySheet) {
+        MediaQualityBottomSheet(
+            onDismissRequest = onCloseMediaQualitySheet,
+            currentQuality = mediaUploadQuality,
+            onQualitySelected = onSetMediaUploadQuality
+        )
+    }
+
+    // Auto-Download Dialogs
+    if (showMobileDialog) {
+        AutoDownloadDialog(
+            title = "When using mobile data",
+            selectedTypes = autoDownloadRules.mobileData,
+            onConfirm = {
+                onSetAutoDownloadRule("mobile", it)
+                onDismissMobileDialog()
+            },
+            onDismiss = onDismissMobileDialog
+        )
+    }
+
+    if (showWifiDialog) {
+        AutoDownloadDialog(
+            title = "When connected on Wi-Fi",
+            selectedTypes = autoDownloadRules.wifi,
+            onConfirm = {
+                onSetAutoDownloadRule("wifi", it)
+                onDismissWifiDialog()
+            },
+            onDismiss = onDismissWifiDialog
+        )
+    }
+
+    if (showRoamingDialog) {
+        AutoDownloadDialog(
+            title = "When roaming",
+            selectedTypes = autoDownloadRules.roaming,
+            onConfirm = {
+                onSetAutoDownloadRule("roaming", it)
+                onDismissRoamingDialog()
+            },
+            onDismiss = onDismissRoamingDialog
+        )
+    }
+}

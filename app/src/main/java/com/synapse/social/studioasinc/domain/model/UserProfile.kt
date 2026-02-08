@@ -26,4 +26,5 @@ data class UserProfile(
 ) {
     val isVerified: Boolean get() = verify
     val isPremium: Boolean get() = account_type == "premium"
+    val safeGender: Gender get() = gender ?: Gender.Hidden
 }

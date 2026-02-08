@@ -35,10 +35,6 @@
 
 <br/>
 
----
-
-<br/>
-
 ## ✨ Features
 
 <table>
@@ -71,10 +67,6 @@ No compromises. Native UI layers ensure buttery-smooth 120fps experiences.
 </td>
 </tr>
 </table>
-
-<br/>
-
----
 
 <br/>
 
@@ -123,10 +115,6 @@ graph TB
 
 <br/>
 
----
-
-<br/>
-
 ## 🚀 Quick Start
 
 <table>
@@ -165,10 +153,6 @@ Open in **Android Studio Ladybug** or newer, then launch the `app` configuration
 
 <br/>
 
----
-
-<br/>
-
 ## 📂 Structure
 
 ```
@@ -183,7 +167,13 @@ synapse/
 
 <br/>
 
----
+<div align="center">
+
+## ⭐ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=synapseSRC/synapseDevFork&type=Date)](https://star-history.com/#synapseSRC/synapseDevFork&Date)
+
+</div>
 
 <br/>
 

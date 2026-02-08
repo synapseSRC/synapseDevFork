@@ -26,7 +26,17 @@ data class EditProfileUiState(
 
 @Serializable
 enum class Gender {
-    Male, Female, Hidden
+    Male, Female, Hidden;
+
+    companion object {
+        fun fromString(value: String?): Gender {
+            return when (value?.lowercase()) {
+                "male" -> Male
+                "female" -> Female
+                else -> Hidden
+            }
+        }
+    }
 }
 
 sealed class UploadState {

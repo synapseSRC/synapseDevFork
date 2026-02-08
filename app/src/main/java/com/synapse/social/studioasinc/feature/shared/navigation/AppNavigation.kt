@@ -122,16 +122,12 @@ fun AppNavigation(
 
         composable(AppDestination.Inbox.route) {
             InboxScreen(
-                onNavigateBack = { navController.popBackStack() },
-                onNavigateToChat = { _, _ -> },
-                onNavigateToCreateGroup = { },
                 onNavigateToProfile = { userId ->
                     navController.navigate(AppDestination.Profile.createRoute(userId))
                 }
             )
         }
 
-        // Search
         composable(AppDestination.Search.route) {
             val viewModel: SearchViewModel = hiltViewModel()
             SearchScreen(

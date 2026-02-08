@@ -64,14 +64,6 @@ class InboxActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     InboxScreen(
-                        onNavigateBack = { finish() },
-                        onNavigateToChat = { chatId, userId ->
-                            Log.d("InboxActivity", "Chat navigation disabled - chatId: $chatId, userId: $userId")
-                            android.widget.Toast.makeText(this@InboxActivity, "Chat feature temporarily unavailable", android.widget.Toast.LENGTH_SHORT).show()
-                        },
-                        onNavigateToCreateGroup = {
-                            android.widget.Toast.makeText(this@InboxActivity, "Please use the main app to create groups", android.widget.Toast.LENGTH_SHORT).show()
-                        },
                         onNavigateToProfile = { userId ->
                             // Deprecated activity, navigation handled in main graph
                             Log.d("InboxActivity", "Navigate to profile: $userId")

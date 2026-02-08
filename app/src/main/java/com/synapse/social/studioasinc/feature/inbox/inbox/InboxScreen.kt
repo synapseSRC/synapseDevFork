@@ -26,9 +26,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InboxScreen(
-    onNavigateBack: () -> Unit,
-    onNavigateToChat: (String, String) -> Unit,
-    onNavigateToCreateGroup: () -> Unit,
     onNavigateToProfile: (String) -> Unit,
     viewModel: InboxViewModel = viewModel(factory = InboxViewModelFactory())
 ) {

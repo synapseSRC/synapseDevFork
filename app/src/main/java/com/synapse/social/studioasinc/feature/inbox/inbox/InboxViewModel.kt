@@ -12,7 +12,11 @@ import kotlinx.coroutines.launch
  * ViewModel for the Inbox screen.
  * Note: Chat functionality removed - shows empty state UI
  */
-class InboxViewModel : ViewModel() {
+class InboxViewModel(
+    private val authService: SupabaseAuthenticationService = SupabaseAuthenticationService(),
+    // Kept for compatibility with factory, even if unused
+    private val databaseService: SupabaseDatabaseService = SupabaseDatabaseService()
+) : ViewModel() {
 
     // UI State
     private val _uiState = MutableStateFlow<InboxUiState>(InboxUiState.Loading)
@@ -29,7 +33,9 @@ class InboxViewModel : ViewModel() {
     private fun loadData() {
         viewModelScope.launch {
             loadCurrentUserProfile()
-            // Show empty state since chat functionality is removed
+            // Simulate loading delay for better UX before showing empty state
+            _uiState.value = InboxUiState.Loading
+            kotlinx.coroutines.delay(500)
             _uiState.value = InboxUiState.Success
         }
     }

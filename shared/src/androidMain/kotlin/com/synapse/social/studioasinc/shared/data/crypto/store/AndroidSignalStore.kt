@@ -180,7 +180,31 @@ class AndroidSignalStore(context: Context) : SignalProtocolStore {
     }
 
     override fun deleteAllSessions(name: String?) {
-        // Implementation needed for full cleanup if required
+        val editor = prefs.edit()
+        val allKeys = prefs.all.keys
+        var deletedCount = 0
+
+        for (key in allKeys) {
+            if (key.startsWith("session_")) {
+                if (name == null) {
+                    editor.remove(key)
+                    deletedCount++
+                } else {
+                    val lastUnderscoreIndex = key.lastIndexOf('_')
+                    if (lastUnderscoreIndex > "session_".length) {
+                        val storedName = key.substring("session_".length, lastUnderscoreIndex)
+                        if (storedName == name) {
+                            editor.remove(key)
+                            deletedCount++
+                        }
+                    }
+                }
+            }
+        }
+
+        if (deletedCount > 0) {
+            editor.commitOrThrow("Failed to delete sessions")
+        }
     }
 
     // Additional helper to get/set last signed prekey ID

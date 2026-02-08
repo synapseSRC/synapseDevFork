@@ -91,7 +91,7 @@ private fun StorageDataContent(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.largeTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
                     scrolledContainerColor = MaterialTheme.colorScheme.surface
                 ),
@@ -156,18 +156,25 @@ private fun StorageDataContent(
     }
 }
 
-@Composable
-private fun StorageManagementSection(
-    onNavigateToStorageManage: () -> Unit,
-    onNavigateToNetworkUsage: () -> Unit
-) {
-    SettingsSection(title = "Storage Management") {
-        SettingsNavigationItem(
-            title = "Manage storage",
-            subtitle = "2.4 GB", // Mocked as per original
-            icon = R.drawable.file_save_24px,
-            onClick = onNavigateToStorageManage,
-            position = SettingsItemPosition.Top
+    // Media Quality Bottom Sheet
+    if (showMediaQualitySheet) {
+        MediaQualityBottomSheet(
+            onDismissRequest = { viewModel.closeMediaQualitySheet() },
+            currentQuality = mediaUploadQuality,
+            onQualitySelected = { viewModel.setMediaUploadQuality(it) }
+        )
+    }
+
+    // Auto-Download Dialogs
+    if (showMobileDialog) {
+        AutoDownloadDialog(
+            title = "When using mobile data",
+            selectedTypes = autoDownloadRules.mobileData,
+            onConfirm = {
+                viewModel.setAutoDownloadRule("mobile", it)
+                showMobileDialog = false
+            },
+            onDismiss = { showMobileDialog = false }
         )
         SettingsDivider()
         SettingsNavigationItem(
@@ -176,105 +183,6 @@ private fun StorageManagementSection(
             icon = R.drawable.ic_network_check,
             onClick = onNavigateToNetworkUsage,
             position = SettingsItemPosition.Bottom
-        )
-    }
-}
-
-@Composable
-private fun CallSettingsSection(
-    useLessDataCalls: Boolean,
-    onUseLessDataCallsChanged: (Boolean) -> Unit
-) {
-    SettingsSection(title = "Call Settings") {
-        SettingsToggleItem(
-            title = "Use less data for calls",
-            icon = R.drawable.ic_call,
-            checked = useLessDataCalls,
-            onCheckedChange = onUseLessDataCallsChanged,
-            position = SettingsItemPosition.Single
-        )
-    }
-}
-
-@Composable
-private fun NetworkSection(
-    onNavigateToProxy: () -> Unit
-) {
-    SettingsSection(title = "Network") {
-        SettingsNavigationItem(
-            title = "Proxy",
-            subtitle = "Off",
-            icon = R.drawable.ic_vpn_key,
-            onClick = onNavigateToProxy,
-            position = SettingsItemPosition.Single
-        )
-    }
-}
-
-@Composable
-private fun MediaAutoDownloadSection(
-    autoDownloadRules: AutoDownloadRules,
-    onOpenMobileDialog: () -> Unit,
-    onOpenWifiDialog: () -> Unit,
-    onOpenRoamingDialog: () -> Unit
-) {
-    SettingsSection(title = "Media auto-download") {
-        Text(
-            text = "Voice messages are always automatically downloaded",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(
-                start = SettingsSpacing.itemHorizontalPadding,
-                end = SettingsSpacing.itemHorizontalPadding,
-                top = SettingsSpacing.itemVerticalPadding,
-                bottom = Spacing.ExtraSmall
-            )
-        )
-        SettingsNavigationItem(
-            title = "When using mobile data",
-            subtitle = getAutoDownloadSummary(autoDownloadRules.mobileData),
-            onClick = onOpenMobileDialog,
-            position = SettingsItemPosition.Top
-        )
-        SettingsDivider()
-        SettingsNavigationItem(
-            title = "When connected on Wi-Fi",
-            subtitle = getAutoDownloadSummary(autoDownloadRules.wifi),
-            onClick = onOpenWifiDialog,
-            position = SettingsItemPosition.Middle
-        )
-        SettingsDivider()
-        SettingsNavigationItem(
-            title = "When roaming",
-            subtitle = getAutoDownloadSummary(autoDownloadRules.roaming),
-            onClick = onOpenRoamingDialog,
-            position = SettingsItemPosition.Bottom
-        )
-    }
-}
-
-@Composable
-private fun MediaUploadQualitySection(
-    mediaUploadQuality: MediaUploadQuality,
-    onOpenMediaQualitySheet: () -> Unit
-) {
-    SettingsSection(title = "Media upload quality") {
-        Text(
-            text = "Choose the quality of media files to be sent",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(
-                start = SettingsSpacing.itemHorizontalPadding,
-                end = SettingsSpacing.itemHorizontalPadding,
-                top = SettingsSpacing.itemVerticalPadding,
-                bottom = Spacing.ExtraSmall
-            )
-        )
-        SettingsClickableItem(
-            title = "Photo upload quality",
-            subtitle = mediaUploadQuality.displayName(),
-            onClick = onOpenMediaQualitySheet,
-            position = SettingsItemPosition.Single
         )
     }
 }

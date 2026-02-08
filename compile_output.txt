@@ -1,4 +1,3 @@
-Starting a Gradle Daemon (subsequent builds will be faster)
 
 > Configure project :shared
 w: The following Kotlin/Native targets cannot be built on this machine and are disabled:
@@ -8,8 +7,8 @@ To hide this message, add 'kotlin.native.ignoreDisabledTargets=true' to the Grad
 
 > Task :shared:preBuild UP-TO-DATE
 > Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :shared:preDebugBuild UP-TO-DATE
 > Task :app:preBuild UP-TO-DATE
+> Task :shared:preDebugBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
 > Task :shared:generateDebugResValues UP-TO-DATE
 > Task :shared:generateDebugResources UP-TO-DATE
@@ -24,396 +23,30 @@ To hide this message, add 'kotlin.native.ignoreDisabledTargets=true' to the Grad
 > Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :shared:generateCommonMainStorageDatabaseInterface UP-TO-DATE
 > Task :shared:generateDebugBuildConfig UP-TO-DATE
-
-> Task :app:dataBindingMergeDependencyArtifactsDebug
-WARNING: [Processor] Library '/home/jules/.gradle/caches/modules-2/files-2.1/androidx.media3/media3-ui/1.3.1/97d6136ea0c4942f67fccdfb77c5099fec02c4c0/media3-ui-1.3.1.aar' contains references to both AndroidX and old support library. This seems like the library is partially migrated. Jetifier will try to rewrite the library anyway.
- Example of androidX reference: 'androidx/media3/ui/PlayerNotificationManager'
- Example of support library reference: 'android/support/v4/media/session/MediaSessionCompat$Token'
-
 > Task :shared:compileDebugKotlinAndroid UP-TO-DATE
 > Task :shared:javaPreCompileDebug UP-TO-DATE
 > Task :shared:compileDebugJavaWithJavac UP-TO-DATE
 > Task :shared:bundleLibCompileToJarDebug UP-TO-DATE
-> Task :app:generateDebugResValues FROM-CACHE
-> Task :app:generateDebugResources
-> Task :app:packageDebugResources
-> Task :app:processDebugNavigationResources
-> Task :app:generateDebugBuildConfig
-> Task :app:parseDebugLocalResources
-> Task :app:checkDebugAarMetadata
-> Task :app:compileDebugNavigationResources
-> Task :app:mapDebugSourceSetPaths
-> Task :app:createDebugCompatibleScreenManifests
-> Task :app:extractDeepLinksDebug
-> Task :app:mergeDebugResources
-
-> Task :app:processDebugMainManifest
-package="com.synapse.social.studioasinc" found in source AndroidManifest.xml: /app/app/src/main/AndroidManifest.xml.
-Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
-Recommendation: remove package="com.synapse.social.studioasinc" from the source AndroidManifest.xml: /app/app/src/main/AndroidManifest.xml.
-
-> Task :app:dataBindingGenBaseClassesDebug
-> Task :app:processDebugManifest
-> Task :app:processDebugManifestForPackage
-> Task :app:processDebugResources
+> Task :app:dataBindingMergeDependencyArtifactsDebug UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesDebug UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
 > Task :app:kspDebugKotlin
-e: [ksp] InjectProcessingStep was unable to process 'UserRepository(UserDao,io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
+> Task :app:compileDebugKotlin
 
-Dependency trace:
-    => element (CLASS): com.synapse.social.studioasinc.data.repository.UserRepository
-    => element (CONSTRUCTOR): UserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => type (EXECUTABLE constructor): (UserDao,io.github.jan.supabase.SupabaseClient)void
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] InjectProcessingStep was unable to process 'CommentRepository(CommentDao,io.github.jan.supabase.SupabaseClient,com.synapse.social.studioasinc.data.repository.ReactionRepository)' because 'CommentDao' could not be resolved.
-
-Dependency trace:
-    => element (CLASS): com.synapse.social.studioasinc.data.repository.CommentRepository
-    => element (CONSTRUCTOR): CommentRepository(CommentDao,io.github.jan.supabase.SupabaseClient,com.synapse.social.studioasinc.data.repository.ReactionRepository)
-    => type (EXECUTABLE constructor): (CommentDao,io.github.jan.supabase.SupabaseClient,com.synapse.social.studioasinc.data.repository.ReactionRepository)void
-    => type (ERROR parameter type): CommentDao
-
-If type 'CommentDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'CommentDao' is on your classpath.
-e: [ksp] InjectProcessingStep was unable to process 'PostRepository(PostDao,io.github.jan.supabase.SupabaseClient)' because 'PostDao' could not be resolved.
-
-Dependency trace:
-    => element (CLASS): com.synapse.social.studioasinc.data.repository.PostRepository
-    => element (CONSTRUCTOR): PostRepository(PostDao,io.github.jan.supabase.SupabaseClient)
-    => type (EXECUTABLE constructor): (PostDao,io.github.jan.supabase.SupabaseClient)void
-    => type (ERROR parameter type): PostDao
-
-If type 'PostDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'PostDao' is on your classpath.
-e: [ksp] ModuleProcessingStep was unable to process 'com.synapse.social.studioasinc.core.di.RepositoryModule' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideApplicationScope()' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideSharedAuthRepository()' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideAuthRepository(com.synapse.social.studioasinc.shared.data.repository.AuthRepository)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideSettingsRepository(android.content.Context)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'providePostRepository(PostDao,io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideUsernameRepository()' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideSharedPreferences(android.content.Context)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideProfileRepository(io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'providePostInteractionRepository()' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideProfileActionRepository()' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideReactionRepository(io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'providePostDetailRepository(io.github.jan.supabase.SupabaseClient,com.synapse.social.studioasinc.data.repository.ReactionRepository)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideCommentRepository(io.github.jan.supabase.SupabaseClient,CommentDao,com.synapse.social.studioasinc.data.repository.ReactionRepository)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'providePollRepository(io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideBookmarkRepository(io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideReshareRepository(io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideReportRepository(io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideStoryRepository(android.content.Context,com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideAppSettingsManager(android.content.Context)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideReelRepository()' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideNotificationRepository(io.github.jan.supabase.SupabaseClient,kotlinx.coroutines.CoroutineScope)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideSecureStorage(android.content.Context)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideStorageRepository(com.synapse.social.studioasinc.shared.data.database.StorageDatabase,com.synapse.social.studioasinc.shared.data.local.SecureStorage)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideKtorHttpClient()' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideFileUploader(android.content.Context)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideImgBBUploadService(io.ktor.client.HttpClient)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideCloudinaryUploadService(io.ktor.client.HttpClient)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideSupabaseUploadService(io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideR2UploadService(io.ktor.client.HttpClient)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideValidateProviderConfigUseCase()' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideGetStorageConfigUseCase(com.synapse.social.studioasinc.shared.domain.repository.StorageRepository)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideUpdateStorageProviderUseCase(com.synapse.social.studioasinc.shared.domain.repository.StorageRepository)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-e: [ksp] BindingMethodProcessingStep was unable to process 'provideUploadMediaUseCase(com.synapse.social.studioasinc.shared.domain.repository.StorageRepository,com.synapse.social.studioasinc.shared.data.FileUploader,com.synapse.social.studioasinc.shared.data.source.remote.ImgBBUploadService,com.synapse.social.studioasinc.shared.data.source.remote.CloudinaryUploadService,com.synapse.social.studioasinc.shared.data.source.remote.SupabaseUploadService,com.synapse.social.studioasinc.shared.data.source.remote.R2UploadService)' because 'UserDao' could not be resolved.
-
-Dependency trace:
-    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
-    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
-    => element (PARAMETER): userDao
-    => type (ERROR parameter type): UserDao
-
-If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
-
-> Task :app:kspDebugKotlin FAILED
-
-FAILURE: Build failed with an exception.
-
-* What went wrong:
-Execution failed for task ':app:kspDebugKotlin'.
-> A failure occurred while executing com.google.devtools.ksp.gradle.KspAAWorkerAction
-   > KSP failed with exit code: PROCESSING_ERROR
-
-* Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
-
-BUILD FAILED in 1m 37s
-35 actionable tasks: 18 executed, 1 from cache, 16 up-to-date
+BUILD SUCCESSFUL in 31s
+36 actionable tasks: 2 executed, 34 up-to-date

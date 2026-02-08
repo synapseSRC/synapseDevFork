@@ -2,11 +2,7 @@ package com.synapse.social.studioasinc.core.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.russhwolf.settings.Settings
-import com.russhwolf.settings.SharedPreferencesSettings
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
-import com.synapse.social.studioasinc.data.local.auth.TokenManager
-import com.synapse.social.studioasinc.shared.data.auth.TokenManager as SharedTokenManager
 import com.synapse.social.studioasinc.data.repository.*
 import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
@@ -54,19 +50,6 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideSettings(@ApplicationContext context: Context): Settings {
-        val sharedPrefs = context.getSharedPreferences("auth_tokens", Context.MODE_PRIVATE)
-        return SharedPreferencesSettings(sharedPrefs)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSharedTokenManager(settings: Settings): SharedTokenManager {
-        return SharedTokenManager(settings)
-    }
-
-    @Provides
-    @Singleton
     fun provideSharedAuthRepository(): SharedAuthRepository {
         return SharedAuthRepository()
     }
@@ -74,10 +57,9 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideAuthRepository(
-        tokenManager: TokenManager,
         sharedAuthRepository: SharedAuthRepository
     ): AuthRepository {
-        return AuthRepository(tokenManager, sharedAuthRepository)
+        return AuthRepository(sharedAuthRepository)
     }
 
     @Provides

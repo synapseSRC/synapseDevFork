@@ -1,6 +1,7 @@
 package com.synapse.social.studioasinc.shared.data.repository
 
 import com.synapse.social.studioasinc.shared.core.network.SupabaseClient
+import com.synapse.social.studioasinc.shared.core.util.sanitizeSearchQuery
 import com.synapse.social.studioasinc.shared.domain.model.SearchAccount
 import com.synapse.social.studioasinc.shared.domain.model.SearchHashtag
 import com.synapse.social.studioasinc.shared.domain.model.SearchNews
@@ -49,7 +50,7 @@ class SearchRepositoryImpl(
         val result = client.postgrest["posts"].select(columns = columns) {
             if (sanitizedQuery.isNotBlank()) {
                 filter {
-                    ilike("post_text", "%$sanitizedQuery%")
+                    ilike("post_text", "%${sanitizeSearchQuery(query)}%")
                 }
             }
             order("created_at", Order.DESCENDING)
@@ -77,7 +78,7 @@ class SearchRepositoryImpl(
         client.postgrest["hashtags"].select {
             if (sanitizedQuery.isNotBlank()) {
                 filter {
-                    ilike("tag", "%$sanitizedQuery%")
+                    ilike("tag", "${sanitizeSearchQuery(query)}%")
                 }
             }
             order("usage_count", Order.DESCENDING)
@@ -102,7 +103,7 @@ class SearchRepositoryImpl(
         client.postgrest["news_articles"].select {
             if (sanitizedQuery.isNotBlank()) {
                 filter {
-                    ilike("headline", "%$sanitizedQuery%")
+                    ilike("headline", "%${sanitizeSearchQuery(query)}%")
                 }
             }
             order("published_at", Order.DESCENDING)
@@ -116,8 +117,8 @@ class SearchRepositoryImpl(
             if (sanitizedQuery.isNotBlank()) {
                 filter {
                     or {
-                        ilike("username", "%$sanitizedQuery%")
-                        ilike("display_name", "%$sanitizedQuery%")
+                        ilike("username", "%${sanitizeSearchQuery(query)}%")
+                        ilike("display_name", "%${sanitizeSearchQuery(query)}%")
                     }
                 }
             } else {

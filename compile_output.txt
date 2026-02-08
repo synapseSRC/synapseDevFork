@@ -1,3 +1,4 @@
+Starting a Gradle Daemon (subsequent builds will be faster)
 
 > Configure project :shared
 w: The following Kotlin/Native targets cannot be built on this machine and are disabled:
@@ -6,8 +7,8 @@ To hide this message, add 'kotlin.native.ignoreDisabledTargets=true' to the Grad
 
 
 > Task :shared:preBuild UP-TO-DATE
-> Task :shared:preDebugBuild UP-TO-DATE
 > Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:preDebugBuild UP-TO-DATE
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
 > Task :shared:generateDebugResValues UP-TO-DATE
@@ -23,11 +24,16 @@ To hide this message, add 'kotlin.native.ignoreDisabledTargets=true' to the Grad
 > Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :shared:generateCommonMainStorageDatabaseInterface UP-TO-DATE
 > Task :shared:generateDebugBuildConfig UP-TO-DATE
+
+> Task :app:dataBindingMergeDependencyArtifactsDebug
+WARNING: [Processor] Library '/home/jules/.gradle/caches/modules-2/files-2.1/androidx.media3/media3-ui/1.3.1/97d6136ea0c4942f67fccdfb77c5099fec02c4c0/media3-ui-1.3.1.aar' contains references to both AndroidX and old support library. This seems like the library is partially migrated. Jetifier will try to rewrite the library anyway.
+ Example of androidX reference: 'androidx/media3/ui/PlayerNotificationManager'
+ Example of support library reference: 'android/support/v4/media/session/MediaSessionCompat$Token'
+
 > Task :shared:compileDebugKotlinAndroid UP-TO-DATE
 > Task :shared:javaPreCompileDebug UP-TO-DATE
 > Task :shared:compileDebugJavaWithJavac UP-TO-DATE
 > Task :shared:bundleLibCompileToJarDebug UP-TO-DATE
-> Task :app:dataBindingMergeDependencyArtifactsDebug
 > Task :app:generateDebugResValues FROM-CACHE
 > Task :app:generateDebugResources
 > Task :app:packageDebugResources
@@ -51,92 +57,363 @@ Recommendation: remove package="com.synapse.social.studioasinc" from the source 
 > Task :app:processDebugManifestForPackage
 > Task :app:processDebugResources
 > Task :app:kspDebugKotlin
-> Task :app:compileDebugKotlin
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/core/domain/parser/MentionUtils.kt:12:8 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/core/domain/parser/MentionUtils.kt:56:78 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/core/util/ImageLoader.kt:176:40 This declaration needs opt-in. Its usage should be marked with '@coil.annotation.ExperimentalCoilApi' or '@OptIn(coil.annotation.ExperimentalCoilApi::class)'
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/domain/model/Post.kt:245:23 Unchecked cast of 'kotlin.Any?' to 'kotlin.collections.Map<kotlin.String, kotlin.Any?>'.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/createpost/createpost/CreatePostScreen.kt:39:8 'class CropImageContract : ActivityResultContract<CropImageContractOptions, CropImageView.CropResult>' is deprecated. This ActivityResultContract is deprecated.
-  Please either roll your own ActivityResultContract with the desired behavior or copy paste this.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/createpost/createpost/CreatePostScreen.kt:40:8 'data class CropImageContractOptions : Any' is deprecated. This ActivityResultContract is deprecated.
-  Please either roll your own ActivityResultContract with the desired behavior or copy paste this.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/createpost/createpost/CreatePostScreen.kt:57:66 'constructor(): CropImageContract' is deprecated. This ActivityResultContract is deprecated.
-  Please either roll your own ActivityResultContract with the desired behavior or copy paste this.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/createpost/createpost/CreatePostScreen.kt:276:34 'constructor(uri: Uri?, cropImageOptions: CropImageOptions): CropImageContractOptions' is deprecated. This ActivityResultContract is deprecated.
-  Please either roll your own ActivityResultContract with the desired behavior or copy paste this.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/createpost/createpost/CreatePostSearchComponents.kt:62:52 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/createpost/createpost/CreatePostSearchComponents.kt:240:13 'fun TabRow(selectedTabIndex: Int, modifier: Modifier = ..., containerColor: Color = ..., contentColor: Color = ..., indicator: @Composable() ComposableFunction1<@ParameterName(...) List<TabPosition>, Unit> = ..., divider: @Composable() ComposableFunction0<Unit> = ..., tabs: @Composable() ComposableFunction0<Unit>): Unit' is deprecated. Replaced with PrimaryTabRow and SecondaryTabRow.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/HomeActivity.kt:68:55 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/HomeActivity.kt:77:42 'class InboxActivity : ComponentActivity' is deprecated. Use InboxScreen within MainActivity navigation graph instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/InboxActivity.kt:87:42 'class InboxActivity : ComponentActivity' is deprecated. Use InboxScreen within MainActivity navigation graph instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxTopAppBar.kt:146:36 'fun largeTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxTopAppBar.kt:339:5 'fun TabRow(selectedTabIndex: Int, modifier: Modifier = ..., containerColor: Color = ..., contentColor: Color = ..., indicator: @Composable() ComposableFunction1<@ParameterName(...) List<TabPosition>, Unit> = ..., divider: @Composable() ComposableFunction0<Unit> = ..., tabs: @Composable() ComposableFunction0<Unit>): Unit' is deprecated. Replaced with PrimaryTabRow and SecondaryTabRow.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxTopAppBar.kt:347:41 'fun Modifier.tabIndicatorOffset(currentTabPosition: TabPosition): Modifier' is deprecated. Solely for use alongside deprecated TabRowDefaults.Indicator method. For recommended PrimaryIndicator and SecondaryIndicator methods, please use TabIndicatorScope.tabIndicatorOffset method.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/PostDetailActivity.kt:10:8 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/PostDetailActivity.kt:52:36 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/postdetail/components/CommentInput.kt:71:49 'val Icons.Filled.Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/ProfileActivity.kt:3:8 'class ProgressDialog : AlertDialog' is deprecated. Deprecated in Java.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/RegionSelectionScreen.kt:43:28 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/RegionSelectionScreen.kt:89:17 'fun SearchBar(query: String, onQueryChange: (String) -> Unit, onSearch: (String) -> Unit, active: Boolean, onActiveChange: (Boolean) -> Unit, modifier: Modifier = ..., enabled: Boolean = ..., placeholder: @Composable() ComposableFunction0<Unit>? = ..., leadingIcon: @Composable() ComposableFunction0<Unit>? = ..., trailingIcon: @Composable() ComposableFunction0<Unit>? = ..., shape: Shape = ..., colors: SearchBarColors = ..., tonalElevation: Dp = ..., shadowElevation: Dp = ..., windowInsets: WindowInsets = ..., interactionSource: MutableInteractionSource? = ..., content: @Composable() ComposableFunction1<ColumnScope, Unit>): Unit' is deprecated. Use overload which takes inputField as a parameter.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/components/SevenSidedCookieShape.kt:68:18 'fun quadraticBezierTo(x1: Float, y1: Float, x2: Float, y2: Float): Unit' is deprecated. Use quadraticTo() for consistency with cubicTo().
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/components/ShareProfileBottomSheet.kt:41:38 'val Icons.Filled.Message: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Message.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/search/SearchActivity.kt:45:59 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/search/search/SearchScreen.kt:81:13 'fun SearchBar(query: String, onQueryChange: (String) -> Unit, onSearch: (String) -> Unit, active: Boolean, onActiveChange: (Boolean) -> Unit, modifier: Modifier = ..., enabled: Boolean = ..., placeholder: @Composable() ComposableFunction0<Unit>? = ..., leadingIcon: @Composable() ComposableFunction0<Unit>? = ..., trailingIcon: @Composable() ComposableFunction0<Unit>? = ..., shape: Shape = ..., colors: SearchBarColors = ..., tonalElevation: Dp = ..., shadowElevation: Dp = ..., windowInsets: WindowInsets = ..., interactionSource: MutableInteractionSource? = ..., content: @Composable() ComposableFunction1<ColumnScope, Unit>): Unit' is deprecated. Use overload which takes inputField as a parameter.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/search/search/SearchScreen.kt:118:13 'fun TabRow(selectedTabIndex: Int, modifier: Modifier = ..., containerColor: Color = ..., contentColor: Color = ..., indicator: @Composable() ComposableFunction1<@ParameterName(...) List<TabPosition>, Unit> = ..., divider: @Composable() ComposableFunction0<Unit> = ..., tabs: @Composable() ComposableFunction0<Unit>): Unit' is deprecated. Replaced with PrimaryTabRow and SecondaryTabRow.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/components/FollowListActivity.kt:10:8 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/components/FollowListActivity.kt:49:70 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/components/compose/components/UserListItem.kt:110:53 'val Icons.Filled.Message: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Message.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/main/MainActivity.kt:150:15 'fun onBackPressed(): Unit' is deprecated. This method has been deprecated in favor of using the
-      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.
-      The OnBackPressedDispatcher controls how back button events are dispatched
-      to one or more {@link OnBackPressedCallback} objects.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/main/MainViewModel.kt:85:91 'field versionCode: Int' is deprecated. Deprecated in Java.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/reels/components/ShareBottomSheet.kt:22:28 'val LocalClipboardManager: ProvidableCompositionLocal<ClipboardManager>' is deprecated. Use LocalClipboard instead which supports suspend functions.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/theme/styling/MarkdownRenderer.kt:105:86 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/stories/creator/StoryCreatorScreen.kt:338:40 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/stories/creator/StoryCreatorScreen.kt:413:44 'val Icons.Filled.Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/stories/management/StorySheets.kt:234:57 'val Icons.Filled.VolumeOff: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeOff.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationsScreen.kt:21:8 'typealias Instant = Instant' is deprecated. This type is deprecated in favor of `kotlin.time.Instant`.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationsScreen.kt:29:23 'typealias Instant = Instant' is deprecated. This type is deprecated in favor of `kotlin.time.Instant`.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationsScreen.kt:31:21 'typealias Instant = Instant' is deprecated. This type is deprecated in favor of `kotlin.time.Instant`.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationsScreen.kt:39:41 'val dayOfMonth: Int' is deprecated. Use the 'day' property instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationsScreen.kt:71:29 'fun rememberSwipeRefreshState(isRefreshing: Boolean): SwipeRefreshState' is deprecated. accompanist/swiperefresh is deprecated.
-     The androidx.compose equivalent of rememberSwipeRefreshState() is rememberPullRefreshState().
-     For more migration information, please visit https://google.github.io/accompanist/swiperefresh/#migration.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationsScreen.kt:90:5 'fun SwipeRefresh(state: SwipeRefreshState, onRefresh: () -> Unit, modifier: Modifier = ..., swipeEnabled: Boolean = ..., refreshTriggerDistance: Dp = ..., indicatorAlignment: Alignment = ..., indicatorPadding: PaddingValues = ..., indicator: @Composable() ComposableFunction2<@ParameterName(...) SwipeRefreshState, @ParameterName(...) Dp, Unit> = ..., clipIndicatorToPadding: Boolean = ..., content: @Composable() ComposableFunction0<Unit>): Unit' is deprecated. accompanist/swiperefresh is deprecated.
- The androidx.compose equivalent of SwipeRefresh is Modifier.pullRefresh().
- This is often migrated as:
- Box(modifier = Modifier.pullRefresh(refreshState)) {
-    ...
-    PullRefreshIndicator(...)
- }
+e: [ksp] InjectProcessingStep was unable to process 'UserRepository(UserDao,io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
 
- For more migration information, please visit https://google.github.io/accompanist/swiperefresh/#migration.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/AboutSupportScreen.kt:85:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/AccountInfoViewModel.kt:18:8 'typealias Instant = Instant' is deprecated. This type is deprecated in favor of `kotlin.time.Instant`.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/AccountInfoViewModel.kt:146:22 'typealias Instant = Instant' is deprecated. This type is deprecated in favor of `kotlin.time.Instant`.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/AccountSettingsScreen.kt:67:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:81:45 'typealias MenuAnchorType = ExposedDropdownMenuAnchorType' is deprecated. Renamed to ExposedDropdownMenuAnchorType.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:262:41 'typealias MenuAnchorType = ExposedDropdownMenuAnchorType' is deprecated. Renamed to ExposedDropdownMenuAnchorType.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/AppearanceScreen.kt:55:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/BusinessPlatformScreen.kt:67:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/BusinessPlatformScreen.kt:286:25 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/BusinessPlatformScreen.kt:340:17 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/BusinessPlatformScreen.kt:387:13 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/BusinessPlatformScreen.kt:394:13 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ChatSettingsScreen.kt:60:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/LanguageRegionScreen.kt:55:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/LicensesScreen.kt:55:44 'fun largeTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/NotificationSettingsScreen.kt:84:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/PasskeysScreen.kt:46:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/PrivacySecurityScreen.kt:57:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/RequestAccountInfoScreen.kt:94:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/SelectRegionScreen.kt:74:17 'fun SearchBar(query: String, onQueryChange: (String) -> Unit, onSearch: (String) -> Unit, active: Boolean, onActiveChange: (Boolean) -> Unit, modifier: Modifier = ..., enabled: Boolean = ..., placeholder: @Composable() ComposableFunction0<Unit>? = ..., leadingIcon: @Composable() ComposableFunction0<Unit>? = ..., trailingIcon: @Composable() ComposableFunction0<Unit>? = ..., shape: Shape = ..., colors: SearchBarColors = ..., tonalElevation: Dp = ..., shadowElevation: Dp = ..., windowInsets: WindowInsets = ..., interactionSource: MutableInteractionSource? = ..., content: @Composable() ComposableFunction1<ColumnScope, Unit>): Unit' is deprecated. Use overload which takes inputField as a parameter.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/SettingsComponents.kt:477:37 'typealias MenuAnchorType = ExposedDropdownMenuAnchorType' is deprecated. Renamed to ExposedDropdownMenuAnchorType.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/SettingsHubScreen.kt:62:44 'fun largeTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/SettingsScreen.kt:63:44 'fun largeTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/StorageDataScreen.kt:47:44 'fun largeTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
-w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/StorageProviderScreen.kt:85:44 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+Dependency trace:
+    => element (CLASS): com.synapse.social.studioasinc.data.repository.UserRepository
+    => element (CONSTRUCTOR): UserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => type (EXECUTABLE constructor): (UserDao,io.github.jan.supabase.SupabaseClient)void
+    => type (ERROR parameter type): UserDao
 
-BUILD SUCCESSFUL in 3m 37s
-36 actionable tasks: 19 executed, 1 from cache, 16 up-to-date
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] InjectProcessingStep was unable to process 'CommentRepository(CommentDao,io.github.jan.supabase.SupabaseClient,com.synapse.social.studioasinc.data.repository.ReactionRepository)' because 'CommentDao' could not be resolved.
+
+Dependency trace:
+    => element (CLASS): com.synapse.social.studioasinc.data.repository.CommentRepository
+    => element (CONSTRUCTOR): CommentRepository(CommentDao,io.github.jan.supabase.SupabaseClient,com.synapse.social.studioasinc.data.repository.ReactionRepository)
+    => type (EXECUTABLE constructor): (CommentDao,io.github.jan.supabase.SupabaseClient,com.synapse.social.studioasinc.data.repository.ReactionRepository)void
+    => type (ERROR parameter type): CommentDao
+
+If type 'CommentDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'CommentDao' is on your classpath.
+e: [ksp] InjectProcessingStep was unable to process 'PostRepository(PostDao,io.github.jan.supabase.SupabaseClient)' because 'PostDao' could not be resolved.
+
+Dependency trace:
+    => element (CLASS): com.synapse.social.studioasinc.data.repository.PostRepository
+    => element (CONSTRUCTOR): PostRepository(PostDao,io.github.jan.supabase.SupabaseClient)
+    => type (EXECUTABLE constructor): (PostDao,io.github.jan.supabase.SupabaseClient)void
+    => type (ERROR parameter type): PostDao
+
+If type 'PostDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'PostDao' is on your classpath.
+e: [ksp] ModuleProcessingStep was unable to process 'com.synapse.social.studioasinc.core.di.RepositoryModule' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideApplicationScope()' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideSharedAuthRepository()' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideAuthRepository(com.synapse.social.studioasinc.shared.data.repository.AuthRepository)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideSettingsRepository(android.content.Context)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'providePostRepository(PostDao,io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideUsernameRepository()' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideSharedPreferences(android.content.Context)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideProfileRepository(io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'providePostInteractionRepository()' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideProfileActionRepository()' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideReactionRepository(io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'providePostDetailRepository(io.github.jan.supabase.SupabaseClient,com.synapse.social.studioasinc.data.repository.ReactionRepository)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideCommentRepository(io.github.jan.supabase.SupabaseClient,CommentDao,com.synapse.social.studioasinc.data.repository.ReactionRepository)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'providePollRepository(io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideBookmarkRepository(io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideReshareRepository(io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideReportRepository(io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideStoryRepository(android.content.Context,com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideAppSettingsManager(android.content.Context)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideReelRepository()' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideNotificationRepository(io.github.jan.supabase.SupabaseClient,kotlinx.coroutines.CoroutineScope)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideSecureStorage(android.content.Context)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideStorageRepository(com.synapse.social.studioasinc.shared.data.database.StorageDatabase,com.synapse.social.studioasinc.shared.data.local.SecureStorage)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideKtorHttpClient()' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideFileUploader(android.content.Context)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideImgBBUploadService(io.ktor.client.HttpClient)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideCloudinaryUploadService(io.ktor.client.HttpClient)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideSupabaseUploadService(io.github.jan.supabase.SupabaseClient)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideR2UploadService(io.ktor.client.HttpClient)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideValidateProviderConfigUseCase()' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideGetStorageConfigUseCase(com.synapse.social.studioasinc.shared.domain.repository.StorageRepository)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideUpdateStorageProviderUseCase(com.synapse.social.studioasinc.shared.domain.repository.StorageRepository)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+e: [ksp] BindingMethodProcessingStep was unable to process 'provideUploadMediaUseCase(com.synapse.social.studioasinc.shared.domain.repository.StorageRepository,com.synapse.social.studioasinc.shared.data.FileUploader,com.synapse.social.studioasinc.shared.data.source.remote.ImgBBUploadService,com.synapse.social.studioasinc.shared.data.source.remote.CloudinaryUploadService,com.synapse.social.studioasinc.shared.data.source.remote.SupabaseUploadService,com.synapse.social.studioasinc.shared.data.source.remote.R2UploadService)' because 'UserDao' could not be resolved.
+
+Dependency trace:
+    => element (OBJECT): com.synapse.social.studioasinc.core.di.RepositoryModule
+    => element (METHOD): provideUserRepository(UserDao,io.github.jan.supabase.SupabaseClient)
+    => element (PARAMETER): userDao
+    => type (ERROR parameter type): UserDao
+
+If type 'UserDao' is a generated type, check above for compilation errors that may have prevented the type from being generated. Otherwise, ensure that type 'UserDao' is on your classpath.
+
+> Task :app:kspDebugKotlin FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:kspDebugKotlin'.
+> A failure occurred while executing com.google.devtools.ksp.gradle.KspAAWorkerAction
+   > KSP failed with exit code: PROCESSING_ERROR
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 37s
+35 actionable tasks: 18 executed, 1 from cache, 16 up-to-date

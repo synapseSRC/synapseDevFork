@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.viewmodel
+package com.synapse.social.studioasinc.feature.shared.viewmodel
 
 import com.synapse.social.studioasinc.data.remote.services.SupabaseFollowService
 import com.synapse.social.studioasinc.data.repository.AuthRepository
@@ -83,6 +83,42 @@ class FollowButtonViewModelTest {
         verify(followService, never()).isFollowing(any(), any())
         val state = viewModel.uiState.value
         assertFalse(state.isFollowing)
+    }
+
+    @Test
+    fun `initialize should handle failure when checking follow status`() = runTest {
+        // Arrange
+        val currentUid = "currentUid"
+        val targetUid = "targetUid"
+        whenever(authRepository.getCurrentUserUid()).thenReturn(currentUid)
+        whenever(followService.isFollowing(currentUid, targetUid)).thenReturn(Result.failure(Exception("Network error")))
+
+        // Act
+        viewModel.initialize(targetUid)
+        advanceUntilIdle()
+
+        // Assert
+        val state = viewModel.uiState.value
+        assertFalse(state.isFollowing) // Should remain false
+        assertFalse(state.isLoading)
+        verify(followService).isFollowing(currentUid, targetUid)
+    }
+
+    @Test
+    fun `initialize should not check follow status if target user is the current user`() = runTest {
+        // Arrange
+        val uid = "sameUid"
+        whenever(authRepository.getCurrentUserUid()).thenReturn(uid)
+
+        // Act
+        viewModel.initialize(uid)
+        advanceUntilIdle()
+
+        // Assert
+        verify(followService, never()).isFollowing(any(), any())
+        val state = viewModel.uiState.value
+        assertFalse(state.isFollowing)
+        assertFalse(state.isLoading)
     }
 
     @Test

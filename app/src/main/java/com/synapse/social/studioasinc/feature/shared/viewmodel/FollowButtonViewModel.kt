@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.viewmodel
+package com.synapse.social.studioasinc.feature.shared.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

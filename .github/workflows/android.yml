@@ -9,6 +9,7 @@ on:
       - 'docs/**'
       - 'LICENSE'
       - '.gitignore'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 jobs:

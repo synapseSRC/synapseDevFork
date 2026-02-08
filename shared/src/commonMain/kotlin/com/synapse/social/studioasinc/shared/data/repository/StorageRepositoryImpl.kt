@@ -1,7 +1,7 @@
 package com.synapse.social.studioasinc.shared.data.repository
 
 import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
-import com.synapse.social.studioasinc.shared.data.database.Storage_config
+import com.synapse.social.studioasinc.shared.data.local.SecureStorage
 import com.synapse.social.studioasinc.shared.domain.model.StorageConfig
 import com.synapse.social.studioasinc.shared.domain.model.StorageProvider
 import com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
@@ -15,28 +15,77 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 
 class StorageRepositoryImpl(
-    db: StorageDatabase
+    db: StorageDatabase,
+    private val secureStorage: SecureStorage
 ) : StorageRepository {
     private val queries = db.storageConfigQueries
+
+    companion object {
+        private const val KEY_IMGBB = "imgbb_key"
+        private const val KEY_CLOUDINARY_API_KEY = "cloudinary_api_key"
+        private const val KEY_CLOUDINARY_API_SECRET = "cloudinary_api_secret"
+        private const val KEY_SUPABASE = "supabase_key"
+        private const val KEY_R2_ACCESS_KEY_ID = "r2_access_key_id"
+        private const val KEY_R2_SECRET_ACCESS_KEY = "r2_secret_access_key"
+    }
 
     override fun getStorageConfig(): Flow<StorageConfig> {
         return queries.getConfig().asFlow()
             .onStart { ensureDefault() }
             .mapToOneOrNull(Dispatchers.IO)
             .map { row ->
-                row?.toStorageConfig() ?: StorageConfig()
+                if (row == null) return@map StorageConfig()
+
+                // Retrieve secrets from SecureStorage, falling back to DB (if migration failed or for legacy support)
+                // Note: migrateSecrets() in ensureDefault() should have moved them to SecureStorage and cleared DB.
+
+                val imgBBKey = secureStorage.getString(KEY_IMGBB)?.takeIf { it.isNotBlank() } ?: row.imgbb_key
+
+                val cloudinaryApiKey = secureStorage.getString(KEY_CLOUDINARY_API_KEY)?.takeIf { it.isNotBlank() } ?: row.cloudinary_api_key
+                val cloudinaryApiSecret = secureStorage.getString(KEY_CLOUDINARY_API_SECRET)?.takeIf { it.isNotBlank() } ?: row.cloudinary_api_secret
+
+                val supabaseKey = secureStorage.getString(KEY_SUPABASE)?.takeIf { it.isNotBlank() } ?: row.supabase_key
+
+                val r2AccessKeyId = secureStorage.getString(KEY_R2_ACCESS_KEY_ID)?.takeIf { it.isNotBlank() } ?: row.r2_access_key_id
+                val r2SecretAccessKey = secureStorage.getString(KEY_R2_SECRET_ACCESS_KEY)?.takeIf { it.isNotBlank() } ?: row.r2_secret_access_key
+
+                StorageConfig(
+                    photoProvider = row.photo_provider.toStorageProvider(),
+                    videoProvider = row.video_provider.toStorageProvider(),
+                    otherProvider = row.other_provider.toStorageProvider(),
+                    imgBBKey = imgBBKey,
+                    cloudinaryCloudName = row.cloudinary_cloud_name,
+                    cloudinaryApiKey = cloudinaryApiKey,
+                    cloudinaryApiSecret = cloudinaryApiSecret,
+                    supabaseUrl = row.supabase_url,
+                    supabaseKey = supabaseKey,
+                    supabaseBucket = row.supabase_bucket,
+                    r2AccountId = row.r2_account_id,
+                    r2AccessKeyId = r2AccessKeyId,
+                    r2SecretAccessKey = r2SecretAccessKey,
+                    r2BucketName = row.r2_bucket_name
+                )
             }
     }
 
     override suspend fun saveStorageConfig(config: StorageConfig) = withContext(Dispatchers.IO) {
+        // Save secrets to SecureStorage
+        secureStorage.save(KEY_IMGBB, config.imgBBKey)
+        secureStorage.save(KEY_CLOUDINARY_API_KEY, config.cloudinaryApiKey)
+        secureStorage.save(KEY_CLOUDINARY_API_SECRET, config.cloudinaryApiSecret)
+        secureStorage.save(KEY_SUPABASE, config.supabaseKey)
+        secureStorage.save(KEY_R2_ACCESS_KEY_ID, config.r2AccessKeyId)
+        secureStorage.save(KEY_R2_SECRET_ACCESS_KEY, config.r2SecretAccessKey)
+
         queries.transaction {
             queries.updatePhotoProvider(config.photoProvider.name)
             queries.updateVideoProvider(config.videoProvider.name)
             queries.updateOtherProvider(config.otherProvider.name)
-            queries.updateImgBB(config.imgBBKey)
-            queries.updateCloudinary(config.cloudinaryCloudName, config.cloudinaryApiKey, config.cloudinaryApiSecret)
-            queries.updateSupabase(config.supabaseUrl, config.supabaseKey, config.supabaseBucket)
-            queries.updateR2(config.r2AccountId, config.r2AccessKeyId, config.r2SecretAccessKey, config.r2BucketName)
+            // Save non-secrets to DB, clear secrets
+            queries.updateImgBB("")
+            queries.updateCloudinary(config.cloudinaryCloudName, "", "")
+            queries.updateSupabase(config.supabaseUrl, "", config.supabaseBucket)
+            queries.updateR2(config.r2AccountId, "", "", config.r2BucketName)
         }
     }
 
@@ -53,15 +102,19 @@ class StorageRepositoryImpl(
     }
 
     override suspend fun updateImgBBConfig(key: String) = withContext(Dispatchers.IO) {
-        queries.updateImgBB(key)
+        secureStorage.save(KEY_IMGBB, key)
+        queries.updateImgBB("")
     }
 
     override suspend fun updateCloudinaryConfig(cloudName: String, apiKey: String, apiSecret: String) = withContext(Dispatchers.IO) {
-        queries.updateCloudinary(cloudName, apiKey, apiSecret)
+        secureStorage.save(KEY_CLOUDINARY_API_KEY, apiKey)
+        secureStorage.save(KEY_CLOUDINARY_API_SECRET, apiSecret)
+        queries.updateCloudinary(cloudName, "", "")
     }
 
     override suspend fun updateSupabaseConfig(url: String, key: String, bucket: String) = withContext(Dispatchers.IO) {
-        queries.updateSupabase(url, key, bucket)
+        secureStorage.save(KEY_SUPABASE, key)
+        queries.updateSupabase(url, "", bucket)
     }
 
     override suspend fun updateR2Config(
@@ -70,11 +123,40 @@ class StorageRepositoryImpl(
         secretAccessKey: String,
         bucketName: String
     ) = withContext(Dispatchers.IO) {
-        queries.updateR2(accountId, accessKeyId, secretAccessKey, bucketName)
+        secureStorage.save(KEY_R2_ACCESS_KEY_ID, accessKeyId)
+        secureStorage.save(KEY_R2_SECRET_ACCESS_KEY, secretAccessKey)
+        queries.updateR2(accountId, "", "", bucketName)
     }
 
     override suspend fun ensureDefault() = withContext(Dispatchers.IO) {
         queries.insertDefault()
+        migrateSecrets()
+    }
+
+    private fun migrateSecrets() {
+        val row = queries.getConfig().executeAsOneOrNull() ?: return
+
+        if (row.imgbb_key.isNotBlank()) {
+            secureStorage.save(KEY_IMGBB, row.imgbb_key)
+            queries.updateImgBB("")
+        }
+
+        if (row.cloudinary_api_key.isNotBlank() || row.cloudinary_api_secret.isNotBlank()) {
+            if (row.cloudinary_api_key.isNotBlank()) secureStorage.save(KEY_CLOUDINARY_API_KEY, row.cloudinary_api_key)
+            if (row.cloudinary_api_secret.isNotBlank()) secureStorage.save(KEY_CLOUDINARY_API_SECRET, row.cloudinary_api_secret)
+            queries.updateCloudinary(row.cloudinary_cloud_name, "", "")
+        }
+
+        if (row.supabase_key.isNotBlank()) {
+             secureStorage.save(KEY_SUPABASE, row.supabase_key)
+             queries.updateSupabase(row.supabase_url, "", row.supabase_bucket)
+        }
+
+        if (row.r2_access_key_id.isNotBlank() || row.r2_secret_access_key.isNotBlank()) {
+            if (row.r2_access_key_id.isNotBlank()) secureStorage.save(KEY_R2_ACCESS_KEY_ID, row.r2_access_key_id)
+            if (row.r2_secret_access_key.isNotBlank()) secureStorage.save(KEY_R2_SECRET_ACCESS_KEY, row.r2_secret_access_key)
+            queries.updateR2(row.r2_account_id, "", "", row.r2_bucket_name)
+        }
     }
 
     private fun String.toStorageProvider(): StorageProvider {
@@ -83,24 +165,5 @@ class StorageRepositoryImpl(
         } catch (e: Exception) {
             StorageProvider.DEFAULT
         }
-    }
-
-    private fun Storage_config.toStorageConfig(): StorageConfig {
-        return StorageConfig(
-            photoProvider = photo_provider.toStorageProvider(),
-            videoProvider = video_provider.toStorageProvider(),
-            otherProvider = other_provider.toStorageProvider(),
-            imgBBKey = imgbb_key,
-            cloudinaryCloudName = cloudinary_cloud_name,
-            cloudinaryApiKey = cloudinary_api_key,
-            cloudinaryApiSecret = cloudinary_api_secret,
-            supabaseUrl = supabase_url,
-            supabaseKey = supabase_key,
-            supabaseBucket = supabase_bucket,
-            r2AccountId = r2_account_id,
-            r2AccessKeyId = r2_access_key_id,
-            r2SecretAccessKey = r2_secret_access_key,
-            r2BucketName = r2_bucket_name
-        )
     }
 }

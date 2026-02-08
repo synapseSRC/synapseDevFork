@@ -36,6 +36,11 @@ class SearchRepositoryImpl(
     private val client: SupabaseClientInterface = SupabaseClient.client
 ) : ISearchRepository {
 
+    // Pre-generated mock data to avoid object creation on every query
+    private val mockSparklines = List(20) {
+        List(10) { (0..100).random().toFloat() }
+    }
+
     override suspend fun searchPosts(query: String): Result<List<SearchPost>> = runCatching {
         // Using 'users' as the relationship name. If it fails, we fallback to non-joined and empty author data.
         val columns = Columns.raw("id, post_text, author_uid, likes_count, comments_count, reshares_count, created_at, author:users!posts_author_uid_fkey(display_name, username, avatar)")
@@ -75,9 +80,9 @@ class SearchRepositoryImpl(
             }
             order("usage_count", Order.DESCENDING)
             limit(20)
-        }.decodeList<SearchHashtag>().map {
-            // Mock sparkline data
-            it.copy(sparklinePoints = List(10) { _ -> (0..100).random().toFloat() })
+        }.decodeList<SearchHashtag>().mapIndexed { index, item ->
+            // Mock sparkline data (reused from pool)
+            item.copy(sparklinePoints = mockSparklines[index % mockSparklines.size])
         }
     }
 
@@ -85,8 +90,8 @@ class SearchRepositoryImpl(
         client.postgrest["hashtags"].select {
             order("usage_count", Order.DESCENDING)
             limit(10)
-        }.decodeList<SearchHashtag>().map {
-            it.copy(sparklinePoints = List(10) { _ -> (0..100).random().toFloat() })
+        }.decodeList<SearchHashtag>().mapIndexed { index, item ->
+            item.copy(sparklinePoints = mockSparklines[index % mockSparklines.size])
         }
     }
 

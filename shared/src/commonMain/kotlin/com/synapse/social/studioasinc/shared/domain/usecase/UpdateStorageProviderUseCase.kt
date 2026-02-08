@@ -9,7 +9,10 @@ class UpdateStorageProviderUseCase(private val repository: StorageRepository) {
         when (mediaType) {
             MediaType.PHOTO, MediaType.IMAGE -> repository.updatePhotoProvider(provider)
             MediaType.VIDEO -> repository.updateVideoProvider(provider)
-            MediaType.OTHER, MediaType.AUDIO -> repository.updateOtherProvider(provider)
+            MediaType.OTHER -> repository.updateOtherProvider(provider)
+            else -> {
+                // Ignore other media types
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ import com.synapse.social.studioasinc.shared.domain.model.StorageConfig
 import com.synapse.social.studioasinc.shared.domain.model.StorageProvider
 import com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
 import kotlinx.coroutines.flow.first
+import kotlinx.datetime.Clock
 
 class UploadMediaUseCase(
     private val repository: StorageRepository,
@@ -53,7 +54,7 @@ class UploadMediaUseCase(
 
             val service = getUploadService(providerToUse)
             val fileBytes = fileUploader.readFile(filePath)
-            val fileName = fileUploader.getFileName(filePath).ifBlank { "upload_${kotlinx.datetime.Clock.System.now().toEpochMilliseconds()}" }
+            val fileName = fileUploader.getFileName(filePath).ifBlank { "upload_${Clock.System.now().toEpochMilliseconds()}" }
 
             val url = service.upload(fileBytes, fileName, config, bucketName, onProgress)
             Result.success(url)
@@ -66,7 +67,8 @@ class UploadMediaUseCase(
         return when (mediaType) {
             MediaType.PHOTO, MediaType.IMAGE -> config.photoProvider
             MediaType.VIDEO -> config.videoProvider
-            MediaType.OTHER, MediaType.AUDIO -> config.otherProvider
+            MediaType.OTHER -> config.otherProvider
+            else -> config.otherProvider
         }
     }
 

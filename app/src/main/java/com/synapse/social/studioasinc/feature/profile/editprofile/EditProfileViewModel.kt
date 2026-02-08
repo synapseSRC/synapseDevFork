@@ -60,7 +60,7 @@ class EditProfileViewModel @Inject constructor(
                                 bio = profile.bio ?: "",
                                 avatarUrl = profile.avatar,
                                 coverUrl = profile.profileCoverImage,
-                                selectedGender = profile.gender ?: Gender.Hidden,
+                                selectedGender = profile.safeGender,
                                 selectedRegion = profile.region.takeIf { it != "null" } // Handle "null" string from DB sometimes
                             )
                         }

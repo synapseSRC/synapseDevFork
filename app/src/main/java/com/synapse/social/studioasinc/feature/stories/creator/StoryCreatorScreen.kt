@@ -132,32 +132,24 @@ fun StoryCreatorScreen(
     ) {
         when {
             state.capturedMediaUri != null || state.sharedPost != null -> {
-                StoryEditorContent(
-                    mediaUri = state.capturedMediaUri,
-                    sharedPost = state.sharedPost,
-                    mediaType = state.mediaType,
-                    textOverlays = state.textOverlays,
-                    drawings = state.drawings,
-                    stickers = state.stickers,
-                    selectedPrivacy = state.selectedPrivacy,
-                    isPosting = state.isPosting,
-                    onAddText = { viewModel.addTextOverlay() },
-                    onRemoveText = { viewModel.removeTextOverlay(it) },
-                    onUpdateTextPosition = { index, offset -> viewModel.updateTextPosition(index, offset) },
-                    onUpdateTextContent = { index, content -> viewModel.updateTextContent(index, content) },
-                    onAddDrawing = { viewModel.addDrawing(it) },
-                    onClearDrawings = { viewModel.clearDrawings() },
-                    onAddSticker = { viewModel.addSticker(it) },
-                    onRemoveSticker = { viewModel.removeSticker(it) },
-                    onUpdateStickerPosition = { index, offset -> viewModel.updateStickerPosition(index, offset) },
-                    onPrivacyChange = { viewModel.setPrivacy(it) },
-                    onPost = { viewModel.postStory() },
-                    onCancel = { viewModel.clearCapturedMedia() },
-                    onClose = onClose
-                )
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Story Editor - Not Implemented", color = Color.White)
+                }
             }
             hasCameraPermission -> {
 
 
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Button(onClick = { galleryLauncher.launch("image
+                    Button(onClick = { galleryLauncher.launch("image/*") }) {
+                        Text("Open Gallery")
+                    }
+                }
+            }
+            else -> {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Camera permission required")
+                }
+            }
+        }
+    }
+}

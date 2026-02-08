@@ -518,8 +518,8 @@ class SupabaseDatabaseService : IDatabaseService {
             .replace("\"", "\\\"")
             .replace(";", "")
             .replace("--", "")
-            .replace("
-", "")       // Remove block comment end
+            .replace("/*", "")
+            .replace("*/", "")
             .trim()
             .take(100)
     }

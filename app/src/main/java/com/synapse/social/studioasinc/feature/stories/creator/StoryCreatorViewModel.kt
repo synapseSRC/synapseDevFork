@@ -22,6 +22,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+enum class FlashMode { OFF, ON, AUTO }
+
+data class TextOverlay(
+    val text: String,
+    val position: Offset,
+    val color: Color = Color.White,
+    val scale: Float = 1f
+)
+
 data class DrawingPath(
     val points: List<Offset>,
     val color: Color,

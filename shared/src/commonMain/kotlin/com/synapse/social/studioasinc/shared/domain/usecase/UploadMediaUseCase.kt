@@ -32,7 +32,7 @@ class UploadMediaUseCase(
 
             val providerToUse = if (provider == StorageProvider.DEFAULT) {
                  when (mediaType) {
-                     MediaType.PHOTO -> StorageProvider.IMGBB
+                     MediaType.PHOTO, MediaType.IMAGE -> StorageProvider.IMGBB
                      else -> StorageProvider.CLOUDINARY
                  }
             } else {
@@ -67,6 +67,8 @@ class UploadMediaUseCase(
             MediaType.PHOTO -> config.photoProvider
             MediaType.VIDEO -> config.videoProvider
             MediaType.OTHER -> config.otherProvider
+            MediaType.IMAGE -> config.photoProvider // Map IMAGE to PHOTO provider
+            MediaType.AUDIO -> config.otherProvider // Map AUDIO to OTHER provider
         }
     }
 

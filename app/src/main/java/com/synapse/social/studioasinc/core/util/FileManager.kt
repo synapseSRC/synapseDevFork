@@ -362,13 +362,17 @@ object FileManager {
     private fun copyToCache(context: Context, uri: Uri): String? {
         return try {
             context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                var fileName = getFileName(context, uri)
-                if (fileName.isNullOrEmpty()) {
-                    fileName = "temp_file"
-                }
-                // Prepend timestamp to ensure uniqueness and prevent collisions
-                val uniqueFileName = "${System.currentTimeMillis()}_$fileName"
-                val cacheFile = File(context.cacheDir, uniqueFileName)
+                val fileName = getFileName(context, uri) ?: "temp_file"
+                // Extract extension and name
+                val ext = if (fileName.contains(".")) ".${fileName.substringAfterLast(".")}" else ".tmp"
+                val name = if (fileName.contains(".")) fileName.substringBeforeLast(".") else fileName
+
+                // Sanitize name part (allow only safe chars, shorten if too long)
+                val safeName = name.replace(Regex("[^a-zA-Z0-9_-]"), "_").take(50)
+
+                // Use createTempFile to handle uniqueness and safety in cacheDir
+                val cacheFile = File.createTempFile("${System.currentTimeMillis()}_$safeName", ext, context.cacheDir)
+
                 FileOutputStream(cacheFile).use { outputStream ->
                     inputStream.copyTo(outputStream, BUFFER_SIZE)
                 }

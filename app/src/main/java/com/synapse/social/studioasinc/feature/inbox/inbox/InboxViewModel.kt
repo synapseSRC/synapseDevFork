@@ -2,7 +2,6 @@ package com.synapse.social.studioasinc.ui.inbox
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.data.remote.services.SupabaseAuthenticationService
 import com.synapse.social.studioasinc.ui.inbox.models.*
 import com.synapse.social.studioasinc.domain.model.User
 import com.synapse.social.studioasinc.UserProfileManager
@@ -13,9 +12,7 @@ import kotlinx.coroutines.launch
  * ViewModel for the Inbox screen.
  * Note: Chat functionality removed - shows empty state UI
  */
-class InboxViewModel(
-    private val authService: SupabaseAuthenticationService = SupabaseAuthenticationService()
-) : ViewModel() {
+class InboxViewModel : ViewModel() {
 
     // UI State
     private val _uiState = MutableStateFlow<InboxUiState>(InboxUiState.Loading)

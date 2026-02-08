@@ -2,22 +2,17 @@ package com.synapse.social.studioasinc.ui.inbox
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.synapse.social.studioasinc.data.remote.services.SupabaseAuthenticationService
 
 /**
- * Factory for creating InboxViewModel instances with dependencies.
- * Requirements: 2.4
+ * Factory for creating InboxViewModel instances.
+ * Note: Dependencies removed as chat functionality is disabled.
  */
-class InboxViewModelFactory(
-    private val authService: SupabaseAuthenticationService = SupabaseAuthenticationService()
-) : ViewModelProvider.Factory {
+class InboxViewModelFactory : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(InboxViewModel::class.java)) {
-            return InboxViewModel(
-                authService = authService
-            ) as T
+            return InboxViewModel() as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
     }

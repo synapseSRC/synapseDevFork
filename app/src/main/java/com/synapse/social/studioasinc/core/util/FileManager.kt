@@ -60,7 +60,9 @@ object FileManager {
 
     fun getTmpFileUri(context: Context, extension: String = ".png"): Uri {
         val prefix = if (extension == ".mp4") "tmp_video_file" else "tmp_image_file"
-        val tmpFile = File.createTempFile(prefix, extension, context.cacheDir)
+        val tempDir = File(context.cacheDir, "temp")
+        if (!tempDir.exists()) tempDir.mkdirs()
+        val tmpFile = File.createTempFile(prefix, extension, tempDir)
         return FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", tmpFile)
     }
 

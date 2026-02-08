@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
-    <external-path
-        name="files_root"
-        path="Android/data/com.synapse.social.studioasinc" />
-    <external-path
+    <!-- Restrict external files to DCIM subdirectory for photos/videos -->
+    <external-files-path
         name="external_files"
-        path="." />
+        path="DCIM/" />
+    <!-- Restrict cache to temp subdirectory -->
     <cache-path
         name="cache_files"
-        path="." />
+        path="temp/" />
 </paths>

@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.core.util.FileManager
+import com.synapse.social.studioasinc.domain.model.Gender
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -59,7 +60,7 @@ class EditProfileViewModel @Inject constructor(
                                 bio = profile.bio ?: "",
                                 avatarUrl = profile.avatar,
                                 coverUrl = profile.profileCoverImage,
-                                selectedGender = Gender.fromString(profile.gender),
+                                selectedGender = profile.gender ?: Gender.Hidden,
                                 selectedRegion = profile.region.takeIf { it != "null" } // Handle "null" string from DB sometimes
                             )
                         }

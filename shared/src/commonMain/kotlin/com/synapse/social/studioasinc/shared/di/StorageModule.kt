@@ -21,17 +21,17 @@ import org.koin.dsl.module
 import app.cash.sqldelight.db.SqlDriver
 
 expect val storageDriverModule: Module
+expect val fileUploaderModule: Module
 
 val storageModule = module {
     includes(storageDriverModule)
+    includes(fileUploaderModule)
 
     single {
         StorageDatabase(get())
     }
 
     single<StorageRepository> { StorageRepositoryImpl(get()) }
-
-    single { FileUploader() }
 
     single {
         HttpClient {

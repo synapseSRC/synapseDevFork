@@ -461,13 +461,6 @@ class CreatePostViewModel @Inject constructor(
             return
         }
 
-        // Validate that no content URIs are present
-        val invalidUrls = currentState.mediaItems.filter { it.url.startsWith("content://") }
-        if (invalidUrls.isNotEmpty()) {
-            android.util.Log.e("CreatePost", "Found content URIs in media items: ${invalidUrls.map { it.url }}")
-            _uiState.update { it.copy(error = "Media processing failed. Please try selecting the images again.") }
-            return
-        }
 
         viewModelScope.launch {
             val currentUser = authService.getCurrentUser()
@@ -555,7 +548,7 @@ class CreatePostViewModel @Inject constructor(
                     val filePath = mediaItem.url
                     val file = java.io.File(filePath)
 
-                    if (!file.exists()) {
+                    if (!filePath.startsWith("content://") && !file.exists()) {
                         android.util.Log.e("CreatePost", "File not found: $filePath")
                         completedItems++
                         val progress = completedItems.toFloat() / totalItems
@@ -667,28 +660,54 @@ class CreatePostViewModel @Inject constructor(
         // Pick the first video item even if mixed with images
         val videoItem = currentState.mediaItems.firstOrNull { it.type == MediaType.VIDEO } ?: return
         val videoPath = videoItem.url
+        val isContentUri = videoPath.startsWith("content://")
         val file = java.io.File(videoPath)
 
-        if (!file.exists()) {
+        if (!isContentUri && !file.exists()) {
             _uiState.update { it.copy(error = "Video file not found") }
             return
         }
 
         // Security Check: Ensure the file path is not pointing to sensitive app data
-        val dataDir = getApplication<Application>().applicationInfo.dataDir
-        val isInDataDir = file.absolutePath.startsWith(dataDir)
-        val isInCacheDir = file.absolutePath.startsWith(getApplication<Application>().cacheDir.absolutePath)
+        if (!isContentUri) {
+            val dataDir = getApplication<Application>().applicationInfo.dataDir
+            val isInDataDir = file.absolutePath.startsWith(dataDir)
+            val isInCacheDir = file.absolutePath.startsWith(getApplication<Application>().cacheDir.absolutePath)
 
-        if (isInDataDir && !isInCacheDir) {
-            _uiState.update { it.copy(error = "Invalid video file source") }
-            return
+            if (isInDataDir && !isInCacheDir) {
+                _uiState.update { it.copy(error = "Invalid video file source") }
+                return
+            }
         }
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, uploadProgress = 0f) }
 
             val fileName = "reel_${System.currentTimeMillis()}.mp4"
-            val channel = file.inputStream().toByteReadChannel()
+            var channel: io.ktor.utils.io.ByteReadChannel?
+            var size: Long
+
+            try {
+                if (isContentUri) {
+                    val uri = Uri.parse(videoPath)
+                    val resolver = getApplication<Application>().contentResolver
+                    val inputStream = resolver.openInputStream(uri)
+                        ?: throw java.io.IOException("Failed to open input stream")
+                    channel = inputStream.toByteReadChannel()
+                    size = resolver.openFileDescriptor(uri, "r")?.statSize ?: 0L
+                } else {
+                    channel = file.inputStream().toByteReadChannel()
+                    size = file.length()
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false, error = "Failed to prepare video: ${e.message}") }
+                return@launch
+            }
+
+            if (channel == null) {
+                 _uiState.update { it.copy(isLoading = false, error = "Failed to create read channel") }
+                 return@launch
+            }
 
             val metadataMap = mutableMapOf<String, Any?>()
             currentState.feeling?.let { metadataMap["feeling"] = mapOf("emoji" to it.emoji, "text" to it.text, "type" to it.type.name) }
@@ -700,7 +719,7 @@ class CreatePostViewModel @Inject constructor(
 
             reelRepository.uploadReel(
                 dataChannel = channel,
-                size = file.length(),
+                size = size,
                 fileName = fileName,
                 caption = currentState.postText,
                 musicTrack = "Original Audio", // Default for now
@@ -719,7 +738,6 @@ class CreatePostViewModel @Inject constructor(
             }
         }
     }
-
     companion object {
         private const val DEFAULT_LAYOUT_TYPE = "COLUMNS"
     }

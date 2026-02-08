@@ -1,4 +1,3 @@
-
 package com.synapse.social.studioasinc.shared.domain.usecase
 
 import com.synapse.social.studioasinc.shared.data.FileUploader
@@ -54,7 +53,7 @@ class UploadMediaUseCase(
 
             val service = getUploadService(providerToUse)
             val fileBytes = fileUploader.readFile(filePath)
-            val fileName = filePath.substringAfterLast("/").ifBlank { "upload_${kotlinx.datetime.Clock.System.now().toEpochMilliseconds()}" }
+            val fileName = fileUploader.getFileName(filePath).ifBlank { "upload_${kotlinx.datetime.Clock.System.now().toEpochMilliseconds()}" }
 
             val url = service.upload(fileBytes, fileName, config, bucketName, onProgress)
             Result.success(url)

@@ -39,6 +39,36 @@ fun PrivacySecurityScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
 
+    PrivacySecurityContent(
+        privacySettings = privacySettings,
+        isLoading = isLoading,
+        error = error,
+        onNavigateBack = onNavigateBack,
+        onNavigateToBlockedUsers = onNavigateToBlockedUsers,
+        onClearError = { viewModel.clearError() },
+        onReadReceiptsChanged = { viewModel.setReadReceiptsEnabled(it) },
+        onAppLockChanged = { viewModel.setAppLockEnabled(it) },
+        onChatLockChanged = { viewModel.setChatLockEnabled(it) },
+        onProfileVisibilityChanged = { viewModel.setProfileVisibility(it) },
+        onContentVisibilityChanged = { viewModel.setContentVisibility(it) }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PrivacySecurityContent(
+    privacySettings: PrivacySettings,
+    isLoading: Boolean,
+    error: String?,
+    onNavigateBack: () -> Unit,
+    onNavigateToBlockedUsers: () -> Unit,
+    onClearError: () -> Unit,
+    onReadReceiptsChanged: (Boolean) -> Unit,
+    onAppLockChanged: (Boolean) -> Unit,
+    onChatLockChanged: (Boolean) -> Unit,
+    onProfileVisibilityChanged: (ProfileVisibility) -> Unit,
+    onContentVisibilityChanged: (ContentVisibility) -> Unit
+) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
@@ -65,12 +95,12 @@ fun PrivacySecurityScreen(
                 Snackbar(
                     modifier = Modifier.padding(16.dp),
                     action = {
-                        TextButton(onClick = { viewModel.clearError() }) {
+                        TextButton(onClick = onClearError) {
                             Text("Dismiss")
                         }
                     }
                 ) {
-                    Text(error ?: "")
+                    Text(error)
                 }
             }
         }
@@ -90,30 +120,37 @@ fun PrivacySecurityScreen(
 
             // Profile Privacy Section
             item {
-                ProfilePrivacySection(isLoading = isLoading)
+                ProfilePrivacySection(
+                    privacySettings = privacySettings,
+                    isLoading = isLoading,
+                    onProfileVisibilityChanged = onProfileVisibilityChanged
+                )
             }
 
             // Message Privacy Section
             item {
                 MessagePrivacySection(
                     readReceiptsEnabled = privacySettings.readReceiptsEnabled,
-                    onReadReceiptsChanged = { viewModel.setReadReceiptsEnabled(it) },
+                    onReadReceiptsChanged = onReadReceiptsChanged,
                     isLoading = isLoading
                 )
             }
 
             // Group Privacy Section
             item {
-                GroupPrivacySection(isLoading = isLoading)
+                GroupPrivacySection(
+                    privacySettings = privacySettings,
+                    isLoading = isLoading
+                )
             }
 
             // Security Section
             item {
                 SecuritySection(
                     appLockEnabled = privacySettings.appLockEnabled,
-                    onAppLockChanged = { viewModel.setAppLockEnabled(it) },
+                    onAppLockChanged = onAppLockChanged,
                     chatLockEnabled = privacySettings.chatLockEnabled,
-                    onChatLockChanged = { viewModel.setChatLockEnabled(it) },
+                    onChatLockChanged = onChatLockChanged,
                     isLoading = isLoading
                 )
             }
@@ -149,7 +186,11 @@ private fun PrivacyCheckupSection(isLoading: Boolean) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ProfilePrivacySection(isLoading: Boolean) {
+private fun ProfilePrivacySection(
+    privacySettings: PrivacySettings,
+    isLoading: Boolean,
+    onProfileVisibilityChanged: (ProfileVisibility) -> Unit
+) {
     SettingsSection(title = "Profile Privacy") {
         SettingsSelectionItem(
             title = "Last Seen",
@@ -221,7 +262,10 @@ private fun MessagePrivacySection(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun GroupPrivacySection(isLoading: Boolean) {
+private fun GroupPrivacySection(
+    privacySettings: PrivacySettings,
+    isLoading: Boolean
+) {
     SettingsSection(title = "Group Privacy") {
         SettingsSelectionItem(
             title = "Groups",

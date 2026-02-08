@@ -43,30 +43,8 @@ fun NotificationSettingsScreen(
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    var showVibrateSheet by remember { mutableStateOf(false) }
-    var vibrateMode by remember { mutableStateOf("Default") }
-
-    var showLedSheet by remember { mutableStateOf(false) }
-    var ledColor by remember { mutableStateOf("Blue") }
-
     var showStartTimePicker by remember { mutableStateOf(false) }
     var showEndTimePicker by remember { mutableStateOf(false) }
-
-    val startTimeState = key(notificationPreferences.quietHoursStart) {
-        rememberTimePickerState(
-            initialHour = notificationPreferences.quietHoursStart.split(":").getOrNull(0)?.toIntOrNull() ?: 22,
-            initialMinute = notificationPreferences.quietHoursStart.split(":").getOrNull(1)?.toIntOrNull() ?: 0,
-            is24Hour = true
-        )
-    }
-
-    val endTimeState = key(notificationPreferences.quietHoursEnd) {
-        rememberTimePickerState(
-            initialHour = notificationPreferences.quietHoursEnd.split(":").getOrNull(0)?.toIntOrNull() ?: 8,
-            initialMinute = notificationPreferences.quietHoursEnd.split(":").getOrNull(1)?.toIntOrNull() ?: 0,
-            is24Hour = true
-        )
-    }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -110,214 +88,307 @@ fun NotificationSettingsScreen(
             contentPadding = PaddingValues(bottom = 32.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            // Section 1: Global Controls
             item {
-                NotifSettingsSection(title = "Global Settings") {
-                    NotifSettingsCard {
-                        NotifSettingsRow(
-                            icon = Icons.Default.Notifications,
-                            title = "Enable Notifications",
-                            subtitle = if (notificationPreferences.globalEnabled) "On" else "Off",
-                            trailingContent = {
-                                Switch(
-                                    checked = notificationPreferences.globalEnabled,
-                                    onCheckedChange = { viewModel.toggleGlobalNotifications(it) }
-                                )
-                            },
-                            onClick = { viewModel.toggleGlobalNotifications(!notificationPreferences.globalEnabled) }
-                        )
-                    }
-                }
+                GlobalSettingsSection(
+                    notificationPreferences = notificationPreferences,
+                    onToggle = viewModel::toggleGlobalNotifications
+                )
             }
 
-            // Section 2: Social Interactions
             item {
-                NotifSettingsSection(title = "Social Interactions") {
-                    NotifSettingsCard {
-                        SocialNotificationTypes.forEachIndexed { index, (category, label) ->
-                            val isEnabled = notificationPreferences.isEnabled(category)
-                            NotifSettingsRow(
-                                icon = when(category) {
-                                    NotificationCategory.LIKES -> Icons.Default.EmojiEmotions
-                                    NotificationCategory.FOLLOWS -> Icons.Default.Group
-                                    else -> Icons.Default.Notifications
-                                },
-                                title = label,
-                                subtitle = if (isEnabled) "Enabled" else "Disabled",
-                                trailingContent = {
-                                    Switch(
-                                        checked = isEnabled,
-                                        onCheckedChange = { viewModel.toggleNotificationCategory(category, it) },
-                                        enabled = notificationPreferences.globalEnabled
-                                    )
-                                },
-                                onClick = {
-                                    if (notificationPreferences.globalEnabled) {
-                                        viewModel.toggleNotificationCategory(category, !isEnabled)
-                                    }
-                                }
-                            )
-                            if (index < SocialNotificationTypes.size - 1) {
-                                HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-                            }
-                        }
-                    }
-                }
+                SocialInteractionsSection(
+                    notificationPreferences = notificationPreferences,
+                    onToggleCategory = viewModel::toggleNotificationCategory
+                )
             }
 
-            // Section 3: Content Updates
             item {
-                NotifSettingsSection(title = "Content Updates") {
-                    NotifSettingsCard {
-                        ContentNotificationTypes.forEachIndexed { index, (category, label) ->
-                            val isEnabled = notificationPreferences.isEnabled(category)
-                            NotifSettingsRow(
-                                icon = Icons.Default.ContentCopy,
-                                title = label,
-                                subtitle = if (isEnabled) "Enabled" else "Disabled",
-                                trailingContent = {
-                                    Switch(
-                                        checked = isEnabled,
-                                        onCheckedChange = { viewModel.toggleNotificationCategory(category, it) },
-                                        enabled = notificationPreferences.globalEnabled
-                                    )
-                                },
-                                onClick = {
-                                    if (notificationPreferences.globalEnabled) {
-                                        viewModel.toggleNotificationCategory(category, !isEnabled)
-                                    }
-                                }
-                            )
-                            if (index < ContentNotificationTypes.size - 1) {
-                                HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-                            }
-                        }
-                    }
-                }
+                ContentUpdatesSection(
+                    notificationPreferences = notificationPreferences,
+                    onToggleCategory = viewModel::toggleNotificationCategory
+                )
             }
 
-            // Section 4: System & Security
             item {
-                NotifSettingsSection(title = "System & Security") {
-                    NotifSettingsCard {
-                        NotifSettingsRow(
-                            icon = Icons.Default.Info,
-                            title = "Security Alerts",
-                            subtitle = "Always enabled",
-                            trailingContent = {
-                                Switch(
-                                    checked = true,
-                                    onCheckedChange = { },
-                                    enabled = false
-                                )
-                            },
-                            onClick = { }
-                        )
-                        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-                        NotifSettingsRow(
-                            icon = Icons.Default.Settings,
-                            title = "App Updates",
-                            subtitle = if (notificationPreferences.updatesEnabled) "Enabled" else "Disabled",
-                            trailingContent = {
-                                Switch(
-                                    checked = notificationPreferences.updatesEnabled,
-                                    onCheckedChange = { viewModel.toggleNotificationCategory(NotificationCategory.SYSTEM_UPDATES, it) },
-                                    enabled = notificationPreferences.globalEnabled
-                                )
-                            },
-                            onClick = {
-                                if (notificationPreferences.globalEnabled) {
-                                    viewModel.toggleNotificationCategory(NotificationCategory.SYSTEM_UPDATES, !notificationPreferences.updatesEnabled)
-                                }
-                            }
-                        )
-                    }
-                }
+                SystemSecuritySection(
+                    notificationPreferences = notificationPreferences,
+                    onToggleCategory = viewModel::toggleNotificationCategory
+                )
             }
 
-            // Section 5: Advanced
             item {
-                NotifSettingsSection(title = "Advanced Settings") {
-                    NotifSettingsCard {
-                         NotifSettingsRow(
-                            icon = Icons.Default.Schedule,
-                            title = "Quiet Hours",
-                            subtitle = if (notificationPreferences.quietHoursEnabled)
-                                "${notificationPreferences.quietHoursStart} - ${notificationPreferences.quietHoursEnd}"
-                                else "Disabled",
-                            trailingContent = {
-                                Switch(
-                                    checked = notificationPreferences.quietHoursEnabled,
-                                    onCheckedChange = { viewModel.toggleQuietHours(it) },
-                                    enabled = notificationPreferences.globalEnabled
-                                )
-                            },
-                            onClick = {
-                                if (notificationPreferences.globalEnabled) {
-                                    showStartTimePicker = true
-                                }
-                            }
-                        )
-                        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-                        NotifSettingsRow(
-                            icon = Icons.Default.DoNotDisturb,
-                            title = "Do Not Disturb",
-                            subtitle = if (notificationPreferences.doNotDisturb) "Active" else "Inactive",
-                            trailingContent = {
-                                Switch(
-                                    checked = notificationPreferences.doNotDisturb,
-                                    onCheckedChange = { viewModel.toggleDoNotDisturb(it) },
-                                    enabled = notificationPreferences.globalEnabled
-                                )
-                            },
-                            onClick = {
-                                if (notificationPreferences.globalEnabled) {
-                                    viewModel.toggleDoNotDisturb(!notificationPreferences.doNotDisturb)
-                                }
-                            }
-                        )
-                    }
-                }
+                AdvancedSettingsSection(
+                    notificationPreferences = notificationPreferences,
+                    onToggleQuietHours = viewModel::toggleQuietHours,
+                    onToggleDoNotDisturb = viewModel::toggleDoNotDisturb,
+                    onShowStartTimePicker = { showStartTimePicker = true }
+                )
             }
         }
     }
 
     if (showStartTimePicker) {
-        Dialog(onDismissRequest = { showStartTimePicker = false }) {
-            Card {
-                Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Start Quiet Hours", style = MaterialTheme.typography.titleMedium)
-                    Spacer(modifier = Modifier.height(16.dp))
-                    TimePicker(state = startTimeState)
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                        TextButton(onClick = { showStartTimePicker = false }) { Text("Cancel") }
-                        TextButton(onClick = {
-                            val time = "${startTimeState.hour.toString().padStart(2, '0')}:${startTimeState.minute.toString().padStart(2, '0')}"
-                            viewModel.setQuietHours(time, notificationPreferences.quietHoursEnd)
-                            showStartTimePicker = false
-                            showEndTimePicker = true
-                        }) { Text("Next") }
+        QuietHoursTimePickerDialog(
+            title = "Start Quiet Hours",
+            initialTime = notificationPreferences.quietHoursStart,
+            onDismiss = { showStartTimePicker = false },
+            onConfirm = { time ->
+                viewModel.setQuietHours(time, notificationPreferences.quietHoursEnd)
+                showStartTimePicker = false
+                showEndTimePicker = true
+            },
+            confirmText = "Next"
+        )
+    }
+
+    if (showEndTimePicker) {
+        QuietHoursTimePickerDialog(
+            title = "End Quiet Hours",
+            initialTime = notificationPreferences.quietHoursEnd,
+            onDismiss = { showEndTimePicker = false },
+            onConfirm = { time ->
+                viewModel.setQuietHours(notificationPreferences.quietHoursStart, time)
+                showEndTimePicker = false
+            },
+            confirmText = "Done"
+        )
+    }
+}
+
+@Composable
+private fun GlobalSettingsSection(
+    notificationPreferences: NotificationPreferences,
+    onToggle: (Boolean) -> Unit
+) {
+    NotifSettingsSection(title = "Global Settings") {
+        NotifSettingsCard {
+            NotifSettingsRow(
+                icon = Icons.Default.Notifications,
+                title = "Enable Notifications",
+                subtitle = if (notificationPreferences.globalEnabled) "On" else "Off",
+                trailingContent = {
+                    Switch(
+                        checked = notificationPreferences.globalEnabled,
+                        onCheckedChange = { onToggle(it) }
+                    )
+                },
+                onClick = { onToggle(!notificationPreferences.globalEnabled) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun SocialInteractionsSection(
+    notificationPreferences: NotificationPreferences,
+    onToggleCategory: (NotificationCategory, Boolean) -> Unit
+) {
+    NotifSettingsSection(title = "Social Interactions") {
+        NotifSettingsCard {
+            SocialNotificationTypes.forEachIndexed { index, (category, label) ->
+                val isEnabled = notificationPreferences.isEnabled(category)
+                NotifSettingsRow(
+                    icon = when (category) {
+                        NotificationCategory.LIKES -> Icons.Default.EmojiEmotions
+                        NotificationCategory.FOLLOWS -> Icons.Default.Group
+                        else -> Icons.Default.Notifications
+                    },
+                    title = label,
+                    subtitle = if (isEnabled) "Enabled" else "Disabled",
+                    trailingContent = {
+                        Switch(
+                            checked = isEnabled,
+                            onCheckedChange = { onToggleCategory(category, it) },
+                            enabled = notificationPreferences.globalEnabled
+                        )
+                    },
+                    onClick = {
+                        if (notificationPreferences.globalEnabled) {
+                            onToggleCategory(category, !isEnabled)
+                        }
                     }
+                )
+                if (index < SocialNotificationTypes.size - 1) {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    )
                 }
             }
         }
     }
+}
 
-    if (showEndTimePicker) {
-        Dialog(onDismissRequest = { showEndTimePicker = false }) {
-            Card {
-                Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("End Quiet Hours", style = MaterialTheme.typography.titleMedium)
-                    Spacer(modifier = Modifier.height(16.dp))
-                    TimePicker(state = endTimeState)
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                        TextButton(onClick = { showEndTimePicker = false }) { Text("Cancel") }
-                        TextButton(onClick = {
-                            val time = "${endTimeState.hour.toString().padStart(2, '0')}:${endTimeState.minute.toString().padStart(2, '0')}"
-                            viewModel.setQuietHours(notificationPreferences.quietHoursStart, time)
-                            showEndTimePicker = false
-                        }) { Text("Done") }
+@Composable
+private fun ContentUpdatesSection(
+    notificationPreferences: NotificationPreferences,
+    onToggleCategory: (NotificationCategory, Boolean) -> Unit
+) {
+    NotifSettingsSection(title = "Content Updates") {
+        NotifSettingsCard {
+            ContentNotificationTypes.forEachIndexed { index, (category, label) ->
+                val isEnabled = notificationPreferences.isEnabled(category)
+                NotifSettingsRow(
+                    icon = Icons.Default.ContentCopy,
+                    title = label,
+                    subtitle = if (isEnabled) "Enabled" else "Disabled",
+                    trailingContent = {
+                        Switch(
+                            checked = isEnabled,
+                            onCheckedChange = { onToggleCategory(category, it) },
+                            enabled = notificationPreferences.globalEnabled
+                        )
+                    },
+                    onClick = {
+                        if (notificationPreferences.globalEnabled) {
+                            onToggleCategory(category, !isEnabled)
+                        }
                     }
+                )
+                if (index < ContentNotificationTypes.size - 1) {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SystemSecuritySection(
+    notificationPreferences: NotificationPreferences,
+    onToggleCategory: (NotificationCategory, Boolean) -> Unit
+) {
+    NotifSettingsSection(title = "System & Security") {
+        NotifSettingsCard {
+            NotifSettingsRow(
+                icon = Icons.Default.Info,
+                title = "Security Alerts",
+                subtitle = "Always enabled",
+                trailingContent = {
+                    Switch(
+                        checked = true,
+                        onCheckedChange = { },
+                        enabled = false
+                    )
+                },
+                onClick = { }
+            )
+            HorizontalDivider(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            )
+            NotifSettingsRow(
+                icon = Icons.Default.Settings,
+                title = "App Updates",
+                subtitle = if (notificationPreferences.updatesEnabled) "Enabled" else "Disabled",
+                trailingContent = {
+                    Switch(
+                        checked = notificationPreferences.updatesEnabled,
+                        onCheckedChange = { onToggleCategory(NotificationCategory.SYSTEM_UPDATES, it) },
+                        enabled = notificationPreferences.globalEnabled
+                    )
+                },
+                onClick = {
+                    if (notificationPreferences.globalEnabled) {
+                        onToggleCategory(NotificationCategory.SYSTEM_UPDATES, !notificationPreferences.updatesEnabled)
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun AdvancedSettingsSection(
+    notificationPreferences: NotificationPreferences,
+    onToggleQuietHours: (Boolean) -> Unit,
+    onToggleDoNotDisturb: (Boolean) -> Unit,
+    onShowStartTimePicker: () -> Unit
+) {
+    NotifSettingsSection(title = "Advanced Settings") {
+        NotifSettingsCard {
+            NotifSettingsRow(
+                icon = Icons.Default.Schedule,
+                title = "Quiet Hours",
+                subtitle = if (notificationPreferences.quietHoursEnabled)
+                    "${notificationPreferences.quietHoursStart} - ${notificationPreferences.quietHoursEnd}"
+                else "Disabled",
+                trailingContent = {
+                    Switch(
+                        checked = notificationPreferences.quietHoursEnabled,
+                        onCheckedChange = { onToggleQuietHours(it) },
+                        enabled = notificationPreferences.globalEnabled
+                    )
+                },
+                onClick = {
+                    if (notificationPreferences.globalEnabled) {
+                        onShowStartTimePicker()
+                    }
+                }
+            )
+            HorizontalDivider(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            )
+            NotifSettingsRow(
+                icon = Icons.Default.DoNotDisturb,
+                title = "Do Not Disturb",
+                subtitle = if (notificationPreferences.doNotDisturb) "Active" else "Inactive",
+                trailingContent = {
+                    Switch(
+                        checked = notificationPreferences.doNotDisturb,
+                        onCheckedChange = { onToggleDoNotDisturb(it) },
+                        enabled = notificationPreferences.globalEnabled
+                    )
+                },
+                onClick = {
+                    if (notificationPreferences.globalEnabled) {
+                        onToggleDoNotDisturb(!notificationPreferences.doNotDisturb)
+                    }
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun QuietHoursTimePickerDialog(
+    title: String,
+    initialTime: String,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit,
+    confirmText: String
+) {
+    val state = rememberTimePickerState(
+        initialHour = initialTime.split(":").getOrNull(0)?.toIntOrNull() ?: 0,
+        initialMinute = initialTime.split(":").getOrNull(1)?.toIntOrNull() ?: 0,
+        is24Hour = true
+    )
+
+    Dialog(onDismissRequest = onDismiss) {
+        Card {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(title, style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(16.dp))
+                TimePicker(state = state)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = onDismiss) { Text("Cancel") }
+                    TextButton(onClick = {
+                        val time = "${state.hour.toString().padStart(2, '0')}:${
+                            state.minute.toString().padStart(2, '0')
+                        }"
+                        onConfirm(time)
+                    }) { Text(confirmText) }
                 }
             }
         }

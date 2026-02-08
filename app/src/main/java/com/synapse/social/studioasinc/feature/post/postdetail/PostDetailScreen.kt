@@ -209,7 +209,7 @@ fun PostDetailScreen(
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0.dp),
+        contentWindowInsets = WindowInsets.safeDrawing,
         bottomBar = {
             Column(
                  modifier = Modifier

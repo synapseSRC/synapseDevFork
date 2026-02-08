@@ -7,6 +7,7 @@ import com.synapse.social.studioasinc.ui.settings.AppearanceSettings
 import com.synapse.social.studioasinc.ui.settings.ChatSettings
 import com.synapse.social.studioasinc.ui.settings.ContentVisibility
 import com.synapse.social.studioasinc.ui.settings.FontScale
+import com.synapse.social.studioasinc.ui.settings.GroupPrivacy
 import com.synapse.social.studioasinc.ui.settings.MediaAutoDownload
 import com.synapse.social.studioasinc.ui.settings.NotificationCategory
 import com.synapse.social.studioasinc.ui.settings.NotificationPreferences
@@ -110,6 +111,10 @@ class SettingsRepositoryImpl private constructor(
 
     override suspend fun setContentVisibility(visibility: ContentVisibility) {
         settingsDataStore.setContentVisibility(visibility)
+    }
+
+    override suspend fun setGroupPrivacy(privacy: GroupPrivacy) {
+        settingsDataStore.setGroupPrivacy(privacy)
     }
 
     override suspend fun setBiometricLockEnabled(enabled: Boolean) {

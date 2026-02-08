@@ -4,6 +4,7 @@ import com.synapse.social.studioasinc.ui.settings.AppearanceSettings
 import com.synapse.social.studioasinc.ui.settings.ChatSettings
 import com.synapse.social.studioasinc.ui.settings.ContentVisibility
 import com.synapse.social.studioasinc.ui.settings.FontScale
+import com.synapse.social.studioasinc.ui.settings.GroupPrivacy
 import com.synapse.social.studioasinc.ui.settings.MediaAutoDownload
 import com.synapse.social.studioasinc.ui.settings.NotificationCategory
 import com.synapse.social.studioasinc.ui.settings.NotificationPreferences
@@ -125,6 +126,12 @@ interface SettingsRepository {
      * @param visibility The visibility level to apply
      */
     suspend fun setContentVisibility(visibility: ContentVisibility)
+
+    /**
+     * Sets the group privacy setting.
+     * @param privacy The group privacy level to apply
+     */
+    suspend fun setGroupPrivacy(privacy: GroupPrivacy)
 
     /**
      * Enables or disables biometric lock for app access.

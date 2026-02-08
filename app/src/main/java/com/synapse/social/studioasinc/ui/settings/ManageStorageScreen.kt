@@ -2,14 +2,38 @@ package com.synapse.social.studioasinc.ui.settings
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,7 +41,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.synapse.social.studioasinc.R
@@ -67,139 +90,154 @@ fun ManageStorageScreen(
                     .padding(padding),
                 contentPadding = PaddingValues(bottom = 16.dp)
             ) {
-                // Storage Usage Bar Section
                 item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        val usage = storageUsage!!
-                        val totalGB = formatBytesToGB(usage.totalSize)
-                        val usedGB = formatBytesToGB(usage.usedSize)
-                        val freeGB = formatBytesToGB(usage.freeSize)
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "$usedGB used",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Text(
-                                text = "$freeGB free",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        // Visual Storage Bar
-                        StorageBar(usage = usage)
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        // Legend
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Badge(color = MaterialTheme.colorScheme.primary)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Synapse media", style = MaterialTheme.typography.bodySmall)
-
-                            Spacer(modifier = Modifier.width(16.dp))
-
-                            Badge(color = MaterialTheme.colorScheme.tertiary)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Apps and other items", style = MaterialTheme.typography.bodySmall)
-                        }
-                    }
-                    HorizontalDivider(thickness = 8.dp, color = MaterialTheme.colorScheme.surfaceContainerLowest)
+                    StorageUsageSection(storageUsage = storageUsage!!)
                 }
 
-                // Review and Delete Section
                 item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        Text(
-                            text = "Review and delete items",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
-
-                            ListItem(
-                            headlineContent = { Text("Larger than 5 MB") },
-                            supportingContent = { Text(formatBytes(largeFiles.sumOf { it.size })) },
-                            leadingContent = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_document),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            },
-                            trailingContent = {
-                                Icon(painter = painterResource(id = R.drawable.ic_chevron_right), contentDescription = null)
-                            },
-                             modifier = Modifier.padding(vertical = 4.dp)
-                         )
-                     }
-
-                    HorizontalDivider(thickness = 8.dp, color = MaterialTheme.colorScheme.surfaceContainerLowest)
+                    ReviewDeleteSection(largeFiles = largeFiles)
                 }
 
-                // Chats Section
-                item {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Chats",
-                                style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_search),
-                                contentDescription = "Search",
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-
-                items(chatList) { chat ->
-                    ListItem(
-                        headlineContent = { Text(chat.chatName) },
-                        supportingContent = { Text(formatBytes(chat.size)) },
-                        leadingContent = {
-                            Surface(
-                                shape = CircleShape,
-                                color = MaterialTheme.colorScheme.secondaryContainer,
-                                modifier = Modifier.size(40.dp)
-                            ) {
-                                Box(contentAlignment = Alignment.Center) {
-                                    Text(
-                                        text = chat.chatName.first().toString(),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                                    )
-                                }
-                            }
-                        },
-                        modifier = Modifier.clickable { /* Navigate to chat details */ }
-                    )
-                }
+                chatListSection(
+                    chatList = chatList,
+                    onChatClick = { /* Navigate to chat details */ }
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun StorageUsageSection(storageUsage: StorageUsageBreakdown) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        val totalGB = formatBytesToGB(storageUsage.totalSize)
+        val usedGB = formatBytesToGB(storageUsage.usedSize)
+        val freeGB = formatBytesToGB(storageUsage.freeSize)
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "$usedGB used",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = "$freeGB free",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Visual Storage Bar
+        StorageBar(usage = storageUsage)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Legend
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Badge(color = MaterialTheme.colorScheme.primary)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Synapse media", style = MaterialTheme.typography.bodySmall)
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Badge(color = MaterialTheme.colorScheme.tertiary)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Apps and other items", style = MaterialTheme.typography.bodySmall)
+        }
+    }
+    HorizontalDivider(thickness = 8.dp, color = MaterialTheme.colorScheme.surfaceContainerLowest)
+}
+
+@Composable
+private fun ReviewDeleteSection(largeFiles: List<LargeFileInfo>) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "Review and delete items",
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        ListItem(
+            headlineContent = { Text("Larger than 5 MB") },
+            supportingContent = { Text(formatBytes(largeFiles.sumOf { it.size })) },
+            leadingContent = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_document),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            },
+            trailingContent = {
+                Icon(painter = painterResource(id = R.drawable.ic_chevron_right), contentDescription = null)
+            },
+            modifier = Modifier.padding(vertical = 4.dp)
+        )
+    }
+    HorizontalDivider(thickness = 8.dp, color = MaterialTheme.colorScheme.surfaceContainerLowest)
+}
+
+private fun LazyListScope.chatListSection(
+    chatList: List<ChatStorageInfo>,
+    onChatClick: (ChatStorageInfo) -> Unit
+) {
+    item {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Chats",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_search),
+                    contentDescription = "Search",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+
+    items(chatList) { chat ->
+        ListItem(
+            headlineContent = { Text(chat.chatName) },
+            supportingContent = { Text(formatBytes(chat.size)) },
+            leadingContent = {
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(
+                            text = chat.chatName.first().toString(),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
+                }
+            },
+            modifier = Modifier.clickable { onChatClick(chat) }
+        )
     }
 }
 

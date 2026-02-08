@@ -209,7 +209,6 @@ fun PostDetailScreen(
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0.dp),
         bottomBar = {
             Column(
                  modifier = Modifier

@@ -94,7 +94,7 @@ class SearchRepositoryImpl(
         client.postgrest["news_articles"].select {
             if (query.isNotBlank()) {
                 filter {
-                    ilike("headline", "%$query%")
+                    ilike("headline", "${query.sanitizeForSearch()}%")
                 }
             }
             order("published_at", Order.DESCENDING)
@@ -118,4 +118,12 @@ class SearchRepositoryImpl(
             limit(20)
         }.decodeList()
     }
+}
+
+internal fun String.sanitizeForSearch(): String {
+    return this.trim()
+        .take(100)
+        .replace("\\", "\\\\")
+        .replace("%", "\\%")
+        .replace("_", "\\_")
 }

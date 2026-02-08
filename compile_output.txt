@@ -1,0 +1,142 @@
+
+> Configure project :shared
+w: The following Kotlin/Native targets cannot be built on this machine and are disabled:
+iosArm64, iosSimulatorArm64, iosX64
+To hide this message, add 'kotlin.native.ignoreDisabledTargets=true' to the Gradle properties.
+
+
+> Task :shared:preBuild UP-TO-DATE
+> Task :shared:preDebugBuild UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :shared:generateDebugResValues UP-TO-DATE
+> Task :shared:generateDebugResources UP-TO-DATE
+> Task :shared:packageDebugResources UP-TO-DATE
+> Task :shared:processDebugNavigationResources UP-TO-DATE
+> Task :shared:parseDebugLocalResources UP-TO-DATE
+> Task :shared:generateDebugRFile UP-TO-DATE
+> Task :shared:writeDebugAarMetadata UP-TO-DATE
+> Task :shared:extractDeepLinksDebug UP-TO-DATE
+> Task :shared:processDebugManifest UP-TO-DATE
+> Task :shared:compileDebugLibraryResources UP-TO-DATE
+> Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:generateCommonMainStorageDatabaseInterface UP-TO-DATE
+> Task :shared:generateDebugBuildConfig UP-TO-DATE
+> Task :shared:compileDebugKotlinAndroid UP-TO-DATE
+> Task :shared:javaPreCompileDebug UP-TO-DATE
+> Task :shared:compileDebugJavaWithJavac UP-TO-DATE
+> Task :shared:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :app:dataBindingMergeDependencyArtifactsDebug
+> Task :app:generateDebugResValues FROM-CACHE
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:processDebugNavigationResources
+> Task :app:generateDebugBuildConfig
+> Task :app:parseDebugLocalResources
+> Task :app:checkDebugAarMetadata
+> Task :app:compileDebugNavigationResources
+> Task :app:mapDebugSourceSetPaths
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:mergeDebugResources
+
+> Task :app:processDebugMainManifest
+package="com.synapse.social.studioasinc" found in source AndroidManifest.xml: /app/app/src/main/AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.synapse.social.studioasinc" from the source AndroidManifest.xml: /app/app/src/main/AndroidManifest.xml.
+
+> Task :app:dataBindingGenBaseClassesDebug
+> Task :app:processDebugManifest
+> Task :app:processDebugManifestForPackage
+> Task :app:processDebugResources
+> Task :app:kspDebugKotlin
+> Task :app:compileDebugKotlin
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/core/domain/parser/MentionUtils.kt:12:8 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/core/domain/parser/MentionUtils.kt:56:78 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/core/util/ImageLoader.kt:176:40 This declaration needs opt-in. Its usage should be marked with '@coil.annotation.ExperimentalCoilApi' or '@OptIn(coil.annotation.ExperimentalCoilApi::class)'
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/domain/model/Post.kt:245:23 Unchecked cast of 'kotlin.Any?' to 'kotlin.collections.Map<kotlin.String, kotlin.Any?>'.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/createpost/createpost/CreatePostScreen.kt:39:8 'class CropImageContract : ActivityResultContract<CropImageContractOptions, CropImageView.CropResult>' is deprecated. This ActivityResultContract is deprecated.
+  Please either roll your own ActivityResultContract with the desired behavior or copy paste this.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/createpost/createpost/CreatePostScreen.kt:40:8 'data class CropImageContractOptions : Any' is deprecated. This ActivityResultContract is deprecated.
+  Please either roll your own ActivityResultContract with the desired behavior or copy paste this.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/createpost/createpost/CreatePostScreen.kt:57:66 'constructor(): CropImageContract' is deprecated. This ActivityResultContract is deprecated.
+  Please either roll your own ActivityResultContract with the desired behavior or copy paste this.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/createpost/createpost/CreatePostScreen.kt:276:34 'constructor(uri: Uri?, cropImageOptions: CropImageOptions): CropImageContractOptions' is deprecated. This ActivityResultContract is deprecated.
+  Please either roll your own ActivityResultContract with the desired behavior or copy paste this.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/createpost/createpost/CreatePostSearchComponents.kt:62:52 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/createpost/createpost/CreatePostSearchComponents.kt:240:13 'fun TabRow(selectedTabIndex: Int, modifier: Modifier = ..., containerColor: Color = ..., contentColor: Color = ..., indicator: @Composable() ComposableFunction1<@ParameterName(...) List<TabPosition>, Unit> = ..., divider: @Composable() ComposableFunction0<Unit> = ..., tabs: @Composable() ComposableFunction0<Unit>): Unit' is deprecated. Replaced with PrimaryTabRow and SecondaryTabRow.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/HomeActivity.kt:68:55 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/home/HomeActivity.kt:77:42 'class InboxActivity : ComponentActivity' is deprecated. Use InboxScreen within MainActivity navigation graph instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/InboxActivity.kt:87:42 'class InboxActivity : ComponentActivity' is deprecated. Use InboxScreen within MainActivity navigation graph instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxTopAppBar.kt:146:36 'fun largeTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxTopAppBar.kt:339:5 'fun TabRow(selectedTabIndex: Int, modifier: Modifier = ..., containerColor: Color = ..., contentColor: Color = ..., indicator: @Composable() ComposableFunction1<@ParameterName(...) List<TabPosition>, Unit> = ..., divider: @Composable() ComposableFunction0<Unit> = ..., tabs: @Composable() ComposableFunction0<Unit>): Unit' is deprecated. Replaced with PrimaryTabRow and SecondaryTabRow.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/inbox/inbox/components/InboxTopAppBar.kt:347:41 'fun Modifier.tabIndicatorOffset(currentTabPosition: TabPosition): Modifier' is deprecated. Solely for use alongside deprecated TabRowDefaults.Indicator method. For recommended PrimaryIndicator and SecondaryIndicator methods, please use TabIndicatorScope.tabIndicatorOffset method.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/PostDetailActivity.kt:10:8 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/PostDetailActivity.kt:52:36 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/post/postdetail/components/CommentInput.kt:71:49 'val Icons.Filled.Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/ProfileActivity.kt:3:8 'class ProgressDialog : AlertDialog' is deprecated. Deprecated in Java.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/RegionSelectionScreen.kt:43:28 'constructor(p0: String!, p1: String!): Locale' is deprecated. Deprecated in Java.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/editprofile/RegionSelectionScreen.kt:89:17 'fun SearchBar(query: String, onQueryChange: (String) -> Unit, onSearch: (String) -> Unit, active: Boolean, onActiveChange: (Boolean) -> Unit, modifier: Modifier = ..., enabled: Boolean = ..., placeholder: @Composable() ComposableFunction0<Unit>? = ..., leadingIcon: @Composable() ComposableFunction0<Unit>? = ..., trailingIcon: @Composable() ComposableFunction0<Unit>? = ..., shape: Shape = ..., colors: SearchBarColors = ..., tonalElevation: Dp = ..., shadowElevation: Dp = ..., windowInsets: WindowInsets = ..., interactionSource: MutableInteractionSource? = ..., content: @Composable() ComposableFunction1<ColumnScope, Unit>): Unit' is deprecated. Use overload which takes inputField as a parameter.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/components/SevenSidedCookieShape.kt:68:18 'fun quadraticBezierTo(x1: Float, y1: Float, x2: Float, y2: Float): Unit' is deprecated. Use quadraticTo() for consistency with cubicTo().
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/profile/profile/components/ShareProfileBottomSheet.kt:41:38 'val Icons.Filled.Message: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Message.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/search/SearchActivity.kt:45:59 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/search/search/SearchScreen.kt:81:13 'fun SearchBar(query: String, onQueryChange: (String) -> Unit, onSearch: (String) -> Unit, active: Boolean, onActiveChange: (Boolean) -> Unit, modifier: Modifier = ..., enabled: Boolean = ..., placeholder: @Composable() ComposableFunction0<Unit>? = ..., leadingIcon: @Composable() ComposableFunction0<Unit>? = ..., trailingIcon: @Composable() ComposableFunction0<Unit>? = ..., shape: Shape = ..., colors: SearchBarColors = ..., tonalElevation: Dp = ..., shadowElevation: Dp = ..., windowInsets: WindowInsets = ..., interactionSource: MutableInteractionSource? = ..., content: @Composable() ComposableFunction1<ColumnScope, Unit>): Unit' is deprecated. Use overload which takes inputField as a parameter.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/search/search/SearchScreen.kt:118:13 'fun TabRow(selectedTabIndex: Int, modifier: Modifier = ..., containerColor: Color = ..., contentColor: Color = ..., indicator: @Composable() ComposableFunction1<@ParameterName(...) List<TabPosition>, Unit> = ..., divider: @Composable() ComposableFunction0<Unit> = ..., tabs: @Composable() ComposableFunction0<Unit>): Unit' is deprecated. Replaced with PrimaryTabRow and SecondaryTabRow.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/components/FollowListActivity.kt:10:8 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/components/FollowListActivity.kt:49:70 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/components/compose/components/UserListItem.kt:110:53 'val Icons.Filled.Message: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Message.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/main/MainActivity.kt:150:15 'fun onBackPressed(): Unit' is deprecated. This method has been deprecated in favor of using the
+      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.
+      The OnBackPressedDispatcher controls how back button events are dispatched
+      to one or more {@link OnBackPressedCallback} objects.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/main/MainViewModel.kt:85:91 'field versionCode: Int' is deprecated. Deprecated in Java.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/reels/components/ShareBottomSheet.kt:22:28 'val LocalClipboardManager: ProvidableCompositionLocal<ClipboardManager>' is deprecated. Use LocalClipboard instead which supports suspend functions.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/shared/theme/styling/MarkdownRenderer.kt:105:86 'class ProfileActivity : ComponentActivity' is deprecated. Use ProfileScreen within MainActivity navigation graph instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/stories/creator/StoryCreatorScreen.kt:338:40 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/stories/creator/StoryCreatorScreen.kt:413:44 'val Icons.Filled.Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/feature/stories/management/StorySheets.kt:234:57 'val Icons.Filled.VolumeOff: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeOff.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationsScreen.kt:21:8 'typealias Instant = Instant' is deprecated. This type is deprecated in favor of `kotlin.time.Instant`.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationsScreen.kt:29:23 'typealias Instant = Instant' is deprecated. This type is deprecated in favor of `kotlin.time.Instant`.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationsScreen.kt:31:21 'typealias Instant = Instant' is deprecated. This type is deprecated in favor of `kotlin.time.Instant`.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationsScreen.kt:39:41 'val dayOfMonth: Int' is deprecated. Use the 'day' property instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationsScreen.kt:71:29 'fun rememberSwipeRefreshState(isRefreshing: Boolean): SwipeRefreshState' is deprecated. accompanist/swiperefresh is deprecated.
+     The androidx.compose equivalent of rememberSwipeRefreshState() is rememberPullRefreshState().
+     For more migration information, please visit https://google.github.io/accompanist/swiperefresh/#migration.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/notifications/NotificationsScreen.kt:90:5 'fun SwipeRefresh(state: SwipeRefreshState, onRefresh: () -> Unit, modifier: Modifier = ..., swipeEnabled: Boolean = ..., refreshTriggerDistance: Dp = ..., indicatorAlignment: Alignment = ..., indicatorPadding: PaddingValues = ..., indicator: @Composable() ComposableFunction2<@ParameterName(...) SwipeRefreshState, @ParameterName(...) Dp, Unit> = ..., clipIndicatorToPadding: Boolean = ..., content: @Composable() ComposableFunction0<Unit>): Unit' is deprecated. accompanist/swiperefresh is deprecated.
+ The androidx.compose equivalent of SwipeRefresh is Modifier.pullRefresh().
+ This is often migrated as:
+ Box(modifier = Modifier.pullRefresh(refreshState)) {
+    ...
+    PullRefreshIndicator(...)
+ }
+
+ For more migration information, please visit https://google.github.io/accompanist/swiperefresh/#migration.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/AboutSupportScreen.kt:85:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/AccountInfoViewModel.kt:18:8 'typealias Instant = Instant' is deprecated. This type is deprecated in favor of `kotlin.time.Instant`.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/AccountInfoViewModel.kt:146:22 'typealias Instant = Instant' is deprecated. This type is deprecated in favor of `kotlin.time.Instant`.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/AccountSettingsScreen.kt:67:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:81:45 'typealias MenuAnchorType = ExposedDropdownMenuAnchorType' is deprecated. Renamed to ExposedDropdownMenuAnchorType.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ApiKeySettingsScreen.kt:262:41 'typealias MenuAnchorType = ExposedDropdownMenuAnchorType' is deprecated. Renamed to ExposedDropdownMenuAnchorType.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/AppearanceScreen.kt:55:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/BusinessPlatformScreen.kt:67:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/BusinessPlatformScreen.kt:286:25 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/BusinessPlatformScreen.kt:340:17 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/BusinessPlatformScreen.kt:387:13 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/BusinessPlatformScreen.kt:394:13 'fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/ChatSettingsScreen.kt:60:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/LanguageRegionScreen.kt:55:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/LicensesScreen.kt:55:44 'fun largeTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/NotificationSettingsScreen.kt:84:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/PasskeysScreen.kt:46:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/PrivacySecurityScreen.kt:57:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/RequestAccountInfoScreen.kt:94:44 'fun mediumTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/SelectRegionScreen.kt:74:17 'fun SearchBar(query: String, onQueryChange: (String) -> Unit, onSearch: (String) -> Unit, active: Boolean, onActiveChange: (Boolean) -> Unit, modifier: Modifier = ..., enabled: Boolean = ..., placeholder: @Composable() ComposableFunction0<Unit>? = ..., leadingIcon: @Composable() ComposableFunction0<Unit>? = ..., trailingIcon: @Composable() ComposableFunction0<Unit>? = ..., shape: Shape = ..., colors: SearchBarColors = ..., tonalElevation: Dp = ..., shadowElevation: Dp = ..., windowInsets: WindowInsets = ..., interactionSource: MutableInteractionSource? = ..., content: @Composable() ComposableFunction1<ColumnScope, Unit>): Unit' is deprecated. Use overload which takes inputField as a parameter.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/SettingsComponents.kt:477:37 'typealias MenuAnchorType = ExposedDropdownMenuAnchorType' is deprecated. Renamed to ExposedDropdownMenuAnchorType.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/SettingsHubScreen.kt:62:44 'fun largeTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/SettingsScreen.kt:63:44 'fun largeTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/StorageDataScreen.kt:47:44 'fun largeTopAppBarColors(containerColor: Color = ..., scrolledContainerColor: Color = ..., navigationIconContentColor: Color = ..., titleContentColor: Color = ..., actionIconContentColor: Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///app/app/src/main/java/com/synapse/social/studioasinc/ui/settings/StorageProviderScreen.kt:85:44 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
+
+BUILD SUCCESSFUL in 3m 37s
+36 actionable tasks: 19 executed, 1 from cache, 16 up-to-date

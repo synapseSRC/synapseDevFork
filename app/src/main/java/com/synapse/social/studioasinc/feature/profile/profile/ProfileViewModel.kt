@@ -369,7 +369,7 @@ class ProfileViewModel @Inject constructor(
 
     fun reportPost(postId: String, reason: String) {
         viewModelScope.launch {
-            reportPostUseCase(postId, _state.value.currentUserId, reason).collect { result ->
+            reportPostUseCase(postId, reason, null).collect { result ->
                 result.onSuccess {
                     // Optionally hide post from feed
                 }

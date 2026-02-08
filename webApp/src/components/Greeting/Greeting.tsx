@@ -5,6 +5,7 @@ import { Greeting as KotlinGreeting } from 'shared';
 import type { AnimationEvent } from 'react';
 
 export function Greeting() {
+  // Memoize KotlinGreeting instantiation to prevent object creation on every render
   const greeting = useMemo(() => new KotlinGreeting(), []);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);

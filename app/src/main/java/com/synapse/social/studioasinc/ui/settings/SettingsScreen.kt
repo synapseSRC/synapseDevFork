@@ -165,15 +165,9 @@ fun SecureTextField(
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         trailingIcon = {
-            val image = if (passwordVisible)
-                painterResource(R.drawable.ic_visibility_off)
-            else
-                painterResource(R.drawable.ic_visibility_off) // Using same icon for now as 'on' might be missing, or use text fallback if preferred.
-
-            // Actually, let's use the text fallback to be safe as I only saw ic_visibility_off in the file list
             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                  Icon(
-                     painter = if (passwordVisible) painterResource(R.drawable.ic_visibility_off) else painterResource(R.drawable.ic_visibility_off), // Placeholder logic
+                     painter = if (passwordVisible) painterResource(R.drawable.ic_visibility_off) else painterResource(R.drawable.ic_visibility),
                      contentDescription = if (passwordVisible) "Hide password" else "Show password",
                      tint = if (passwordVisible) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                  )

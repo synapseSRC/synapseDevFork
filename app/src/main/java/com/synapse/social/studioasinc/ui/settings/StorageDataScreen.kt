@@ -174,51 +174,21 @@ fun StorageDataScreen(
         }
     }
 
-    // Media Quality Bottom Sheet
-    if (showMediaQualitySheet) {
-        MediaQualityBottomSheet(
-            onDismissRequest = { viewModel.closeMediaQualitySheet() },
-            currentQuality = mediaUploadQuality,
-            onQualitySelected = { viewModel.setMediaUploadQuality(it) }
-        )
-    }
 
-    // Auto-Download Dialogs
-    if (showMobileDialog) {
-        AutoDownloadDialog(
-            title = "When using mobile data",
-            selectedTypes = autoDownloadRules.mobileData,
-            onConfirm = {
-                viewModel.setAutoDownloadRule("mobile", it)
-                showMobileDialog = false
-            },
-            onDismiss = { showMobileDialog = false }
-        )
-    }
-
-    if (showWifiDialog) {
-        AutoDownloadDialog(
-            title = "When connected on Wi-Fi",
-            selectedTypes = autoDownloadRules.wifi,
-            onConfirm = {
-                viewModel.setAutoDownloadRule("wifi", it)
-                showWifiDialog = false
-            },
-            onDismiss = { showWifiDialog = false }
-        )
-    }
-
-    if (showRoamingDialog) {
-        AutoDownloadDialog(
-            title = "When roaming",
-            selectedTypes = autoDownloadRules.roaming,
-            onConfirm = {
-                viewModel.setAutoDownloadRule("roaming", it)
-                showRoamingDialog = false
-            },
-            onDismiss = { showRoamingDialog = false }
-        )
-    }
+    StorageDataScreenDialogs(
+        showMediaQualitySheet = showMediaQualitySheet,
+        mediaUploadQuality = mediaUploadQuality,
+        autoDownloadRules = autoDownloadRules,
+        showMobileDialog = showMobileDialog,
+        showWifiDialog = showWifiDialog,
+        showRoamingDialog = showRoamingDialog,
+        onCloseMediaQualitySheet = { viewModel.closeMediaQualitySheet() },
+        onSetMediaUploadQuality = { viewModel.setMediaUploadQuality(it) },
+        onSetAutoDownloadRule = { type, rules -> viewModel.setAutoDownloadRule(type, rules) },
+        onDismissMobileDialog = { showMobileDialog = false },
+        onDismissWifiDialog = { showWifiDialog = false },
+        onDismissRoamingDialog = { showRoamingDialog = false }
+    )
 }
 
 private fun getAutoDownloadSummary(selectedTypes: Set<MediaType>): String {

@@ -9,7 +9,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.R
 
 /**
  * Privacy and Security Settings screen composable.
@@ -45,6 +44,8 @@ fun PrivacySecurityScreen(
         error = error,
         onNavigateBack = onNavigateBack,
         onNavigateToBlockedUsers = onNavigateToBlockedUsers,
+        onNavigateToMutedUsers = onNavigateToMutedUsers,
+        onNavigateToActiveSessions = onNavigateToActiveSessions,
         onClearError = { viewModel.clearError() },
         onReadReceiptsChanged = { viewModel.setReadReceiptsEnabled(it) },
         onAppLockChanged = { viewModel.setAppLockEnabled(it) },
@@ -63,6 +64,8 @@ fun PrivacySecurityContent(
     error: String?,
     onNavigateBack: () -> Unit,
     onNavigateToBlockedUsers: () -> Unit,
+    onNavigateToMutedUsers: () -> Unit,
+    onNavigateToActiveSessions: () -> Unit,
     onClearError: () -> Unit,
     onReadReceiptsChanged: (Boolean) -> Unit,
     onAppLockChanged: (Boolean) -> Unit,
@@ -159,10 +162,19 @@ fun PrivacySecurityContent(
                 )
             }
 
-            // Blocked Contacts Section
+            // Active Sessions Section
             item {
-                BlockedContactsSection(
+                ActiveSessionsSection(
+                    onNavigateToActiveSessions = onNavigateToActiveSessions,
+                    isLoading = isLoading
+                )
+            }
+
+            // Contacts Section (Blocked & Muted)
+            item {
+                ContactsSection(
                     onNavigateToBlockedUsers = onNavigateToBlockedUsers,
+                    onNavigateToMutedUsers = onNavigateToMutedUsers,
                     isLoading = isLoading
                 )
             }
@@ -172,185 +184,5 @@ fun PrivacySecurityContent(
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
-    }
-}
-
-@Composable
-private fun PrivacyCheckupSection(isLoading: Boolean) {
-    SettingsSection(title = "Privacy Checkup") {
-        SettingsNavigationItem(
-            title = "Privacy Checkup",
-            subtitle = "Review your privacy settings",
-            icon = R.drawable.ic_security,
-            onClick = { },
-            enabled = !isLoading
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun ProfilePrivacySection(
-    privacySettings: PrivacySettings,
-    isLoading: Boolean,
-    onProfileVisibilityChanged: (ProfileVisibility) -> Unit,
-    onContentVisibilityChanged: (ContentVisibility) -> Unit
-) {
-    SettingsSection(title = "Profile Privacy") {
-        SettingsSelectionItem(
-            title = "Last Seen",
-            subtitle = "Control who can see when you were last online",
-            icon = R.drawable.ic_visibility,
-            options = ProfileVisibility.values().map { it.displayName() },
-            selectedOption = privacySettings.profileVisibility.displayName(),
-            onSelect = { option ->
-                val visibility = ProfileVisibility.values().find { it.displayName() == option }
-                if (visibility != null) {
-                    onProfileVisibilityChanged(visibility)
-                }
-            },
-            enabled = !isLoading
-        )
-        SettingsDivider()
-        SettingsSelectionItem(
-            title = "Profile Photo",
-            subtitle = "Control who can see your profile photo",
-            icon = R.drawable.ic_person,
-            options = ProfileVisibility.values().map { it.displayName() },
-            selectedOption = privacySettings.profileVisibility.displayName(),
-            onSelect = { option ->
-                val visibility = ProfileVisibility.values().find { it.displayName() == option }
-                if (visibility != null) {
-                    onProfileVisibilityChanged(visibility)
-                }
-            },
-            enabled = !isLoading
-        )
-        SettingsDivider()
-        SettingsSelectionItem(
-            title = "About",
-            subtitle = "Control who can see your about info",
-            icon = R.drawable.ic_info,
-            options = ProfileVisibility.values().map { it.displayName() },
-            selectedOption = privacySettings.profileVisibility.displayName(),
-            onSelect = { option ->
-                 val visibility = ProfileVisibility.values().find { it.displayName() == option }
-                if (visibility != null) {
-                    onProfileVisibilityChanged(visibility)
-                }
-            },
-            enabled = !isLoading
-        )
-        SettingsDivider()
-        SettingsSelectionItem(
-            title = "Status",
-            subtitle = "Control who can see your status updates",
-            icon = R.drawable.ic_status,
-            options = ContentVisibility.values().map { it.displayName() },
-            selectedOption = privacySettings.contentVisibility.displayName(),
-            onSelect = { option ->
-                val visibility = ContentVisibility.values().find { it.displayName() == option }
-                if (visibility != null) {
-                    onContentVisibilityChanged(visibility)
-                }
-            },
-            enabled = !isLoading
-        )
-    }
-}
-
-@Composable
-private fun MessagePrivacySection(
-    readReceiptsEnabled: Boolean,
-    onReadReceiptsChanged: (Boolean) -> Unit,
-    isLoading: Boolean
-) {
-    SettingsSection(title = "Message Privacy") {
-        SettingsToggleItem(
-            title = "Read Receipts",
-            subtitle = "Show when you've read messages",
-            icon = R.drawable.ic_done_all,
-            checked = readReceiptsEnabled,
-            onCheckedChange = onReadReceiptsChanged,
-            enabled = !isLoading
-        )
-        SettingsDivider()
-        SettingsNavigationItem(
-            title = "Disappearing Messages",
-            subtitle = "Set default timer for new chats",
-            icon = R.drawable.ic_timer,
-            onClick = { },
-            enabled = !isLoading
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun GroupPrivacySection(
-    privacySettings: PrivacySettings,
-    isLoading: Boolean,
-    onGroupPrivacyChanged: (GroupPrivacy) -> Unit
-) {
-    SettingsSection(title = "Group Privacy") {
-        SettingsSelectionItem(
-            title = "Groups",
-            subtitle = "Control who can add you to groups",
-            icon = R.drawable.ic_group,
-            options = GroupPrivacy.values().map { it.displayName() },
-            selectedOption = privacySettings.groupPrivacy.displayName(),
-            onSelect = { option ->
-                val privacy = GroupPrivacy.values().find { it.displayName() == option }
-                if (privacy != null) {
-                    onGroupPrivacyChanged(privacy)
-                }
-            },
-            enabled = !isLoading
-        )
-    }
-}
-
-@Composable
-private fun SecuritySection(
-    appLockEnabled: Boolean,
-    onAppLockChanged: (Boolean) -> Unit,
-    chatLockEnabled: Boolean,
-    onChatLockChanged: (Boolean) -> Unit,
-    isLoading: Boolean
-) {
-    SettingsSection(title = "Security") {
-        SettingsToggleItem(
-            title = "App Lock",
-            subtitle = "Require authentication to open app",
-            icon = R.drawable.ic_lock,
-            checked = appLockEnabled,
-            onCheckedChange = onAppLockChanged,
-            enabled = !isLoading
-        )
-        SettingsDivider()
-        SettingsToggleItem(
-            title = "Chat Lock",
-            subtitle = "Lock individual chats with authentication",
-            icon = R.drawable.ic_chat_lock,
-            checked = chatLockEnabled,
-            onCheckedChange = onChatLockChanged,
-            enabled = !isLoading
-        )
-    }
-}
-
-@Composable
-private fun BlockedContactsSection(
-    onNavigateToBlockedUsers: () -> Unit,
-    isLoading: Boolean
-) {
-    SettingsSection(title = "Blocked Contacts") {
-        SettingsNavigationItem(
-            title = "Blocked Contacts",
-            subtitle = "Manage blocked users",
-            icon = R.drawable.ic_block,
-            onClick = onNavigateToBlockedUsers,
-            enabled = !isLoading
-        )
     }
 }

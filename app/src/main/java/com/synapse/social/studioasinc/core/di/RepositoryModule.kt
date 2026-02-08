@@ -36,6 +36,8 @@ import com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseC
 import com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase
 import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
 import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
+import com.synapse.social.studioasinc.shared.data.local.SecureStorage
+import com.synapse.social.studioasinc.shared.data.local.AndroidSecureStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -212,10 +214,17 @@ object RepositoryModule {
 
     @Provides
     @Singleton
+    fun provideSecureStorage(@ApplicationContext context: Context): SecureStorage {
+        return AndroidSecureStorage(context)
+    }
+
+    @Provides
+    @Singleton
     fun provideStorageRepository(
-        db: StorageDatabase
+        db: StorageDatabase,
+        secureStorage: SecureStorage
     ): StorageRepository {
-        return StorageRepositoryImpl(db)
+        return StorageRepositoryImpl(db, secureStorage)
     }
 
     @Provides

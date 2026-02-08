@@ -11,6 +11,7 @@ import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import io.github.jan.supabase.SupabaseClient as SupabaseClientInterface
 
 @Serializable
 private data class PostDto(
@@ -31,9 +32,9 @@ private data class AuthorDto(
     val avatar: String? = null
 )
 
-class SearchRepositoryImpl : ISearchRepository {
-
-    private val client = SupabaseClient.client
+class SearchRepositoryImpl(
+    private val client: SupabaseClientInterface = SupabaseClient.client
+) : ISearchRepository {
 
     override suspend fun searchPosts(query: String): Result<List<SearchPost>> = runCatching {
         // Using 'users' as the relationship name. If it fails, we fallback to non-joined and empty author data.
@@ -69,7 +70,7 @@ class SearchRepositoryImpl : ISearchRepository {
         client.postgrest["hashtags"].select {
             if (query.isNotBlank()) {
                 filter {
-                    ilike("tag", "%$query%")
+                    ilike("tag", "$query%")
                 }
             }
             order("usage_count", Order.DESCENDING)

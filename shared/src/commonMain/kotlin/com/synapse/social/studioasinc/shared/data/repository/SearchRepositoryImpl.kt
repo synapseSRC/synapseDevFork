@@ -124,10 +124,10 @@ class SearchRepositoryImpl : ISearchRepository {
 
     private fun sanitizeSearchQuery(query: String): String {
         return query
+            .trim()
+            .take(100)
             .replace("\\", "\\\\")
             .replace("%", "\\%")
             .replace("_", "\\_")
-            .trim()
-            .take(100)
     }
 }

@@ -16,9 +16,8 @@ data class SettingsBackup(
     val settings: Map<String, String>
 )
 
-/**
- * Settings backup and restore manager for cloud sync and local backup.
- */
+
+
 @Singleton
 class SettingsBackupManager @Inject constructor(
     private val context: Context

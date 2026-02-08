@@ -24,21 +24,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
-// import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
-// import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
-// import com.patrykandpatrick.vico.compose.chart.Chart
-// import com.patrykandpatrick.vico.compose.chart.line.lineChart
-// import com.patrykandpatrick.vico.core.entry.entryModelOf
 
-/**
- * Business Platform Screen.
- *
- * Displays features for creators and business accounts including:
- * - Analytics Dashboard
- * - Monetization Tools
- * - Professional Tools
- * - Verification
- */
+
+
+
+
+
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BusinessPlatformScreen(
@@ -101,7 +94,7 @@ fun BusinessPlatformScreen(
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                // Account Type Section
+
                 item {
                     AccountTypeSection(
                         state = state,
@@ -110,12 +103,12 @@ fun BusinessPlatformScreen(
                 }
 
                 if (state.isBusinessAccount) {
-                    // Analytics Dashboard
+
                     item {
                         AnalyticsDashboardSection(state.analytics)
                     }
 
-                    // Monetization
+
                     item {
                         MonetizationSection(
                             state = state,
@@ -123,12 +116,12 @@ fun BusinessPlatformScreen(
                         )
                     }
 
-                    // Professional Tools
+
                     item {
                         ProfessionalToolsSection()
                     }
 
-                    // Verification
+
                     item {
                         VerificationSection(
                             status = state.verificationStatus,
@@ -205,7 +198,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Overview Cards
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -222,7 +215,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
                 )
             }
 
-            // Follower Growth Chart
+
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
@@ -235,20 +228,9 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    /*
-                    val chartEntryModel = entryModelOf(*analytics.followerGrowth.map { it.value }.toTypedArray())
 
-                    Chart(
-                        chart = lineChart(),
-                        model = chartEntryModel,
-                        startAxis = rememberStartAxis(),
-                        bottomAxis = rememberBottomAxis(),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                    )
-                    */
-                    
+
+
                     Text(
                         text = "Chart visualization coming soon",
                         style = MaterialTheme.typography.bodyMedium,
@@ -258,7 +240,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
             }
             }
 
-            // Top Posts
+
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -366,8 +348,8 @@ fun MonetizationSection(
                 SettingsNavigationItem(
                     title = "Payout Settings",
                     subtitle = "Manage payment methods",
-                    icon = R.drawable.ic_security, // Using a generic icon if specific one missing
-                    onClick = { /* Navigate to payout settings */ }
+                    icon = R.drawable.ic_security,
+                    onClick = {  }
                 )
             }
         }

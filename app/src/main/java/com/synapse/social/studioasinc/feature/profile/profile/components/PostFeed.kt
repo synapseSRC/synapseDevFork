@@ -100,7 +100,7 @@ fun PostFeed(
         }
     }
 
-    // Share bottom sheet
+
     if (showShareSheet && selectedPostId != null) {
         SharePostBottomSheet(
             onDismiss = { showShareSheet = false },
@@ -156,7 +156,7 @@ fun PostFeed(
         )
     }
 
-    // Menu bottom sheet
+
     if (showMenuSheet && selectedPostId != null) {
         val post = posts.find { it.id == selectedPostId }
         val isOwnPost = post?.authorUid == currentUserId
@@ -170,7 +170,7 @@ fun PostFeed(
         )
     }
 
-    // Report dialog
+
     if (showReportDialog && selectedPostId != null) {
         ReportPostDialog(
             onDismiss = { showReportDialog = false },

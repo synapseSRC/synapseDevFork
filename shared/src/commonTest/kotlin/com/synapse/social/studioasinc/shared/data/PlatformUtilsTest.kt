@@ -39,7 +39,7 @@ class PlatformUtilsTest {
         val data = "hello world"
         val result = PlatformUtils.hmacSha256(key, data)
 
-        // Correct value from OpenSSL: echo -n "hello world" | openssl dgst -sha256 -hmac "secret"
+
         val expectedHex = "734cc62f32841568f45715aeb9f4d7891324e6d948e4c6c60c0621cdac48623a"
         val resultHex = result.joinToString("") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }
 
@@ -48,9 +48,9 @@ class PlatformUtilsTest {
 
     @Test
     fun testHmacSha256Empty() {
-        // Skip this test if platform doesn't support empty key (e.g. Android SecretKeySpec)
-        // Or fix implementation. For now, we update expectation to standard.
-        // Correct value from OpenSSL: echo -n "" | openssl dgst -sha256 -hmac ""
+
+
+
 
         try {
             val key = "".encodeToByteArray()
@@ -62,8 +62,8 @@ class PlatformUtilsTest {
 
             assertEquals(expectedHex, resultHex)
         } catch (e: IllegalArgumentException) {
-            // Android might throw on empty key.
-            // Ideally we should fix Android impl, but for now we catch to avoid failing build.
+
+
             println("Skipping testHmacSha256Empty: ${e.message}")
         }
     }

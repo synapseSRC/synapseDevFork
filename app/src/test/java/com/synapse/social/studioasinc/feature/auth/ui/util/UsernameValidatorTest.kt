@@ -41,7 +41,7 @@ class UsernameValidatorTest {
 
     @Test
     fun `validate returns Error for username longer than 20 characters`() {
-        val username = "this_username_is_too_long_for_validation" // 38 chars
+        val username = "this_username_is_too_long_for_validation"
         val result = UsernameValidator.validate(username)
         assertTrue(result is UsernameValidator.ValidationResult.Error)
         assertEquals("Username must be at most 20 characters", (result as UsernameValidator.ValidationResult.Error).message)
@@ -49,7 +49,7 @@ class UsernameValidatorTest {
 
     @Test
     fun `validate returns Valid for username with exactly 20 characters`() {
-        val username = "valid_username_20cha" // 20 chars
+        val username = "valid_username_20cha"
         val result = UsernameValidator.validate(username)
         assertTrue(result is UsernameValidator.ValidationResult.Valid)
     }

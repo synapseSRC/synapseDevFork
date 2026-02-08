@@ -22,10 +22,10 @@ fun PostContent(
     postViewStyle: PostViewStyle = PostViewStyle.SWIPE,
     isVideo: Boolean,
     pollQuestion: String?,
-    pollOptions: List<PollOption>?, // Using the PollOption from PollContent.kt
+    pollOptions: List<PollOption>?,
     onMediaClick: (Int) -> Unit,
     onPollVote: (String) -> Unit,
-    isExpanded: Boolean = false, // Added parameter
+    isExpanded: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -41,7 +41,7 @@ fun PostContent(
                 overflow = TextOverflow.Ellipsis,
                 onTextLayout = { textLayoutResult ->
                     if (textLayoutResult.hasVisualOverflow && !showFullText) {
-                        // Logic handled by maxLines and overflow
+
                     }
                 }
             )
@@ -53,7 +53,7 @@ fun PostContent(
                 isVideo = isVideo,
                 postViewStyle = postViewStyle,
                 onMediaClick = onMediaClick,
-                modifier = Modifier.padding(horizontal = 0.dp) // Media usually goes edge-to-edge or with slight padding
+                modifier = Modifier.padding(horizontal = 0.dp)
             )
         }
 

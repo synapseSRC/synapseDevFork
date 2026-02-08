@@ -111,7 +111,7 @@ class VideoPlayerViewModel @Inject constructor(
                         }
                     }
                 }
-                delay(100) // Update every 100ms
+                delay(100)
             }
         }
     }

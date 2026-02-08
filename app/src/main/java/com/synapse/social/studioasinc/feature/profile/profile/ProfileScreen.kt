@@ -42,29 +42,8 @@ import com.synapse.social.studioasinc.feature.profile.profile.components.UserSea
 import com.synapse.social.studioasinc.domain.model.Post
 import kotlinx.coroutines.delay
 
-/**
- * Main Profile screen composable displaying user profile information and content.
- *
- * Features:
- * - Cover photo with parallax scrolling
- * - Profile header with animated story ring
- * - Animated stat counters
- * - Content tabs with sliding indicator (Posts, Photos, Reels)
- * - Pull-to-refresh with custom animation
- * - Staggered content loading animations
- * - Bottom sheet actions (Share, View As, QR Code, etc.)
- *
- * @param userId The ID of the user whose profile to display
- * @param currentUserId The ID of the currently logged-in user
- * @param onNavigateBack Callback for back navigation
- * @param onNavigateToEditProfile Callback to navigate to edit profile
- * @param onNavigateToFollowers Callback to navigate to followers list
- * @param onNavigateToFollowing Callback to navigate to following list
- * @param onNavigateToSettings Callback to navigate to settings
- * @param onNavigateToActivityLog Callback to navigate to activity log
- * @param onNavigateToUserProfile Callback to navigate to another user's profile
- * @param viewModel ProfileViewModel instance for state management
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
@@ -83,22 +62,22 @@ fun ProfileScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    // Calculate effective ownership state based on View As mode
-    // If in View As mode, we simulate NOT being the owner
+
+
     val effectiveIsOwnProfile = state.isOwnProfile && state.viewAsMode == null
 
-    // Create an effective state for UI components to consume
+
     val effectiveState = state.copy(isOwnProfile = effectiveIsOwnProfile)
 
     val listState = rememberLazyListState()
     var showUserSearchDialog by remember { mutableStateOf(false) }
 
-    // Media Viewer State
+
     var showMediaViewer by remember { mutableStateOf(false) }
     var selectedMediaUrls by remember { mutableStateOf<List<String>>(emptyList()) }
     var initialMediaPage by remember { mutableStateOf(0) }
 
-    // Post Options State
+
     var showPostOptions by remember { mutableStateOf(false) }
     var selectedPost by remember { mutableStateOf<Post?>(null) }
 
@@ -107,7 +86,7 @@ fun ProfileScreen(
     val density = androidx.compose.ui.platform.LocalDensity.current
     val coverHeightPx = with(density) { 200.dp.toPx() }
 
-    // Calculate scroll progress for parallax effect
+
     val scrollProgress = remember {
         derivedStateOf {
             if (listState.firstVisibleItemIndex > 0) {
@@ -201,7 +180,7 @@ fun ProfileScreen(
     }
 }
 
-    // Bottom Sheets
+
     if (state.showMoreMenu) {
         val profile = (state.profileState as? ProfileUiState.Success)?.profile
         ProfileMoreMenuBottomSheet(
@@ -327,7 +306,7 @@ fun ProfileScreen(
         }
     }
 
-    // Media Viewer Overlay
+
     if (showMediaViewer) {
         MediaViewer(
             mediaUrls = selectedMediaUrls,
@@ -336,7 +315,7 @@ fun ProfileScreen(
         )
     }
 
-    // Post Options Bottom Sheet
+
     if (showPostOptions && selectedPost != null) {
         val post = selectedPost!!
         PostOptionsBottomSheet(
@@ -405,7 +384,7 @@ private fun ProfileContent(
     onOpenMediaViewer: (List<String>, Int) -> Unit,
     onShowPostOptions: (Post) -> Unit
 ) {
-    // Entry animation for content
+
     var contentVisible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         delay(100)
@@ -420,17 +399,14 @@ private fun ProfileContent(
 
     val context = LocalContext.current
 
-    // Using rememberUpdatedState ensures that the actions object remains stable even if
-    // the parent passes new lambda instances on every recomposition.
+
+
     val currentOnNavigateToUserProfile by rememberUpdatedState(onNavigateToUserProfile)
     val currentOnOpenMediaViewer by rememberUpdatedState(onOpenMediaViewer)
     val currentOnShowPostOptions by rememberUpdatedState(onShowPostOptions)
 
-    /**
-     * Bolt Optimization: Cache PostActions to prevent recreation of lambdas for every list item.
-     * Including 'context' in keys ensures that capturing the context is safe across activity recreations.
-     * Expected Impact: Reduces frame drops by ~15% on mid-range devices during profile scroll.
-     */
+
+
     val actions = remember(context, viewModel) {
         PostActions(
             onUserClick = { userId -> currentOnNavigateToUserProfile(userId) },
@@ -452,9 +428,9 @@ private fun ProfileContent(
             onBookmark = { post -> viewModel.toggleSave(post.id) },
             onOptionClick = { post -> currentOnShowPostOptions(post) },
             onMediaClick = { index ->
-                // This will be overridden in the call to SharedPostItem if needed,
-                // but we provide a default that works for general cases.
-                // In Profile, we have a specific onMediaClick logic.
+
+
+
             },
             onPollVote = { post, idx -> viewModel.votePoll(post.id, idx) }
         )
@@ -466,7 +442,7 @@ private fun ProfileContent(
             .fillMaxSize()
             .graphicsLayer { alpha = contentAlpha }
     ) {
-        // View As Banner
+
         if (state.viewAsMode != null) {
             item {
                 ViewAsBanner(
@@ -477,7 +453,7 @@ private fun ProfileContent(
             }
         }
 
-        // Enhanced Profile Header with Cover Photo
+
         item {
             ProfileHeader(
                 avatar = profile.avatar,
@@ -532,7 +508,7 @@ private fun ProfileContent(
             )
         }
 
-        // Content Filter Bar
+
         item {
             Spacer(modifier = Modifier.height(8.dp))
             ContentFilterBar(
@@ -543,7 +519,7 @@ private fun ProfileContent(
             )
         }
 
-        // Content Section with Crossfade Animation
+
         item {
             crossfadeContent(targetState = state.contentFilter) { filter ->
                 when (filter) {
@@ -561,7 +537,7 @@ private fun ProfileContent(
                             PhotoGrid(
                                 items = photos,
                                 onItemClick = { mediaItem ->
-                                    // Construct list of URLs for viewer
+
                                     val allUrls = photos.map { it.url }
                                     val index = photos.indexOf(mediaItem)
                                     onOpenMediaViewer(allUrls, if (index >= 0) index else 0)
@@ -572,7 +548,7 @@ private fun ProfileContent(
                     }
                     ProfileContentFilter.POSTS -> {
                         Column {
-                            // User Details Section
+
                             Spacer(modifier = Modifier.height(16.dp))
                             UserDetailsSection(
                                 details = UserDetails(
@@ -597,7 +573,7 @@ private fun ProfileContent(
                                 onWebsiteClick = { url ->
                                      try {
                                          val uri = Uri.parse(url)
-                                         // Bolt: Security validation to prevent insecure intent redirection
+
                                          if (uri.scheme == "http" || uri.scheme == "https") {
                                              val intent = Intent(Intent.ACTION_VIEW, uri)
                                              context.startActivity(intent)
@@ -613,7 +589,7 @@ private fun ProfileContent(
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            // Following Section
+
                             FollowingSection(
                                 users = state.followingList,
                                 selectedFilter = FollowingFilter.ALL,
@@ -625,7 +601,7 @@ private fun ProfileContent(
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            // Posts Feed - Empty state shown in Column
+
                             if (state.posts.isEmpty() && !state.isLoadingMore) {
                                 EmptyState(
                                     icon = Icons.AutoMirrored.Filled.Article,
@@ -662,14 +638,14 @@ private fun ProfileContent(
             }
         }
 
-        // Posts items - added directly to parent LazyColumn
+
         if (state.contentFilter == ProfileContentFilter.POSTS && state.posts.isNotEmpty()) {
             val posts = state.posts.filterIsInstance<com.synapse.social.studioasinc.domain.model.Post>()
             items(posts, key = { it.id }) { post ->
-                // Context for profile actions
+
                 val currentProfile = (state.profileState as? ProfileUiState.Success)?.profile
 
-                // Custom media click handler that uses the specific post's media
+
                 val postActions = remember(actions, post) {
                     actions.copy(
                         onMediaClick = { index ->
@@ -689,16 +665,15 @@ private fun ProfileContent(
             }
         }
 
-        // Bottom spacing
+
         item {
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
 
-/**
- * Animated post card with entrance animation.
- */
+
+
 @Composable
 private fun AnimatedPostCard(
     post: com.synapse.social.studioasinc.domain.model.Post,
@@ -742,9 +717,8 @@ private fun AnimatedPostCard(
     }
 }
 
-/**
- * Format joined date from timestamp to readable string.
- */
+
+
 private fun formatJoinedDate(timestamp: Long): String {
     if (timestamp == 0L) return ""
 

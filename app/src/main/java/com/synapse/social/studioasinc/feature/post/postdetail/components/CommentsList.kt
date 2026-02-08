@@ -89,7 +89,7 @@ fun CommentsList(
                     onShowReactions = onShowReactions,
                     onShowOptions = onShowOptions,
                     onUserClick = onUserClick,
-                    modifier = Modifier // No indent for flat list
+                    modifier = Modifier
                 )
             }
         }

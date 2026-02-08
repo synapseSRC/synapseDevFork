@@ -39,15 +39,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
-/**
- * Reusable text field component for authentication screens.
- * Supports validation states, password visibility toggle, and accessibility.
- *
- * Design tokens:
- * - Minimum touch target: 48dp (handled by Material 3 OutlinedTextField)
- * - Focus highlight: Border animation (handled by Material 3)
- * - Error display: Inline below field
- */
+
+
 @Composable
 fun AuthTextField(
     value: String,
@@ -66,7 +59,7 @@ fun AuthTextField(
     val isFocused by interactionSource.collectIsFocusedAsState()
     var passwordVisible by remember { mutableStateOf(false) }
 
-    // Focus animation scale ( Requirement 12.1)
+
     val scale by animateFloatAsState(
         targetValue = if (isFocused) 1.02f else 1f,
         label = "Focus Scale"
@@ -91,7 +84,7 @@ fun AuthTextField(
                 } else if (isPassword) {
                     IconButton(
                         onClick = { passwordVisible = !passwordVisible },
-                        modifier = Modifier.size(48.dp) // Requirement 8.4: Touch target size
+                        modifier = Modifier.size(48.dp)
                     ) {
                         Icon(
                             imageVector = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
@@ -121,7 +114,7 @@ fun AuthTextField(
             interactionSource = interactionSource,
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 56.dp) // Material Design standard height
+                .heightIn(min = 56.dp)
                 .semantics {
                     contentDescription = "$label input field"
                     if (error != null) {
@@ -133,7 +126,7 @@ fun AuthTextField(
                 }
         )
 
-        // Error message
+
         if (error != null) {
             Text(
                 text = error,

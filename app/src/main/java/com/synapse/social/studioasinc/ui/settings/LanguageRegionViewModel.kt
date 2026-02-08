@@ -13,17 +13,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-/**
- * ViewModel for the Language and Region Settings screen.
- *
- * Manages the state for language and region-related settings including:
- * - Available languages list with native names
- * - Current language selection
- * - Language change handling
- * - Region preferences navigation
- *
- * Requirements: 8.1, 8.4
- */
+
+
 class LanguageRegionViewModel(
     application: Application
 ) : AndroidViewModel(application) {
@@ -31,9 +22,9 @@ class LanguageRegionViewModel(
     private val settingsRepository: SettingsRepository =
         SettingsRepositoryImpl.getInstance(application)
 
-    // ========================================================================
-    // State
-    // ========================================================================
+
+
+
 
     private val _currentLanguage = MutableStateFlow("English")
     val currentLanguage: StateFlow<String> = _currentLanguage.asStateFlow()
@@ -51,20 +42,17 @@ class LanguageRegionViewModel(
         loadAvailableLanguages()
     }
 
-    // ========================================================================
-    // Language Management
-    // ========================================================================
 
-    /**
-     * Loads the list of available languages with their native names.
-     *
-     * Requirements: 8.1, 8.4
-     */
+
+
+
+
+
     private fun loadAvailableLanguages() {
         viewModelScope.launch {
             try {
-                // Define available languages with native script names
-                // Requirements: 8.4 - Language names in their native script
+
+
                 val languages = listOf(
                     LanguageOption(
                         code = "en",
@@ -169,13 +157,13 @@ class LanguageRegionViewModel(
                 )
                 _availableLanguages.value = languages
 
-                // Set initial selection based on saved preference or system default
+
                 settingsRepository.language.collect { savedCode ->
                     val selected = languages.find { it.code == savedCode }
                     if (selected != null) {
                         _currentLanguage.value = selected.nativeName
                     } else {
-                        // If no saved preference or invalid, fallback to system if matched or English
+
                         val systemLocale = Locale.getDefault()
                         val systemCode = systemLocale.language
                         val match = languages.find { it.code.startsWith(systemCode) }
@@ -193,21 +181,17 @@ class LanguageRegionViewModel(
         }
     }
 
-    /**
-     * Sets the selected language.
-     *
-     * @param languageOption The language option to select
-     * Requirements: 8.1, 8.2
-     */
+
+
     fun setLanguage(languageOption: LanguageOption) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                // 1. Save the language preference to DataStore
+
                 settingsRepository.setLanguage(languageOption.code)
 
-                // 2. Update the app's locale configuration
+
                 val locale = if (languageOption.code.contains("-")) {
                     val parts = languageOption.code.split("-")
                     Locale.Builder().setLanguage(parts[0]).setRegion(parts[1]).build()
@@ -235,52 +219,36 @@ class LanguageRegionViewModel(
         }
     }
 
-    /**
-     * Checks if a language is currently selected.
-     *
-     * @param languageOption The language option to check
-     * @return True if the language is currently selected
-     */
+
+
     fun isLanguageSelected(languageOption: LanguageOption): Boolean {
         return _currentLanguage.value == languageOption.nativeName
     }
 
-    // ========================================================================
-    // Navigation Handlers
-    // ========================================================================
 
-    /**
-     * Handles navigation to region preferences screen.
-     * This is a placeholder for future implementation.
-     *
-     * Requirements: 8.3
-     */
+
+
+
+
+
     fun navigateToRegionPreferences() {
         android.util.Log.d("LanguageRegionViewModel", "Navigate to region preferences (placeholder)")
-        // Navigation will be handled by the screen composable
+
     }
 
-    // ========================================================================
-    // Helper Methods
-    // ========================================================================
 
-    /**
-     * Clears any error messages.
-     */
+
+
+
+
+
     fun clearError() {
         _error.value = null
     }
 }
 
-/**
- * Data class representing a language option.
- *
- * @property code The ISO 639-1 language code (e.g., "en", "es", "ja")
- * @property name The English name of the language
- * @property nativeName The name of the language in its native script
- *
- * Requirements: 8.4
- */
+
+
 data class LanguageOption(
     val code: String,
     val name: String,

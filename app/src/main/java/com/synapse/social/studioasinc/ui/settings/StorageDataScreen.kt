@@ -24,7 +24,7 @@ fun StorageDataScreen(
     val useLessDataCalls by viewModel.useLessDataCalls.collectAsState()
     val showMediaQualitySheet by viewModel.showMediaQualitySheet.collectAsState()
 
-    // State for Auto-Download Dialogs
+
     var showMobileDialog by remember { mutableStateOf(false) }
     var showWifiDialog by remember { mutableStateOf(false) }
     var showRoamingDialog by remember { mutableStateOf(false) }
@@ -36,7 +36,7 @@ fun StorageDataScreen(
         onBackClick = onBackClick,
         onNavigateToStorageManage = { navController?.navigate("settings_storage_manage") },
         onNavigateToNetworkUsage = { navController?.navigate("settings_network_usage") },
-        onNavigateToProxy = { /* Placeholder */ },
+        onNavigateToProxy = {  },
         onUseLessDataCallsChanged = { viewModel.setUseLessDataCalls(it) },
         onOpenMobileDialog = { showMobileDialog = true },
         onOpenWifiDialog = { showWifiDialog = true },
@@ -107,7 +107,7 @@ private fun StorageDataContent(
             verticalArrangement = Arrangement.spacedBy(SettingsSpacing.sectionSpacing),
             contentPadding = PaddingValues(top = 8.dp, bottom = 32.dp)
         ) {
-            // Section 1: Storage Management
+
             item {
                 StorageManagementSection(
                     onNavigateToStorageManage = onNavigateToStorageManage,
@@ -115,7 +115,7 @@ private fun StorageDataContent(
                 )
             }
 
-            // Section 2: Call Settings
+
             item {
                 CallSettingsSection(
                     useLessDataCalls = useLessDataCalls,
@@ -123,14 +123,14 @@ private fun StorageDataContent(
                 )
             }
 
-            // Section 3: Network
+
             item {
                 NetworkSection(
                     onNavigateToProxy = onNavigateToProxy
                 )
             }
 
-            // Section 4: Media auto-download
+
             item {
                 MediaAutoDownloadSection(
                     autoDownloadRules = autoDownloadRules,
@@ -140,7 +140,7 @@ private fun StorageDataContent(
                 )
             }
 
-            // Section 5: Media upload quality
+
             item {
                 MediaUploadQualitySection(
                     mediaUploadQuality = mediaUploadQuality,
@@ -148,7 +148,7 @@ private fun StorageDataContent(
                 )
             }
 
-            // Bottom padding
+
             item {
                 Spacer(modifier = Modifier.height(24.dp))
             }
@@ -192,7 +192,7 @@ private fun StorageDataScreenDialogs(
         AutoDownloadDialog(
             title = "When using mobile data",
             selectedTypes = autoDownloadRules.mobileData,
-            onConfirm = { 
+            onConfirm = {
                 onSetAutoDownloadRule("mobile", it)
                 onDismissMobileDialog()
             },
@@ -204,7 +204,7 @@ private fun StorageDataScreenDialogs(
         AutoDownloadDialog(
             title = "When connected on Wi-Fi",
             selectedTypes = autoDownloadRules.wifi,
-            onConfirm = { 
+            onConfirm = {
                 onSetAutoDownloadRule("wifi", it)
                 onDismissWifiDialog()
             },
@@ -216,7 +216,7 @@ private fun StorageDataScreenDialogs(
         AutoDownloadDialog(
             title = "When roaming",
             selectedTypes = autoDownloadRules.roaming,
-            onConfirm = { 
+            onConfirm = {
                 onSetAutoDownloadRule("roaming", it)
                 onDismissRoamingDialog()
             },

@@ -24,32 +24,15 @@ import androidx.compose.ui.platform.LocalContext
 import com.synapse.social.studioasinc.core.util.ImageLoader
 import com.synapse.social.studioasinc.R
 
-/**
- * Reusable Material 3 Expressive settings UI components.
- *
- * This file contains all the composable building blocks for settings screens,
- * following Material Design 3 guidelines with consistent styling, spacing, and behavior.
- *
- * Requirements: 1.4, 2.1, 3.1, 4.1, 5.1, 6.1
- */
 
-// ============================================================================
-// Settings Item Components
-// ============================================================================
 
-/**
- * Enhanced toggle settings item with Material 3 Expressive corner radius support.
- *
- * @param title The main title text
- * @param subtitle Optional descriptive text below the title
- * @param icon Optional leading icon resource
- * @param checked Current toggle state
- * @param onCheckedChange Callback when toggle state changes
- * @param enabled Whether the item is interactive
- * @param position Position in group for corner radius styling
- *
- * Requirements: 1.4, 2.1, 3.1, 4.1, 5.1, 6.1
- */
+
+
+
+
+
+
+
 @Composable
 fun SettingsToggleItem(
     title: String,
@@ -67,7 +50,7 @@ fun SettingsToggleItem(
             {
                 Icon(
                     painter = painterResource(it),
-                    contentDescription = null, // Merged into parent semantics
+                    contentDescription = null,
                     modifier = Modifier.size(SettingsSpacing.iconSize),
                     tint = SettingsColors.itemIcon
                 )
@@ -80,17 +63,8 @@ fun SettingsToggleItem(
     )
 }
 
-/**
- * Enhanced toggle settings item with Material 3 Expressive corner radius support (Vector Icon).
- *
- * @param title The main title text
- * @param subtitle Optional descriptive text below the title
- * @param imageVector Optional leading icon vector
- * @param checked Current toggle state
- * @param onCheckedChange Callback when toggle state changes
- * @param enabled Whether the item is interactive
- * @param position Position in group for corner radius styling
- */
+
+
 @Composable
 fun SettingsToggleItem(
     title: String,
@@ -107,7 +81,7 @@ fun SettingsToggleItem(
         iconContent = {
             Icon(
                 imageVector = imageVector,
-                contentDescription = null, // Merged into parent semantics
+                contentDescription = null,
                 modifier = Modifier.size(SettingsSpacing.iconSize),
                 tint = SettingsColors.itemIcon
             )
@@ -151,13 +125,13 @@ private fun SettingsToggleItemContent(
                 .heightIn(min = SettingsSpacing.minTouchTarget),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Leading icon
+
             if (iconContent != null) {
                 iconContent()
                 Spacer(modifier = Modifier.width(SettingsSpacing.iconTextSpacing))
             }
 
-            // Title and subtitle
+
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -180,7 +154,7 @@ private fun SettingsToggleItemContent(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Material 3 Switch with primary thumb and primaryContainer track
+
             Switch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
@@ -196,18 +170,8 @@ private fun SettingsToggleItemContent(
     }
 }
 
-/**
- * Enhanced clickable settings item with Material 3 Expressive corner radius support.
- *
- * @param title The main title text
- * @param subtitle Optional descriptive text below the title
- * @param icon Optional leading icon resource
- * @param onClick Callback when the item is clicked
- * @param enabled Whether the item is interactive
- * @param position Position in group for corner radius styling
- *
- * Requirements: 1.4, 2.1, 3.1, 4.1, 5.1, 6.1
- */
+
+
 @Composable
 fun SettingsClickableItem(
     title: String,
@@ -236,16 +200,8 @@ fun SettingsClickableItem(
     )
 }
 
-/**
- * Enhanced clickable settings item with Material 3 Expressive corner radius support (Vector Icon).
- *
- * @param title The main title text
- * @param subtitle Optional descriptive text below the title
- * @param imageVector Optional leading icon vector
- * @param onClick Callback when the item is clicked
- * @param enabled Whether the item is interactive
- * @param position Position in group for corner radius styling
- */
+
+
 @Composable
 fun SettingsClickableItem(
     title: String,
@@ -297,13 +253,13 @@ private fun SettingsClickableItemContent(
                 .heightIn(min = SettingsSpacing.minTouchTarget),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Leading icon
+
             if (iconContent != null) {
                 iconContent()
                 Spacer(modifier = Modifier.width(SettingsSpacing.iconTextSpacing))
             }
 
-            // Title and subtitle
+
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -327,18 +283,8 @@ private fun SettingsClickableItemContent(
     }
 }
 
-/**
- * Enhanced navigation settings item with Material 3 Expressive corner radius support.
- *
- * @param title The main title text
- * @param subtitle Optional descriptive text below the title
- * @param icon Optional leading icon resource
- * @param onClick Callback when the item is clicked
- * @param enabled Whether the item is interactive
- * @param position Position in group for corner radius styling
- *
- * Requirements: 1.4, 2.1, 3.1, 4.1, 5.1, 6.1
- */
+
+
 @Composable
 fun SettingsNavigationItem(
     title: String,
@@ -355,7 +301,7 @@ fun SettingsNavigationItem(
             {
                 Icon(
                     painter = painterResource(it),
-                    contentDescription = null, // Merged into parent semantics
+                    contentDescription = null,
                     modifier = Modifier.size(SettingsSpacing.iconSize),
                     tint = SettingsColors.itemIcon
                 )
@@ -367,16 +313,8 @@ fun SettingsNavigationItem(
     )
 }
 
-/**
- * Enhanced navigation settings item with Material 3 Expressive corner radius support (Vector Icon).
- *
- * @param title The main title text
- * @param subtitle Optional descriptive text below the title
- * @param imageVector Optional leading icon vector
- * @param onClick Callback when the item is clicked
- * @param enabled Whether the item is interactive
- * @param position Position in group for corner radius styling
- */
+
+
 @Composable
 fun SettingsNavigationItem(
     title: String,
@@ -392,7 +330,7 @@ fun SettingsNavigationItem(
         iconContent = {
             Icon(
                 imageVector = imageVector,
-                contentDescription = null, // Merged into parent semantics
+                contentDescription = null,
                 modifier = Modifier.size(SettingsSpacing.iconSize),
                 tint = SettingsColors.itemIcon
             )
@@ -434,13 +372,13 @@ private fun SettingsNavigationItemContent(
                 .heightIn(min = SettingsSpacing.minTouchTarget),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Leading icon
+
             if (iconContent != null) {
                 iconContent()
                 Spacer(modifier = Modifier.width(SettingsSpacing.iconTextSpacing))
             }
 
-            // Title and subtitle
+
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -463,10 +401,10 @@ private fun SettingsNavigationItemContent(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Chevron icon with onSurfaceVariant at 0.5 alpha
+
             Icon(
                 painter = painterResource(R.drawable.ic_chevron_right),
-                contentDescription = null, // Merged into parent semantics
+                contentDescription = null,
                 modifier = Modifier.size(SettingsSpacing.iconSize),
                 tint = SettingsColors.chevronIcon
             )
@@ -474,20 +412,8 @@ private fun SettingsNavigationItemContent(
     }
 }
 
-/**
- * Enhanced selection settings item with Material 3 Expressive corner radius support.
- *
- * @param title The main title text
- * @param subtitle Optional descriptive text below the title
- * @param icon Optional leading icon resource
- * @param options List of selectable options
- * @param selectedOption Currently selected option
- * @param onSelect Callback when an option is selected
- * @param enabled Whether the item is interactive
- * @param position Position in group for corner radius styling
- *
- * Requirements: 1.4, 2.1, 3.1, 4.1, 5.1, 6.1
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsSelectionItem(
@@ -523,7 +449,7 @@ fun SettingsSelectionItem(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Leading icon
+
                 if (icon != null) {
                     Icon(
                         painter = painterResource(icon),
@@ -534,7 +460,7 @@ fun SettingsSelectionItem(
                     Spacer(modifier = Modifier.width(SettingsSpacing.iconTextSpacing))
                 }
 
-                // Title
+
                 Text(
                     text = title,
                     style = SettingsTypography.itemTitle,
@@ -557,7 +483,7 @@ fun SettingsSelectionItem(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Dropdown menu
+
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = { if (enabled) expanded = !expanded },
@@ -600,21 +526,8 @@ fun SettingsSelectionItem(
     }
 }
 
-/**
- * Enhanced slider settings item with Material 3 Expressive corner radius support.
- *
- * @param title The main title text
- * @param subtitle Optional descriptive text below the title
- * @param value Current slider value
- * @param valueRange Range of valid values
- * @param steps Number of discrete steps (0 for continuous)
- * @param onValueChange Callback when value changes
- * @param valueLabel Function to format the value for display
- * @param enabled Whether the item is interactive
- * @param position Position in group for corner radius styling
- *
- * Requirements: 1.4, 2.1, 3.1, 4.1, 5.1, 6.1
- */
+
+
 @Composable
 fun SettingsSliderItem(
     title: String,
@@ -645,7 +558,7 @@ fun SettingsSliderItem(
                     vertical = SettingsSpacing.itemVerticalPadding
                 )
         ) {
-            // Title
+
             Text(
                 text = title,
                 style = SettingsTypography.itemTitle,
@@ -665,7 +578,7 @@ fun SettingsSliderItem(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Slider
+
             Slider(
                 value = value,
                 onValueChange = onValueChange,
@@ -681,7 +594,7 @@ fun SettingsSliderItem(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Preview text
+
             Text(
                 text = valueLabel(value),
                 style = SettingsTypography.itemSubtitle,
@@ -692,20 +605,8 @@ fun SettingsSliderItem(
     }
 }
 
-/**
- * A button settings item with a FilledTonalButton.
- *
- * Displays a button with 16dp corner radius.
- * Uses consistent 16dp horizontal and vertical padding.
- *
- * @param title The button text
- * @param onClick Callback when the button is clicked
- * @param isDestructive Whether this is a destructive action (uses error colors)
- * @param enabled Whether the button is interactive
- * @param modifier Optional modifier for the button
- *
- * Requirements: 1.4, 2.1, 3.1, 4.1, 5.1, 6.1
- */
+
+
 @Composable
 fun SettingsButtonItem(
     title: String,
@@ -738,16 +639,8 @@ fun SettingsButtonItem(
     }
 }
 
-/**
- * A header settings item with titleMedium typography in primary color.
- *
- * Displays a section header with consistent styling.
- * Uses consistent 16dp horizontal and vertical padding.
- *
- * @param title The header text
- *
- * Requirements: 1.4, 2.1, 3.1, 4.1, 5.1, 6.1
- */
+
+
 @Composable
 fun SettingsHeaderItem(
     title: String
@@ -764,21 +657,12 @@ fun SettingsHeaderItem(
 }
 
 
-// ============================================================================
-// Container Components
-// ============================================================================
 
-/**
- * A card container for grouping related settings items with Material 3 Expressive styling.
- *
- * Uses surfaceContainer background with 24dp corner radius.
- * Automatically applies top, middle, bottom corner radius styling to child items.
- *
- * @param modifier Optional modifier for the card
- * @param content The settings items to display in the card
- *
- * Requirements: 1.1, 1.4
- */
+
+
+
+
+
 @Composable
 fun SettingsCard(
     modifier: Modifier = Modifier,
@@ -798,18 +682,8 @@ fun SettingsCard(
     }
 }
 
-/**
- * A section container with a header and card content using Material 3 Expressive design.
- *
- * Displays a titleMedium header in primary color followed by a SettingsCard.
- * Uses 24dp spacing between sections and proper corner radius grouping.
- *
- * @param title The section header text
- * @param modifier Optional modifier for the section
- * @param content The settings items to display in the section card
- *
- * Requirements: 1.1, 1.4
- */
+
+
 @Composable
 fun SettingsSection(
     title: String,
@@ -832,20 +706,8 @@ fun SettingsSection(
     }
 }
 
-/**
- * Enhanced settings group with automatic corner radius styling for Material 3 Expressive design.
- *
- * Automatically applies:
- * - Top corners (16dp) to first item
- * - No corners (0dp) to middle items
- * - Bottom corners (16dp) to last item
- * - Dividers between items
- *
- * @param modifier Optional modifier for the group
- * @param items List of settings items to display
- *
- * Requirements: 1.1, 1.4
- */
+
+
 @Composable
 fun SettingsGroup(
     modifier: Modifier = Modifier,
@@ -865,13 +727,8 @@ fun SettingsGroup(
     }
 }
 
-/**
- * A divider to separate settings items within a card.
- *
- * Uses outlineVariant color at 0.5 alpha.
- *
- * Requirements: 1.1, 1.4
- */
+
+
 @Composable
 fun SettingsDivider() {
     HorizontalDivider(
@@ -880,23 +737,12 @@ fun SettingsDivider() {
     )
 }
 
-// ============================================================================
-// Profile Header Component
-// ============================================================================
 
-/**
- * A profile header card for the Settings Hub.
- *
- * Displays a compact row layout with name/email on the left and avatar on the right.
- * Uses surfaceContainerHigh background with 28dp corners.
- *
- * @param displayName User's display name
- * @param email User's email address
- * @param avatarUrl Optional URL for the user's avatar image
- * @param modifier Optional modifier for the card
- *
- * Requirements: 1.5
- */
+
+
+
+
+
 @Composable
 fun ProfileHeaderCard(
     displayName: String,
@@ -919,7 +765,7 @@ fun ProfileHeaderCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-    // Avatar with border (Left side)
+
             Box(
                 modifier = Modifier.size(SettingsSpacing.avatarSize)
             ) {
@@ -933,7 +779,7 @@ fun ProfileHeaderCard(
                         contentScale = ContentScale.Crop
                     )
                 } else {
-                    // Placeholder avatar
+
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         shape = CircleShape,
@@ -953,7 +799,7 @@ fun ProfileHeaderCard(
                     }
                 }
 
-                // Border
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     shape = CircleShape,
@@ -967,11 +813,11 @@ fun ProfileHeaderCard(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Name and email (Right side)
+
             Column(
                 modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Center // Vertically centered
+                verticalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = displayName,
@@ -988,14 +834,8 @@ fun ProfileHeaderCard(
     }
 }
 
-/**
- * A read-only info item displaying a label and value, with optional copy functionality.
- *
- * @param title The label text
- * @param value The value text
- * @param icon Optional icon resource ID
- * @param onCopy Optional callback when the item is clicked (e.g. to copy value)
- */
+
+
 @Composable
 fun SettingsInfoItem(
     title: String,

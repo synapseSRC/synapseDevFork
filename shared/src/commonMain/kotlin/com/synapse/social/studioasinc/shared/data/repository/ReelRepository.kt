@@ -19,23 +19,14 @@ import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 
-/**
- * Repository responsible for managing Reel-related data operations.
- *
- * This includes fetching reels, handling interactions (likes, opposes),
- * managing comments, and uploading new reels to Supabase Storage and Database.
- */
+
+
 class ReelRepository {
     private val client = SupabaseClient.client
     private val TAG = "ReelRepository"
 
-    /**
-     * Fetches a paginated list of reels from the database.
-     *
-     * @param page The page number to fetch (starting from 0).
-     * @param pageSize The number of reels to fetch per page.
-     * @return A [Result] containing a list of [Reel] objects if successful.
-     */
+
+
     suspend fun getReels(page: Int = 0, pageSize: Int = 10): Result<List<Reel>> {
         return try {
             val currentUserId = client.auth.currentUserOrNull()?.id
@@ -74,13 +65,8 @@ class ReelRepository {
         }
     }
 
-    /**
-     * Reports a reel for a specific reason.
-     *
-     * @param reelId The ID of the reel to report.
-     * @param reason The reason for reporting.
-     * @return A [Result] indicating success or failure.
-     */
+
+
     suspend fun reportReel(reelId: String, reason: String): Result<Unit> {
         return try {
             val currentUser = client.auth.currentUserOrNull() ?: throw Exception("Not logged in")
@@ -97,12 +83,8 @@ class ReelRepository {
         }
     }
 
-    /**
-     * Blocks a reel creator for the current user.
-     *
-     * @param creatorId The ID of the user to block.
-     * @return A [Result] indicating success or failure.
-     */
+
+
     suspend fun blockCreator(creatorId: String): Result<Unit> {
         return try {
             val currentUser = client.auth.currentUserOrNull() ?: throw Exception("Not logged in")
@@ -118,12 +100,8 @@ class ReelRepository {
         }
     }
 
-    /**
-     * Fetches a single reel by its ID.
-     *
-     * @param reelId The ID of the reel to fetch.
-     * @return A [Result] containing the [Reel] object if found.
-     */
+
+
     suspend fun getReel(reelId: String): Result<Reel> {
         return try {
             val currentUserId = client.auth.currentUserOrNull()?.id
@@ -155,26 +133,14 @@ class ReelRepository {
         }
     }
 
-    /**
-     * Toggles the "like" interaction for a reel.
-     *
-     * @param reelId The ID of the reel to like/unlike.
-     * @return A [Result] indicating success or failure.
-     */
+
+
     suspend fun likeReel(reelId: String): Result<Unit> {
         return performInteraction(reelId, "like")
     }
 
-    /**
-     * Toggles the "oppose" interaction for a reel.
-     *
-     * "Oppose" is a unique interaction in Synapse that allows users to express a
-     * contrarian view. It can optionally be done anonymously.
-     *
-     * @param reelId The ID of the reel to oppose/un-oppose.
-     * @param isAnonymous Whether the opposition should be recorded anonymously.
-     * @return A [Result] indicating success or failure.
-     */
+
+
     suspend fun opposeReel(reelId: String, isAnonymous: Boolean = false): Result<Unit> {
         return try {
             performInteraction(reelId, "oppose", isAnonymous)
@@ -183,25 +149,8 @@ class ReelRepository {
         }
     }
 
-    /**
-     * Uploads a new reel to Supabase.
-     *
-     * This method uploads the video file to storage and creates a corresponding
-     * record in the 'reels' table.
-     *
-     * @param dataChannel The byte stream of the video file.
-     * @param size The size of the video file in bytes.
-     * @param fileName The name of the file to be stored.
-     * @param caption The reel's caption.
-     * @param musicTrack The name/ID of the music track used.
-     * @param locationName Optional name of the location where the reel was filmed.
-     * @param locationAddress Optional physical address of the location.
-     * @param locationLatitude Optional latitude coordinate.
-     * @param locationLongitude Optional longitude coordinate.
-     * @param metadata Optional additional metadata for the reel.
-     * @param onProgress Callback to track the upload progress (0.0 to 1.0).
-     * @return A [Result] indicating success or failure.
-     */
+
+
     suspend fun uploadReel(
         dataChannel: ByteReadChannel,
         size: Long,
@@ -221,7 +170,7 @@ class ReelRepository {
 
             val uploadData = UploadData(dataChannel, size)
 
-            // Remove withRetry because dataChannel cannot be reset for retries
+
             val bucket = client.storage.from("reels")
             bucket.uploadAsFlow(storagePath, uploadData) {
                 upsert = true
@@ -264,12 +213,8 @@ class ReelRepository {
         }
     }
 
-    /**
-     * Fetches all comments for a specific reel.
-     *
-     * @param reelId The ID of the reel.
-     * @return A [Result] containing a list of [ReelComment] objects.
-     */
+
+
     suspend fun getComments(reelId: String): Result<List<ReelComment>> {
         return try {
             val comments = client.from("reel_comments")
@@ -285,13 +230,8 @@ class ReelRepository {
         }
     }
 
-    /**
-     * Adds a new comment to a reel.
-     *
-     * @param reelId The ID of the reel to comment on.
-     * @param content The text content of the comment.
-     * @return A [Result] indicating success or failure.
-     */
+
+
     suspend fun addComment(reelId: String, content: String): Result<Unit> {
         return try {
             val currentUser = client.auth.currentUserOrNull() ?: throw Exception("Not logged in")
@@ -339,7 +279,7 @@ class ReelRepository {
             }.decodeList<ReelInteraction>()
 
             if (existing.isNotEmpty()) {
-                // Remove interaction
+
                 client.from("reel_interactions").delete {
                     filter {
                          eq("user_id", currentUser.id)
@@ -348,7 +288,7 @@ class ReelRepository {
                     }
                 }
             } else {
-                // Add interaction
+
                 val insertData = mapOf(
                     "user_id" to currentUser.id,
                     "reel_id" to reelId,

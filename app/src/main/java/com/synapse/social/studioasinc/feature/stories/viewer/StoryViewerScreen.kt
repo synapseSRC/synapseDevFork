@@ -41,7 +41,7 @@ fun StoryViewerScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    // Effect to close screen when finished
+
     LaunchedEffect(uiState.isFinished) {
         if (uiState.isFinished) {
             onClose()
@@ -89,20 +89,20 @@ fun StoryViewerScreen(
             val currentStory = uiState.stories.getOrNull(uiState.currentStoryIndex)
 
             if (currentStory != null) {
-                // Media Content
+
                 StoryMediaContent(
                     story = currentStory,
                     isPaused = uiState.isPaused,
                     onVideoReady = { duration -> viewModel.onVideoReady(duration) }
                 )
 
-                // Overlay
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(top = 16.dp, start = 8.dp, end = 8.dp)
                 ) {
-                    // Progress Bars
+
                     StoryProgressBar(
                         steps = uiState.stories.size,
                         currentStep = uiState.currentStoryIndex,
@@ -112,7 +112,7 @@ fun StoryViewerScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // User Header
+
                     StoryUserHeader(
                         user = uiState.user,
                         storyTime = currentStory.createdAt,
@@ -157,14 +157,14 @@ fun VideoPlayer(
 ) {
     val context = LocalContext.current
 
-    // Create player once per composable lifecycle
+
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
             repeatMode = Player.REPEAT_MODE_OFF
         }
     }
 
-    // Manage lifecycle (release on dispose)
+
     DisposableEffect(Unit) {
         val listener = object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
@@ -183,7 +183,7 @@ fun VideoPlayer(
         }
     }
 
-    // Handle media source changes
+
     LaunchedEffect(mediaUrl) {
         val mediaItem = MediaItem.fromUri(mediaUrl)
         exoPlayer.setMediaItem(mediaItem)
@@ -191,7 +191,7 @@ fun VideoPlayer(
         exoPlayer.playWhenReady = !isPaused
     }
 
-    // Handle play/pause state changes
+
     LaunchedEffect(isPaused) {
         if (isPaused) {
             exoPlayer.pause()
@@ -261,7 +261,7 @@ fun StoryUserHeader(
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Avatar
+
         AsyncImage(
             model = user?.avatar,
             contentDescription = null,
@@ -274,17 +274,17 @@ fun StoryUserHeader(
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        // Name and Time
+
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = user?.displayName ?: user?.username ?: "Unknown",
                 style = MaterialTheme.typography.labelLarge,
                 color = Color.White
             )
-            // Can format time nicely here if needed (e.g. "2h")
+
         }
 
-        // Close Button
+
         IconButton(onClick = onClose) {
             Icon(
                 imageVector = Icons.Default.Close,

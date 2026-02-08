@@ -52,7 +52,7 @@ fun SearchScreen(
     val context = LocalContext.current
     var selectedPost by remember { mutableStateOf<Post?>(null) }
 
-    // Sync Pager with Tab
+
     val pagerState = rememberPagerState(
         initialPage = 0,
         pageCount = { SearchTab.entries.size }
@@ -77,12 +77,12 @@ fun SearchScreen(
         contentColor = MaterialTheme.colorScheme.onBackground,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            // Mastodon-style Search Bar
+
             SearchBar(
                 query = uiState.query,
                 onQueryChange = viewModel::onQueryChange,
                 onSearch = viewModel::onSearch,
-                active = false, // Always expanded in this design, or customize
+                active = false,
                 onActiveChange = {},
                 placeholder = { Text("Search Synapse") },
                 leadingIcon = {
@@ -114,7 +114,7 @@ fun SearchScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Tabs
+
             TabRow(
                 selectedTabIndex = uiState.selectedTab.ordinal,
                 containerColor = MaterialTheme.colorScheme.surface,
@@ -136,7 +136,7 @@ fun SearchScreen(
                 }
             }
 
-            // Content
+
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.weight(1f)
@@ -255,12 +255,12 @@ fun SearchScreen(
             isOwner = viewModel.isPostOwner(post),
             commentsDisabled = viewModel.areCommentsDisabled(post),
             onDismiss = { selectedPost = null },
-            onEdit = { /* Not supported in search */ },
-            onDelete = { 
+            onEdit = {  },
+            onDelete = {
                 viewModel.deletePost(post)
                 selectedPost = null
             },
-            onShare = { 
+            onShare = {
                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_TEXT, "Check out this post on Synapse: synapse://post/${post.id}")
@@ -268,30 +268,30 @@ fun SearchScreen(
                 context.startActivity(Intent.createChooser(shareIntent, "Share Post"))
                 selectedPost = null
             },
-            onCopyLink = { 
+            onCopyLink = {
                 val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("Post Link", "synapse://post/${post.id}")
                 clipboard.setPrimaryClip(clip)
                 Toast.makeText(context, "Link copied", Toast.LENGTH_SHORT).show()
                 selectedPost = null
             },
-            onBookmark = { 
+            onBookmark = {
                 viewModel.bookmarkPost(post)
                 selectedPost = null
             },
-            onToggleComments = { 
+            onToggleComments = {
                 viewModel.toggleComments(post)
                 selectedPost = null
             },
-            onReport = { 
+            onReport = {
                 viewModel.reportPost(post)
                 selectedPost = null
             },
-            onBlock = { 
+            onBlock = {
                 viewModel.blockUser(post.authorUid)
                 selectedPost = null
             },
-            onRevokeVote = { 
+            onRevokeVote = {
                 viewModel.revokeVote(post)
                 selectedPost = null
             }
@@ -315,7 +315,7 @@ fun EmptyState(message: String) {
     }
 }
 
-// Mapper extension
+
 private fun SearchPost.toPost(): Post {
     return Post(
         id = this.id,

@@ -1,6 +1,7 @@
 package com.synapse.social.studioasinc.presentation.editprofile
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -60,7 +61,7 @@ fun EditProfileScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    // Image Pickers
+
     val avatarPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
@@ -77,7 +78,23 @@ fun EditProfileScreen(
         }
     }
 
-    // Navigation Events
+    fun launchAvatarPicker() {
+        try {
+            avatarPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        } catch (e: android.content.ActivityNotFoundException) {
+            Toast.makeText(context, "No photo picker app found. Please install a file manager.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun launchCoverPicker() {
+        try {
+            coverPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        } catch (e: android.content.ActivityNotFoundException) {
+            Toast.makeText(context, "No photo picker app found. Please install a file manager.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+
     LaunchedEffect(viewModel) {
         viewModel.navigationEvents.collect { event ->
             when (event) {
@@ -95,7 +112,7 @@ fun EditProfileScreen(
         }
     }
 
-    // Error Handling
+
     LaunchedEffect(uiState.error) {
         uiState.error?.let { error ->
             snackbarHostState.showSnackbar(error)
@@ -158,19 +175,15 @@ fun EditProfileScreen(
                     ),
                     verticalArrangement = Arrangement.spacedBy(SettingsSpacing.sectionSpacing)
                 ) {
-                    // Image Section
+
                     item {
                         ProfileImageSection(
                             coverUrl = uiState.coverUrl,
                             avatarUrl = uiState.avatarUrl,
                             avatarUploadState = uiState.avatarUploadState,
                             coverUploadState = uiState.coverUploadState,
-                            onCoverClick = {
-                                coverPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                            },
-                            onAvatarClick = {
-                                avatarPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                            },
+                            onCoverClick = { launchCoverPicker() },
+                            onAvatarClick = { launchAvatarPicker() },
                             onRetryAvatarUpload = {
                                 viewModel.onEvent(EditProfileEvent.RetryAvatarUpload)
                             },
@@ -180,7 +193,7 @@ fun EditProfileScreen(
                         )
                     }
 
-                    // Form Fields
+
                     item {
                         ProfileFormFields(
                             username = uiState.username,
@@ -195,7 +208,7 @@ fun EditProfileScreen(
                         )
                     }
 
-                    // Gender Section
+
                     item {
                         GenderSelector(
                             selectedGender = uiState.selectedGender,
@@ -203,13 +216,13 @@ fun EditProfileScreen(
                         )
                     }
 
-                    // Region Section
+
                     item {
                         SettingsCard {
                             SettingsNavigationItem(
                                 title = "Region",
                                 subtitle = uiState.selectedRegion ?: "Not set",
-                                icon = R.drawable.ic_location, // Need to verify if this exists or use fallback
+                                icon = R.drawable.ic_location,
                                 onClick = {
                                     onNavigateToRegionSelection(uiState.selectedRegion ?: "")
                                 }
@@ -217,7 +230,7 @@ fun EditProfileScreen(
                         }
                     }
 
-                    // History Section
+
                     item {
                         SettingsCard {
                             SettingsNavigationItem(

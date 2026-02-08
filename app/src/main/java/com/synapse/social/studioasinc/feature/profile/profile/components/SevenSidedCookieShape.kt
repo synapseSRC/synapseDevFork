@@ -11,9 +11,8 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-/**
- * A 7-sided rounded polygon shape (Heptagon) commonly referred to as "Cookie" shape in some design systems.
- */
+
+
 class SevenSidedCookieShape : Shape {
     override fun createOutline(
         size: Size,
@@ -27,7 +26,7 @@ class SevenSidedCookieShape : Shape {
 
         val sides = 7
         val angleStep = 2 * PI / sides
-        // Start at -PI/2 to have a vertex pointing up
+
         val startAngle = -PI / 2
 
         val vertices = (0 until sides).map { i ->
@@ -38,8 +37,8 @@ class SevenSidedCookieShape : Shape {
             )
         }
 
-        // Fraction of the side length used for the rounded corner (0.0 to 0.5)
-        // 0.5 means the curve starts at the midpoint of the side (maximum roundness without overlap)
+
+
         val cornerFraction = 0.35f
 
         fun lerp(start: Offset, end: Offset, fraction: Float): Offset {
@@ -54,9 +53,9 @@ class SevenSidedCookieShape : Shape {
             val prev = vertices[(i - 1 + sides) % sides]
             val next = vertices[(i + 1) % sides]
 
-            // Point on the segment towards previous vertex
+
             val pointA = lerp(current, prev, cornerFraction)
-            // Point on the segment towards next vertex
+
             val pointB = lerp(current, next, cornerFraction)
 
             if (i == 0) {
@@ -64,7 +63,7 @@ class SevenSidedCookieShape : Shape {
             } else {
                 path.lineTo(pointA.x, pointA.y)
             }
-            // Draw curve around the corner
+
             path.quadraticBezierTo(current.x, current.y, pointB.x, pointB.y)
         }
 

@@ -10,15 +10,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-/**
- * Utility class for sending various types of notifications using Supabase backend.
- * Handles post likes, comments, mentions, and other social interactions.
- */
+
+
 object NotificationUtils {
 
-    /**
-     * Send notification when someone likes a post
-     */
+
+
     fun sendPostLikeNotification(context: Context, postKey: String, postAuthorUid: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -51,9 +48,8 @@ object NotificationUtils {
         }
     }
 
-    /**
-     * Send notification when someone comments on a post
-     */
+
+
     fun sendPostCommentNotification(context: Context, postKey: String, postAuthorUid: String, commentText: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -71,7 +67,7 @@ object NotificationUtils {
 
                 val data = hashMapOf<String, String>().apply {
                     put("postId", postKey)
-                    put("commentText", commentText.take(100)) // Limit comment text
+                    put("commentText", commentText.take(100))
                 }
 
                 NotificationHelper.sendNotification(
@@ -87,9 +83,8 @@ object NotificationUtils {
         }
     }
 
-    /**
-     * Send notification when someone likes a comment
-     */
+
+
     fun sendCommentLikeNotification(context: Context, postKey: String, commentKey: String, commentAuthorUid: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -123,9 +118,8 @@ object NotificationUtils {
         }
     }
 
-    /**
-     * Send notification when someone follows a user
-     */
+
+
     fun sendFollowNotification(context: Context, followedUid: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -158,9 +152,8 @@ object NotificationUtils {
         }
     }
 
-    /**
-     * Send notification for chat messages
-     */
+
+
     fun sendChatMessageNotification(context: Context, recipientUid: String, messageText: String, chatId: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -175,7 +168,7 @@ object NotificationUtils {
                 val senderUser = userRepository.getUserById(currentUser.id).getOrNull()
                 val senderName = senderUser?.username ?: context.getString(R.string.someone)
 
-                // Truncate message for notification
+
                 val truncatedMessage = if (messageText.length > 50) {
                     messageText.take(47) + "..."
                 } else {
@@ -202,9 +195,8 @@ object NotificationUtils {
         }
     }
 
-    /**
-     * Send mention notification (used by MentionUtils)
-     */
+
+
     fun sendMentionNotification(context: Context, mentionedUid: String, postKey: String, commentKey: String?, contentType: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {

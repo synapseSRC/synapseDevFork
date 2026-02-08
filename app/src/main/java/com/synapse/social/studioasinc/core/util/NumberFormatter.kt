@@ -2,17 +2,12 @@ package com.synapse.social.studioasinc.core.util
 
 import java.text.DecimalFormat
 
-/**
- * A utility object for formatting numbers.
- */
+
+
 object NumberFormatter {
 
-    /**
-     * Formats a number into a shorthand form (e.g., 1K, 1M, 1B, 1T).
-     *
-     * @param number The number to format.
-     * @return The formatted string.
-     */
+
+
     fun format(number: Double): String {
         if (number < 10000) {
             return number.toLong().toString()
@@ -27,9 +22,8 @@ object NumberFormatter {
         }
     }
 
-    /**
-     * Format large numbers for display (e.g., 1.2K, 3.5M, 1.0B)
-     */
+
+
     fun formatCount(count: Int): String {
         return when {
             count >= 1_000_000_000 -> {

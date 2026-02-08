@@ -1,9 +1,7 @@
 package com.synapse.social.studioasinc.domain.model.models
 
-/**
- * Represents the result of a successful media upload operation.
- * Contains all necessary information to create a ChatAttachment.
- */
+
+
 data class MediaUploadResult(
     val url: String,
     val thumbnailUrl: String?,

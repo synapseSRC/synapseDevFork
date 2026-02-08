@@ -50,7 +50,7 @@ fun ApiKeySettingsScreen(
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            // Provider Selection
+
             Card(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -64,7 +64,7 @@ fun ApiKeySettingsScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Preferred Provider Dropdown
+
                     var expanded by remember { mutableStateOf(false) }
 
                     ExposedDropdownMenuBox(
@@ -100,7 +100,7 @@ fun ApiKeySettingsScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Fallback Setting
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
@@ -117,7 +117,7 @@ fun ApiKeySettingsScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // API Keys Section
+
             Card(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -245,7 +245,7 @@ fun AddApiKeyDialog(
         title = { Text("Add API Key") },
         text = {
             Column {
-                // Provider Selection
+
                 var expanded by remember { mutableStateOf(false) }
 
                 ExposedDropdownMenuBox(
@@ -281,7 +281,7 @@ fun AddApiKeyDialog(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // API Key Input
+
                 OutlinedTextField(
                     value = apiKey,
                     onValueChange = { apiKey = it },
@@ -300,7 +300,7 @@ fun AddApiKeyDialog(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Key Name
+
                 OutlinedTextField(
                     value = keyName,
                     onValueChange = { keyName = it },
@@ -310,7 +310,7 @@ fun AddApiKeyDialog(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Usage Limit
+
                 OutlinedTextField(
                     value = usageLimit,
                     onValueChange = { usageLimit = it },

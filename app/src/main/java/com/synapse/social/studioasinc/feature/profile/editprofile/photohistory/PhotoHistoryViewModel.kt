@@ -53,13 +53,13 @@ class PhotoHistoryViewModel @Inject constructor(
                  return@launch
             }
 
-            // Load current profile to know which one is selected
-            val profileResult = repository.getUserProfile(userId)
-            // This is a flow, so we collect it. But we also need history.
-            // Let's launch a separate coroutine or combine.
-            // For simplicity, I'll launch separate collection for profile updates.
 
-            // First fetch history
+            val profileResult = repository.getUserProfile(userId)
+
+
+
+
+
             val historyFlow = when (type) {
                 PhotoType.PROFILE -> repository.getProfileHistory(userId)
                 PhotoType.COVER -> repository.getCoverHistory(userId)
@@ -69,8 +69,8 @@ class PhotoHistoryViewModel @Inject constructor(
                 result.fold(
                     onSuccess = { items ->
                         _uiState.update { it.copy(items = items) }
-                        // After loading history, check current profile to mark selected
-                        // We could subscribe to profile changes, but for now just fetching once is enough as this screen is short lived
+
+
                         fetchCurrentProfile(userId, type)
                     },
                     onFailure = { error ->
@@ -92,7 +92,7 @@ class PhotoHistoryViewModel @Inject constructor(
                      _uiState.update { it.copy(isLoading = false, currentPhotoUrl = currentUrl) }
                  },
                  onFailure = {
-                     _uiState.update { it.copy(isLoading = false) } // Ignore profile load error, just show history
+                     _uiState.update { it.copy(isLoading = false) }
                  }
              )
          }
@@ -103,8 +103,8 @@ class PhotoHistoryViewModel @Inject constructor(
             val userId = repository.getCurrentUserId() ?: return@launch
             val type = _uiState.value.photoType
 
-            // If already current, maybe deselect?
-            // The legacy code toggles: if already current, sets to "null".
+
+
             val isCurrent = item.imageUrl == _uiState.value.currentPhotoUrl
             val newUrl = if (isCurrent) "null" else item.imageUrl
 
@@ -118,13 +118,13 @@ class PhotoHistoryViewModel @Inject constructor(
 
             result.fold(
                 onSuccess = {
-                     // Refetch profile to update UI
-                     // But we can just update local state optimistically or wait for flow if we were observing
-                     // Since we are not continuously observing profile changes in this VM (only one-shot), let's manually update state
-                     // However, passing "null" string to server usually results in null in DB?
-                     // Legacy code sent "null" string: mapOf("avatar" to "null"). Supabase might treat it as string "null" or null?
-                     // Legacy code: currentAvatarUri = "null".
-                     // So I'll assume it returns "null" or real null.
+
+
+
+
+
+
+
 
                      val displayedUrl = if (newUrl == "null") null else newUrl
                      _uiState.update { it.copy(currentPhotoUrl = displayedUrl) }
@@ -141,7 +141,7 @@ class PhotoHistoryViewModel @Inject constructor(
             val type = _uiState.value.photoType
             val userId = repository.getCurrentUserId() ?: return@launch
 
-            // If deleting current, reset current first
+
             if (item.imageUrl == _uiState.value.currentPhotoUrl) {
                  val updateData = mutableMapOf<String, String>()
                  when (type) {
@@ -159,7 +159,7 @@ class PhotoHistoryViewModel @Inject constructor(
 
             result.fold(
                 onSuccess = {
-                    // Reload history
+
                     loadHistory(type)
                 },
                 onFailure = { error ->

@@ -11,9 +11,8 @@ import io.github.jan.supabase.annotations.SupabaseInternal
 import io.github.aakira.napier.Napier
 import io.ktor.client.plugins.HttpTimeout
 
-/**
- * Shared Supabase Client
- */
+
+
 object SupabaseClient {
     private const val TAG = "SupabaseClient"
 
@@ -30,7 +29,7 @@ object SupabaseClient {
                 supabaseKey = SynapseConfig.SUPABASE_ANON_KEY
             ) {
                 install(Auth) {
-                    // FlowType.PKCE is default for mobile
+
                 }
                 install(Postgrest)
                 install(Realtime)
@@ -40,12 +39,12 @@ object SupabaseClient {
                         customUrl = SynapseConfig.SUPABASE_SYNAPSE_S3_ENDPOINT_URL
                     }
                 }
-                // HttpEngine is automatically selected by Ktor based on dependencies (OkHttp for Android, Darwin for iOS)
+
                 httpConfig {
                     install(HttpTimeout) {
-                        requestTimeoutMillis = 300_000 // 5 minutes
-                        connectTimeoutMillis = 60_000 // 1 minute
-                        socketTimeoutMillis = 300_000 // 5 minutes
+                        requestTimeoutMillis = 300_000
+                        connectTimeoutMillis = 60_000
+                        socketTimeoutMillis = 300_000
                     }
                 }
             }

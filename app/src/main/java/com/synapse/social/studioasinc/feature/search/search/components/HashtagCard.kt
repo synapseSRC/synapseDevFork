@@ -78,14 +78,14 @@ fun Sparkline(
 
         points.forEachIndexed { index, value ->
             val x = index * stepX
-            // Invert Y because canvas Y grows downwards
+
             val normalizedY = (value - min) / range
             val y = height - (normalizedY * height)
 
             if (index == 0) {
                 path.moveTo(x, y)
             } else {
-                // Simple line to
+
                 path.lineTo(x, y)
             }
         }

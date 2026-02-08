@@ -2,12 +2,12 @@ package com.synapse.social.studioasinc.feature.shared.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Brand Colors
+
 val SynapseBlue = Color(0xFF1976D2)
 val SynapseDarkBlue = Color(0xFF00497D)
 val SynapseLightBlue = Color(0xFFBBDEFB)
 
-// Light Theme
+
 val LightPrimary = Color(0xFF6750A4)
 val LightOnPrimary = Color(0xFFFFFFFF)
 val LightPrimaryContainer = Color(0xFFEADDFF)
@@ -39,7 +39,7 @@ val LightSurfaceTint = Color(0xFF6750A4)
 val LightOutlineVariant = Color(0xFFCAC4D0)
 val LightScrim = Color(0xFF000000)
 
-// Dark Theme
+
 val DarkPrimary = Color(0xFFD0BCFF)
 val DarkOnPrimary = Color(0xFF381E72)
 val DarkPrimaryContainer = Color(0xFF4F378B)
@@ -71,5 +71,5 @@ val DarkSurfaceTint = Color(0xFFD0BCFF)
 val DarkOutlineVariant = Color(0xFF49454F)
 val DarkScrim = Color(0xFF000000)
 
-// Status Colors
+
 val StatusOnline = Color(0xFF4CAF50)

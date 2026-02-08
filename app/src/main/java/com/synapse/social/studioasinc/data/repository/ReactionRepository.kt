@@ -12,12 +12,8 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
 import javax.inject.Inject
 
-/**
- * Repository for handling post and comment reactions.
- * Uses the `reactions` table for post reactions and `comment_reactions` table for comment reactions.
- *
- * Requirements: 3.2, 3.3, 3.4, 3.5, 6.2, 6.3, 6.4
- */
+
+
 class ReactionRepository @Inject constructor(
     private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
 ) {
@@ -28,16 +24,10 @@ class ReactionRepository @Inject constructor(
         private const val RETRY_DELAY_MS = 100L
     }
 
-    // ==================== UNIFIED REACTION LOGIC ====================
 
-    /**
-     * Toggle a reaction on any target (Post, Comment, etc.)
-     * This is the Single Source of Truth for reaction updates.
-     *
-     * @param targetId The ID of the target (post or comment)
-     * @param targetType The type of target ("post" or "comment")
-     * @param reactionType The type of reaction to toggle
-     */
+
+
+
     suspend fun toggleReaction(
         targetId: String,
         targetType: String,
@@ -56,7 +46,7 @@ class ReactionRepository @Inject constructor(
             var lastException: Exception? = null
             repeat(MAX_RETRIES) { attempt ->
                 try {
-                    // Check for existing reaction
+
                     val existingReaction = client.from(tableName)
                         .select { filter { eq(idColumn, targetId); eq("user_id", userId) } }
                         .decodeSingleOrNull<JsonObject>()
@@ -64,13 +54,13 @@ class ReactionRepository @Inject constructor(
                     val result = if (existingReaction != null) {
                         val existingType = existingReaction["reaction_type"]?.jsonPrimitive?.contentOrNull
                         if (existingType == reactionType.name.lowercase()) {
-                            // Same reaction - remove it
+
                             client.from(tableName)
                                 .delete { filter { eq(idColumn, targetId); eq("user_id", userId) } }
                             Log.d(TAG, "Reaction removed for $targetType $targetId")
                             ReactionToggleResult.REMOVED
                         } else {
-                            // Different reaction - update it
+
                             client.from(tableName)
                                 .update({
                                     set("reaction_type", reactionType.name.lowercase())
@@ -80,7 +70,7 @@ class ReactionRepository @Inject constructor(
                             ReactionToggleResult.UPDATED
                         }
                     } else {
-                        // No existing reaction - add new one
+
                         client.from(tableName).insert(buildJsonObject {
                             put("user_id", userId)
                             put(idColumn, targetId)
@@ -105,9 +95,8 @@ class ReactionRepository @Inject constructor(
         }
     }
 
-    /**
-     * Get aggregated reaction counts for any target.
-     */
+
+
     suspend fun getReactionSummary(
         targetId: String,
         targetType: String
@@ -130,9 +119,8 @@ class ReactionRepository @Inject constructor(
         }
     }
 
-    /**
-     * Get the current user's reaction for any target.
-     */
+
+
     suspend fun getUserReaction(
         targetId: String,
         targetType: String
@@ -156,10 +144,8 @@ class ReactionRepository @Inject constructor(
         }
     }
 
-    /**
-     * Batch fetch reactions for multiple posts to avoid N+1 queries.
-     * Efficiently populates a list of posts with their reaction summaries and current user status.
-     */
+
+
     suspend fun populatePostReactions(posts: List<com.synapse.social.studioasinc.domain.model.Post>): List<com.synapse.social.studioasinc.domain.model.Post> = withContext(Dispatchers.IO) {
         if (posts.isEmpty()) return@withContext posts
 
@@ -168,7 +154,7 @@ class ReactionRepository @Inject constructor(
             val currentUserId = client.auth.currentUserOrNull()?.id
             val allReactions = mutableListOf<JsonObject>()
 
-            // Process in chunks to avoid URL length limits
+
             allPostIds.chunked(20).forEach { chunkIds ->
                  try {
                      val chunkReactions = client.from("reactions")
@@ -180,18 +166,18 @@ class ReactionRepository @Inject constructor(
                  }
             }
 
-            // Group by Post ID
+
             val reactionsByPost = allReactions.groupBy { it["post_id"]?.jsonPrimitive?.contentOrNull }
 
             posts.map { post ->
                 val postReactions = reactionsByPost[post.id] ?: emptyList()
 
-                // Calculate Summary
+
                 val summary = postReactions
                     .groupBy { ReactionType.fromString(it["reaction_type"]?.jsonPrimitive?.contentOrNull ?: "LIKE") }
                     .mapValues { it.value.size }
 
-                // Determine User Reaction
+
                 val userReactionType = if (currentUserId != null) {
                     postReactions.find { it["user_id"]?.jsonPrimitive?.contentOrNull == currentUserId }
                         ?.let { ReactionType.fromString(it["reaction_type"]?.jsonPrimitive?.contentOrNull ?: "LIKE") }
@@ -205,7 +191,7 @@ class ReactionRepository @Inject constructor(
         }
     }
 
-    // ==================== DEPRECATED / LEGACY SUPPORT (Delegates) ====================
+
 
     suspend fun togglePostReaction(postId: String, reactionType: ReactionType) =
         toggleReaction(postId, "post", reactionType)
@@ -226,7 +212,7 @@ class ReactionRepository @Inject constructor(
         getUserReaction(commentId, "comment")
 
 
-    // ==================== HELPERS ====================
+
 
     private fun getTableName(targetType: String): String {
         return when (targetType.lowercase()) {
@@ -244,11 +230,10 @@ class ReactionRepository @Inject constructor(
         }
     }
 
-    // ==================== UTILITY METHODS ====================
 
-    /**
-     * Map Supabase errors to user-friendly messages.
-     */
+
+
+
     private fun mapSupabaseError(exception: Exception): String {
         val message = exception.message ?: "Unknown error"
 
@@ -271,16 +256,10 @@ class ReactionRepository @Inject constructor(
         }
     }
 
-    // ==================== TESTABLE LOGIC METHODS ====================
 
-    /**
-     * Determine the result of toggling a reaction based on existing state.
-     * This is a pure function for testing reaction toggle logic.
-     *
-     * @param existingReactionType The current reaction type (null if no reaction)
-     * @param newReactionType The reaction type being toggled
-     * @return The expected toggle result
-     */
+
+
+
     fun determineToggleResult(
         existingReactionType: ReactionType?,
         newReactionType: ReactionType
@@ -292,38 +271,26 @@ class ReactionRepository @Inject constructor(
         }
     }
 
-    /**
-     * Calculate reaction summary from a list of reaction types.
-     * This is a pure function for testing aggregation logic.
-     *
-     * @param reactions List of reaction types
-     * @return Map of ReactionType to count
-     */
+
+
     fun calculateReactionSummary(reactions: List<ReactionType>): Map<ReactionType, Int> {
         return reactions.groupingBy { it }.eachCount()
     }
 
-    /**
-     * Validate that a reaction summary is accurate.
-     * The sum of all counts should equal the total number of reactions.
-     *
-     * @param summary The reaction summary map
-     * @param totalReactions The expected total number of reactions
-     * @return True if the summary is accurate
-     */
+
+
     fun isReactionSummaryAccurate(summary: Map<ReactionType, Int>, totalReactions: Int): Boolean {
         return summary.values.sum() == totalReactions
     }
 }
 
-/**
- * Result of a reaction toggle operation.
- */
+
+
 enum class ReactionToggleResult {
-    /** A new reaction was added */
+
     ADDED,
-    /** An existing reaction was removed */
+
     REMOVED,
-    /** An existing reaction was updated to a different type */
+
     UPDATED
 }

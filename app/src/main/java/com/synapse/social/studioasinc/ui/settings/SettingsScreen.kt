@@ -78,7 +78,7 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
-            // User Settings Section
+
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
@@ -117,10 +117,10 @@ fun SettingsScreen(
                 }
             }
 
-            // Storage & Data Section - Now handled in dedicated StorageProviderScreen
-            // Removed inline configuration to avoid duplication
 
-            // Logout Section
+
+
+
             item {
                 Button(
                     onClick = onLogoutClick,

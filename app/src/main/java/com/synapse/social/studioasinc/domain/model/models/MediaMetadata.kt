@@ -1,9 +1,7 @@
 package com.synapse.social.studioasinc.domain.model.models
 
-/**
- * Represents metadata information about a media file.
- * Used for validation and processing decisions.
- */
+
+
 data class MediaMetadata(
     val fileName: String,
     val fileSize: Long,

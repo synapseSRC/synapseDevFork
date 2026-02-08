@@ -33,18 +33,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-/**
- * Profile Activity built with Jetpack Compose.
- *
- * Usage:
- * ```
- * val intent = Intent(context, ProfileActivity::class.java)
- * intent.putExtra("uid", userId)
- * startActivity(intent)
- * ```
- *
- * @deprecated Use [com.synapse.social.studioasinc.feature.profile.profile.ProfileScreen] within [MainActivity] navigation graph instead.
- */
+
+
 @Deprecated("Use ProfileScreen within MainActivity navigation graph instead")
 @AndroidEntryPoint
 class ProfileActivity : ComponentActivity() {
@@ -57,7 +47,7 @@ class ProfileActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Setup edge-to-edge display before setContent
+
         enableEdgeToEdge()
 
         val targetUserId = intent.getStringExtra("uid") ?: run {
@@ -77,11 +67,11 @@ class ProfileActivity : ComponentActivity() {
         }
 
         setContent {
-            // Get appearance settings to apply theme preferences
+
             val appearanceViewModel: AppearanceViewModel = viewModel()
             val appearanceSettings by appearanceViewModel.appearanceSettings.collectAsState()
 
-            // Determine dark theme based on settings
+
             val darkTheme = when (appearanceSettings.themeMode) {
                 com.synapse.social.studioasinc.ui.settings.ThemeMode.LIGHT -> false
                 com.synapse.social.studioasinc.ui.settings.ThemeMode.DARK -> true
@@ -89,7 +79,7 @@ class ProfileActivity : ComponentActivity() {
                     isSystemInDarkTheme()
             }
 
-            // Apply dynamic color only if enabled and supported (Android 12+)
+
             val dynamicColor = appearanceSettings.dynamicColorEnabled &&
                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
@@ -170,7 +160,7 @@ class ProfileActivity : ComponentActivity() {
     private fun navigateToChat(targetUserId: String) {
         lifecycleScope.launch {
             try {
-                // Get current user UID
+
                 val currentUserId = authRepository.getCurrentUserUid()
 
                 if (currentUserId == null) {
@@ -191,7 +181,7 @@ class ProfileActivity : ComponentActivity() {
                     return@launch
                 }
 
-                // Show loading
+
                 @Suppress("DEPRECATION")
                 Toast.makeText(this@ProfileActivity, "Chat feature not implemented", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {

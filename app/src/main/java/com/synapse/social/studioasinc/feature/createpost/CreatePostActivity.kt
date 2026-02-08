@@ -19,13 +19,13 @@ class CreatePostActivity : AppCompatActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        // Handle edit mode if necessary
-        // Handle composition type
+
+
         intent.getStringExtra("type")?.let {
             viewModel.setCompositionType(it)
         }
 
-        // Handle edit mode if necessary
+
         intent.getStringExtra("edit_post_id")?.let {
              viewModel.loadPostForEdit(it)
         }

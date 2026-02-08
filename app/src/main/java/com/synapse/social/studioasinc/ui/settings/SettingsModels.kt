@@ -4,13 +4,12 @@ import androidx.annotation.DrawableRes
 import com.synapse.social.studioasinc.domain.model.ChatThemePreset
 import com.synapse.social.studioasinc.domain.model.ChatWallpaper
 
-/**
- * Data models and enums for the Settings feature.
- */
 
-// ============================================================================
-// Theme and Appearance Enums
-// ============================================================================
+
+
+
+
+
 
 enum class ThemeMode { LIGHT, DARK, SYSTEM }
 
@@ -25,9 +24,9 @@ enum class FontScale {
     fun displayName(): String = name.lowercase().replaceFirstChar { it.uppercase() }
 }
 
-// ============================================================================
-// Privacy Enums
-// ============================================================================
+
+
+
 
 enum class ProfileVisibility {
     PUBLIC, FOLLOWERS_ONLY, PRIVATE;
@@ -44,18 +43,18 @@ enum class GroupPrivacy {
     fun displayName(): String = name.lowercase().replace("_", " ").replaceFirstChar { it.uppercase() }
 }
 
-// ============================================================================
-// Notification Enums
-// ============================================================================
+
+
+
 
 enum class NotificationCategory {
     LIKES, COMMENTS, REPLIES, FOLLOWS, MESSAGES, MENTIONS, NEW_POSTS, SHARES, SYSTEM_UPDATES;
     fun displayName(): String = name.lowercase().replace("_", " ").replaceFirstChar { it.uppercase() }
 }
 
-// ============================================================================
-// Chat Enums
-// ============================================================================
+
+
+
 
 enum class MediaAutoDownload {
     ALWAYS, WIFI_ONLY, NEVER;
@@ -109,9 +108,9 @@ data class LargeFileInfo(
     val type: MediaType
 )
 
-// ============================================================================
-// Data Classes
-// ============================================================================
+
+
+
 
 data class AppearanceSettings(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
@@ -220,9 +219,9 @@ data class ChatSettings(
     val autoBackupEnabled: Boolean = true
 )
 
-// ============================================================================
-// Navigation and Summary
-// ============================================================================
+
+
+
 
 data class SettingsCategory(
     val id: String,

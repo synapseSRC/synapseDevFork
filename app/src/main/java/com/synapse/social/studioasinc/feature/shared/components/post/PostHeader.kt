@@ -58,12 +58,12 @@ fun PostHeader(
                 .clickable(onClick = onUserClick)
         ) {
             val annotatedText = buildAnnotatedString {
-                // Main User Name
+
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)) {
                     append(user.displayName ?: user.username ?: "Unknown")
                 }
 
-                // Feeling
+
                 if (feeling != null) {
                     append(" is ")
                     append(feeling.emoji)
@@ -73,10 +73,10 @@ fun PostHeader(
                     }
                 }
 
-                // Tagged People
+
                 if (taggedPeople.isNotEmpty()) {
                     if (feeling == null) {
-                        append(" \u2014 with ") // Em dash
+                        append(" \u2014 with ")
                     } else {
                         append(" with ")
                     }
@@ -104,7 +104,7 @@ fun PostHeader(
                     }
                 }
 
-                // Location
+
                 if (!locationName.isNullOrEmpty()) {
                     if (feeling == null && taggedPeople.isEmpty()) {
                         append(" is at ")
@@ -125,13 +125,13 @@ fun PostHeader(
                 overflow = TextOverflow.Ellipsis
             )
 
-            // Badges row (only show if no special header text, or maybe below?)
-            // If we have feeling/tags, we might hide badges or show them differently.
-            // For now, let's keep badges if available but maybe on a new line or just appended if simple.
-            // The original design had badges inline with name.
-            // With complex text, inline badges are hard. Let's show badges only if no complex metadata OR
-            // just show badges for the main user below or next to name if possible.
-            // Given the complexity, let's just show the timestamp below.
+
+
+
+
+
+
+
 
             Text(
                 text = timestamp,

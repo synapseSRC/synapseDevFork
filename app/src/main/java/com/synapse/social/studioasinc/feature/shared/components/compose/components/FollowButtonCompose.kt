@@ -26,7 +26,7 @@ fun FollowButtonCompose(
 
     val handleClick = {
         val currentTime = System.currentTimeMillis()
-        if (currentTime - lastClickTime > 1000) { // 1 second debounce
+        if (currentTime - lastClickTime > 1000) {
             lastClickTime = currentTime
             viewModel.toggleFollow()
         }

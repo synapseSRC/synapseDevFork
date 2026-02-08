@@ -4,9 +4,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.util.UUID
 
-/**
- * Represents a media item (image or video) for upload
- */
+
+
 @Serializable
 data class MediaItem(
     val id: String = UUID.randomUUID().toString(),
@@ -24,9 +23,8 @@ data class MediaItem(
     val userHasLiked: Boolean = false
 )
 
-/**
- * Types of media supported
- */
+
+
 @Serializable
 enum class MediaType {
     IMAGE,

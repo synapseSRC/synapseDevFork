@@ -11,21 +11,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
 
-/**
- * Appearance Settings screen composable.
- *
- * Displays options for customizing the app's appearance including:
- * - Theme Mode (Light, Dark, System Default)
- * - Dynamic Color (Android 12+ wallpaper-based theming)
- * - Font Size (text size customization with live preview)
- *
- * Theme changes are applied immediately using SynapseTheme.
- * Dynamic Color option is conditionally visible based on SDK >= 31.
- *
- * Uses MediumTopAppBar with back navigation and displays settings in grouped cards.
- *
- * Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppearanceScreen(
@@ -81,10 +68,10 @@ fun AppearanceScreen(
                 .padding(horizontal = SettingsSpacing.screenPadding),
             verticalArrangement = Arrangement.spacedBy(SettingsSpacing.sectionSpacing)
         ) {
-            // Theme Section
+
             item {
                 SettingsSection(title = "Theme") {
-                    // Theme Mode Selection
+
                     SettingsSelectionItem(
                         title = "Theme Mode",
                         subtitle = "Choose your preferred theme",
@@ -98,7 +85,7 @@ fun AppearanceScreen(
                         enabled = !isLoading
                     )
 
-                    // Dynamic Color Toggle (conditionally visible for Android 12+)
+
                     if (viewModel.isDynamicColorSupported) {
                         SettingsDivider()
                         SettingsToggleItem(
@@ -113,16 +100,16 @@ fun AppearanceScreen(
                 }
             }
 
-            // Display Section
+
             item {
                 SettingsSection(title = "Display") {
-                    // Font Size Slider with live preview
+
                     SettingsSliderItem(
                         title = "Font Size",
                         subtitle = "Adjust text size for better readability",
                         value = viewModel.getSliderValueFromFontScale(appearanceSettings.fontScale),
                         valueRange = 0f..3f,
-                        steps = 2, // 4 discrete values: 0, 1, 2, 3
+                        steps = 2,
                         onValueChange = { value ->
                             val scale = viewModel.getFontScaleFromSliderValue(value)
                             viewModel.setFontScale(scale)
@@ -137,7 +124,7 @@ fun AppearanceScreen(
             }
 
 
-            // Media Layout Section
+
             item {
                 SettingsSection(title = "Media Layout (Beta)") {
                     val options = viewModel.getPostViewStyleOptions()

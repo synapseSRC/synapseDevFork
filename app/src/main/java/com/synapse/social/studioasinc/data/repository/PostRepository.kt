@@ -57,7 +57,7 @@ class PostRepository @Inject constructor(
             System.currentTimeMillis() - timestamp > expirationMs
     }
 
-    // Fixed: Thread-safe cache using ConcurrentHashMap
+
     private val postsCache = ConcurrentHashMap<String, CacheEntry<List<Post>>>()
     private val profileCache = ConcurrentHashMap<String, CacheEntry<ProfileData>>()
 
@@ -96,7 +96,7 @@ class PostRepository @Inject constructor(
         }
         android.util.Log.e(TAG, "Supabase error: $message", exception)
 
-        // Enhanced error mapping for column mismatches
+
         return when {
             message.contains("PGRST200") -> "Relation/table not found in schema"
             message.contains("PGRST100") -> "Database column mismatch: ${extractColumnInfo(message)}"
@@ -116,7 +116,7 @@ class PostRepository @Inject constructor(
     }
 
     private fun extractColumnInfo(message: String): String {
-        // Extract column name from error message for better debugging
+
         val columnMatch = COLUMN_REGEX.find(message)
         return columnMatch?.groupValues?.get(1) ?: "unknown column"
     }
@@ -127,7 +127,7 @@ class PostRepository @Inject constructor(
                 return@withContext Result.failure(Exception("Supabase not configured."))
             }
 
-            // Ensure author details are populated (optimistic update for local DB)
+
             if (post.username == null) {
                 val profile = fetchUserProfile(post.authorUid)
                 if (profile != null) {
@@ -147,7 +147,7 @@ class PostRepository @Inject constructor(
             postDao.insertAll(listOf(PostMapper.toEntity(post)))
             invalidateCache()
 
-            // Process mentions
+
             processMentions(post.id, post.postText ?: "", post.authorUid)
 
             android.util.Log.d(TAG, "Post created successfully: ${post.id}")
@@ -171,7 +171,7 @@ class PostRepository @Inject constructor(
         try {
             val post = postDao.getPostById(postId)?.let { entity ->
                 val model = PostMapper.toModel(entity)
-                // If username is missing, try to fetch it
+
                 if (model.username == null) {
                     fetchUserProfile(model.authorUid)?.let { profile ->
                         model.username = profile.username
@@ -191,21 +191,21 @@ class PostRepository @Inject constructor(
         return postDao.getAllPosts().map { entities ->
             val posts = entities.map { PostMapper.toModel(it) }
 
-            // Identify posts with missing usernames
+
             val missingUserIds = posts.filter { it.username == null }
                 .map { it.authorUid }
                 .distinct()
                 .filter { userId ->
-                    // Check if already in cache
+
                     profileCache[userId]?.let { !it.isExpired() } != true
                 }
 
-            // Batch fetch missing profiles
+
             if (missingUserIds.isNotEmpty()) {
                 fetchUserProfilesBatch(missingUserIds)
             }
 
-            // Enrich posts from cache
+
             posts.forEach { post ->
                 if (post.username == null) {
                     profileCache[post.authorUid]?.data?.let { profile ->
@@ -232,7 +232,7 @@ class PostRepository @Inject constructor(
         ).flow.map { pagingData ->
             pagingData.map { entity ->
                 val model = PostMapper.toModel(entity)
-                // Enrich from cache if available
+
                 if (model.username == null) {
                     profileCache[model.authorUid]?.data?.let { profile ->
                         model.username = profile.username
@@ -248,7 +248,7 @@ class PostRepository @Inject constructor(
     suspend fun refreshPosts(page: Int, pageSize: Int): Result<Unit> {
         return try {
             val offset = page * pageSize
-            // Updated query to fetch 'content' column for comments
+
             val response = client.from("posts")
                 .select(
                     columns = Columns.raw("""
@@ -263,7 +263,7 @@ class PostRepository @Inject constructor(
 
             val posts = response.map { postDto ->
                 postDto.toDomain(::constructMediaUrl, ::constructAvatarUrl).also { post ->
-                    // Update profile cache if we have user data
+
                     postDto.user?.let { user ->
                         if (user.uid.isNotEmpty()) {
                             profileCache[user.uid] = CacheEntry(
@@ -282,7 +282,7 @@ class PostRepository @Inject constructor(
             val postsWithPolls = populatePostPolls(postsWithReactions)
             postDao.insertAll(postsWithPolls.map { PostMapper.toEntity(it) })
 
-            // Perform a sync of deleted posts only when refreshing the first page (Pull-to-Refresh)
+
             if (page == 0) {
                 syncDeletedPosts()
             }
@@ -296,7 +296,7 @@ class PostRepository @Inject constructor(
 
     private suspend fun syncDeletedPosts() {
         try {
-            // Fetch all IDs from server to identify deleted posts using pagination to avoid limits
+
             val serverIds = mutableSetOf<String>()
             val pageSize = 1000
             var offset = 0
@@ -320,20 +320,20 @@ class PostRepository @Inject constructor(
 
             if (idsToDelete.isNotEmpty()) {
                 android.util.Log.d(TAG, "Syncing deletions: removing ${idsToDelete.size} posts")
-                // Batch delete to avoid SQLite limits on bind variables (max 999 usually)
+
                 idsToDelete.chunked(500).forEach { batch ->
                     postDao.deletePosts(batch)
                 }
             }
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to sync deleted posts", e)
-            // We do not fail the whole refresh if sync fails, just log it
+
         }
     }
 
     suspend fun getUserPosts(userId: String): Result<List<Post>> = withContext(Dispatchers.IO) {
         try {
-            // Updated query to fetch 'content' column for comments
+
             val response = client.from("posts")
                 .select(
                     columns = Columns.raw("""
@@ -393,7 +393,7 @@ class PostRepository @Inject constructor(
                 filter { eq("id", post.id) }
             }
 
-            // Also update local DB
+
             postDao.insertAll(listOf(PostMapper.toEntity(post)))
             invalidateCache()
 
@@ -422,7 +422,7 @@ class PostRepository @Inject constructor(
 
     fun observePosts(): Flow<List<Post>> = flow { emit(emptyList()) }
 
-    // Delegate to ReactionRepository for Single Source of Truth
+
     private val reactionRepository = ReactionRepository()
     private val pollRepository = PollRepository()
 
@@ -431,27 +431,27 @@ class PostRepository @Inject constructor(
         userId: String,
         reactionType: ReactionType
     ): Result<Unit> = withContext(Dispatchers.IO) {
-        // We ignore userId param as ReactionRepository uses the authenticated user securely
+
         reactionRepository.toggleReaction(postId, "post", reactionType)
-            .map { Unit } // Convert ReactionToggleResult to Unit for backward compatibility
+            .map { Unit }
     }
 
     suspend fun getReactionSummary(postId: String): Result<Map<ReactionType, Int>> =
         reactionRepository.getReactionSummary(postId, "post")
 
     suspend fun getUserReaction(postId: String, userId: String): Result<ReactionType?> =
-        // ReactionRepository uses current auth user, so we ignore userId param if it matches current user.
-        // If userId != current user, we fall back to manual query or return null as ReactionRepository focuses on 'my' reaction.
-        // However, the original method was fetching *specific* user reaction.
-        // ReactionRepository.getUserReaction gets *current* user reaction.
-        // If we need another user's reaction, we might need a specific method.
-        // But typically we only check OUR reaction for UI highligts.
+
+
+
+
+
+
         if (userId == client.auth.currentUserOrNull()?.id) {
              reactionRepository.getUserReaction(postId, "post")
         } else {
-             // Fallback for other users (rarely used for "My Reaction" state)
-             // We can keep the manual query here if needed, or assume it's mostly for "me".
-             // Let's implement the manual query using the unified table structure just in case.
+
+
+
              withContext(Dispatchers.IO) {
                  try {
                      val reaction = client.from("reactions")
@@ -470,7 +470,7 @@ class PostRepository @Inject constructor(
         reactionType: ReactionType? = null
     ): Result<List<UserReaction>> = withContext(Dispatchers.IO) {
         try {
-            // Optimized: Single query with join using Supabase resource embedding
+
             val reactions = client.from("reactions")
                 .select(Columns.raw("*, users!inner(uid, username, avatar, verify)")) {
                     filter {
@@ -498,7 +498,7 @@ class PostRepository @Inject constructor(
         }
     }
 
-    // Use unified batch fetch logic
+
     private suspend fun populatePostReactions(posts: List<Post>): List<Post> {
         return reactionRepository.populatePostReactions(posts)
     }
@@ -509,11 +509,11 @@ class PostRepository @Inject constructor(
 
         val postIds = pollPosts.map { it.id }
 
-        // Fetch user votes
+
         val userVotesResult = pollRepository.getBatchUserVotes(postIds)
         val userVotes = userVotesResult.getOrNull() ?: emptyMap()
 
-        // Fetch poll vote counts
+
         val pollCountsResult = pollRepository.getBatchPollVotes(postIds)
         val pollCounts = pollCountsResult.getOrNull() ?: emptyMap()
 
@@ -522,7 +522,7 @@ class PostRepository @Inject constructor(
                 val userVote = userVotes[post.id]
                 val counts = pollCounts[post.id] ?: emptyMap()
 
-                // Update poll options with new counts
+
                 val updatedOptions = post.pollOptions?.mapIndexed { index, option ->
                     option.copy(votes = counts[index] ?: 0)
                 }
@@ -559,7 +559,7 @@ class PostRepository @Inject constructor(
     }
 
     private suspend fun fetchUserProfile(userId: String): ProfileData? {
-        // Check cache first
+
         profileCache[userId]?.let { entry ->
             if (!entry.isExpired()) return entry.data
         }
@@ -592,13 +592,13 @@ class PostRepository @Inject constructor(
         senderId: String
     ) {
         try {
-            // Extract mentions from the post content
+
             val mentionedUsers = com.synapse.social.studioasinc.core.domain.parser.MentionParser.extractMentions(content)
 
-            // Process mentions if any exist
+
             if (mentionedUsers.isNotEmpty()) {
                 android.util.Log.d(TAG, "Processing mentions: $mentionedUsers")
-                // Add your mention processing logic here if needed
+
             }
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to process mentions: ${e.message}", e)

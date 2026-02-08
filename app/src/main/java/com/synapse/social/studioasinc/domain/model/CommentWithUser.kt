@@ -4,12 +4,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
-/**
- * Comment model with embedded user information for display.
- * Supports nested replies via parent_comment_id reference.
- *
- * Requirements: 4.2, 5.1
- */
+
+
 @Serializable
 data class CommentWithUser(
     val id: String,
@@ -36,47 +32,40 @@ data class CommentWithUser(
     val isEdited: Boolean = false,
     @SerialName("is_pinned")
     val isPinned: Boolean = false,
-    // User information (populated from join)
+
     @Transient
     val user: UserProfile? = null,
-    // Reaction data (populated separately)
+
     @Transient
     val userReaction: ReactionType? = null,
     @Transient
     val reactionSummary: Map<ReactionType, Int> = emptyMap()
 ) {
-    /**
-     * Check if this comment is a reply to another comment
-     */
+
+
     fun isReply(): Boolean = parentCommentId != null
 
-    /**
-     * Check if this comment has replies
-     */
+
+
     fun hasReplies(): Boolean = repliesCount > 0
 
-    /**
-     * Check if this comment has media attached
-     */
+
+
     fun hasMedia(): Boolean = !mediaUrl.isNullOrEmpty()
 
-    /**
-     * Get total reaction count
-     */
+
+
     fun getTotalReactions(): Int = reactionSummary.values.sum()
 
-    /**
-     * Get display name for the commenter
-     */
+
+
     fun getDisplayName(): String = user?.displayName ?: "Unknown User"
 
-    /**
-     * Get username for the commenter
-     */
+
+
     fun getUsername(): String = user?.username ?: "unknown"
 
-    /**
-     * Get avatar URL for the commenter
-     */
+
+
     fun getAvatarUrl(): String? = user?.avatar
 }

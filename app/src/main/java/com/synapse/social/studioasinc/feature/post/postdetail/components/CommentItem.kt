@@ -86,24 +86,24 @@ fun CommentItem(
                                 val lineWidth = 2.dp.toPx()
                                 val startX = 0f
                                 val avatarCenterY = 24.dp.toPx()
-                                
-                                // Vertical line from top
+
+
                                 drawLine(
                                     color = lineColor,
                                     start = Offset(startX, 0f),
                                     end = Offset(startX, avatarCenterY),
                                     strokeWidth = lineWidth
                                 )
-                                
-                                // Horizontal line to avatar
+
+
                                 drawLine(
                                     color = lineColor,
                                     start = Offset(startX, avatarCenterY),
                                     end = Offset(startX + 32.dp.toPx(), avatarCenterY),
                                     strokeWidth = lineWidth
                                 )
-                                
-                                // Continue vertical line if not last reply
+
+
                                 if (!isLastReply) {
                                     drawLine(
                                         color = lineColor,
@@ -167,7 +167,7 @@ fun CommentItem(
                     modifier = Modifier
                         .padding(vertical = 4.dp)
                         .clickable {
-                            // Handle mention clicks if needed
+
                         }
                 )
 
@@ -228,7 +228,7 @@ fun CommentItem(
                     }
                 }
 
-                // Replies Section
+
                 if (comment.repliesCount > 0 && directReplies.isEmpty() && !isRepliesLoading) {
                     Text(
                         text = "View ${comment.repliesCount} replies",
@@ -269,13 +269,13 @@ fun CommentItem(
             thickness = 0.5.dp
         )
 
-        // Render nested replies (only 1 level deep - flatten further nesting)
+
         if (directReplies.isNotEmpty() && depth == 0) {
             Column(modifier = Modifier.padding(start = 48.dp)) {
                 directReplies.forEachIndexed { index, reply ->
                     CommentItem(
                         comment = reply,
-                        replies = emptyList(), // Flatten: no further nesting
+                        replies = emptyList(),
                         repliesState = emptyMap(),
                         depth = 1,
                         isRepliesLoading = false,

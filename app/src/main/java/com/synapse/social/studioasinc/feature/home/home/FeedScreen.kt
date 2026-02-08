@@ -54,24 +54,22 @@ fun FeedScreen(
     val posts = viewModel.posts.collectAsLazyPagingItems()
     var selectedPost by remember { mutableStateOf<Post?>(null) }
 
-    // Story tray state
+
     val storyTrayState by storyTrayViewModel.storyTrayState.collectAsStateWithLifecycle()
     val currentUser by storyTrayViewModel.currentUser.collectAsStateWithLifecycle()
 
     var isUserRefreshing by remember { mutableStateOf(false) }
     val pullToRefreshState = rememberPullToRefreshState()
 
-    // Using rememberUpdatedState ensures that the actions object remains stable even if
-    // the parent passes new lambda instances on every recomposition.
+
+
     val currentOnCommentClick by rememberUpdatedState(onCommentClick)
     val currentOnUserClick by rememberUpdatedState(onUserClick)
     val currentOnMediaClick by rememberUpdatedState(onMediaClick)
     val currentOnStoryClick by rememberUpdatedState(onStoryClick)
 
-    /**
-     * Bolt Optimization: Cache PostActions to prevent recreation of lambdas for every list item.
-     * Combined with @Stable annotation, this reduces recompositions by ~40% during scroll.
-     */
+
+
     val actions = remember(viewModel) {
         PostActions(
             onLike = viewModel::likePost,
@@ -125,11 +123,10 @@ fun FeedScreen(
                     .background(MaterialTheme.colorScheme.background),
                 contentPadding = contentPadding
             ) {
-                // Story Tray at the top
+
                 item(key = "story_tray") {
-                    /**
-                     * Bolt Optimization: Memoize StoryTray lambdas to make it skippable.
-                     */
+
+
                     val onMyStoryClickMemoized = remember(storyTrayState.myStory) {
                         {
                             storyTrayState.myStory?.let { myStory ->
@@ -155,7 +152,7 @@ fun FeedScreen(
                     )
                 }
 
-                // Posts
+
                 items(
                     count = posts.itemCount,
                     key = posts.itemKey { it.id },

@@ -78,7 +78,7 @@ class CommentRepository @Inject constructor(
         }
     }
 
-    // New method for PagingSource
+
     suspend fun fetchComments(postId: String, limit: Int = 50, offset: Int = 0): Result<List<CommentWithUser>> = withContext(Dispatchers.IO) {
         try {
              val response = client.from("comments")
@@ -90,7 +90,7 @@ class CommentRepository @Inject constructor(
                 ) {
                     filter {
                         eq("post_id", postId)
-                        exact("parent_comment_id", null) // Fetch only roots for pagination
+                        exact("parent_comment_id", null)
                     }
                     order("created_at", Order.ASCENDING)
                     limit(limit.toLong())
@@ -137,7 +137,7 @@ class CommentRepository @Inject constructor(
 
             Log.d(TAG, "Successfully parsed ${replies.size} replies")
 
-            // Store replies in local database
+
             commentDao.insertAll(replies.map {
                 CommentMapper.toEntity(it.toComment(), it.user?.username, it.user?.avatar)
             })
@@ -219,9 +219,9 @@ class CommentRepository @Inject constructor(
                         updateRepliesCount(parentCommentId, 1)
                     }
 
-                    // updatePostCommentsCount(postId, 1)
 
-                    // Process mentions
+
+
                     processMentions(postId, comment.id, content, userId, parentCommentId)
 
                     Log.d(TAG, "Comment created successfully: ${comment.id}")
@@ -279,9 +279,9 @@ class CommentRepository @Inject constructor(
                 updateRepliesCount(parentCommentId, -1)
             }
 
-            // if (postId != null) {
-            //     updatePostCommentsCount(postId, -1)
-            // }
+
+
+
 
             Log.d(TAG, "Comment deleted successfully: $commentId")
             Result.success(Unit)
@@ -374,13 +374,13 @@ class CommentRepository @Inject constructor(
 
             val commentUserId = existingComment["user_id"]?.jsonPrimitive?.contentOrNull
 
-            // Check if user is comment owner
+
             var isAuthorized = commentUserId == currentUser.id
 
             if (!isAuthorized) {
                 val postId = existingComment["post_id"]?.jsonPrimitive?.contentOrNull
                 if (postId != null) {
-                    // Verification of post author from trusted source
+
                     val post = client.from("posts")
                         .select { filter { eq("id", postId) } }
                         .decodeSingleOrNull<JsonObject>()
@@ -470,7 +470,7 @@ class CommentRepository @Inject constructor(
                 uid = userData["uid"]?.jsonPrimitive?.contentOrNull ?: return null,
                 username = userData["username"]?.jsonPrimitive?.contentOrNull ?: "",
                 displayName = userData["display_name"]?.jsonPrimitive?.contentOrNull ?: "",
-                email = "", // Privacy fix: Do not leak emails in public responses
+                email = "",
                 bio = userData["bio"]?.jsonPrimitive?.contentOrNull,
                 avatar = userData["avatar"]?.jsonPrimitive?.contentOrNull,
                 followersCount = userData["followers_count"]?.jsonPrimitive?.intOrNull ?: 0,
@@ -556,13 +556,13 @@ class CommentRepository @Inject constructor(
         parentCommentId: String?
     ) {
         try {
-            // Extract mentions from the comment content
+
             val mentionedUsers = com.synapse.social.studioasinc.core.domain.parser.MentionParser.extractMentions(content)
 
-            // Process mentions if any exist
+
             if (mentionedUsers.isNotEmpty()) {
                 Log.d(TAG, "Processing mentions: $mentionedUsers")
-                // Add your mention processing logic here if needed
+
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to process mentions: ${e.message}", e)

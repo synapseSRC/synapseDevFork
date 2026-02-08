@@ -51,7 +51,7 @@ class MainViewModel @Inject constructor(
     val startDestination = _startDestination.asStateFlow()
 
     init {
-        // Check authentication state immediately on startup
+
         checkUserAuthentication()
     }
 
@@ -112,12 +112,12 @@ class MainViewModel @Inject constructor(
     fun checkUserAuthentication() {
         viewModelScope.launch {
             try {
-                // First attempt at session restoration
+
                 var isAuthenticated = authRepository.restoreSession()
 
-                // Enhanced retry mechanism for intermittent failures
+
                 if (!isAuthenticated) {
-                    // Try up to 2 more times with increasing delays
+
                     for (attempt in 1..2) {
                         delay((500 * attempt).toLong())
                         isAuthenticated = authRepository.restoreSession()
@@ -140,25 +140,25 @@ class MainViewModel @Inject constructor(
                                         _startDestination.value = AppDestination.Home.route
                                     } else {
                                         _authState.value = AuthState.Banned
-                                        // Still go to Auth or stay here? Logic in SplashActivity was to finish or navigate.
-                                        // Banned user shouldn't go to Home.
+
+
                                         _startDestination.value = AppDestination.Auth.route
                                     }
                                 } else {
-                                    // User authenticated but no profile found - treat as authenticated for new flow
+
                                     _authState.value = AuthState.Authenticated
                                     _startDestination.value = AppDestination.Home.route
                                 }
                             }
                             .onFailure {
-                                // Error fetching profile - treat as authenticated to allow access (or could be error)
-                                // Assuming failure to fetch profile doesn't mean invalid session, just network issue or other.
-                                // SplashActivity logic was: if userId != null && !userEmail.isNullOrBlank() -> MainActivity.
+
+
+
                                 _authState.value = AuthState.Authenticated
                                 _startDestination.value = AppDestination.Home.route
                             }
                     } else {
-                        // Session restored but user data invalid
+
                          _authState.value = AuthState.Unauthenticated
                          _startDestination.value = AppDestination.Auth.route
                     }

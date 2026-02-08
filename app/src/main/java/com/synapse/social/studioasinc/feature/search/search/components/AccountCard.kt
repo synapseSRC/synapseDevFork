@@ -98,7 +98,7 @@ fun AccountCard(
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        // Follow Button (Mastodon Style)
+
         if (account.isFollowing) {
              OutlinedButton(
                  onClick = onFollowClick,

@@ -10,27 +10,15 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 
-/**
- * ViewModel for the Storage and Data Settings screen.
- *
- * Manages the state for storage and data-related settings including:
- * - Cache size calculation and display
- * - Cache clearing with size calculation
- * - Data saver mode toggle
- * - Storage statistics
- * - Navigation to storage provider and AI configuration
- * - Media upload quality
- * - Auto-download rules
- *
- * Requirements: 7.1, 7.2, 7.3
- */
+
+
 class StorageDataViewModel(
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
-    // ========================================================================
-    // State
-    // ========================================================================
+
+
+
 
     private val _cacheSize = MutableStateFlow(0L)
     val cacheSize: StateFlow<Long> = _cacheSize.asStateFlow()
@@ -50,7 +38,7 @@ class StorageDataViewModel(
     private val _cacheClearedMessage = MutableStateFlow<String?>(null)
     val cacheClearedMessage: StateFlow<String?> = _cacheClearedMessage.asStateFlow()
 
-    // New Settings States
+
     val mediaUploadQuality = settingsRepository.mediaUploadQuality
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MediaUploadQuality.STANDARD)
 
@@ -68,9 +56,9 @@ class StorageDataViewModel(
         calculateCacheSize()
     }
 
-    // ========================================================================
-    // New Settings Updates
-    // ========================================================================
+
+
+
 
     fun setMediaUploadQuality(quality: MediaUploadQuality) {
         viewModelScope.launch {
@@ -99,19 +87,16 @@ class StorageDataViewModel(
         }
     }
 
-    // ========================================================================
-    // Storage Settings Loading
-    // ========================================================================
 
-    /**
-     * Loads storage and data settings from the repository.
-     *
-     * Requirements: 7.1, 7.3
-     */
+
+
+
+
+
     private fun loadStorageSettings() {
         viewModelScope.launch {
             try {
-                // Load cache size
+
                 settingsRepository.cacheSize.collect { size ->
                     _cacheSize.value = size
                 }
@@ -122,7 +107,7 @@ class StorageDataViewModel(
 
         viewModelScope.launch {
             try {
-                // Load data saver setting
+
                 settingsRepository.dataSaverEnabled.collect { enabled ->
                     _dataSaverEnabled.value = enabled
                 }
@@ -133,17 +118,12 @@ class StorageDataViewModel(
         }
     }
 
-    // ========================================================================
-    // Cache Size Calculation
-    // ========================================================================
 
-    /**
-     * Calculates the current cache size.
-     *
-     * This method triggers a recalculation of the cache size from all cache directories.
-     *
-     * Requirements: 7.1
-     */
+
+
+
+
+
     fun calculateCacheSize() {
         viewModelScope.launch {
             _isLoading.value = true
@@ -164,21 +144,12 @@ class StorageDataViewModel(
         }
     }
 
-    // ========================================================================
-    // Cache Clearing
-    // ========================================================================
 
-    /**
-     * Clears the app cache and displays the amount of space freed.
-     *
-     * This method:
-     * 1. Clears all cache directories
-     * 2. Calculates the amount of space freed
-     * 3. Updates the cache size state
-     * 4. Shows a confirmation message with freed space
-     *
-     * Requirements: 7.2
-     */
+
+
+
+
+
     fun clearCache() {
         viewModelScope.launch {
             _isClearingCache.value = true
@@ -209,19 +180,12 @@ class StorageDataViewModel(
         }
     }
 
-    // ========================================================================
-    // Data Saver Mode
-    // ========================================================================
 
-    /**
-     * Toggles data saver mode.
-     *
-     * When enabled, data saver mode reduces image quality and disables auto-play videos
-     * to minimize data consumption.
-     *
-     * @param enabled True to enable data saver, false to disable
-     * Requirements: 7.3
-     */
+
+
+
+
+
     fun toggleDataSaver(enabled: Boolean) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -241,15 +205,12 @@ class StorageDataViewModel(
         }
     }
 
-    // ========================================================================
-    // Storage Statistics
-    // ========================================================================
 
-    /**
-     * Returns formatted storage statistics for display.
-     *
-     * Requirements: 7.1
-     */
+
+
+
+
+
     fun getStorageStatistics(): StorageStatistics {
         val cacheSizeBytes = _cacheSize.value
         return StorageStatistics(
@@ -258,28 +219,23 @@ class StorageDataViewModel(
         )
     }
 
-    // ========================================================================
-    // Navigation Handlers
-    // ========================================================================
 
-    /**
-     * Handles navigation to storage provider configuration.
-     * This will navigate to the existing storage provider settings.
-     *
-     * Requirements: 7.4
-     */
+
+
+
+
+
     fun navigateToStorageProviderConfig() {
         android.util.Log.d("StorageDataViewModel", "Navigate to storage provider configuration")
-        // Navigation will be handled by the screen composable
+
     }
 
-    // ========================================================================
-    // Helper Methods
-    // ========================================================================
 
-    /**
-     * Formats bytes into a human-readable string (KB, MB, GB).
-     */
+
+
+
+
+
     private fun formatBytes(bytes: Long): String {
         return when {
             bytes < 1024 -> "$bytes B"
@@ -289,24 +245,21 @@ class StorageDataViewModel(
         }
     }
 
-    /**
-     * Clears any error messages.
-     */
+
+
     fun clearError() {
         _error.value = null
     }
 
-    /**
-     * Clears the cache cleared message.
-     */
+
+
     fun clearCacheClearedMessage() {
         _cacheClearedMessage.value = null
     }
 }
 
-/**
- * Data class for storage statistics.
- */
+
+
 data class StorageStatistics(
     val cacheSize: Long,
     val cacheSizeFormatted: String

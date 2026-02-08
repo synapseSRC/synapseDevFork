@@ -22,15 +22,8 @@ private object AboutSupportConstants {
     const val URL_APP_WEBSITE = "https://synapsesocial.vercel.app"
 }
 
-/**
- * About and Support Settings screen.
- *
- * Displays app information, version details, and provides access to support
- * resources including Terms of Service, Privacy Policy, Help Center, feedback
- * submission, update checking, and open source licenses.
- *
- * Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutSupportScreen(
@@ -46,7 +39,7 @@ fun AboutSupportScreen(
     val error by viewModel.error.collectAsState()
     val message by viewModel.message.collectAsState()
 
-    // Show error/message snackbar if present
+
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(error) {
         error?.let {
@@ -101,7 +94,7 @@ fun AboutSupportScreen(
             verticalArrangement = Arrangement.spacedBy(SettingsSpacing.sectionSpacing),
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
-            // App Logo and Version Header Card
+
             item {
                 AppInfoHeaderCard(
                     appVersion = appVersion,
@@ -109,7 +102,7 @@ fun AboutSupportScreen(
                 )
             }
 
-            // Legal Section
+
             item {
                 SettingsSection(title = "Legal") {
                     SettingsNavigationItem(
@@ -136,7 +129,7 @@ fun AboutSupportScreen(
                 }
             }
 
-            // Support Section
+
             item {
                 SettingsSection(title = "Support") {
                     SettingsNavigationItem(
@@ -162,7 +155,7 @@ fun AboutSupportScreen(
                 }
             }
 
-            // App Updates Section
+
             item {
                 SettingsSection(title = "Updates") {
                     SettingsNavigationItem(
@@ -177,7 +170,7 @@ fun AboutSupportScreen(
                 }
             }
 
-            // Licenses Section
+
             item {
                 SettingsSection(title = "Licenses") {
                     SettingsNavigationItem(
@@ -192,7 +185,7 @@ fun AboutSupportScreen(
                 }
             }
 
-            // Copyright Footer
+
             item {
                 Text(
                     text = "© 2024 Synapse Social. All rights reserved.",
@@ -209,17 +202,8 @@ fun AboutSupportScreen(
 
 }
 
-/**
- * App information header card displaying logo and version info.
- *
- * Displays the app logo, version name, and build number in a centered
- * card with elevated background.
- *
- * @param appVersion The app version string
- * @param buildNumber The build number string
- *
- * Requirements: 9.1
- */
+
+
 @Composable
 private fun AppInfoHeaderCard(
     appVersion: String,
@@ -238,21 +222,21 @@ private fun AppInfoHeaderCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // App Logo
+
             Image(
                 painter = painterResource(R.drawable.ic_launcher_foreground),
                 contentDescription = "Synapse Logo",
                 modifier = Modifier.size(80.dp)
             )
 
-            // App Name
+
             Text(
                 text = "Synapse",
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            // Version Info
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -271,4 +255,3 @@ private fun AppInfoHeaderCard(
         }
     }
 }
-

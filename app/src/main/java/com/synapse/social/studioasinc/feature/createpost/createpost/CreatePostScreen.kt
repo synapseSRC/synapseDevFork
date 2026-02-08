@@ -52,7 +52,7 @@ fun CreatePostScreen(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
-    // Edit Media State
+
     var editingMediaIndex by remember { mutableStateOf<Int?>(null) }
     val cropImage = rememberLauncherForActivityResult(contract = CropImageContract()) { result ->
 
@@ -69,25 +69,25 @@ fun CreatePostScreen(
         editingMediaIndex = null
     }
 
-    // Sheet States
+
     var showPrivacySheet by remember { mutableStateOf(false) }
     var showPollSheet by remember { mutableStateOf(false) }
     var showAddToPostSheet by remember { mutableStateOf(false) }
 
-    // New Full Screen Search States
+
     var showTagScreen by remember { mutableStateOf(false) }
     var showLocationScreen by remember { mutableStateOf(false) }
     var showFeelingScreen by remember { mutableStateOf(false) }
 
-    // Search Queries
+
     var tagSearchQuery by remember { mutableStateOf("") }
     var locationSearchQuery by remember { mutableStateOf("") }
     var feelingSearchQuery by remember { mutableStateOf("") }
 
-    // Dialog States (Legacy/Simple)
+
     var showYoutubeDialog by remember { mutableStateOf(false) }
 
-    // Effects
+
     LaunchedEffect(true) {
         viewModel.loadDraft()
     }
@@ -113,7 +113,7 @@ fun CreatePostScreen(
         }
     }
 
-    // Launchers
+
     val mediaLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents()
     ) { uris ->
@@ -124,7 +124,11 @@ fun CreatePostScreen(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         if (permissions.values.all { it }) {
-            mediaLauncher.launch("*/*")
+            try {
+                mediaLauncher.launch("**")
+            } catch (e: android.content.ActivityNotFoundException) {
+                Toast.makeText(context, "No file picker app found. Please install a file manager.", Toast.LENGTH_LONG).show()
+            }
         } else {
             Toast.makeText(context, "Permissions required to access media", Toast.LENGTH_SHORT).show()
         }
@@ -195,7 +199,7 @@ fun CreatePostScreen(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // User Header
+
             item {
                 UserHeader(
                     user = uiState.currentUserProfile,
@@ -207,7 +211,7 @@ fun CreatePostScreen(
                 )
             }
 
-            // Input
+
             item {
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
@@ -227,7 +231,7 @@ fun CreatePostScreen(
                             )
                         }
 
-                        // Dynamic Text Sizing
+
                         val textSize = if (uiState.postText.length < 80 && uiState.mediaItems.isEmpty() && uiState.pollData == null) {
                             MaterialTheme.typography.headlineSmall
                         } else {
@@ -254,18 +258,18 @@ fun CreatePostScreen(
             }
 
 
-            // Attachments
+
             item {
-                 // Media Grid
+
                  if (uiState.mediaItems.isNotEmpty()) {
                      MediaPreviewGrid(
                          mediaItems = uiState.mediaItems,
                          onRemove = { viewModel.removeMedia(it) },
                          onEdit = { index ->
                              val item = uiState.mediaItems[index]
-                             // Only allow editing local files (for now) or remote ones if supported by logic (download -> edit)
-                             // Assuming local edits for CreatePost flow usually starts with local files.
-                             // But if they are remote, cropper can handle URIs usually.
+
+
+
                              editingMediaIndex = index
                              val uri = if (item.url.startsWith("content://") || item.url.startsWith("file://") || item.url.startsWith("http")) {
                                  Uri.parse(item.url)
@@ -288,31 +292,31 @@ fun CreatePostScreen(
                      )
                  }
 
-                 // Poll
+
                  uiState.pollData?.let { poll ->
                      PollPreviewCard(poll = poll, onDelete = { viewModel.setPoll(null) })
                  }
 
-                 // Youtube
+
                  uiState.youtubeUrl?.let { url ->
                       YoutubePreviewCard(url = url, onDelete = { viewModel.setYoutubeUrl(null) })
                  }
 
-                 // Location
+
                  uiState.location?.let { loc ->
                      LocationPreviewCard(location = loc, onDelete = { viewModel.setLocation(null) })
                  }
             }
 
-            // Metadata Chips (Tags, Feelings) - REMOVED as they are now in UserHeader
+
 
             item {
-                Spacer(modifier = Modifier.height(100.dp)) // Bottom padding for sticky bar
+                Spacer(modifier = Modifier.height(100.dp))
             }
         }
     }
 
-    // Sheets
+
     if (showPrivacySheet) {
         PrivacySelectionSheet(
             currentPrivacy = uiState.privacy,
@@ -358,7 +362,7 @@ fun CreatePostScreen(
         )
     }
 
-    // New Feature Screens
+
     if (showTagScreen) {
         val onTagScreenClose = {
             showTagScreen = false
@@ -415,7 +419,7 @@ fun CreatePostScreen(
         )
     }
 
-    // Legacy Dialogs
+
     if (showYoutubeDialog) {
         var youtubeUrl by remember { mutableStateOf("") }
         AlertDialog(
@@ -447,7 +451,7 @@ fun CreatePostScreen(
     }
 }
 
-// Retained Preview Cards (Unchanged from original)
+
 @Composable
 fun PollPreviewCard(poll: PollData, onDelete: () -> Unit) {
     Card(

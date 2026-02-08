@@ -51,18 +51,18 @@ class FollowButtonViewModelTest {
 
     @Test
     fun `initialize should check follow status and update state when user is logged in`() = runTest {
-        // Arrange
+
         val currentUid = "currentUid"
         val targetUid = "targetUid"
 
         whenever(authRepository.getCurrentUserUid()).thenReturn(currentUid)
         whenever(followService.isFollowing(currentUid, targetUid)).thenReturn(Result.success(true))
 
-        // Act
+
         viewModel.initialize(targetUid)
         advanceUntilIdle()
 
-        // Assert
+
         val state = viewModel.uiState.value
         assertTrue(state.isFollowing)
         assertFalse(state.isLoading)
@@ -71,15 +71,15 @@ class FollowButtonViewModelTest {
 
     @Test
     fun `initialize should not check follow status when user is not logged in`() = runTest {
-        // Arrange
+
         whenever(authRepository.getCurrentUserUid()).thenReturn(null)
         val targetUid = "targetUid"
 
-        // Act
+
         viewModel.initialize(targetUid)
         advanceUntilIdle()
 
-        // Assert
+
         verify(followService, never()).isFollowing(any(), any())
         val state = viewModel.uiState.value
         assertFalse(state.isFollowing)
@@ -87,34 +87,34 @@ class FollowButtonViewModelTest {
 
     @Test
     fun `initialize should handle failure when checking follow status`() = runTest {
-        // Arrange
+
         val currentUid = "currentUid"
         val targetUid = "targetUid"
         whenever(authRepository.getCurrentUserUid()).thenReturn(currentUid)
         whenever(followService.isFollowing(currentUid, targetUid)).thenReturn(Result.failure(Exception("Network error")))
 
-        // Act
+
         viewModel.initialize(targetUid)
         advanceUntilIdle()
 
-        // Assert
+
         val state = viewModel.uiState.value
-        assertFalse(state.isFollowing) // Should remain false
+        assertFalse(state.isFollowing)
         assertFalse(state.isLoading)
         verify(followService).isFollowing(currentUid, targetUid)
     }
 
     @Test
     fun `initialize should not check follow status if target user is the current user`() = runTest {
-        // Arrange
+
         val uid = "sameUid"
         whenever(authRepository.getCurrentUserUid()).thenReturn(uid)
 
-        // Act
+
         viewModel.initialize(uid)
         advanceUntilIdle()
 
-        // Assert
+
         verify(followService, never()).isFollowing(any(), any())
         val state = viewModel.uiState.value
         assertFalse(state.isFollowing)
@@ -123,7 +123,7 @@ class FollowButtonViewModelTest {
 
     @Test
     fun `toggleFollow should call followUser when not following`() = runTest {
-        // Arrange
+
         val currentUid = "currentUid"
         val targetUid = "targetUid"
 
@@ -131,22 +131,22 @@ class FollowButtonViewModelTest {
         whenever(followService.isFollowing(currentUid, targetUid)).thenReturn(Result.success(false))
         whenever(followService.followUser(currentUid, targetUid)).thenReturn(Result.success(Unit))
 
-        // Initialize state
+
         viewModel.initialize(targetUid)
         advanceUntilIdle()
 
-        // Act
+
         viewModel.toggleFollow()
         advanceUntilIdle()
 
-        // Assert
+
         verify(followService).followUser(currentUid, targetUid)
         assertTrue(viewModel.uiState.value.isFollowing)
     }
 
     @Test
     fun `toggleFollow should call unfollowUser when already following`() = runTest {
-        // Arrange
+
         val currentUid = "currentUid"
         val targetUid = "targetUid"
 
@@ -154,22 +154,22 @@ class FollowButtonViewModelTest {
         whenever(followService.isFollowing(currentUid, targetUid)).thenReturn(Result.success(true))
         whenever(followService.unfollowUser(currentUid, targetUid)).thenReturn(Result.success(Unit))
 
-        // Initialize state
+
         viewModel.initialize(targetUid)
         advanceUntilIdle()
 
-        // Act
+
         viewModel.toggleFollow()
         advanceUntilIdle()
 
-        // Assert
+
         verify(followService).unfollowUser(currentUid, targetUid)
         assertFalse(viewModel.uiState.value.isFollowing)
     }
 
     @Test
     fun `toggleFollow should handle failure gracefully`() = runTest {
-        // Arrange
+
         val currentUid = "currentUid"
         val targetUid = "targetUid"
 
@@ -177,17 +177,17 @@ class FollowButtonViewModelTest {
         whenever(followService.isFollowing(currentUid, targetUid)).thenReturn(Result.success(false))
         whenever(followService.followUser(currentUid, targetUid)).thenReturn(Result.failure(Exception("Network error")))
 
-        // Initialize state
+
         viewModel.initialize(targetUid)
         advanceUntilIdle()
 
-        // Act
+
         viewModel.toggleFollow()
         advanceUntilIdle()
 
-        // Assert
+
         verify(followService).followUser(currentUid, targetUid)
-        assertFalse(viewModel.uiState.value.isFollowing) // Should remain false
+        assertFalse(viewModel.uiState.value.isFollowing)
         assertFalse(viewModel.uiState.value.isLoading)
     }
 }

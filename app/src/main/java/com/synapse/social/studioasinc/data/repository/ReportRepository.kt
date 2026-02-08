@@ -8,10 +8,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import javax.inject.Inject
 
-/**
- * Repository for reporting posts.
- * Requirement: 10.3
- */
+
+
 class ReportRepository @Inject constructor(
     private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
 ) {
@@ -25,9 +23,8 @@ class ReportRepository @Inject constructor(
         val description: String? = null
     )
 
-    /**
-     * Create a report for a post.
-     */
+
+
     suspend fun createReport(
         postId: String,
         reason: String,

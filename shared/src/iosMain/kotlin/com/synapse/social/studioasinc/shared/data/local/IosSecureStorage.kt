@@ -41,7 +41,7 @@ class IosSecureStorage : SecureStorage {
             val status = SecItemCopyMatching(query as CFDictionaryRef?, result.ptr)
             if (status == errSecSuccess) {
                 val data = result.value
-                // Assuming data is CFDataRef/NSData
+
                 val nsData = data?.let { CFBridgingRelease(it) as? NSData }
                 nsData?.let {
                     NSString.create(data = it, encoding = NSUTF8StringEncoding)?.toString()

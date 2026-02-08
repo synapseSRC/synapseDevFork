@@ -14,15 +14,8 @@ import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
 
 
-/**
- * Settings Hub screen - the main entry point for all settings.
- *
- * Displays a profile header card with user information and categorized
- * settings groups that navigate to dedicated sub-screens. Uses Material 3
- * Expressive design with LargeTopAppBar and smooth scrolling behavior.
- *
- * Requirements: 1.1, 1.4, 1.5
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsHubScreen(
@@ -70,7 +63,7 @@ fun SettingsHubScreen(
         }
     ) { padding ->
         if (isLoading && userProfile == null) {
-            // Show loading indicator while profile loads
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -88,7 +81,7 @@ fun SettingsHubScreen(
                 verticalArrangement = Arrangement.spacedBy(SettingsSpacing.sectionSpacing),
                 contentPadding = PaddingValues(vertical = 8.dp)
             ) {
-                // Profile Header Card
+
                 item {
                     userProfile?.let { profile ->
                         ProfileHeaderCard(
@@ -99,7 +92,7 @@ fun SettingsHubScreen(
                     }
                 }
 
-                // Settings Groups
+
                 items(settingsGroups) { group ->
                     Column(
                         modifier = Modifier.fillMaxWidth()
@@ -107,11 +100,11 @@ fun SettingsHubScreen(
                         if (group.title != null) {
                              SettingsHeaderItem(title = group.title)
                         } else {
-                            // If no title, we might want to add a spacer, but the LazyColumn
-                            // already has spacedBy(SettingsSpacing.sectionSpacing)
+
+
                         }
 
-                        // Render Group Items
+
                         SettingsCard {
                              group.categories.forEachIndexed { index, category ->
                                 val position = when {
@@ -140,7 +133,7 @@ fun SettingsHubScreen(
                     }
                 }
 
-                    // Bottom spacing
+
                     item {
                         Spacer(modifier = Modifier.height(32.dp))
                     }

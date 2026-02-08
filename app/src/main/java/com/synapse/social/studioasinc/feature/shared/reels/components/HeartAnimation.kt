@@ -27,7 +27,7 @@ fun HeartAnimation(
     val alpha = remember { Animatable(0f) }
 
     LaunchedEffect(Unit) {
-        // Pop in
+
         launch {
             scale.animateTo(
                 targetValue = 1.2f,
@@ -44,7 +44,7 @@ fun HeartAnimation(
 
         delay(500)
 
-        // Fade out and scale up
+
         val scaleJob = launch {
             scale.animateTo(1.5f, tween(200))
         }

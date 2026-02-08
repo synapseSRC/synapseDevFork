@@ -23,20 +23,12 @@ data class FollowInsert(
     val following_id: String
 )
 
-/**
- * Implementation of ProfileRepository with Supabase backend integration.
- *
- * Features:
- * - Request caching with 1-minute TTL
- * - Automatic retry with exponential backoff
- * - RLS policy compliance
- *
- * Uses SupabaseClient singleton for all database operations.
- */
+
+
 class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRepository {
 
     private companion object {
-        // JSON field keys
+
         const val KEY_UID = "uid"
         const val KEY_USERNAME = "username"
         const val KEY_DISPLAY_NAME = "display_name"
@@ -70,18 +62,17 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
         const val KEY_USERS = "users"
         const val KEY_URL = "url"
         const val KEY_TYPE = "type"
-        const val KEY_THUMBNAIL_URL = "thumbnailUrl" // Backend uses camelCase for this field
+        const val KEY_THUMBNAIL_URL = "thumbnailUrl"
         const val KEY_TEXT = "text"
         const val KEY_VOTES = "votes"
 
-        // Media types
+
         const val MEDIA_TYPE_VIDEO = "VIDEO"
         const val MEDIA_TYPE_IMAGE = "IMAGE"
     }
 
-    /**
-     * Converts "me" to the actual current user ID, returns the original userId otherwise
-     */
+
+
     private fun resolveUserId(userId: String): String? {
         return if (userId == "me") {
             client.auth.currentUserOrNull()?.id
@@ -141,7 +132,7 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
     }
 
     override fun getProfile(userId: String): Flow<Result<UserProfile>> = flow {
-        // Handle "me" case by converting to actual user ID
+
         val actualUserId = resolveUserId(userId) ?: run {
             emit(Result.failure(Exception("User not authenticated")))
             return@flow
@@ -166,7 +157,7 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
             if (response == null) {
                 android.util.Log.e("ProfileRepository", "Profile not found for userId: $actualUserId")
 
-                // Try to create missing profile if this is the current user
+
                 try {
                     val currentUser = client.auth.currentUserOrNull()
                     if (currentUser != null && currentUser.id == actualUserId) {
@@ -190,13 +181,13 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
                         client.from("users").insert(userMap)
                         android.util.Log.d("ProfileRepository", "Created missing profile, retrying query")
 
-                        // Retry the query
+
                         val retryResponse = client.from("users").select() {
                             filter { eq(KEY_UID, actualUserId) }
                         }.decodeSingleOrNull<JsonObject>()
 
                         if (retryResponse != null) {
-                            // Continue with profile creation using retryResponse
+
                             val postCount = try {
                                 client.from("posts").select(columns = Columns.raw("count")) {
                                     filter { eq(KEY_AUTHOR_UID, actualUserId) }
@@ -221,7 +212,7 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
                 return@flow
             }
 
-            // Query actual post count from posts table
+
             val postCount = try {
                 client.from("posts").select(columns = Columns.raw("count")) {
                     filter { eq(KEY_AUTHOR_UID, actualUserId) }
@@ -286,7 +277,7 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
     override suspend fun getFollowing(userId: String, limit: Int, offset: Int): Result<List<UserProfile>> = try {
         val actualUserId = resolveUserId(userId) ?: return Result.failure(Exception("User not authenticated"))
 
-        // 1. Get IDs of people I follow
+
         val followingIds = client.from("follows").select(columns = Columns.raw("following_id")) {
             filter { eq("follower_id", actualUserId) }
             limit(limit.toLong())
@@ -298,7 +289,7 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
         if (followingIds.isEmpty()) {
             Result.success(emptyList())
         } else {
-            // 2. Get profiles for these IDs
+
             val usersResponse = client.from("users").select {
                 filter { isIn(KEY_UID, followingIds) }
             }.decodeList<JsonObject>()

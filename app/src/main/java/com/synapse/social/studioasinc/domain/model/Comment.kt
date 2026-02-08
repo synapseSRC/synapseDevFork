@@ -6,15 +6,15 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Comment(
     val uid: String = "",
-    val comment: String = "",  // Comment text
+    val comment: String = "",
     @SerialName("push_time")
-    val push_time: String = "",  // Timestamp
-    val key: String = "",  // Comment ID
-    val like: Long? = null,  // Like count (optional - may not exist in schema)
+    val push_time: String = "",
+    val key: String = "",
+    val like: Long? = null,
     @SerialName("post_key")
-    val postKey: String = "",  // Post this comment belongs to
+    val postKey: String = "",
     @SerialName("reply_comment_key")
-    val replyCommentKey: String? = null,  // If this is a reply, the parent comment key
+    val replyCommentKey: String? = null,
     @SerialName("is_pinned")
     val isPinned: Boolean = false,
     @SerialName("pinned_at")
@@ -36,5 +36,5 @@ data class Comment(
     @SerialName("audio_url")
     val audioUrl: String? = null,
     @SerialName("media_type")
-    val mediaType: String? = null  // "photo", "video", "audio"
+    val mediaType: String? = null
 )

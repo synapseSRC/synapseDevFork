@@ -17,7 +17,7 @@ fun VerifiedBadge(
     modifier: Modifier = Modifier
 ) {
     Icon(
-        painter = painterResource(id = R.drawable.ic_verified), // Ensure this drawable exists or use a vector
+        painter = painterResource(id = R.drawable.ic_verified),
         contentDescription = "Verified",
         modifier = modifier
             .size(16.dp)
@@ -31,7 +31,7 @@ fun GenderBadge(
     gender: String,
     modifier: Modifier = Modifier
 ) {
-    // Determine icon based on gender string
+
     val iconRes = when (gender.lowercase()) {
         "male" -> R.drawable.ic_male
         "female" -> R.drawable.ic_female

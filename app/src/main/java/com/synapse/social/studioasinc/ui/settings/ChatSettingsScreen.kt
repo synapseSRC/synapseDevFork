@@ -10,23 +10,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
 
-/**
- * Chat Settings screen for managing chat-related preferences.
- *
- * Displays comprehensive chat settings including:
- * - Theme: Chat themes and customization
- * - Font Size: Text size adjustment
- * - Enter is Send: Send behavior configuration
- * - Media Visibility: Media auto-download and visibility
- * - Voice Transcripts: Voice message transcription
- * - Archived Chats: Archive management
- * - Chat Backup: Backup and restore settings
- * - Chat History Management: History deletion and management
- *
- * Uses Material 3 Expressive design with MediumTopAppBar and grouped sections.
- *
- * Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatSettingsScreen(
@@ -67,7 +52,7 @@ fun ChatSettingsScreen(
             )
         },
         snackbarHost = {
-            // Show error snackbar if there's an error
+
             error?.let { errorMessage ->
                 Snackbar(
                     modifier = Modifier.padding(16.dp),
@@ -90,7 +75,7 @@ fun ChatSettingsScreen(
             verticalArrangement = Arrangement.spacedBy(SettingsSpacing.sectionSpacing),
             contentPadding = PaddingValues(vertical = 16.dp)
         ) {
-            // Theme Section
+
             item {
                 SettingsSection(title = "Theme") {
                     SettingsNavigationItem(
@@ -111,7 +96,7 @@ fun ChatSettingsScreen(
                 }
             }
 
-            // Font Size Section
+
             item {
                 SettingsSection(title = "Font Size") {
                     SettingsSliderItem(
@@ -133,7 +118,7 @@ fun ChatSettingsScreen(
                 }
             }
 
-            // Enter is Send Section
+
             item {
                 SettingsSection(title = "Enter is Send") {
                     SettingsToggleItem(
@@ -147,7 +132,7 @@ fun ChatSettingsScreen(
                 }
             }
 
-            // Media Visibility Section
+
             item {
                 SettingsSection(title = "Media Visibility") {
                     SettingsSelectionItem(
@@ -171,7 +156,7 @@ fun ChatSettingsScreen(
                 }
             }
 
-            // Voice Transcripts Section
+
             item {
                 SettingsSection(title = "Voice Transcripts") {
                     SettingsToggleItem(
@@ -185,7 +170,7 @@ fun ChatSettingsScreen(
                 }
             }
 
-            // Archived Chats Section
+
             item {
                 SettingsSection(title = "Archived Chats") {
                     SettingsNavigationItem(
@@ -198,7 +183,7 @@ fun ChatSettingsScreen(
                 }
             }
 
-            // Chat Backup Section
+
             item {
                 SettingsSection(title = "Chat Backup") {
                     SettingsNavigationItem(
@@ -220,7 +205,7 @@ fun ChatSettingsScreen(
                 }
             }
 
-            // Chat History Management Section
+
             item {
                 SettingsSection(title = "Chat History Management") {
                     SettingsNavigationItem(
@@ -243,7 +228,7 @@ fun ChatSettingsScreen(
                 }
             }
 
-            // Bottom spacing
+
             item {
                 Spacer(modifier = Modifier.height(32.dp))
             }

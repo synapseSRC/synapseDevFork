@@ -11,9 +11,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
 
-/**
- * Favourites settings screen for managing favorite contacts and content.
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavouritesScreen(

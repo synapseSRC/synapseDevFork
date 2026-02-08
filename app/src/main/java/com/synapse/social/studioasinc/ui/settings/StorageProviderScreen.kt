@@ -96,7 +96,7 @@ fun StorageProviderScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            // Media Type Provider Selection
+
             StorageSection(title = "Provider Selection") {
                 ProviderSelectionItem(
                     title = "Photos",
@@ -127,7 +127,7 @@ fun StorageProviderScreen(
                 )
             }
 
-            // Provider Configuration
+
             Text(
                 text = "Provider Configuration",
                 style = MaterialTheme.typography.titleMedium,
@@ -135,11 +135,11 @@ fun StorageProviderScreen(
                 modifier = Modifier.padding(top = 8.dp)
             )
 
-            // ImgBB Config
+
             ProviderConfigCard(
                 title = "ImgBB",
                 isConfigured = storageConfig.isProviderConfigured(StorageProvider.IMGBB),
-                isExpanded = false // state management for expansion could be local or VM
+                isExpanded = false
             ) {
                 ImgBBConfigContent(
                     apiKey = storageConfig.imgBBKey,
@@ -147,7 +147,7 @@ fun StorageProviderScreen(
                 )
             }
 
-            // Cloudinary Config
+
             ProviderConfigCard(
                 title = "Cloudinary",
                 isConfigured = storageConfig.isProviderConfigured(StorageProvider.CLOUDINARY),
@@ -163,7 +163,7 @@ fun StorageProviderScreen(
                 )
             }
 
-            // Supabase Config
+
             ProviderConfigCard(
                 title = "Supabase Storage",
                 isConfigured = storageConfig.isProviderConfigured(StorageProvider.SUPABASE),
@@ -179,7 +179,7 @@ fun StorageProviderScreen(
                 )
             }
 
-            // Cloudflare R2 Config
+
             ProviderConfigCard(
                 title = "Cloudflare R2",
                 isConfigured = storageConfig.isProviderConfigured(StorageProvider.CLOUDFLARE_R2),
@@ -338,7 +338,7 @@ private fun ProviderConfigCard(
                     .clickable { expanded = !expanded }
                     .padding(16.dp)
             ) {
-                // Status Indicator
+
                 Column(
                     modifier = Modifier
                         .size(40.dp)
@@ -395,7 +395,7 @@ private fun ProviderConfigCard(
                     )
                 }
 
-                // Expand/Collapse icon with rotation animation
+
                 val rotationAngle by animateFloatAsState(
                     targetValue = if (expanded) 180f else 0f,
                     animationSpec = tween(300, easing = EaseOutCubic),
@@ -411,7 +411,7 @@ private fun ProviderConfigCard(
                 }
             }
 
-            // Expandable content
+
             AnimatedVisibility(
                 visible = expanded,
                 enter = expandVertically(

@@ -8,23 +8,23 @@ class SearchSanitizationTest {
 
     @Test
     fun testSanitizeSearchQuery_escapesWildcards() {
-        // Test basic characters
+
         assertEquals("hello", sanitizeSearchQuery("hello"))
 
-        // Test wildcards
+
         assertEquals("100\\%", sanitizeSearchQuery("100%"))
         assertEquals("user\\_name", sanitizeSearchQuery("user_name"))
 
-        // Test backslashes
+
         assertEquals("C:\\\\Windows", sanitizeSearchQuery("C:\\Windows"))
 
-        // Test mixed
+
         assertEquals("100\\% user\\_name", sanitizeSearchQuery("100% user_name"))
 
-        // Test trimming
+
         assertEquals("hello", sanitizeSearchQuery("  hello  "))
 
-        // Test length limit (100)
+
         val longString = "a".repeat(150)
         assertEquals("a".repeat(100), sanitizeSearchQuery(longString))
     }

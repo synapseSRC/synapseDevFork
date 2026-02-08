@@ -71,7 +71,7 @@ fun FullScreenSearchDialog(
                         }
                     )
 
-                    // Sticky Search Bar
+
                     OutlinedTextField(
                         value = searchQuery,
                         onValueChange = onSearchQueryChange,
@@ -117,7 +117,7 @@ fun TagPeopleScreen(
     onToggleUser: (User) -> Unit,
     isLoading: Boolean
 ) {
-    // Optimize lookup for UI rendering
+
     val selectedUserIds = remember(selectedUsers) { selectedUsers.map { it.uid }.toSet() }
 
     FullScreenSearchDialog(
@@ -143,8 +143,8 @@ fun TagPeopleScreen(
                     }
                 }
             } else {
-                // If search query is empty, maybe show "Recent" or "Suggested" (omitted for now as per plan focus on search)
-                // Showing results
+
+
                 items(
                     items = searchResults,
                     key = { user -> user.uid }
@@ -220,7 +220,7 @@ fun FeelingSelectScreen(
     var selectedTab by remember { mutableStateOf(0) }
     val tabs = listOf("Moods", "Activities")
 
-    // Filter feelings based on selected tab and search query
+
     val currentTabType = if (selectedTab == 0) com.synapse.social.studioasinc.domain.model.FeelingType.MOOD else com.synapse.social.studioasinc.domain.model.FeelingType.ACTIVITY
     val filteredFeelings = remember(feelings, selectedTab, searchQuery) {
         feelings.filter {
@@ -281,9 +281,9 @@ fun FeelingSelectScreen(
     }
 }
 
-// =======================
-// SUB-COMPONENTS
-// =======================
+
+
+
 
 @Composable
 fun UserSelectionItem(
@@ -389,7 +389,7 @@ fun LocationItem(
     }
 }
 
-// Skeletons
+
 
 @Composable
 fun UserSkeletonItem() {

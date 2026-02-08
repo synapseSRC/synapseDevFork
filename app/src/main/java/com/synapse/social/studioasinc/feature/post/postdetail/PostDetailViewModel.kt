@@ -46,7 +46,7 @@ class PostDetailViewModel @Inject constructor(
     }
 
     fun loadPost(postId: String) {
-        // Only initialize pager if it's a new post or flow is empty
+
         if (currentPostId != postId) {
             currentPostId = postId
             val flow = Pager(
@@ -59,7 +59,7 @@ class PostDetailViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            // Only show global loading if we don't have the post data yet
+
             if (_uiState.value.post == null) {
                 _uiState.update { it.copy(isLoading = true, error = null) }
             }
@@ -114,8 +114,8 @@ class PostDetailViewModel @Inject constructor(
         }
     }
 
-    // Overload for optimistic update if we had the comment object
-    // For now, sticking to the loading indicator plan for "Like" to be safe and consistent with constraints.
+
+
 
     private var isSubmittingComment = false
 
@@ -127,7 +127,7 @@ class PostDetailViewModel @Inject constructor(
         isSubmittingComment = true
         viewModelScope.launch {
             commentRepository.createComment(postId, content, null, parentId).onSuccess {
-                refreshComments() // This refreshes post (for comment count) and list
+                refreshComments()
                 setReplyTo(null)
             }.also {
                 isSubmittingComment = false
@@ -224,12 +224,12 @@ class PostDetailViewModel @Inject constructor(
     }
 
     fun toggleComments() {
-        // ...
+
     }
 
     fun blockUser(userId: String) {
         viewModelScope.launch {
-             // Block user logic
+
         }
     }
 

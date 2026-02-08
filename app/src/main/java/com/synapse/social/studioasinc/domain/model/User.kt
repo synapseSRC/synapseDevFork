@@ -3,9 +3,8 @@ package com.synapse.social.studioasinc.domain.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * User model for Supabase - matches the actual database schema
- */
+
+
 @Serializable
 enum class UserStatus {
     @SerialName("online") ONLINE,
@@ -67,9 +66,8 @@ data class User(
     val postsCount: Int = 0
 )
 
-/**
- * Extension function to convert HashMap to User object
- */
+
+
 fun HashMap<String, Any?>.toUser(): User {
     return User(
         id = this["id"] as? String,

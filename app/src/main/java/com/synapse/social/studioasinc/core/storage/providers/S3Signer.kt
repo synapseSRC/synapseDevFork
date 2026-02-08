@@ -5,9 +5,8 @@ import java.security.MessageDigest
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
-/**
- * Helper class for AWS SigV4 signing.
- */
+
+
 object S3Signer {
 
     private const val S3_SERVICE = "s3"

@@ -8,13 +8,13 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
 
-// Button press animation
+
 fun Modifier.pressAnimation() = composed {
     var isPressed by remember { mutableStateOf(false) }
     this.scale(if (isPressed) 0.95f else 1f)
 }
 
-// Parallax scroll effect
+
 fun Modifier.parallaxScroll(scrollOffset: Float, parallaxRatio: Float = 0.5f) = this.then(
     Modifier.graphicsLayer {
         translationY = scrollOffset * parallaxRatio
@@ -24,7 +24,7 @@ fun Modifier.parallaxScroll(scrollOffset: Float, parallaxRatio: Float = 0.5f) = 
     }
 )
 
-// Like animation
+
 @Composable
 fun rememberLikeAnimation(): Animatable<Float, AnimationVector1D> {
     val scale = remember { Animatable(1f) }
@@ -42,7 +42,7 @@ suspend fun Animatable<Float, AnimationVector1D>.animateLike() {
     )
 }
 
-// Content crossfade animation
+
 @Composable
 fun <T> AnimatedContent(
     targetState: T,
@@ -59,7 +59,7 @@ fun <T> AnimatedContent(
     }
 }
 
-// Crossfade content animation (alias for AnimatedContent)
+
 @Composable
 fun <T> crossfadeContent(
     targetState: T,
@@ -68,7 +68,7 @@ fun <T> crossfadeContent(
     AnimatedContent(targetState = targetState, content = content)
 }
 
-// Expand/collapse animation
+
 @Composable
 fun ExpandableContent(
     expanded: Boolean,

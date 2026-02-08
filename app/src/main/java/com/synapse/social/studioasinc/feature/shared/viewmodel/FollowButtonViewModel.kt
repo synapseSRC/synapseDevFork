@@ -64,7 +64,7 @@ class FollowButtonViewModel @Inject constructor(
         val currentUid = currentUserId ?: return
         val targetUid = targetUserId ?: return
 
-        if (!isOperationInProgress.compareAndSet(false, true)) return // Prevent concurrent operations
+        if (!isOperationInProgress.compareAndSet(false, true)) return
 
         viewModelScope.launch {
             try {

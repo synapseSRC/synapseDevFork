@@ -5,8 +5,8 @@ import platform.CoreCrypto.*
 
 @OptIn(ExperimentalForeignApi::class)
 actual object PlatformUtils {
-    // Note: Using CoreCrypto (C API) instead of CryptoKit (Swift API) because it is directly accessible
-    // via Kotlin/Native cinterop without requiring an Objective-C/Swift bridge.
+
+
 
     actual fun sha1(input: String): String {
         val data = input.encodeToByteArray()
@@ -43,7 +43,7 @@ actual object PlatformUtils {
         return memScoped {
             val result = allocArray<UByteVar>(CC_SHA256_DIGEST_LENGTH)
 
-            // Safe implementation avoiding pinning empty arrays, consistent with sha1/sha256
+
             if (key.isEmpty() && dataBytes.isEmpty()) {
                 CCHmac(kCCHmacAlgSHA256, null, 0u, null, 0u, result)
             } else if (key.isEmpty()) {

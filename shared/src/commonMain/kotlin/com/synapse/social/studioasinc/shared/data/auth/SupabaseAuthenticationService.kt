@@ -16,10 +16,8 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 import kotlin.time.ExperimentalTime
 
-/**
- * Supabase implementation of authentication service.
- * Handles all Supabase-specific authentication operations.
- */
+
+
 class SupabaseAuthenticationService : IAuthenticationService {
 
     override suspend fun signUp(email: String, password: String): Result<String> {
@@ -29,11 +27,11 @@ class SupabaseAuthenticationService : IAuthenticationService {
                     this.email = email
                     this.password = password
                 }
-                
-                // Get user ID from current session
-                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id 
+
+
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
                     ?: throw Exception("User ID not found after signup")
-                
+
                 Napier.d("User signed up successfully: $userId")
                 Result.success(userId)
             }
@@ -46,7 +44,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
     override suspend fun createUserProfile(userId: String, email: String, username: String): Result<Unit> {
         return try {
             withContext(Dispatchers.Default) {
-                // Create profile
+
                 val profileInsert = UserProfileInsert(
                     username = username,
                     email = email,
@@ -62,23 +60,23 @@ class SupabaseAuthenticationService : IAuthenticationService {
                     user_level_xp = 0,
                     status = "active"
                 )
-                
+
                 SupabaseClient.client.from("user_profiles").insert(profileInsert)
-                
-                // Create settings
+
+
                 val settingsInsert = UserSettingsInsert(
                     user_id = userId
                 )
-                
+
                 SupabaseClient.client.from("user_settings").insert(settingsInsert)
-                
-                // Create presence
+
+
                 val presenceInsert = UserPresenceInsert(
                     user_id = userId
                 )
-                
+
                 SupabaseClient.client.from("user_presence").insert(presenceInsert)
-                
+
                 Napier.d("User profile created successfully: $userId")
                 Result.success(Unit)
             }
@@ -91,16 +89,16 @@ class SupabaseAuthenticationService : IAuthenticationService {
     override suspend fun ensureProfileExists(userId: String, email: String): Result<Unit> {
         return try {
             withContext(Dispatchers.Default) {
-                // Check if profile exists
+
                 val count = SupabaseClient.client.from("user_profiles").select(columns = Columns.list("id")) {
                     count(Count.EXACT)
                     filter {
                         eq("id", userId)
                     }
                 }.countOrNull()
-                
+
                 if (count == null || count == 0L) {
-                    // Create basic profile
+
                     createUserProfile(userId, email, email.substringBefore("@"))
                 } else {
                     Result.success(Unit)
@@ -119,11 +117,11 @@ class SupabaseAuthenticationService : IAuthenticationService {
                     this.email = email
                     this.password = password
                 }
-                
-                // Get user ID from current session
-                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id 
+
+
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
                     ?: throw Exception("User ID not found after sign in")
-                
+
                 Napier.d("User signed in successfully: $userId")
                 Result.success(userId)
             }
@@ -217,7 +215,7 @@ class SupabaseAuthenticationService : IAuthenticationService {
     override suspend fun resendVerificationEmail(email: String): Result<Unit> {
         return try {
             withContext(Dispatchers.Default) {
-                // Simplified - just send password reset as verification
+
                 SupabaseClient.client.auth.resetPasswordForEmail(email)
                 Napier.d("Verification email resent successfully")
                 Result.success(Unit)
@@ -275,11 +273,11 @@ class SupabaseAuthenticationService : IAuthenticationService {
             withContext(Dispatchers.Default) {
                 when {
                     code != null -> {
-                        // Handle authorization code flow
+
                         SupabaseClient.client.auth.exchangeCodeForSession(code)
                     }
                     accessToken != null && refreshToken != null -> {
-                        // Handle token-based flow
+
                         SupabaseClient.client.auth.importAuthToken(accessToken, refreshToken)
                     }
                     else -> {
@@ -296,14 +294,14 @@ class SupabaseAuthenticationService : IAuthenticationService {
     }
 
     override suspend fun storeSessionTokens(accessToken: String, refreshToken: String, userId: String, userEmail: String, expiresIn: Int) {
-        // Implementation depends on platform-specific storage
-        // For now, tokens are managed by Supabase client
+
+
         Napier.d("Session tokens stored for user: $userId")
     }
 
     override suspend fun clearStoredTokens() {
-        // Implementation depends on platform-specific storage
-        // For now, handled by signOut
+
+
         Napier.d("Stored tokens cleared")
     }
 }

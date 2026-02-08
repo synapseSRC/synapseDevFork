@@ -46,7 +46,7 @@ class UploadMediaUseCase(
 
             if (provider == StorageProvider.DEFAULT && !config.isProviderConfigured(providerToUse)) {
                  if (config.isProviderConfigured(StorageProvider.SUPABASE)) {
-                     // Requirement says: "No silent fallback".
+
                      return Result.failure(Exception("Default provider ($providerToUse) is not configured."))
                  }
                  return Result.failure(Exception("Default provider ($providerToUse) is not configured."))

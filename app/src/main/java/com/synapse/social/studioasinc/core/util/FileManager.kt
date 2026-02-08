@@ -44,19 +44,17 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-/**
- * Unified FileManager serving as the single source of truth for file and media operations.
- * Consolidates logic from FileUtils, StorageUtils, and MediaStorageUtils.
- */
+
+
 object FileManager {
 
     private const val TAG = "FileManager"
     private const val BUFFER_SIZE = 8192
     private val executor: ExecutorService = Executors.newFixedThreadPool(3)
 
-    // ============================================================================================
-    // File I/O & Path Operations (From FileUtils & StorageUtils)
-    // ============================================================================================
+
+
+
 
     fun getTmpFileUri(context: Context, extension: String = ".png"): Uri {
         val prefix = if (extension == ".mp4") "tmp_video_file" else "tmp_image_file"
@@ -207,23 +205,21 @@ object FileManager {
         return Environment.getExternalStoragePublicDirectory(type).absolutePath
     }
 
-    /**
-     * Unified method to get file path from URI.
-     * Combines logic from FileUtils and StorageUtils.
-     */
+
+
     fun getPathFromUri(context: Context, uri: Uri?): String? {
         uri ?: return null
 
-        // Android 10 (API 29) and above requires Scoped Storage.
-        // Direct file paths from external storage are restricted and unreliable.
-        // We copy the content to the app's cache directory to ensure valid File access.
+
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             return copyToCache(context, uri)
         }
 
         var path: String? = null
 
-        // DocumentProvider
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, uri)) {
             when {
                 isExternalStorageDocument(uri) -> {
@@ -240,7 +236,7 @@ object FileManager {
                         path = id.substring(4)
                     } else {
                         val split = id.split(":")
-                        // Check for MSF downloads (specific to FileUtils logic)
+
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && split.isNotEmpty() && "msf".equals(split[0], ignoreCase = true)) {
                             val selection = "_id=?"
                             val selectionArgs = arrayOf(split[1])
@@ -253,7 +249,7 @@ object FileManager {
                                 )
                                 path = getDataColumn(context, contentUri, null, null)
                             } catch (e: NumberFormatException) {
-                                // Fallback or log
+
                             }
                         }
                     }
@@ -276,26 +272,26 @@ object FileManager {
             }
         }
 
-        // Content Scheme
+
         if (path == null && "content".equals(uri.scheme, ignoreCase = true)) {
             path = getDataColumn(context, uri, null, null)
         }
 
-        // File Scheme
+
         if (path == null && "file".equals(uri.scheme, ignoreCase = true)) {
             path = uri.path
         }
 
-        // Decode path if needed (from FileUtils)
+
         path?.let {
             try {
                 path = URLDecoder.decode(it, "UTF-8")
             } catch (e: Exception) {
-                // ignore
+
             }
         }
 
-        // Fallback: Copy to cache (from StorageUtils)
+
         if (path == null) {
             path = copyToCache(context, uri)
         }
@@ -363,14 +359,14 @@ object FileManager {
         return try {
             context.contentResolver.openInputStream(uri)?.use { inputStream ->
                 val fileName = getFileName(context, uri) ?: "temp_file"
-                // Extract extension and name
+
                 val ext = if (fileName.contains(".")) ".${fileName.substringAfterLast(".")}" else ".tmp"
                 val name = if (fileName.contains(".")) fileName.substringBeforeLast(".") else fileName
 
-                // Sanitize name part (allow only safe chars, shorten if too long)
+
                 val safeName = name.replace(Regex("[^a-zA-Z0-9_-]"), "_").take(50)
 
-                // Use createTempFile to handle uniqueness and safety in cacheDir
+
                 val cacheFile = File.createTempFile("${System.currentTimeMillis()}_$safeName", ext, context.cacheDir)
 
                 FileOutputStream(cacheFile).use { outputStream ->
@@ -384,9 +380,9 @@ object FileManager {
         }
     }
 
-    // ============================================================================================
-    // Bitmap Operations (From FileUtils & StorageUtils)
-    // ============================================================================================
+
+
+
 
     fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
         val width = options.outWidth
@@ -454,7 +450,7 @@ object FileManager {
         return Bitmap.createScaledBitmap(src, width, height, true)
     }
 
-    // Various Bitmap manipulations from FileUtils
+
 
     fun resizeBitmapFileRetainRatio(fromPath: String, destPath: String, max: Int) {
         if (!isExistFile(fromPath)) return
@@ -612,9 +608,9 @@ object FileManager {
         return File(context.getExternalFilesDir(Environment.DIRECTORY_DCIM)?.absolutePath + File.separator + fileName)
     }
 
-    // ============================================================================================
-    // Media Downloading & Saving (From MediaStorageUtils & StorageUtils)
-    // ============================================================================================
+
+
+
 
     interface DownloadCallback {
         fun onSuccess(savedUri: Uri, fileName: String)
@@ -807,7 +803,7 @@ object FileManager {
         }
     }
 
-    // Launchers (From StorageUtils)
+
     fun pickSingleFile(launcher: ActivityResultLauncher<String>, mimeType: String) {
         launcher.launch(mimeType)
     }
@@ -824,7 +820,7 @@ object FileManager {
         launcher.launch(fileName)
     }
 
-    // Helpers for Downloading
+
 
     @Throws(IOException::class)
     private fun downloadToStream(urlString: String, outputStream: OutputStream, callback: DownloadCallback?) {

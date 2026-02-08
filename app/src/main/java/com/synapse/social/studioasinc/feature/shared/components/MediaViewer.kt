@@ -45,7 +45,7 @@ fun MediaViewer(
             )
         }
 
-        // Close button
+
         IconButton(
             onClick = onDismiss,
             modifier = Modifier
@@ -59,7 +59,7 @@ fun MediaViewer(
             )
         }
 
-        // Page indicator
+
         if (mediaUrls.size > 1) {
             Text(
                 text = "${pagerState.currentPage + 1} / ${mediaUrls.size}",

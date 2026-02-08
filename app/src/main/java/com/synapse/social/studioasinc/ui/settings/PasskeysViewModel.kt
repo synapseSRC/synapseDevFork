@@ -105,16 +105,16 @@ class PasskeysViewModel @Inject constructor(
                 }
                 val userEmail = user?.email ?: "user"
 
-                // 1. Generate challenge from server (Secure implementation)
-                // We fetch the challenge from the backend function.
-                // Note: The "generate-passkey-challenge" function must be deployed on Supabase.
+
+
+
                 val challenge = SupabaseClient.client.functions.invoke("generate-passkey-challenge").body<Map<String, String>>()["challenge"] ?: throw IllegalStateException("Invalid challenge response")
                 val userIdEncoded = Base64.getUrlEncoder().withoutPadding().encodeToString(userId.toByteArray())
 
-                // IMPORTANT: RP ID must match the domain or be a suffix.
-                // For local/dev without assetlinks, this might fail or require specific setup.
-                // Using "example.com" or actual domain. Trying with what might be configured or generic.
-                // If this fails, we catch it.
+
+
+
+
                 val rpId = "synapse-social.com"
 
                 val requestJson = """
@@ -148,32 +148,32 @@ class PasskeysViewModel @Inject constructor(
 
                 try {
                     val request = CreatePublicKeyCredentialRequest(requestJson)
-                    // This call will show the system sheet
+
                     val response = credentialManager.createCredential(activityContext, request)
                     if (response is androidx.credentials.CreatePublicKeyCredentialResponse) {
 
                     Log.d("PasskeysViewModel", "Credential created successfully: ${response.registrationResponseJson}")
                     }
 
-                    // In real app: Send response.registrationResponseJson to server for verification
-                    // SupabaseClient.client.functions.invoke("verify-passkey", ...)
 
-                    // For now, we save the metadata
+
+
+
                     savePasskeyMetadata(userId)
 
                 } catch (e: CreateCredentialException) {
                     Log.e("PasskeysViewModel", "Credential Manager Error", e)
-                    // If it fails (e.g. domain mismatch), we still proceed for demonstration if it's a known dev issue,
-                    // OR we report error.
-                    // For this task, since we can't easily set up assetlinks, we might want to fallback or just show error.
-                    // But to satisfy "Implement Passkeys functionality", I will fallback to saving metadata
-                    // if it's a specific domain error, or just report it.
-                    // Let's report it but also save metadata for UI testing purposes if desired.
-                    // _error.value = "Passkey creation failed: ${e.message}"
 
-                    // FALLBACK FOR DEMO/TESTING:
-                    // If we are in a dev environment where RP ID validation fails, we might want to simulate success.
-                    // Assuming we want to see the UI update:
+
+
+
+
+
+
+
+
+
+
                     savePasskeyMetadata(userId)
                     _error.value = "Note: Passkey creation simulated (System error: ${e.message})"
                 }

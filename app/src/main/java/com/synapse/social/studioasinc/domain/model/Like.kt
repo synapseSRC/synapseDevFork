@@ -3,9 +3,8 @@ package com.synapse.social.studioasinc.domain.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * Like model for Supabase database
- */
+
+
 @Serializable
 data class Like(
     val id: String? = null,

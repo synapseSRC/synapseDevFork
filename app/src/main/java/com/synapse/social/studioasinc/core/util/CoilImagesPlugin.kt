@@ -89,7 +89,7 @@ class CoilImagesPlugin private constructor(
 
             val disposable = imageLoader.enqueue(request)
 
-            // if flag was not set, then job is running (else - finished before we got here)
+
             if (!loaded.get()) {
                 loaded.set(true)
                 cache[drawable] = disposable

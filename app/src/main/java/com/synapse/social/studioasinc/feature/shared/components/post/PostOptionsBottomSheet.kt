@@ -52,7 +52,7 @@ fun PostOptionsBottomSheet(
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
         ) {
-            // Quick Actions Row
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -60,7 +60,7 @@ fun PostOptionsBottomSheet(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 QuickAction(
-                    icon = R.drawable.ic_forward, // Using forward icon for reshare
+                    icon = R.drawable.ic_forward,
                     label = "Reshare",
                     onClick = {
                         onReshare()
@@ -95,7 +95,7 @@ fun PostOptionsBottomSheet(
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-            // Options List
+
             LazyColumn {
                 items(buildOptions(
                     isOwner = isOwner,

@@ -54,11 +54,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
 
-/**
- * Request Account Information screen.
- *
- * Redesigned to consolidate actions and improve hierarchy.
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RequestAccountInfoScreen(
@@ -69,7 +66,7 @@ fun RequestAccountInfoScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Handle Error Message
+
     LaunchedEffect(uiState.error) {
         uiState.error?.let { message ->
             snackbarHostState.showSnackbar(message)
@@ -97,7 +94,7 @@ fun RequestAccountInfoScreen(
             )
         },
         bottomBar = {
-            // Consolidated Action Button
+
             if (uiState.status !is RequestStatus.Ready) {
                 Button(
                     onClick = { viewModel.requestReport() },
@@ -134,7 +131,7 @@ fun RequestAccountInfoScreen(
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Objective 2 & 5: Information Hierarchy & Status Feedback
+
             StatusBanner(uiState.status)
 
             Text(
@@ -144,7 +141,7 @@ fun RequestAccountInfoScreen(
                 modifier = Modifier.padding(top = 8.dp)
             )
 
-            // Objective 1: Consolidate Actions (Multi-select Card)
+
             ElevatedCard(
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
@@ -170,7 +167,7 @@ fun RequestAccountInfoScreen(
                 }
             }
 
-            // Objective 3: Clean Grouping (Automation Settings)
+
             Text(
                 text = "Automation",
                 style = MaterialTheme.typography.titleMedium,
@@ -213,10 +210,10 @@ fun RequestAccountInfoScreen(
                 }
             }
 
-            // Success State Action
+
              AnimatedVisibility(visible = uiState.status is RequestStatus.Ready) {
                  OutlinedButton(
-                     onClick = { /* Download Logic */ },
+                     onClick = {  },
                      modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                      border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
                  ) {
@@ -233,7 +230,7 @@ fun RequestAccountInfoScreen(
 
 @Composable
 fun StatusBanner(status: RequestStatus) {
-    // Helper data class for the when expression
+
     data class BannerContent(val bgColor: androidx.compose.ui.graphics.Color, val icon: ImageVector, val title: String, val desc: String)
 
     val content = when (status) {

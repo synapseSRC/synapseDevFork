@@ -36,7 +36,7 @@ fun CircularAvatar(
             error = painterResource(id = R.drawable.ic_profile_placeholder)
         )
     } else {
-        // Fallback or placeholder if imageUrl is null
+
          androidx.compose.foundation.Image(
             painter = painterResource(id = R.drawable.ic_profile_placeholder),
             contentDescription = contentDescription,

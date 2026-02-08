@@ -21,16 +21,8 @@ import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.*
 
-/**
- * Unit tests for [PostDetailViewModel].
- *
- * Note: These tests require 'mock-maker-inline' to be enabled for Mockito because
- * Supabase's [PluginManager] is a final class and [SupabaseClientConfig] is internal,
- * making it impossible to implement a fake or mock without inline mocking.
- *
- * A 'mock-maker-inline' file has been added to test resources, but if tests fail with
- * InvalidUseOfMatchersException or IllegalStateException (Plugin not found), checks build config.
- */
+
+
 @ExperimentalCoroutinesApi
 @Ignore("Requires mock-maker-inline enabled in Gradle/Mockito environment to mock final PluginManager")
 class PostDetailViewModelTest {
@@ -57,12 +49,12 @@ class PostDetailViewModelTest {
 
     @Before
     fun setUp() {
-        // Mock Supabase Client structure
+
         whenever(client.pluginManager).thenReturn(pluginManager)
 
-        // Mock getPlugin(Auth)
-        // Note: This matches the Auth companion object key used in SupabaseClient.auth extension
-        // Requires inline mocking for final PluginManager
+
+
+
         whenever(pluginManager.getPlugin(eq(Auth))).thenReturn(auth)
 
         whenever(auth.currentSessionOrNull()).thenReturn(session)
@@ -139,17 +131,17 @@ class PostDetailViewModelTest {
             reactionSummary = emptyMap(),
             userReaction = null
         )
-        // Setup initial state
+
         whenever(postDetailRepository.getPostWithDetails(postId)).thenReturn(Result.success(mockPostDetail))
         viewModel.loadPost(postId)
         mainCoroutineRule.testDispatcher.scheduler.advanceUntilIdle()
 
-        // Setup reaction toggle
+
         val reactionType = ReactionType.LIKE
         whenever(reactionRepository.toggleReaction(postId, "post", reactionType))
             .thenReturn(Result.success(ReactionToggleResult.ADDED))
 
-        // Setup refresh call (returns updated post)
+
         val updatedPostDetail = mockPostDetail.copy(userReaction = reactionType)
         whenever(postDetailRepository.getPostWithDetails(postId)).thenReturn(Result.success(updatedPostDetail))
 
@@ -167,7 +159,7 @@ class PostDetailViewModelTest {
         val postId = "post_123"
         val commentContent = "Nice post!"
 
-        // Setup initial state
+
         val mockPostDetail = PostDetail(
             post = Post(id = postId),
             author = UserProfile(uid = "author_1", username = "testuser")
@@ -176,7 +168,7 @@ class PostDetailViewModelTest {
         viewModel.loadPost(postId)
         mainCoroutineRule.testDispatcher.scheduler.advanceUntilIdle()
 
-        // Mock createComment
+
         val mockComment = CommentWithUser(
             id = "comment_1",
             postId = postId,

@@ -71,15 +71,15 @@ fun HomeScreen(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    // Control bottom nav visibility based on scroll
+
     val isBottomBarVisible = (scrollBehavior.state.collapsedFraction < 0.5f) && !isPostDetail
 
     val navBarTranslationY by animateFloatAsState(
-        targetValue = if (isBottomBarVisible) 0f else 1f, // 0f = visible, 1f = hidden
+        targetValue = if (isBottomBarVisible) 0f else 1f,
         label = "NavBarAnimation"
     )
 
-    // Fetch user profile logic
+
     val currentUser = com.synapse.social.studioasinc.core.network.SupabaseClient.client.auth.currentUserOrNull()
     var userAvatarUrl by remember { mutableStateOf<String?>(null) }
 
@@ -113,7 +113,7 @@ fun HomeScreen(
                             )
                         },
                         actions = {
-                            // Primary action - Create Post (most prominent)
+
                             androidx.compose.material3.FilledTonalIconButton(
                                 onClick = { onNavigateToCreatePost(null) }
                             ) {
@@ -123,7 +123,7 @@ fun HomeScreen(
                                 )
                             }
 
-                            // Secondary actions - smaller, less prominent
+
                             IconButton(onClick = onNavigateToSearch) {
                                 Icon(
                                     imageVector = Icons.Default.Search,
@@ -137,7 +137,7 @@ fun HomeScreen(
                                 )
                             }
 
-                            // Profile - tertiary action with proper spacing
+
                             if (userAvatarUrl != null) {
                                 com.synapse.social.studioasinc.ui.components.CircularAvatar(
                                     imageUrl = userAvatarUrl,
@@ -174,7 +174,7 @@ fun HomeScreen(
             )
         }
 
-        // Navigation Bar overlay
+
         NavigationBar(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -247,7 +247,7 @@ fun HomeScreen(
             )
         }
 
-        // Upload Progress Overlay
+
         UploadProgressOverlay(
             uploadManager = reelUploadManager,
             modifier = Modifier

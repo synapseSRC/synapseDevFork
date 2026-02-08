@@ -24,14 +24,8 @@ data class FeelingActivity(
     val type: FeelingType = FeelingType.MOOD
 )
 
-/**
- * Post model aligned with Supabase schema
- *
- * Schema notes:
- * - media_items: JSONB column (not separate table)
- * - author_uid: FK to users.uid
- * - publish_date: timestamp with time zone
- */
+
+
 @Serializable
 data class Post(
     val id: String = "",
@@ -69,17 +63,17 @@ data class Post(
     val viewsCount: Int = 0,
     @SerialName("reshares_count")
     val resharesCount: Int = 0,
-    // Caption-level interactions (when caption is treated as separate entity)
+
     @Transient
     val captionLikesCount: Int = 0,
     @Transient
     val captionCommentsCount: Int = 0,
     @Transient
     val userHasLikedCaption: Boolean = false,
-    // Media stored as JSONB in posts table
+
     @SerialName("media_items")
     var mediaItems: MutableList<MediaItem>? = null,
-    // Encryption fields
+
     @SerialName("is_encrypted")
     val isEncrypted: Boolean? = null,
     @SerialName("encrypted_content")
@@ -88,7 +82,7 @@ data class Post(
     val nonce: String? = null,
     @SerialName("encryption_key_id")
     val encryptionKeyId: String? = null,
-    // Edit/Delete tracking
+
     @SerialName("is_deleted")
     val isDeleted: Boolean? = null,
     @SerialName("is_edited")
@@ -97,7 +91,7 @@ data class Post(
     val editedAt: String? = null,
     @SerialName("deleted_at")
     val deletedAt: String? = null,
-    // Poll fields
+
     @SerialName("has_poll")
     val hasPoll: Boolean? = null,
     @SerialName("poll_question")
@@ -108,7 +102,7 @@ data class Post(
     val pollEndTime: String? = null,
     @SerialName("poll_allow_multiple")
     val pollAllowMultiple: Boolean? = null,
-    // Location fields
+
     @SerialName("has_location")
     val hasLocation: Boolean? = null,
     @SerialName("location_name")
@@ -121,10 +115,10 @@ data class Post(
     val locationLongitude: Double? = null,
     @SerialName("location_place_id")
     val locationPlaceId: String? = null,
-    // YouTube embed
+
     @SerialName("youtube_url")
     val youtubeUrl: String? = null,
-    // Transient fields (populated from joins/reactions)
+
     @Transient
     var reactions: Map<ReactionType, Int>? = null,
     @Transient
@@ -141,7 +135,7 @@ data class Post(
     var latestCommentText: String? = null,
     @Transient
     var latestCommentAuthor: String? = null,
-    // Extended Metadata
+
     @SerialName("metadata")
     val metadata: PostMetadata? = null
 ) {
@@ -178,7 +172,7 @@ data class Post(
     fun toDetailItems(): List<PostDetailItem> {
         val items = mutableListOf<PostDetailItem>()
 
-        // Add caption if present
+
         if (!postText.isNullOrEmpty()) {
             items.add(
                 PostDetailItem.Caption(
@@ -191,7 +185,7 @@ data class Post(
             )
         }
 
-        // Add media items
+
         mediaItems?.forEach { media ->
             when (media.type) {
                 MediaType.IMAGE -> items.add(PostDetailItem.Image(media, id))

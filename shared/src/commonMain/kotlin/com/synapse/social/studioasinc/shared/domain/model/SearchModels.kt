@@ -12,8 +12,8 @@ data class SearchPost(
     @SerialName("comments_count") val commentsCount: Int = 0,
     @SerialName("reshares_count") val boostCount: Int = 0,
     @SerialName("created_at") val createdAt: String,
-    // Joined fields (handled manually or via view, usually simpler to fetch separately or use specific DTO)
-    // For simplicity, we'll assume the repository fills these or we fetch them
+
+
     val authorName: String? = null,
     val authorHandle: String? = null,
     val authorAvatar: String? = null
@@ -24,7 +24,7 @@ data class SearchHashtag(
     @SerialName("id") val id: String,
     @SerialName("tag") val tag: String,
     @SerialName("usage_count") val count: Int,
-    val sparklinePoints: List<Float> = emptyList() // Mocked for now
+    val sparklinePoints: List<Float> = emptyList()
 )
 
 @Serializable

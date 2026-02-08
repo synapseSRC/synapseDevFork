@@ -8,25 +8,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel for the Chat Settings screen.
- *
- * Manages the state for chat-related settings including:
- * - Read receipts (showing when messages are read)
- * - Typing indicators (showing typing status to others)
- * - Media auto-download preferences (Always, WiFi Only, Never)
- * - Message requests navigation
- * - Chat privacy navigation
- *
- * Requirements: 6.1, 6.2, 6.3, 6.4
- */
+
+
 class ChatSettingsViewModel(
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
-    // ========================================================================
-    // State
-    // ========================================================================
+
+
+
 
     private val _chatSettings = MutableStateFlow(ChatSettings())
     val chatSettings: StateFlow<ChatSettings> = _chatSettings.asStateFlow()
@@ -41,15 +31,12 @@ class ChatSettingsViewModel(
         loadChatSettings()
     }
 
-    // ========================================================================
-    // Chat Settings Loading
-    // ========================================================================
 
-    /**
-     * Loads chat settings from the repository.
-     *
-     * Requirements: 6.1, 6.2, 6.3, 6.4
-     */
+
+
+
+
+
     private fun loadChatSettings() {
         viewModelScope.launch {
             try {
@@ -63,18 +50,12 @@ class ChatSettingsViewModel(
         }
     }
 
-    // ========================================================================
-    // Read Receipts
-    // ========================================================================
 
-    /**
-     * Toggles read receipts setting.
-     *
-     * When enabled, other users can see when you've read their messages.
-     *
-     * @param enabled True to show read receipts, false to hide
-     * Requirements: 6.2
-     */
+
+
+
+
+
     fun toggleReadReceipts(enabled: Boolean) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -94,18 +75,12 @@ class ChatSettingsViewModel(
         }
     }
 
-    // ========================================================================
-    // Typing Indicators
-    // ========================================================================
 
-    /**
-     * Toggles typing indicators setting.
-     *
-     * When enabled, other users can see when you're typing a message.
-     *
-     * @param enabled True to show typing indicators, false to hide
-     * Requirements: 6.3
-     */
+
+
+
+
+
     fun toggleTypingIndicators(enabled: Boolean) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -125,19 +100,12 @@ class ChatSettingsViewModel(
         }
     }
 
-    // ========================================================================
-    // Media Auto-Download
-    // ========================================================================
 
-    /**
-     * Sets the media auto-download preference.
-     *
-     * Controls when media (images, videos) should be automatically downloaded
-     * in chat conversations.
-     *
-     * @param setting The auto-download setting (Always, WiFi Only, Never)
-     * Requirements: 6.4
-     */
+
+
+
+
+
     fun setMediaAutoDownload(setting: MediaAutoDownload) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -157,76 +125,57 @@ class ChatSettingsViewModel(
         }
     }
 
-    /**
-     * Returns all media auto-download options for selection.
-     *
-     * @return List of all MediaAutoDownload enum values
-     */
+
+
     fun getMediaAutoDownloadOptions(): List<MediaAutoDownload> {
         return MediaAutoDownload.values().toList()
     }
 
-    // ========================================================================
-    // Navigation Handlers
-    // ========================================================================
 
-    /**
-     * Handles navigation to message requests screen.
-     *
-     * Requirements: 6.5
-     */
+
+
+
+
+
     fun navigateToMessageRequests() {
         android.util.Log.d("ChatSettingsViewModel", "Navigate to message requests")
-        // Navigation will be handled by the screen composable
+
     }
 
-    /**
-     * Handles navigation to chat privacy settings.
-     * This will navigate to the existing ChatPrivacySettingsActivity.
-     *
-     * Requirements: 6.6
-     */
+
+
     fun navigateToChatPrivacy() {
         android.util.Log.d("ChatSettingsViewModel", "Navigate to chat privacy")
-        // Navigation will be handled by the screen composable
+
     }
 
-    /**
-     * Handles navigation to chat customization screen.
-     * This allows users to customize chat bubble colors and themes.
-     */
+
+
     fun navigateToChatCustomization() {
         android.util.Log.d("ChatSettingsViewModel", "Navigate to chat customization")
-        // Navigation will be handled by the screen composable
+
     }
 
-    /**
-     * Handles navigation to chat wallpapers screen.
-     * This allows users to set custom backgrounds for conversations.
-     */
+
+
     fun navigateToChatWallpapers() {
         android.util.Log.d("ChatSettingsViewModel", "Navigate to chat wallpapers")
-        // Navigation will be handled by the screen composable
+
     }
 
-    /**
-     * Handles navigation to chat history deletion screen.
-     * This allows users to delete their chat history from all devices.
-     */
+
+
     fun navigateToChatHistoryDeletion() {
         android.util.Log.d("ChatSettingsViewModel", "Navigate to chat history deletion")
-        // Navigation will be handled by the screen composable
+
     }
 
-    // ========================================================================
-    // Chat Font Size
-    // ========================================================================
 
-    /**
-     * Sets the chat font scale for message text.
-     *
-     * @param scale The font scale multiplier (0.8f to 1.4f)
-     */
+
+
+
+
+
     fun setChatFontScale(scale: Float) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -243,9 +192,8 @@ class ChatSettingsViewModel(
         }
     }
 
-    /**
-     * Converts chat font scale to slider value (0-3).
-     */
+
+
     fun getChatFontSizeSliderValue(scale: Float): Float {
         return when {
             scale <= 0.8f -> 0f
@@ -255,9 +203,8 @@ class ChatSettingsViewModel(
         }
     }
 
-    /**
-     * Converts slider value (0-3) to chat font scale.
-     */
+
+
     fun getChatFontScaleFromSliderValue(value: Float): Float {
         return when (value.toInt()) {
             0 -> 0.8f
@@ -268,9 +215,8 @@ class ChatSettingsViewModel(
         }
     }
 
-    /**
-     * Gets preview text for chat font scale.
-     */
+
+
     fun getChatFontScalePreviewText(scale: Float): String {
         return when {
             scale <= 0.8f -> "Small"
@@ -280,17 +226,12 @@ class ChatSettingsViewModel(
         }
     }
 
-    // ========================================================================
-    // Enter is Send
-    // ========================================================================
 
-    /**
-     * Toggles enter key send setting.
-     *
-     * When enabled, pressing Enter sends the message instead of creating a new line.
-     *
-     * @param enabled True to enable enter key send, false to disable
-     */
+
+
+
+
+
     fun setEnterIsSend(enabled: Boolean) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -307,17 +248,12 @@ class ChatSettingsViewModel(
         }
     }
 
-    // ========================================================================
-    // Media Visibility
-    // ========================================================================
 
-    /**
-     * Toggles media visibility setting.
-     *
-     * When enabled, media files are visible in device gallery.
-     *
-     * @param enabled True to show media in gallery, false to hide
-     */
+
+
+
+
+
     fun setMediaVisibility(enabled: Boolean) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -334,17 +270,12 @@ class ChatSettingsViewModel(
         }
     }
 
-    // ========================================================================
-    // Voice Transcripts
-    // ========================================================================
 
-    /**
-     * Toggles voice transcripts setting.
-     *
-     * When enabled, voice messages are automatically transcribed to text.
-     *
-     * @param enabled True to enable voice transcripts, false to disable
-     */
+
+
+
+
+
     fun setVoiceTranscripts(enabled: Boolean) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -361,17 +292,12 @@ class ChatSettingsViewModel(
         }
     }
 
-    // ========================================================================
-    // Auto Backup
-    // ========================================================================
 
-    /**
-     * Toggles auto backup setting.
-     *
-     * When enabled, chat history is automatically backed up to cloud storage.
-     *
-     * @param enabled True to enable auto backup, false to disable
-     */
+
+
+
+
+
     fun setAutoBackup(enabled: Boolean) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -388,13 +314,12 @@ class ChatSettingsViewModel(
         }
     }
 
-    // ========================================================================
-    // Helper Methods
-    // ========================================================================
 
-    /**
-     * Clears any error messages.
-     */
+
+
+
+
+
     fun clearError() {
         _error.value = null
     }

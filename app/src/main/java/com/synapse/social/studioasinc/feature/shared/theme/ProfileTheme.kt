@@ -12,11 +12,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/**
- * Profile screen dimension constants for consistent spacing and sizing.
- */
+
+
 object ProfileDimensions {
-    // Spacing
+
     val spacing0 = 0.dp
     val spacing2 = 2.dp
     val spacing4 = 4.dp
@@ -28,47 +27,46 @@ object ProfileDimensions {
     val spacing32 = 32.dp
     val spacing48 = 48.dp
 
-    // Profile image sizes
+
     val profileImageSmall = 40.dp
     val profileImageMedium = 56.dp
     val profileImageLarge = 88.dp
     val profileImageXLarge = 110.dp
     val profileImageSize = 96.dp
 
-    // Cover photo
+
     val coverPhotoHeight = 180.dp
     val coverPhotoHeightExpanded = 220.dp
 
-    // Story ring
+
     val storyRingWidth = 3.dp
     val storyRingPadding = 3.dp
 
-    // Icons
+
     val iconSizeSmall = 16.dp
     val iconSizeMedium = 20.dp
     val iconSize = 24.dp
     val iconSizeLarge = 32.dp
 
-    // Chips and buttons
+
     val chipHeight = 32.dp
     val buttonHeight = 44.dp
     val buttonCornerRadius = 12.dp
 
-    // Grid
+
     val photoGridSpacing = 2.dp
     val photoGridCornerRadius = 4.dp
 
-    // Cards
+
     val cardCornerRadius = 16.dp
     val cardElevation = 2.dp
 
-    // Animation
+
     val parallaxFactor = 0.5f
 }
 
-/**
- * Animation duration constants.
- */
+
+
 object ProfileAnimations {
     const val durationShort = 150
     const val durationMedium = 300
@@ -80,35 +78,32 @@ object ProfileAnimations {
     const val shimmerDuration = 1000
 }
 
-/**
- * Profile-specific color tokens.
- */
-object ProfileColors {
-    // Story ring colors for gradient
-    val storyRingStart = Color(0xFFE040FB)  // Pink/Purple
-    val storyRingMiddle = Color(0xFF7C4DFF) // Deep Purple
-    val storyRingEnd = Color(0xFF00BCD4)    // Cyan
 
-    // Cover photo overlay
+
+object ProfileColors {
+
+    val storyRingStart = Color(0xFFE040FB)
+    val storyRingMiddle = Color(0xFF7C4DFF)
+    val storyRingEnd = Color(0xFF00BCD4)
+
+
     val coverOverlayStart = Color.Transparent
     val coverOverlayMiddle = Color.Black.copy(alpha = 0.1f)
     val coverOverlayEnd = Color.Black.copy(alpha = 0.4f)
 
-    // Verified badge
+
     val verifiedBadge = Color(0xFF1976D2)
 
-    // Loading placeholder
+
     val shimmerBase = Color(0xFFE0E0E0)
     val shimmerHighlight = Color(0xFFF5F5F5)
 }
 
-/**
- * Brush definitions for gradients.
- */
+
+
 object ProfileBrushes {
-    /**
-     * Story ring gradient brush (rotating sweep gradient).
-     */
+
+
     @Composable
     @ReadOnlyComposable
     fun storyRingGradient(): List<Color> = listOf(
@@ -118,9 +113,8 @@ object ProfileBrushes {
         MaterialTheme.colorScheme.primary
     )
 
-    /**
-     * Cover photo overlay gradient.
-     */
+
+
     fun coverOverlayGradient(): Brush = Brush.verticalGradient(
         colors = listOf(
             ProfileColors.coverOverlayStart,
@@ -129,9 +123,8 @@ object ProfileBrushes {
         )
     )
 
-    /**
-     * Shimmer gradient brush.
-     */
+
+
     fun shimmerGradient(offset: Float): Brush = Brush.linearGradient(
         colors = listOf(
             ProfileColors.shimmerBase.copy(alpha = 0.6f),
@@ -143,9 +136,8 @@ object ProfileBrushes {
     )
 }
 
-/**
- * Profile-specific typography.
- */
+
+
 val ProfileTypography = Typography(
     displayLarge = TextStyle(
         fontSize = 28.sp,
@@ -211,9 +203,8 @@ val ProfileTypography = Typography(
     )
 )
 
-/**
- * Extension to get formatted stat count (1.2K, 5M, etc.)
- */
+
+
 fun Int.toFormattedCount(): String {
     return when {
         this >= 1_000_000_000 -> String.format("%.1fB", this / 1_000_000_000.0)

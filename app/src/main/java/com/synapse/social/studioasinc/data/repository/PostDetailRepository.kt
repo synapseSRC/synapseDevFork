@@ -16,12 +16,8 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
 import javax.inject.Inject
 
-/**
- * Repository for fetching detailed post information with author data.
- * Handles post loading, view count incrementing, and media parsing.
- *
- * Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3
- */
+
+
 class PostDetailRepository @Inject constructor(
     private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client,
     private val reactionRepository: ReactionRepository = ReactionRepository()
@@ -134,7 +130,7 @@ class PostDetailRepository @Inject constructor(
         }
     }
 
-    // ==================== PRIVATE HELPER METHODS ====================
+
 
     private fun parsePostFromJson(data: JsonObject): Post {
         val post = Post(
@@ -219,7 +215,7 @@ class PostDetailRepository @Inject constructor(
                 uid = userData["uid"]?.jsonPrimitive?.contentOrNull ?: return null,
                 username = userData["username"]?.jsonPrimitive?.contentOrNull ?: "",
                 displayName = userData["display_name"]?.jsonPrimitive?.contentOrNull ?: "",
-                email = "", // Privacy fix: Do not leak emails in public responses
+                email = "",
                 bio = userData["bio"]?.jsonPrimitive?.contentOrNull,
                 avatar = userData["avatar"]?.jsonPrimitive?.contentOrNull,
                 followersCount = userData["followers_count"]?.jsonPrimitive?.intOrNull ?: 0,

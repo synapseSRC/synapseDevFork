@@ -13,9 +13,8 @@ import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.feature.profile.profile.ProfileContentFilter
 import com.synapse.social.studioasinc.feature.shared.theme.Spacing
 
-/**
- * Content filter bar using pill-shaped chips aligned to the left.
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContentFilterBar(
@@ -43,16 +42,15 @@ fun ContentFilterBar(
                             style = MaterialTheme.typography.labelLarge
                         )
                     },
-                    shape = CircleShape // Pill shape for expressive design
+                    shape = CircleShape
                 )
             }
         }
     }
 }
 
-/**
- * Get the label text for a filter.
- */
+
+
 private fun getFilterLabel(filter: ProfileContentFilter): String {
     return when (filter) {
         ProfileContentFilter.POSTS -> "Posts"

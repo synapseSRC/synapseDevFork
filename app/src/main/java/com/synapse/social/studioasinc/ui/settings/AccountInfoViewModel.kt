@@ -40,7 +40,7 @@ class AccountInfoViewModel @Inject constructor() : ViewModel() {
 
                 val userId = authUser.id
 
-                // Fetch profile from 'users' table
+
                 val profileResult = client.from("users").select {
                     filter {
                         eq("uid", userId)
@@ -52,8 +52,8 @@ class AccountInfoViewModel @Inject constructor() : ViewModel() {
                     return@launch
                 }
 
-                // Fetch counts
-                // Using select with count(Count.EXACT) inside DSL and limiting columns to 'id'
+
+
                 val postsCount = client.from("posts").select(columns = Columns.list("id")) {
                     count(Count.EXACT)
                     filter { eq("author_uid", userId) }
@@ -96,7 +96,7 @@ class AccountInfoViewModel @Inject constructor() : ViewModel() {
                     storiesCount = storiesCount.toInt(),
                     reelsCount = reelsCount.toInt(),
                     region = profileResult.region ?: "Unknown",
-                    language = "English" // Placeholder as language preference might be local
+                    language = "English"
                 )
 
                 _uiState.value = AccountInfoState.Success(accountData)

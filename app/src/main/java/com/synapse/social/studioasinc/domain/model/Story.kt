@@ -3,9 +3,8 @@ package com.synapse.social.studioasinc.domain.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * Media type for story content
- */
+
+
 @Serializable
 enum class StoryMediaType {
     @SerialName("photo")
@@ -14,9 +13,8 @@ enum class StoryMediaType {
     VIDEO
 }
 
-/**
- * Privacy setting for story visibility
- */
+
+
 @Serializable
 enum class StoryPrivacy {
     @SerialName("all_friends")
@@ -27,9 +25,8 @@ enum class StoryPrivacy {
     FOLLOWERS
 }
 
-/**
- * Represents a single story segment (one photo or video in a user's story)
- */
+
+
 @Serializable
 data class Story(
     val id: String? = null,
@@ -72,16 +69,14 @@ data class Story(
     @SerialName("expires_at")
     val expiresAt: String? = null
 ) {
-    /**
-     * Returns the effective media URL
-     */
+
+
     fun getEffectiveMediaUrl(): String? {
         return mediaUrl
     }
 
-    /**
-     * Returns the effective duration for display
-     */
+
+
     fun getDisplayDuration(): Int {
         return when {
             mediaType == StoryMediaType.VIDEO && mediaDurationSeconds != null -> mediaDurationSeconds

@@ -8,21 +8,19 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Centralized settings preferences manager for all app settings.
- * Integrates with actual app functionality and provides reactive state.
- */
+
+
 @Singleton
 class SettingsPreferences @Inject constructor(
     context: Context
 ) {
     private val prefs: SharedPreferences = context.getSharedPreferences("synapse_settings", Context.MODE_PRIVATE)
 
-    // Account Settings
+
     private val _securityNotificationsEnabled = MutableStateFlow(prefs.getBoolean("security_notifications", true))
     val securityNotificationsEnabled = _securityNotificationsEnabled.asStateFlow()
 
-    // Privacy Settings
+
     private val _readReceiptsEnabled = MutableStateFlow(prefs.getBoolean("read_receipts", true))
     val readReceiptsEnabled = _readReceiptsEnabled.asStateFlow()
 
@@ -32,7 +30,7 @@ class SettingsPreferences @Inject constructor(
     private val _chatLockEnabled = MutableStateFlow(prefs.getBoolean("chat_lock", false))
     val chatLockEnabled = _chatLockEnabled.asStateFlow()
 
-    // Chat Settings
+
     private val _enterIsSendEnabled = MutableStateFlow(prefs.getBoolean("enter_is_send", false))
     val enterIsSendEnabled = _enterIsSendEnabled.asStateFlow()
 
@@ -45,7 +43,7 @@ class SettingsPreferences @Inject constructor(
     private val _autoBackupEnabled = MutableStateFlow(prefs.getBoolean("auto_backup", false))
     val autoBackupEnabled = _autoBackupEnabled.asStateFlow()
 
-    // Notification Settings
+
     private val _remindersEnabled = MutableStateFlow(prefs.getBoolean("reminders", true))
     val remindersEnabled = _remindersEnabled.asStateFlow()
 
@@ -55,11 +53,11 @@ class SettingsPreferences @Inject constructor(
     private val _reactionNotificationsEnabled = MutableStateFlow(prefs.getBoolean("reaction_notifications", true))
     val reactionNotificationsEnabled = _reactionNotificationsEnabled.asStateFlow()
 
-    // Storage Settings
+
     private val _dataSaverEnabled = MutableStateFlow(prefs.getBoolean("data_saver", false))
     val dataSaverEnabled = _dataSaverEnabled.asStateFlow()
 
-    // Update methods
+
     fun setSecurityNotifications(enabled: Boolean) {
         prefs.edit().putBoolean("security_notifications", enabled).apply()
         _securityNotificationsEnabled.value = enabled

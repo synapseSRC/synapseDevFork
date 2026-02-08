@@ -9,6 +9,6 @@ fun formatCount(count: Int): String {
 }
 
 fun formatTime(timestamp: String): String {
-    // Simple placeholder formatting
+
     return "recent"
 }

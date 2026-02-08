@@ -56,7 +56,7 @@ fun UserHeader(
             .fillMaxWidth()
             .padding(vertical = 16.dp)
     ) {
-        // Avatar
+
         if (user?.avatar != null) {
             AsyncImage(
                 model = user.avatar,
@@ -86,16 +86,16 @@ fun UserHeader(
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        // Name & Audience Selector
+
         Column {
-            // Text logic similar to Facebook: "Ashik Ahmed — with HK Hossein and Mohammad Sakib Hasan at Dhaka, Bangladesh"
+
             val annotatedText = buildAnnotatedString {
-                // Main User Name
+
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)) {
                     append(user?.displayName ?: user?.username ?: "You")
                 }
 
-                // Feeling
+
                 if (feeling != null) {
                     append(" is ")
                     append(feeling.emoji)
@@ -105,10 +105,10 @@ fun UserHeader(
                     }
                 }
 
-                // Tagged People
+
                 if (taggedPeople.isNotEmpty()) {
                     if (feeling == null) {
-                        append(" \u2014 with ") // Em dash
+                        append(" \u2014 with ")
                     } else {
                         append(" with ")
                     }
@@ -136,7 +136,7 @@ fun UserHeader(
                     }
                 }
 
-                // Location
+
                 if (location != null) {
                     if (feeling == null && taggedPeople.isEmpty()) {
                         append(" is at ")
@@ -157,7 +157,7 @@ fun UserHeader(
 
             Spacer(modifier = Modifier.height(2.dp))
 
-            // Privacy selector (Compact)
+
             Surface(
                 onClick = onPrivacyClick,
                 shape = RoundedCornerShape(4.dp),
@@ -362,7 +362,7 @@ fun MediaPreviewGrid(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp) // Increased height for better column view
+                    .height(300.dp)
             ) {
                 MediaItemView(item, onDelete = { onRemove(index) }, onEdit = { onEdit(index) })
             }
@@ -379,11 +379,11 @@ fun MediaItemView(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Main Content Container (with clipping and background)
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 10.dp, end = 10.dp) // Room for the overlap of X button
+                .padding(top = 10.dp, end = 10.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
@@ -410,7 +410,7 @@ fun MediaItemView(
                 }
             }
 
-            // Edit Button Overlay (UI Hook)
+
             if (item.type == MediaType.IMAGE) {
                 Button(
                     onClick = onEdit,
@@ -431,7 +431,7 @@ fun MediaItemView(
             }
         }
 
-        // Close Button (Outside the clipped box to prevent clipping and improve reach)
+
         Surface(
             onClick = onDelete,
             modifier = Modifier
@@ -535,9 +535,9 @@ fun AddToPostSheet(
     }
 }
 
-// =========================================================================
-// NEW COMPONENTS (Refactored)
-// =========================================================================
+
+
+
 
 @Composable
 fun StickyBottomActionArea(
@@ -559,7 +559,7 @@ fun StickyBottomActionArea(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            // Just Photo and More icons as requested
+
             IconButton(onClick = onMediaClick) {
                 Icon(
                     Icons.Filled.Image,
@@ -581,16 +581,16 @@ fun StickyBottomActionArea(
     }
 }
 
-// Chips removed in favor of UserHeader inline text
 
-// Mock Sheets for Tag and Feeling
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TagPeopleSheet(
     onDismiss: () -> Unit,
     onPersonSelected: (User) -> Unit
 ) {
-    // Mock users
+
     val mockUsers = listOf(
         User(id="1", uid="1", username="john_doe", displayName="John Doe"),
         User(id="2", uid="2", username="jane_smith", displayName="Jane Smith"),

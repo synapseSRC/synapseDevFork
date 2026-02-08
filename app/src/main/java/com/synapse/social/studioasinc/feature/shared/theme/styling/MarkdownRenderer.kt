@@ -31,7 +31,7 @@ class MarkdownRenderer private constructor(private val markwon: Markwon) {
 
     fun render(textView: TextView, markdown: String) {
         textView.movementMethod = LinkMovementMethod.getInstance()
-        // Enable horizontal scrolling for tables if needed
+
         textView.setHorizontallyScrolling(false)
         markwon.setMarkdown(textView, markdown)
     }

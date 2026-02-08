@@ -61,7 +61,7 @@ fun SignUpScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Branding Side
+
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -72,7 +72,7 @@ fun SignUpScreen(
                     SignUpHeader()
                 }
 
-                // Form Side
+
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -204,7 +204,7 @@ private fun SignUpForm(
         )
     )
 
-    // Password strength indicator
+
     if (state.password.isNotEmpty()) {
         PasswordStrengthIndicator(
             strength = state.passwordStrength,

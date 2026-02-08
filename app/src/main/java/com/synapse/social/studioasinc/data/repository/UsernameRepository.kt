@@ -15,7 +15,7 @@ class UsernameRepository {
                 return Result.failure(Exception("Supabase not configured"))
             }
 
-            // Check cache first
+
             usernameCache.get(username)?.let { return Result.success(it) }
 
             val response = client

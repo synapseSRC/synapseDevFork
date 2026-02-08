@@ -53,7 +53,7 @@ data class CreatePostUiState(
     val pollData: PollData? = null,
     val location: LocationData? = null,
     val youtubeUrl: String? = null,
-    val privacy: String = "public", // public, followers, private
+    val privacy: String = "public",
     val settings: PostSettings = PostSettings(),
     val error: String? = null,
     val isPostCreated: Boolean = false,
@@ -61,11 +61,11 @@ data class CreatePostUiState(
     val isEditMode: Boolean = false,
     val checkDraft: Boolean = true,
     val currentUserProfile: User? = null,
-    // New Fields
+
     val taggedPeople: List<User> = emptyList(),
     val feeling: FeelingActivity? = null,
-    val textBackgroundColor: Long? = null, // ARGB Long or null
-    // Search States
+    val textBackgroundColor: Long? = null,
+
     val userSearchResults: List<User> = emptyList(),
     val locationSearchResults: List<LocationData> = emptyList(),
     val feelingSearchResults: List<FeelingActivity> = emptyList(),
@@ -103,7 +103,7 @@ class CreatePostViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CreatePostUiState())
     val uiState: StateFlow<CreatePostUiState> = _uiState.asStateFlow()
 
-    // Edit Mode State
+
     private var editPostId: String? = null
     private var originalPost: Post? = null
 
@@ -129,21 +129,21 @@ class CreatePostViewModel @Inject constructor(
     )
 
     init {
-        // Load draft on init if not edit mode (edit mode loaded separately)
-        // We defer draft loading until we know if it's edit mode
+
+
         loadCurrentUser()
-        // Init feelings
+
         _uiState.update { it.copy(feelingSearchResults = allFeelings) }
     }
 
     private fun loadCurrentUser() {
         viewModelScope.launch {
             authService.getCurrentUserId()?.let { uid ->
-                // Try to get from Repository first (fast)
+
                 userRepository.getUserById(uid).onSuccess { user ->
                     _uiState.update { it.copy(currentUserProfile = user) }
 
-                    // Then refresh from network to get latest avatar
+
                     try {
                         val freshUserProfile = SupabaseClient.client.from("users")
                             .select {
@@ -177,7 +177,7 @@ class CreatePostViewModel @Inject constructor(
         if (_uiState.value.isEditMode || !_uiState.value.checkDraft) return
 
         val draftText = prefs.getString("draft_text", null)
-        // Note: Complex objects like taggedPeople/feeling are not persisted in simple prefs for this iteration
+
 
         if (!draftText.isNullOrEmpty()) {
              _uiState.update { it.copy(postText = draftText, checkDraft = false) }
@@ -192,7 +192,7 @@ class CreatePostViewModel @Inject constructor(
 
         val text = _uiState.value.postText
 
-        // Simple draft for text preference
+
         if (text.isNotBlank() || _uiState.value.mediaItems.isNotEmpty()) {
             prefs.edit()
                 .putString("draft_text", text)
@@ -224,7 +224,7 @@ class CreatePostViewModel @Inject constructor(
                     editPostId = it.id
 
                     val mediaItems = it.mediaItems?.toMutableList() ?: mutableListOf()
-                    // Legacy support
+
                     if (mediaItems.isEmpty()) {
                         it.postImage?.let { imgUrl ->
                              mediaItems.add(MediaItem(url = imgUrl, type = MediaType.IMAGE))
@@ -244,7 +244,7 @@ class CreatePostViewModel @Inject constructor(
                                 hideCommentsCount = it.postHideCommentsCount == "true",
                                 disableComments = it.postDisableComments == "true"
                             ),
-                            // Poll and Location mapping is complex if detailed data missing, assuming basic restore
+
                             pollData = if (it.hasPoll == true) PollData(it.pollQuestion ?: "", it.pollOptions?.map { opt -> opt.text } ?: emptyList(), 24) else null,
                             location = if (it.hasLocation == true) LocationData(it.locationName ?: "", it.locationAddress, it.locationLatitude, it.locationLongitude) else null,
                             taggedPeople = it.metadata?.taggedPeople ?: emptyList(),
@@ -265,7 +265,7 @@ class CreatePostViewModel @Inject constructor(
 
     fun addTaggedPerson(user: User) {
         val current = _uiState.value.taggedPeople.toMutableList()
-        // Simple check to avoid duplicates by UID or ID
+
         if (current.none { it.uid == user.uid }) {
             current.add(user)
             _uiState.update { it.copy(taggedPeople = current) }
@@ -278,7 +278,7 @@ class CreatePostViewModel @Inject constructor(
         _uiState.update { it.copy(taggedPeople = current) }
     }
 
-    // Toggle logic for UI convenience
+
     fun toggleTaggedPerson(user: User) {
         val current = _uiState.value.taggedPeople
         if (current.any { it.uid == user.uid }) {
@@ -301,7 +301,7 @@ class CreatePostViewModel @Inject constructor(
         val context = getApplication<Application>()
 
         uris.forEach { uri ->
-             // Removed 10 item limit
+
              android.util.Log.d("CreatePost", "Processing URI: $uri")
              val mimeType = context.contentResolver.getType(uri) ?: return@forEach
              val type = if (mimeType.startsWith("video")) MediaType.VIDEO else MediaType.IMAGE
@@ -330,8 +330,8 @@ class CreatePostViewModel @Inject constructor(
         if (index in currentMedia.indices) {
             FileManager.getPathFromUri(context, uri)?.let { path ->
                 val oldItem = currentMedia[index]
-                // Preserve type and id, update URL (path) and mimeType if needed
-                // Usually crop results in a JPEG or PNG
+
+
                 val newItem = oldItem.copy(
                     url = path,
                     mimeType = context.contentResolver.getType(uri)
@@ -369,9 +369,9 @@ class CreatePostViewModel @Inject constructor(
         _uiState.update { it.copy(error = null) }
     }
 
-    // ===========================
-    // SEARCH FUNCTIONS
-    // ===========================
+
+
+
 
     fun searchUsers(query: String) {
         userSearchJob?.cancel()
@@ -381,7 +381,7 @@ class CreatePostViewModel @Inject constructor(
                 return@launch
             }
 
-            delay(300) // Debounce
+            delay(300)
             _uiState.update { it.copy(isSearchLoading = true) }
 
             userRepository.searchUsers(query).onSuccess { users ->
@@ -410,10 +410,10 @@ class CreatePostViewModel @Inject constructor(
                 return@launch
             }
 
-            delay(500) // Debounce (slightly longer for external API)
+            delay(500)
             _uiState.update { it.copy(isSearchLoading = true) }
 
-            // Use real location repository
+
             locationRepository.searchLocations(query)
                 .onSuccess { results ->
                     _uiState.update { it.copy(locationSearchResults = results, isSearchLoading = false) }
@@ -449,7 +449,7 @@ class CreatePostViewModel @Inject constructor(
         val currentState = _uiState.value
         val text = currentState.postText.trim()
 
-        // Smart Media Handling: If any video is present, treat as Reel
+
         val hasVideo = currentState.mediaItems.any { it.type == MediaType.VIDEO }
         if (hasVideo) {
             submitReel()
@@ -521,7 +521,7 @@ class CreatePostViewModel @Inject constructor(
                 )
             )
 
-            // Filter new media that needs uploading
+
             val newMedia = currentState.mediaItems.filter { !it.url.startsWith("http") }
             val existingMedia = currentState.mediaItems.filter { it.url.startsWith("http") }
 
@@ -556,7 +556,7 @@ class CreatePostViewModel @Inject constructor(
                         return@forEach
                     }
 
-                    // Map App MediaType to Shared MediaType
+
                     val sharedMediaType = when (mediaItem.type) {
                         MediaType.IMAGE -> com.synapse.social.studioasinc.shared.domain.model.MediaType.PHOTO
                         MediaType.VIDEO -> com.synapse.social.studioasinc.shared.domain.model.MediaType.VIDEO
@@ -657,7 +657,7 @@ class CreatePostViewModel @Inject constructor(
 
     private fun submitReel() {
         val currentState = _uiState.value
-        // Pick the first video item even if mixed with images
+
         val videoItem = currentState.mediaItems.firstOrNull { it.type == MediaType.VIDEO } ?: return
         val videoPath = videoItem.url
         val isContentUri = videoPath.startsWith("content://")
@@ -668,7 +668,7 @@ class CreatePostViewModel @Inject constructor(
             return
         }
 
-        // Security Check: Ensure the file path is not pointing to sensitive app data
+
         if (!isContentUri) {
             val dataDir = getApplication<Application>().applicationInfo.dataDir
             val isInDataDir = file.absolutePath.startsWith(dataDir)
@@ -722,7 +722,7 @@ class CreatePostViewModel @Inject constructor(
                 size = size,
                 fileName = fileName,
                 caption = currentState.postText,
-                musicTrack = "Original Audio", // Default for now
+                musicTrack = "Original Audio",
                 locationName = currentState.location?.name,
                 locationAddress = currentState.location?.address,
                 locationLatitude = currentState.location?.latitude,

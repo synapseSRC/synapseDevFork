@@ -9,17 +9,14 @@ import java.io.IOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-/**
- * Centralized error handling utility for message actions
- * Maps technical errors to user-friendly messages and provides consistent error display
- */
+
+
 object ErrorHandler {
 
     private const val TAG = "ErrorHandler"
 
-    /**
-     * Error types for message actions
-     */
+
+
     enum class ErrorType {
         REPLY,
         FORWARD,
@@ -30,16 +27,8 @@ object ErrorHandler {
         GENERIC
     }
 
-    /**
-     * Map technical exception to user-friendly error message
-     *
-     * @param context Android context for string resources
-     * @param errorType The type of action that failed
-     * @param exception The exception that occurred
-     * @param messageId Optional message ID for logging context
-     * @param userId Optional user ID for logging context
-     * @return User-friendly error message string
-     */
+
+
     fun getErrorMessage(
         context: Context,
         errorType: ErrorType,
@@ -47,10 +36,10 @@ object ErrorHandler {
         messageId: String? = null,
         userId: String? = null
     ): String {
-        // Log the technical error with full context
+
         logError(errorType, exception, messageId, userId)
 
-        // Map to user-friendly message
+
         return when (errorType) {
             ErrorType.REPLY -> getReplyErrorMessage(context, exception)
             ErrorType.FORWARD -> getForwardErrorMessage(context, exception)
@@ -62,14 +51,8 @@ object ErrorHandler {
         }
     }
 
-    /**
-     * Display error message in a Snackbar with retry action if applicable
-     *
-     * @param view The view to attach the Snackbar to
-     * @param message The error message to display
-     * @param duration Snackbar duration (default: LENGTH_LONG)
-     * @param retryAction Optional retry action callback
-     */
+
+
     fun showErrorSnackbar(
         view: View,
         message: String,
@@ -87,13 +70,8 @@ object ErrorHandler {
         snackbar.show()
     }
 
-    /**
-     * Display success message in a Snackbar
-     *
-     * @param view The view to attach the Snackbar to
-     * @param message The success message to display
-     * @param duration Snackbar duration (default: LENGTH_SHORT)
-     */
+
+
     fun showSuccessSnackbar(
         view: View,
         message: String,
@@ -102,9 +80,8 @@ object ErrorHandler {
         Snackbar.make(view, message, duration).show()
     }
 
-    /**
-     * Check if error is a network-related error
-     */
+
+
     fun isNetworkError(exception: Throwable): Boolean {
         return exception is IOException ||
                 exception is SocketTimeoutException ||
@@ -114,24 +91,22 @@ object ErrorHandler {
                 exception.message?.contains("timeout", ignoreCase = true) == true
     }
 
-    /**
-     * Check if error is a rate limit error
-     */
+
+
     fun isRateLimitError(exception: Throwable): Boolean {
         return exception.message?.contains("rate limit", ignoreCase = true) == true ||
                 exception.message?.contains("429", ignoreCase = true) == true
     }
 
-    /**
-     * Check if error is retryable
-     */
+
+
     fun isRetryableError(exception: Throwable): Boolean {
         return isNetworkError(exception) ||
                 exception.message?.contains("timeout", ignoreCase = true) == true ||
                 exception.message?.contains("temporary", ignoreCase = true) == true
     }
 
-    // ==================== Private Helper Methods ====================
+
 
     private fun getReplyErrorMessage(context: Context, exception: Throwable): String {
         return when {
@@ -147,7 +122,7 @@ object ErrorHandler {
             isNetworkError(exception) ->
                 context.getString(R.string.error_forward_no_network)
             exception.message?.contains("permission", ignoreCase = true) == true -> {
-                // Extract chat name if available
+
                 val chatName = extractChatName(exception.message)
                 if (chatName != null) {
                     context.getString(R.string.error_forward_no_permission, chatName)
@@ -222,9 +197,8 @@ object ErrorHandler {
         return exception.message ?: context.getString(R.string.error_unexpected)
     }
 
-    /**
-     * Log error with full context for debugging
-     */
+
+
     private fun logError(
         errorType: ErrorType,
         exception: Throwable,
@@ -240,26 +214,24 @@ object ErrorHandler {
         Log.e(TAG, "Message action error - $contextInfo", exception)
     }
 
-    /**
-     * Extract chat name from error message if available
-     */
+
+
     private fun extractChatName(message: String?): String? {
         if (message == null) return null
 
-        // Try to extract chat name from error message
-        // Example: "You don't have permission to send messages in [Chat Name]"
+
+
         val regex = "\\[([^\\]]+)\\]".toRegex()
         val match = regex.find(message)
         return match?.groupValues?.getOrNull(1)
     }
 
-    /**
-     * Extract minutes from rate limit error message
-     */
-    private fun extractMinutesFromRateLimitError(message: String?): Int {
-        if (message == null) return 60 // Default to 60 minutes
 
-        // Try to extract number from error message
+
+    private fun extractMinutesFromRateLimitError(message: String?): Int {
+        if (message == null) return 60
+
+
         val regex = "(\\d+)\\s*minute".toRegex(RegexOption.IGNORE_CASE)
         val match = regex.find(message)
         return match?.groupValues?.getOrNull(1)?.toIntOrNull() ?: 60

@@ -44,12 +44,12 @@ fun PhotoHistoryScreen(
     val uiState by viewModel.uiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    // Load data on start
+
     LaunchedEffect(type) {
         viewModel.onEvent(PhotoHistoryEvent.LoadHistory(type))
     }
 
-    // Confirmation Dialog State
+
     var itemToDelete by remember { mutableStateOf<HistoryItem?>(null) }
 
     if (itemToDelete != null) {
@@ -118,8 +118,8 @@ fun PhotoHistoryScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Enhanced Empty State with Pulse Animation
-                    // Since Lottie is not available, we simulate a "breathing" or "pulsing" effect
+
+
                     val infiniteTransition = rememberInfiniteTransition()
                     val scale by infiniteTransition.animateFloat(
                         initialValue = 1f,
@@ -190,7 +190,7 @@ fun PhotoHistoryScreen(
                 }
             }
 
-            // Error Snackbar or Banner could go here
+
         }
     }
 }
@@ -222,7 +222,7 @@ fun PhotoHistoryItem(
                 modifier = Modifier.fillMaxSize()
             )
 
-            // Selection Indicator
+
             androidx.compose.animation.AnimatedVisibility(
                 visible = isSelected,
                 enter = fadeIn(),

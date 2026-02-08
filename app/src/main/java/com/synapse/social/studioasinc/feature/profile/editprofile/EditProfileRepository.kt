@@ -54,7 +54,7 @@ class EditProfileRepository @Inject constructor(
                 .decodeSingleOrNull<JsonObject>()
 
             if (result != null) {
-                // Manually mapping JsonObject to UserProfile to ensure all fields are handled correctly
+
                 val user = UserProfile(
                     uid = result["uid"]?.jsonPrimitive?.contentOrNull ?: userId,
                     username = result["username"]?.jsonPrimitive?.contentOrNull ?: "",
@@ -124,8 +124,8 @@ class EditProfileRepository @Inject constructor(
                     }
                     .decodeList<JsonObject>()
 
-                // If list is empty, username is available.
-                // If list has items, check if it belongs to current user.
+
+
                 if (result.isEmpty()) {
                     Result.success(true)
                 } else {
@@ -168,7 +168,7 @@ class EditProfileRepository @Inject constructor(
                 )
                 client.from("profile_history").insert(historyData)
             } catch (e: Exception) {
-                // Silent fail
+
             }
         }
     }
@@ -186,7 +186,7 @@ class EditProfileRepository @Inject constructor(
                 )
                 client.from("cover_image_history").insert(historyData)
             } catch (e: Exception) {
-                // Silent fail
+
             }
         }
     }

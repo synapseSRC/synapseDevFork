@@ -55,17 +55,8 @@ data class ProfileScreenState(
     val isRefreshing: Boolean = false
 )
 
-/**
- * ViewModel for Profile screen managing user profile state and actions.
- *
- * Handles profile loading, content filtering, follow/unfollow operations,
- * and various profile actions like sharing, reporting, and blocking.
- *
- * @property getProfileUseCase Use case for fetching user profiles
- * @property getProfileContentUseCase Use case for fetching profile content (posts, photos, reels)
- * @property followUserUseCase Use case for following users
- * @property unfollowUserUseCase Use case for unfollowing users
- */
+
+
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val getProfileUseCase: GetProfileUseCase,
@@ -117,7 +108,7 @@ class ProfileViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            // Check follow status
+
             if (userId != currentUserId) {
                 launch {
                     isFollowingUseCase(currentUserId, userId).onSuccess { isFollowing ->
@@ -223,7 +214,7 @@ class ProfileViewModel @Inject constructor(
                 },
                 onFailure = {
                     _state.update { it.copy(isFollowing = false, isFollowLoading = false) }
-                    // Ideally show error message here
+
                     PostEventBus.emit(PostEvent.Error("Failed to follow user"))
                 }
             )
@@ -239,7 +230,7 @@ class ProfileViewModel @Inject constructor(
                 },
                 onFailure = {
                     _state.update { it.copy(isFollowing = true, isFollowLoading = false) }
-                    // Ideally show error message here
+
                     PostEventBus.emit(PostEvent.Error("Failed to unfollow user"))
                 }
             )
@@ -257,11 +248,11 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun reactToPost(postId: String, reactionType: com.synapse.social.studioasinc.domain.model.ReactionType) {
-        // Find the post to toggle
-        val post = _state.value.posts.filterIsInstance<Post>().find { it.id == postId } ?: return
-        val currentReaction = post.userReaction // Unified source
 
-        // Optimistic update
+        val post = _state.value.posts.filterIsInstance<Post>().find { it.id == postId } ?: return
+        val currentReaction = post.userReaction
+
+
         val isRemoving = currentReaction == reactionType
         val newReaction = if (isRemoving) null else reactionType
 
@@ -292,20 +283,20 @@ class ProfileViewModel @Inject constructor(
             reactions = updatedReactions
         )
 
-        // Update Local
+
         _state.update { state ->
             val updatedPosts = state.posts.map { if (it is Post && it.id == postId) updatedPost else it }
             state.copy(posts = updatedPosts)
         }
 
-        // Emit Global
+
         PostEventBus.emit(PostEvent.Updated(updatedPost))
 
-        // Backend call
+
         viewModelScope.launch {
             reactionRepository.toggleReaction(postId, "post", reactionType)
                 .onFailure {
-                    // Revert on failure
+
                      _state.update { state ->
                         val updatedPosts = state.posts.map { if (it is Post && it.id == postId) post else it }
                         state.copy(posts = updatedPosts)
@@ -318,7 +309,7 @@ class ProfileViewModel @Inject constructor(
     fun toggleSave(postId: String) {
         val isSaved = postId in _state.value.savedPostIds
 
-        // Optimistic update
+
         _state.update { state ->
             val savedPostIds = state.savedPostIds.toMutableSet()
             if (isSaved) {
@@ -329,7 +320,7 @@ class ProfileViewModel @Inject constructor(
             state.copy(savedPostIds = savedPostIds)
         }
 
-        // Backend call
+
         viewModelScope.launch {
             val result = if (isSaved) {
                 unsavePostUseCase(postId, _state.value.currentUserId)
@@ -339,7 +330,7 @@ class ProfileViewModel @Inject constructor(
 
             result.collect { res ->
                 res.onFailure {
-                    // Revert on failure
+
                     _state.update { state ->
                         val savedPostIds = state.savedPostIds.toMutableSet()
                         if (isSaved) {
@@ -358,7 +349,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             deletePostUseCase(postId, _state.value.currentUserId).collect { result ->
                 result.onSuccess {
-                    // Remove from local state
+
                     _state.update { state ->
                         state.copy(posts = state.posts.filterNot { (it as? Any)?.toString()?.contains(postId) == true })
                     }
@@ -371,7 +362,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             reportPostUseCase(postId, reason, null).collect { result ->
                 result.onSuccess {
-                    // Optionally hide post from feed
+
                 }
             }
         }
@@ -407,7 +398,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    // Phase 4: Advanced Features
+
     fun showShareSheet() {
         _state.update { it.copy(showShareSheet = true) }
     }
@@ -453,7 +444,7 @@ class ProfileViewModel @Inject constructor(
     fun searchUsers(query: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            kotlinx.coroutines.delay(300) // Debounce
+            kotlinx.coroutines.delay(300)
             if (query.isBlank()) {
                 _state.update { it.copy(searchResults = emptyList(), isSearching = false) }
                 return@launch
@@ -462,7 +453,7 @@ class ProfileViewModel @Inject constructor(
             _state.update { it.copy(isSearching = true) }
 
             try {
-                // Use IO dispatcher if the manager call is blocking or for safety
+
                 val results = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
                     com.synapse.social.studioasinc.UserProfileManager.searchUsers(query)
                 }
@@ -481,7 +472,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             lockProfileUseCase(_state.value.currentUserId, isLocked).collect { result ->
                 result.onSuccess {
-                    // Update profile state
+
                 }
             }
         }
@@ -491,7 +482,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             archiveProfileUseCase(_state.value.currentUserId, isArchived).collect { result ->
                 result.onSuccess {
-                    // Update profile state
+
                 }
             }
         }
@@ -501,7 +492,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             blockUserUseCase(_state.value.currentUserId, blockedUserId).collect { result ->
                 result.onSuccess {
-                    // Navigate back or update UI
+
                 }
             }
         }
@@ -511,7 +502,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             reportUserUseCase(_state.value.currentUserId, reportedUserId, reason).collect { result ->
                 result.onSuccess {
-                    // Show success message
+
                 }
             }
         }
@@ -521,20 +512,18 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             muteUserUseCase(_state.value.currentUserId, mutedUserId).collect { result ->
                 result.onSuccess {
-                    // Update UI
+
                 }
             }
         }
     }
 
-    /**
-     * Helper to convert Post model to PostCardState for Shared UI
-     */
-    /**
-     * Helper to convert Post model to PostCardState for Shared UI
-     */
+
+
+
+
     fun mapPostToState(post: Post): PostCardState {
-        // Use loaded profile data if available and matches author (fallback for missing post user data)
+
         val currentProfile = (_state.value.profileState as? ProfileUiState.Success)?.profile
         return PostMapper.mapToState(post, currentProfile)
     }
@@ -567,7 +556,7 @@ class ProfileViewModel @Inject constructor(
             when (filter) {
                 ProfileContentFilter.POSTS -> {
                     getProfileContentUseCase.getPosts(userId).onSuccess { posts ->
-                        // Enriched with reactions from SSOT
+
                         val enrichedPosts = if (posts.isNotEmpty()) {
                             reactionRepository.populatePostReactions(posts.filterIsInstance<Post>())
                         } else posts

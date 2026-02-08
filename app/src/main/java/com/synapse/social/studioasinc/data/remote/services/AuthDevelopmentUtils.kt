@@ -4,23 +4,20 @@ import android.content.Context
 import android.util.Log
 import com.synapse.social.studioasinc.BuildConfig
 
-/**
- * Development utilities for authentication configuration and testing
- */
+
+
 object AuthDevelopmentUtils {
 
     private const val TAG = "AuthDevUtils"
 
-    /**
-     * Check if the app is running in development mode
-     */
+
+
     fun isDevelopmentBuild(): Boolean {
         return BuildConfig.DEBUG || BuildConfig.APPLICATION_ID.contains(".debug")
     }
 
-    /**
-     * Log authentication configuration for debugging
-     */
+
+
     fun logAuthConfig(context: Context) {
         if (!isDevelopmentBuild()) return
 
@@ -39,14 +36,13 @@ object AuthDevelopmentUtils {
         Log.d(TAG, "===================================")
     }
 
-    /**
-     * Create a test authentication service with development configuration
-     */
+
+
     fun createTestAuthService(context: Context): SupabaseAuthenticationService {
         val service = SupabaseAuthenticationService(context)
 
         if (isDevelopmentBuild()) {
-            // Enable development mode for testing
+
             service.enableDevelopmentMode()
             Log.d(TAG, "Test authentication service created with development mode enabled")
         }
@@ -54,9 +50,8 @@ object AuthDevelopmentUtils {
         return service
     }
 
-    /**
-     * Quick setup for development mode
-     */
+
+
     fun setupDevelopmentMode(context: Context): AuthConfig {
         if (!isDevelopmentBuild()) {
             Log.w(TAG, "Development mode setup called in non-development build")
@@ -70,9 +65,8 @@ object AuthDevelopmentUtils {
         return config
     }
 
-    /**
-     * Quick setup for production mode
-     */
+
+
     fun setupProductionMode(context: Context): AuthConfig {
         val config = AuthConfig.disableDevelopmentMode(context)
         Log.i(TAG, "Production mode setup completed")
@@ -84,9 +78,8 @@ object AuthDevelopmentUtils {
         return config
     }
 
-    /**
-     * Test authentication configuration with different settings
-     */
+
+
     fun testAuthConfiguration(context: Context) {
         if (!isDevelopmentBuild()) {
             Log.w(TAG, "Auth configuration test called in non-development build")
@@ -95,28 +88,27 @@ object AuthDevelopmentUtils {
 
         Log.d(TAG, "=== Testing Authentication Configuration ===")
 
-        // Test default configuration
+
         val defaultConfig = AuthConfig.create(context)
         Log.d(TAG, "Default config: $defaultConfig")
 
-        // Test development configuration
+
         val devConfig = AuthConfig.enableDevelopmentMode(context)
         Log.d(TAG, "Development config: $devConfig")
 
-        // Test production configuration
+
         val prodConfig = AuthConfig.disableDevelopmentMode(context)
         Log.d(TAG, "Production config: $prodConfig")
 
-        // Restore default
+
         AuthConfig.save(context, defaultConfig)
         Log.d(TAG, "Configuration restored to default")
 
         Log.d(TAG, "=== Authentication Configuration Test Complete ===")
     }
 
-    /**
-     * Get development configuration recommendations
-     */
+
+
     fun getDevelopmentRecommendations(context: Context): List<String> {
         val config = AuthConfig.create(context)
         val recommendations = mutableListOf<String>()
@@ -153,9 +145,8 @@ object AuthDevelopmentUtils {
         return recommendations
     }
 
-    /**
-     * Apply recommended development settings
-     */
+
+
     fun applyDevelopmentRecommendations(context: Context): AuthConfig {
         if (!isDevelopmentBuild()) {
             Log.w(TAG, "Development recommendations cannot be applied in non-development build")
@@ -179,14 +170,13 @@ object AuthDevelopmentUtils {
         return optimizedConfig
     }
 
-    /**
-     * Validate authentication configuration
-     */
+
+
     fun validateConfiguration(context: Context): List<String> {
         val config = AuthConfig.create(context)
         val issues = mutableListOf<String>()
 
-        // Check for configuration conflicts
+
         if (config.developmentMode && config.requireEmailVerification) {
             issues.add("Development mode enabled but email verification still required")
         }

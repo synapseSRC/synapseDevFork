@@ -39,7 +39,7 @@ class SearchRepositoryImpl(
 ) : ISearchRepository {
 
     override suspend fun searchPosts(query: String): Result<List<SearchPost>> = runCatching {
-        // Using 'users' as the relationship name. If it fails, we fallback to non-joined and empty author data.
+
         val columns = Columns.raw("id, post_text, author_uid, likes_count, comments_count, reshares_count, created_at, author:users!posts_author_uid_fkey(display_name, username, avatar)")
 
         val sanitizedQuery = sanitizeSearchQuery(query)
@@ -117,7 +117,7 @@ class SearchRepositoryImpl(
                     }
                 }
             } else {
-                 // Suggest verified or high follower accounts if query is empty
+
                  order("followers_count", Order.DESCENDING)
             }
             limit(20)

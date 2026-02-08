@@ -20,9 +20,8 @@ data class SettingsSearchItem(
     val keywords: List<String>
 )
 
-/**
- * Settings search screen for finding specific settings quickly.
- */
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsSearchScreen(
@@ -65,7 +64,7 @@ fun SettingsSearchScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Search bar
+
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
@@ -79,7 +78,7 @@ fun SettingsSearchScreen(
                 singleLine = true
             )
 
-            // Search results
+
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(horizontal = 16.dp)

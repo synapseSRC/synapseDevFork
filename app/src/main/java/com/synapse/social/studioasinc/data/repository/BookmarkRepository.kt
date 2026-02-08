@@ -9,10 +9,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import javax.inject.Inject
 
-/**
- * Repository for post bookmarking/favorites.
- * Requirements: 8.1, 8.2
- */
+
+
 class BookmarkRepository @Inject constructor(
     private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
 ) {
@@ -25,10 +23,8 @@ class BookmarkRepository @Inject constructor(
         @SerialName("collection_id") val collectionId: String? = null
     )
 
-    /**
-     * Check if post is bookmarked by current user.
-     * Requirement: 8.1
-     */
+
+
     suspend fun isBookmarked(postId: String): Result<Boolean> = runCatching {
         val userId = client.auth.currentUserOrNull()?.id
             ?: return Result.failure(Exception("Not authenticated"))
@@ -45,11 +41,8 @@ class BookmarkRepository @Inject constructor(
         favorites.isNotEmpty()
     }
 
-    /**
-     * Toggle bookmark status for a post.
-     * Returns true if bookmarked, false if removed.
-     * Requirement: 8.2
-     */
+
+
     suspend fun toggleBookmark(postId: String, collectionId: String? = null): Result<Boolean> = runCatching {
         val userId = client.auth.currentUserOrNull()?.id
             ?: return Result.failure(Exception("Not authenticated"))

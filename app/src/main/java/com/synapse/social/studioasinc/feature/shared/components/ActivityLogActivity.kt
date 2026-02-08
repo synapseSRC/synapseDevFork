@@ -20,9 +20,8 @@ import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 import androidx.activity.enableEdgeToEdge
 import dagger.hilt.android.AndroidEntryPoint
 
-/**
- * Activity Log Activity - Shows user's activity history
- */
+
+
 @AndroidEntryPoint
 class ActivityLogActivity : ComponentActivity() {
 

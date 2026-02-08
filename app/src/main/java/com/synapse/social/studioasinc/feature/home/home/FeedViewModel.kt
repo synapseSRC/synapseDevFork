@@ -8,6 +8,8 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.synapse.social.studioasinc.data.repository.AuthRepository
 import com.synapse.social.studioasinc.data.repository.PostRepository
+import com.synapse.social.studioasinc.data.repository.PollRepository
+import com.synapse.social.studioasinc.data.repository.ReactionRepository
 import com.synapse.social.studioasinc.data.local.database.AppDatabase
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.ReactionType
@@ -28,6 +30,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.map
+import org.jetbrains.annotations.VisibleForTesting
 
 import com.synapse.social.studioasinc.data.repository.SettingsRepository
 import com.synapse.social.studioasinc.ui.settings.PostViewStyle
@@ -44,6 +47,8 @@ class FeedViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val authRepository: AuthRepository,
     private val settingsRepository: SettingsRepository,
+    private val reactionRepository: ReactionRepository,
+    private val pollRepository: PollRepository,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -51,6 +56,7 @@ class FeedViewModel @Inject constructor(
     val uiState: StateFlow<FeedUiState> = _uiState.asStateFlow()
 
     private val _modifiedPosts = MutableStateFlow<Map<String, Post>>(emptyMap())
+    private val MAX_MODIFIED_POSTS = 100
 
     // Cache the raw PagingData FIRST to prevent "Attempt to collect twice from pageEventFlow"
     private val cachedPosts = postRepository.getPostsPaged()
@@ -98,7 +104,7 @@ class FeedViewModel @Inject constructor(
                         // LUCKILY: PostEvent.Updated(post) carries the full post.
                     }
                     is PostEvent.Updated -> {
-                        _modifiedPosts.update { it + (event.post.id to event.post) }
+                        cacheModifiedPost(event.post)
                     }
                     is PostEvent.Deleted -> {
                          // Removing from feed is hard with PagingData without refresh.
@@ -110,7 +116,28 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private val reactionRepository: com.synapse.social.studioasinc.data.repository.ReactionRepository = com.synapse.social.studioasinc.data.repository.ReactionRepository()
+    private fun cacheModifiedPost(post: Post) {
+        _modifiedPosts.update { currentMap ->
+            val newMap = currentMap.toMutableMap()
+            newMap[post.id] = post // Update or add
+
+            // Limit size to prevent unbounded growth
+            while (newMap.size > MAX_MODIFIED_POSTS) {
+                // Remove oldest entry (first key in LinkedHashMap)
+                val iterator = newMap.iterator()
+                if (iterator.hasNext()) {
+                    iterator.next()
+                    iterator.remove()
+                }
+            }
+            newMap
+        }
+    }
+
+    @VisibleForTesting
+    fun getModifiedPostsCount(): Int {
+        return _modifiedPosts.value.size
+    }
 
     fun likePost(post: Post) {
         performReaction(post, ReactionType.LIKE)
@@ -165,19 +192,19 @@ class FeedViewModel @Inject constructor(
              )
 
              // 2. Apply Local Update
-             _modifiedPosts.update { it + (post.id to updatedPost) }
+             cacheModifiedPost(updatedPost)
              PostEventBus.emit(PostEvent.Updated(updatedPost))
 
              // 3. Remote Update
              try {
                   reactionRepository.toggleReaction(post.id, "post", reactionType).onFailure {
                       // Revert on failure
-                      _modifiedPosts.update { map -> map + (post.id to post) }
+                      cacheModifiedPost(post)
                       PostEventBus.emit(PostEvent.Updated(post))
                   }
              } catch (e: Exception) {
                   // Revert on exception
-                  _modifiedPosts.update { map -> map + (post.id to post) }
+                  cacheModifiedPost(post)
                   PostEventBus.emit(PostEvent.Updated(post))
              }
          }
@@ -197,12 +224,11 @@ class FeedViewModel @Inject constructor(
             userPollVote = optionIndex
         )
 
-        _modifiedPosts.update { it + (post.id to updatedPost) }
+        cacheModifiedPost(updatedPost)
         PostEventBus.emit(PostEvent.Updated(updatedPost))
 
         viewModelScope.launch {
             try {
-                val pollRepository = com.synapse.social.studioasinc.data.repository.PollRepository()
                 pollRepository.submitVote(post.id, optionIndex)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -227,11 +253,10 @@ class FeedViewModel @Inject constructor(
             userPollVote = null
         )
 
-        _modifiedPosts.update { it + (post.id to updatedPost) }
+        cacheModifiedPost(updatedPost)
 
         viewModelScope.launch {
             try {
-                val pollRepository = com.synapse.social.studioasinc.data.repository.PollRepository()
                 pollRepository.revokeVote(post.id)
             } catch (e: Exception) {
                 e.printStackTrace()

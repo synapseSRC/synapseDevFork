@@ -175,24 +175,20 @@ synapse/
 
 </div>
 
-<br/>
-
 <div align="center">
 
 ### 🌟 Built with Passion
 
 <sub>Crafted with ❤️ by the **Synapse Team**</sub>
 
-<br/>
-
 <sub>Licensed under [AGPLv3](LICENSE) • Open Source • Community Driven</sub>
 
-<br/><br/>
+<br/>
 
 <img src="https://img.shields.io/github/stars/your-org/synapse-android?style=social" alt="GitHub stars"/>
 <img src="https://img.shields.io/github/forks/your-org/synapse-android?style=social" alt="GitHub forks"/>
 
-<br/><br/>
+<br/>
 
 **[⬆ Back to Top](#-synapse-social)**
 

@@ -1,20 +1,23 @@
 package com.synapse.social.studioasinc.shared.core.util
 
 /**
- * Sanitizes search query string to prevent wildcard abuse and optimize performance.
+ * Sanitizes a search query string for use in Supabase/Postgres ILIKE queries.
  *
- * @param query The user's input string.
- * @return The sanitized string safe for use in `ilike` queries.
+ * This function:
+ * 1. Trims leading and trailing whitespace.
+ * 2. Limits the query length to 100 characters to prevent DoS/abuse.
+ * 3. Escapes special characters used in SQL pattern matching:
+ *    - Backslash (\) -> (\\)
+ *    - Percent sign (%) -> (\%)
+ *    - Underscore (_) -> (\_)
+ *
+ * This ensures that user input is treated as literal text rather than
+ * wildcard patterns, preventing SQL injection-like behavior and performance issues.
  */
 fun sanitizeSearchQuery(query: String): String {
-    // 1. Trim whitespace
-    // 2. Limit length to 100 characters to prevent massive regex processing
-    val trimmed = query.trim().take(100)
-
-    // 3. Escape special characters for SQL `ilike`
-    // Note: Order matters. Escape backslash first.
-    return trimmed
-        .replace("\\", "\\\\") // Escape backslash -> \\ (escaped in Kotlin string as well)
-        .replace("%", "\\%")   // Escape percent -> \%
-        .replace("_", "\\_")   // Escape underscore -> \_
+    return query.trim()
+        .take(100)
+        .replace("\\", "\\\\")
+        .replace("%", "\\%")
+        .replace("_", "\\_")
 }

@@ -1,6 +1,5 @@
 package com.synapse.social.studioasinc.data.repository
 
-import com.synapse.social.studioasinc.data.local.auth.TokenManager
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
 import io.github.jan.supabase.auth.providers.OAuthProvider
 import kotlinx.coroutines.runBlocking
@@ -15,7 +14,6 @@ import javax.inject.Singleton
  */
 @Singleton
 class AuthRepository @Inject constructor(
-    private val tokenManager: TokenManager, // Legacy TokenManager (keep for migration/compat)
     private val sharedAuthRepository: SharedAuthRepository // Shared Logic Delegate
 ) {
 
@@ -37,7 +35,6 @@ class AuthRepository @Inject constructor(
      * Sign in. Delegates to Shared Module.
      */
     suspend fun signIn(email: String, password: String): Result<String> {
-        tokenManager.clearTokens()
         return sharedAuthRepository.signIn(email, password)
     }
 
@@ -45,7 +42,6 @@ class AuthRepository @Inject constructor(
      * Sign out. Delegates to Shared Module.
      */
     suspend fun signOut(): Result<Unit> {
-        tokenManager.clearTokens()
         return sharedAuthRepository.signOut()
     }
 

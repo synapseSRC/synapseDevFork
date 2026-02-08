@@ -156,37 +156,6 @@ private fun StorageDataContent(
     }
 }
 
-    // Media Quality Bottom Sheet
-    if (showMediaQualitySheet) {
-        MediaQualityBottomSheet(
-            onDismissRequest = { viewModel.closeMediaQualitySheet() },
-            currentQuality = mediaUploadQuality,
-            onQualitySelected = { viewModel.setMediaUploadQuality(it) }
-        )
-    }
-
-    // Auto-Download Dialogs
-    if (showMobileDialog) {
-        AutoDownloadDialog(
-            title = "When using mobile data",
-            selectedTypes = autoDownloadRules.mobileData,
-            onConfirm = {
-                viewModel.setAutoDownloadRule("mobile", it)
-                showMobileDialog = false
-            },
-            onDismiss = { showMobileDialog = false }
-        )
-        SettingsDivider()
-        SettingsNavigationItem(
-            title = "Network usage",
-            subtitle = "1.8 GB sent • 2.1 GB received",
-            icon = R.drawable.ic_network_check,
-            onClick = onNavigateToNetworkUsage,
-            position = SettingsItemPosition.Bottom
-        )
-    }
-}
-
 private fun getAutoDownloadSummary(selectedTypes: Set<MediaType>): String {
     if (selectedTypes.isEmpty()) return "No media"
     if (selectedTypes.size == MediaType.values().size) return "All media"

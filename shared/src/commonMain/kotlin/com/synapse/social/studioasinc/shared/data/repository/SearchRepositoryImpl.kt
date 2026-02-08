@@ -38,14 +38,6 @@ class SearchRepositoryImpl(
     private val client: io.github.jan.supabase.SupabaseClient = SupabaseClient.client
 ) : ISearchRepository {
 
-    internal fun sanitizeSearchQuery(query: String): String {
-        return query.trim()
-            .take(100)
-            .replace("\\", "\\\\")
-            .replace("%", "\\%")
-            .replace("_", "\\_")
-    }
-
     override suspend fun searchPosts(query: String): Result<List<SearchPost>> = runCatching {
         // Using 'users' as the relationship name. If it fails, we fallback to non-joined and empty author data.
         val columns = Columns.raw("id, post_text, author_uid, likes_count, comments_count, reshares_count, created_at, author:users!posts_author_uid_fkey(display_name, username, avatar)")
@@ -89,19 +81,14 @@ class SearchRepositoryImpl(
             }
             order("usage_count", Order.DESCENDING)
             limit(20)
-        }.decodeList<SearchHashtag>().mapIndexed { index, item ->
-            // Mock sparkline data (reused from pool)
-            item.copy(sparklinePoints = mockSparklines[index % mockSparklines.size])
-        }
+        }.decodeList<SearchHashtag>()
     }
 
     override suspend fun getTrendingHashtags(): Result<List<SearchHashtag>> = runCatching {
         client.postgrest["hashtags"].select {
             order("usage_count", Order.DESCENDING)
             limit(10)
-        }.decodeList<SearchHashtag>().mapIndexed { index, item ->
-            item.copy(sparklinePoints = mockSparklines[index % mockSparklines.size])
-        }
+        }.decodeList<SearchHashtag>()
     }
 
     override suspend fun searchNews(query: String): Result<List<SearchNews>> = runCatching {
@@ -136,28 +123,4 @@ class SearchRepositoryImpl(
             limit(20)
         }.decodeList()
     }
-
-    private fun sanitizeSearchQuery(query: String): String {
-        return query
-            .trim()
-            .take(100)
-            .replace("\\", "\\\\")
-            .replace("%", "\\%")
-            .replace("_", "\\_")
-    }
-}
-
-internal fun String.sanitizeForSearch(): String {
-    return this.trim()
-        .take(100)
-        .replace("\\", "\\\\")
-        .replace("%", "\\%")
-        .replace("_", "\\_")
-}
-
-internal fun sanitizeSearchQuery(query: String): String {
-    return query.trim()
-        .take(100)
-        .replace("%", "\\%")
-        .replace("_", "\\_")
 }

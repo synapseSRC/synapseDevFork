@@ -56,7 +56,7 @@ class UpdateStorageProviderUseCaseTest {
 
         useCase(MediaType.IMAGE, StorageProvider.IMGBB)
 
-        assertNull(repository.updatedPhotoProvider)
+        assertEquals(StorageProvider.IMGBB, repository.updatedPhotoProvider)
         assertNull(repository.updatedVideoProvider)
         assertNull(repository.updatedOtherProvider)
     }

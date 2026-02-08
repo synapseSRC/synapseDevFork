@@ -14,6 +14,7 @@ import com.synapse.social.studioasinc.ui.settings.AppearanceSettings
 import com.synapse.social.studioasinc.ui.settings.ChatSettings
 import com.synapse.social.studioasinc.ui.settings.ContentVisibility
 import com.synapse.social.studioasinc.ui.settings.FontScale
+import com.synapse.social.studioasinc.ui.settings.GroupPrivacy
 import com.synapse.social.studioasinc.ui.settings.MediaAutoDownload
 import com.synapse.social.studioasinc.ui.settings.NotificationCategory
 import com.synapse.social.studioasinc.ui.settings.NotificationPreferences
@@ -77,6 +78,7 @@ class SettingsDataStore private constructor(private val context: Context) {
         // Privacy Settings
         private val KEY_PROFILE_VISIBILITY = stringPreferencesKey("profile_visibility")
         private val KEY_CONTENT_VISIBILITY = stringPreferencesKey("content_visibility")
+        private val KEY_GROUP_PRIVACY = stringPreferencesKey("group_privacy")
         private val KEY_BIOMETRIC_LOCK_ENABLED = booleanPreferencesKey("biometric_lock_enabled")
         private val KEY_TWO_FACTOR_ENABLED = booleanPreferencesKey("two_factor_enabled")
 
@@ -136,6 +138,7 @@ class SettingsDataStore private constructor(private val context: Context) {
         val DEFAULT_APP_LANGUAGE = "en"
         val DEFAULT_PROFILE_VISIBILITY = ProfileVisibility.PUBLIC
         val DEFAULT_CONTENT_VISIBILITY = ContentVisibility.EVERYONE
+        val DEFAULT_GROUP_PRIVACY = GroupPrivacy.EVERYONE
         val DEFAULT_BIOMETRIC_LOCK_ENABLED = false
         val DEFAULT_TWO_FACTOR_ENABLED = false
         val DEFAULT_NOTIFICATIONS_ENABLED = true
@@ -336,7 +339,13 @@ class SettingsDataStore private constructor(private val context: Context) {
             biometricLockEnabled = preferences[KEY_BIOMETRIC_LOCK_ENABLED] ?: DEFAULT_BIOMETRIC_LOCK_ENABLED,
             contentVisibility = preferences[KEY_CONTENT_VISIBILITY]?.let { value ->
                 runCatching { ContentVisibility.valueOf(value) }.getOrDefault(DEFAULT_CONTENT_VISIBILITY)
-            } ?: DEFAULT_CONTENT_VISIBILITY
+            } ?: DEFAULT_CONTENT_VISIBILITY,
+            groupPrivacy = preferences[KEY_GROUP_PRIVACY]?.let { value ->
+                runCatching { GroupPrivacy.valueOf(value) }.getOrDefault(DEFAULT_GROUP_PRIVACY)
+            } ?: DEFAULT_GROUP_PRIVACY,
+            readReceiptsEnabled = preferences[KEY_READ_RECEIPTS_ENABLED] ?: DEFAULT_READ_RECEIPTS_ENABLED,
+            appLockEnabled = preferences[KEY_APP_LOCK_ENABLED] ?: DEFAULT_APP_LOCK_ENABLED,
+            chatLockEnabled = preferences[KEY_CHAT_LOCK_ENABLED] ?: DEFAULT_CHAT_LOCK_ENABLED
         )
     }
 
@@ -355,6 +364,15 @@ class SettingsDataStore private constructor(private val context: Context) {
     suspend fun setContentVisibility(visibility: ContentVisibility) {
         dataStore.edit { preferences ->
             preferences[KEY_CONTENT_VISIBILITY] = visibility.name
+        }
+    }
+
+    /**
+     * Sets group privacy.
+     */
+    suspend fun setGroupPrivacy(privacy: GroupPrivacy) {
+        dataStore.edit { preferences ->
+            preferences[KEY_GROUP_PRIVACY] = privacy.name
         }
     }
 
@@ -751,6 +769,7 @@ class SettingsDataStore private constructor(private val context: Context) {
             // Privacy
             preferences.remove(KEY_PROFILE_VISIBILITY)
             preferences.remove(KEY_CONTENT_VISIBILITY)
+            preferences.remove(KEY_GROUP_PRIVACY)
             preferences.remove(KEY_BIOMETRIC_LOCK_ENABLED)
             preferences.remove(KEY_TWO_FACTOR_ENABLED)
 
@@ -810,6 +829,7 @@ class SettingsDataStore private constructor(private val context: Context) {
             // Privacy
             preferences[KEY_PROFILE_VISIBILITY] = DEFAULT_PROFILE_VISIBILITY.name
             preferences[KEY_CONTENT_VISIBILITY] = DEFAULT_CONTENT_VISIBILITY.name
+            preferences[KEY_GROUP_PRIVACY] = DEFAULT_GROUP_PRIVACY.name
             preferences[KEY_BIOMETRIC_LOCK_ENABLED] = DEFAULT_BIOMETRIC_LOCK_ENABLED
             preferences[KEY_TWO_FACTOR_ENABLED] = DEFAULT_TWO_FACTOR_ENABLED
 

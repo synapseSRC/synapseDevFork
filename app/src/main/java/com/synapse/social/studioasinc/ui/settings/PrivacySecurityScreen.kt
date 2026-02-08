@@ -50,7 +50,8 @@ fun PrivacySecurityScreen(
         onAppLockChanged = { viewModel.setAppLockEnabled(it) },
         onChatLockChanged = { viewModel.setChatLockEnabled(it) },
         onProfileVisibilityChanged = { viewModel.setProfileVisibility(it) },
-        onContentVisibilityChanged = { viewModel.setContentVisibility(it) }
+        onContentVisibilityChanged = { viewModel.setContentVisibility(it) },
+        onGroupPrivacyChanged = { viewModel.setGroupPrivacy(it) }
     )
 }
 
@@ -67,7 +68,8 @@ fun PrivacySecurityContent(
     onAppLockChanged: (Boolean) -> Unit,
     onChatLockChanged: (Boolean) -> Unit,
     onProfileVisibilityChanged: (ProfileVisibility) -> Unit,
-    onContentVisibilityChanged: (ContentVisibility) -> Unit
+    onContentVisibilityChanged: (ContentVisibility) -> Unit,
+    onGroupPrivacyChanged: (GroupPrivacy) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -123,7 +125,8 @@ fun PrivacySecurityContent(
                 ProfilePrivacySection(
                     privacySettings = privacySettings,
                     isLoading = isLoading,
-                    onProfileVisibilityChanged = onProfileVisibilityChanged
+                    onProfileVisibilityChanged = onProfileVisibilityChanged,
+                    onContentVisibilityChanged = onContentVisibilityChanged
                 )
             }
 
@@ -140,7 +143,8 @@ fun PrivacySecurityContent(
             item {
                 GroupPrivacySection(
                     privacySettings = privacySettings,
-                    isLoading = isLoading
+                    isLoading = isLoading,
+                    onGroupPrivacyChanged = onGroupPrivacyChanged
                 )
             }
 
@@ -189,16 +193,22 @@ private fun PrivacyCheckupSection(isLoading: Boolean) {
 private fun ProfilePrivacySection(
     privacySettings: PrivacySettings,
     isLoading: Boolean,
-    onProfileVisibilityChanged: (ProfileVisibility) -> Unit
+    onProfileVisibilityChanged: (ProfileVisibility) -> Unit,
+    onContentVisibilityChanged: (ContentVisibility) -> Unit
 ) {
     SettingsSection(title = "Profile Privacy") {
         SettingsSelectionItem(
             title = "Last Seen",
             subtitle = "Control who can see when you were last online",
             icon = R.drawable.ic_visibility,
-            options = listOf("Everyone", "My Contacts", "Nobody"),
-            selectedOption = "My Contacts",
-            onSelect = { },
+            options = ProfileVisibility.values().map { it.displayName() },
+            selectedOption = privacySettings.profileVisibility.displayName(),
+            onSelect = { option ->
+                val visibility = ProfileVisibility.values().find { it.displayName() == option }
+                if (visibility != null) {
+                    onProfileVisibilityChanged(visibility)
+                }
+            },
             enabled = !isLoading
         )
         SettingsDivider()
@@ -206,9 +216,14 @@ private fun ProfilePrivacySection(
             title = "Profile Photo",
             subtitle = "Control who can see your profile photo",
             icon = R.drawable.ic_person,
-            options = listOf("Everyone", "My Contacts", "Nobody"),
-            selectedOption = "Everyone",
-            onSelect = { },
+            options = ProfileVisibility.values().map { it.displayName() },
+            selectedOption = privacySettings.profileVisibility.displayName(),
+            onSelect = { option ->
+                val visibility = ProfileVisibility.values().find { it.displayName() == option }
+                if (visibility != null) {
+                    onProfileVisibilityChanged(visibility)
+                }
+            },
             enabled = !isLoading
         )
         SettingsDivider()
@@ -216,9 +231,14 @@ private fun ProfilePrivacySection(
             title = "About",
             subtitle = "Control who can see your about info",
             icon = R.drawable.ic_info,
-            options = listOf("Everyone", "My Contacts", "Nobody"),
-            selectedOption = "Everyone",
-            onSelect = { },
+            options = ProfileVisibility.values().map { it.displayName() },
+            selectedOption = privacySettings.profileVisibility.displayName(),
+            onSelect = { option ->
+                 val visibility = ProfileVisibility.values().find { it.displayName() == option }
+                if (visibility != null) {
+                    onProfileVisibilityChanged(visibility)
+                }
+            },
             enabled = !isLoading
         )
         SettingsDivider()
@@ -226,9 +246,14 @@ private fun ProfilePrivacySection(
             title = "Status",
             subtitle = "Control who can see your status updates",
             icon = R.drawable.ic_status,
-            options = listOf("My Contacts", "My Contacts Except...", "Only Share With..."),
-            selectedOption = "My Contacts",
-            onSelect = { },
+            options = ContentVisibility.values().map { it.displayName() },
+            selectedOption = privacySettings.contentVisibility.displayName(),
+            onSelect = { option ->
+                val visibility = ContentVisibility.values().find { it.displayName() == option }
+                if (visibility != null) {
+                    onContentVisibilityChanged(visibility)
+                }
+            },
             enabled = !isLoading
         )
     }
@@ -264,16 +289,22 @@ private fun MessagePrivacySection(
 @Composable
 private fun GroupPrivacySection(
     privacySettings: PrivacySettings,
-    isLoading: Boolean
+    isLoading: Boolean,
+    onGroupPrivacyChanged: (GroupPrivacy) -> Unit
 ) {
     SettingsSection(title = "Group Privacy") {
         SettingsSelectionItem(
             title = "Groups",
             subtitle = "Control who can add you to groups",
             icon = R.drawable.ic_group,
-            options = listOf("Everyone", "My Contacts", "My Contacts Except...", "Nobody"),
-            selectedOption = "My Contacts",
-            onSelect = { },
+            options = GroupPrivacy.values().map { it.displayName() },
+            selectedOption = privacySettings.groupPrivacy.displayName(),
+            onSelect = { option ->
+                val privacy = GroupPrivacy.values().find { it.displayName() == option }
+                if (privacy != null) {
+                    onGroupPrivacyChanged(privacy)
+                }
+            },
             enabled = !isLoading
         )
     }

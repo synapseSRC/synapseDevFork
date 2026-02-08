@@ -125,6 +125,27 @@ class PrivacySecurityViewModel(
         }
     }
 
+    /**
+     * Sets the group privacy setting.
+     *
+     * @param privacy The new group privacy setting
+     */
+    fun setGroupPrivacy(privacy: GroupPrivacy) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                settingsRepository.setGroupPrivacy(privacy)
+                android.util.Log.d("PrivacySecurityViewModel", "Group privacy set to: $privacy")
+            } catch (e: Exception) {
+                android.util.Log.e("PrivacySecurityViewModel", "Failed to set group privacy", e)
+                _error.value = "Failed to update group privacy"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
     // ========================================================================
     // Security Settings
     // ========================================================================

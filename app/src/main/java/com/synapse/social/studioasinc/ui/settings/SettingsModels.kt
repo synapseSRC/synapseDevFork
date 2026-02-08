@@ -40,6 +40,11 @@ enum class ContentVisibility {
     fun displayName(): String = name.lowercase().replace("_", " ").replaceFirstChar { it.uppercase() }
 }
 
+enum class GroupPrivacy {
+    EVERYONE, MY_CONTACTS, MY_CONTACTS_EXCEPT, NOBODY;
+    fun displayName(): String = name.lowercase().replace("_", " ").replaceFirstChar { it.uppercase() }
+}
+
 // ============================================================================
 // Notification Enums
 // ============================================================================
@@ -126,6 +131,7 @@ data class PrivacySettings(
     val twoFactorEnabled: Boolean = false,
     val biometricLockEnabled: Boolean = false,
     val contentVisibility: ContentVisibility = ContentVisibility.EVERYONE,
+    val groupPrivacy: GroupPrivacy = GroupPrivacy.EVERYONE,
     val readReceiptsEnabled: Boolean = true,
     val appLockEnabled: Boolean = false,
     val chatLockEnabled: Boolean = false

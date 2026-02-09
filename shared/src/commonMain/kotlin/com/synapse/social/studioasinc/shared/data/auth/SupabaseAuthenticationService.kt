@@ -17,6 +17,7 @@ import io.github.jan.supabase.SupabaseClient as SupabaseClientLib
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 import kotlin.time.ExperimentalTime
+import kotlin.random.Random
 
 class SupabaseAuthenticationService(
     private val client: SupabaseClientLib = SupabaseClient.client
@@ -246,7 +247,8 @@ class SupabaseAuthenticationService(
     override suspend fun getOAuthUrl(provider: String, redirectUrl: String): Result<String> {
         return try {
             val supabaseUrl = client.supabaseUrl
-            val oauthUrl = "$supabaseUrl/auth/v1/authorize?provider=$provider&redirect_to=$redirectUrl"
+            val state = generateState()
+            val oauthUrl = "$supabaseUrl/auth/v1/authorize?provider=$provider&redirect_to=$redirectUrl&state=$state"
             Result.success(oauthUrl)
         } catch (e: Exception) {
             Napier.e("Failed to generate OAuth URL", e)
@@ -284,5 +286,12 @@ class SupabaseAuthenticationService(
 
     override suspend fun clearStoredTokens() {
         Napier.d("Stored tokens cleared")
+    }
+
+    private fun generateState(): String {
+        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+        return (1..32)
+            .map { allowedChars.random() }
+            .joinToString("")
     }
 }

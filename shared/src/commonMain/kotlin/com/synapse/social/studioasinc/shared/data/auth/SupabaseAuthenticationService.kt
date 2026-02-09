@@ -31,7 +31,7 @@ class SupabaseAuthenticationService(
                 }
 
                 val userId = client.auth.currentUserOrNull()?.id
-                    ?: return@withContext Result.failure(Exception("User ID not found after signup"))
+                    ?: return@withContext Result.failure(IllegalStateException("User ID not found after signup"))
 
                 Napier.d("User signed up successfully: $userId")
                 Result.success(userId)
@@ -108,7 +108,7 @@ class SupabaseAuthenticationService(
                 }
 
                 val userId = client.auth.currentUserOrNull()?.id
-                    ?: return@withContext Result.failure(Exception("User ID not found after sign in"))
+                    ?: return@withContext Result.failure(IllegalStateException("User ID not found after sign in"))
 
                 Napier.d("User signed in successfully: $userId")
                 Result.success(userId)

@@ -294,7 +294,7 @@ class ProfileViewModel @Inject constructor(
 
 
         viewModelScope.launch {
-            reactionRepository.toggleReaction(postId, "post", reactionType)
+            reactionRepository.toggleReaction(postId, "post", reactionType, post.userReaction, skipCheck = true)
                 .onFailure {
 
                      _state.update { state ->

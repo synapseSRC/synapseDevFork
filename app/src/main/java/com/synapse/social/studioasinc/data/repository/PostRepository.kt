@@ -445,10 +445,12 @@ class PostRepository @Inject constructor(
     suspend fun toggleReaction(
         postId: String,
         userId: String,
-        reactionType: ReactionType
+        reactionType: ReactionType,
+        oldReaction: ReactionType? = null,
+        skipCheck: Boolean = false
     ): Result<Unit> = withContext(Dispatchers.IO) {
 
-        reactionRepository.toggleReaction(postId, "post", reactionType)
+        reactionRepository.toggleReaction(postId, "post", reactionType, oldReaction, skipCheck)
             .map { Unit }
     }
 

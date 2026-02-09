@@ -114,7 +114,7 @@ class PollRepository @Inject constructor(
                 ))
         }
 
-        Log.d(TAG, "Vote submitted: post=, option=")
+        Log.d(TAG, "Vote submitted: post=$postId, option=$optionIndex")
     }
 
 
@@ -131,7 +131,7 @@ class PollRepository @Inject constructor(
             }
         }
 
-        Log.d(TAG, "Vote revoked: post=")
+        Log.d(TAG, "Vote revoked: post=$postId")
     }
 
 
@@ -191,6 +191,7 @@ class PollRepository @Inject constructor(
 
         counts.groupBy { it.postId }
             .mapValues { (_, postCounts) ->
+                // Warning: Potential integer overflow if votes > Int.MAX_VALUE, but limited by return type signature
                 postCounts.associate { it.optionIndex to it.voteCount.toInt() }
             }
     }

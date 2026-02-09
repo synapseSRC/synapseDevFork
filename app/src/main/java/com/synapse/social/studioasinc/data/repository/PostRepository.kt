@@ -19,6 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapLatest
 import java.util.concurrent.ConcurrentHashMap
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -187,36 +189,50 @@ class PostRepository @Inject constructor(
         }
     }
 
+        @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     fun getPosts(): Flow<Result<List<Post>>> {
-        return postDao.getAllPosts().map { entities ->
-            val posts = entities.map { PostMapper.toModel(it) }
+        return postDao.getAllPosts().flatMapLatest { entities ->
+            flow {
+                val posts = entities.map { PostMapper.toModel(it) }
 
 
-            val missingUserIds = posts.filter { it.username == null }
-                .map { it.authorUid }
-                .distinct()
-                .filter { userId ->
-
-                    profileCache[userId]?.let { !it.isExpired() } != true
-                }
-
-
-            if (missingUserIds.isNotEmpty()) {
-                fetchUserProfilesBatch(missingUserIds)
-            }
-
-
-            posts.forEach { post ->
-                if (post.username == null) {
-                    profileCache[post.authorUid]?.data?.let { profile ->
-                        post.username = profile.username
-                        post.avatarUrl = profile.avatarUrl
-                        post.isVerified = profile.isVerified
+                // Apply cache immediately
+                posts.forEach { post ->
+                    if (post.username == null) {
+                        profileCache[post.authorUid]?.data?.let { profile ->
+                            post.username = profile.username
+                            post.avatarUrl = profile.avatarUrl
+                            post.isVerified = profile.isVerified
+                        }
                     }
                 }
-            }
 
-            Result.success(posts)
+                emit(Result.success(posts))
+
+                val missingUserIds = posts.filter { it.username == null }
+                    .map { it.authorUid }
+                    .distinct()
+                    .filter { userId ->
+                        profileCache[userId]?.let { !it.isExpired() } != true
+                    }
+
+
+                if (missingUserIds.isNotEmpty()) {
+                    fetchUserProfilesBatch(missingUserIds)
+
+                    // Re-apply profiles
+                    posts.forEach { post ->
+                        if (post.username == null) {
+                            profileCache[post.authorUid]?.data?.let { profile ->
+                                post.username = profile.username
+                                post.avatarUrl = profile.avatarUrl
+                                post.isVerified = profile.isVerified
+                            }
+                        }
+                    }
+                    emit(Result.success(posts.toList()))
+                }
+            }
         }.catch { e ->
             emit(Result.failure(Exception("Error getting posts from database: ${e.message}")))
         }

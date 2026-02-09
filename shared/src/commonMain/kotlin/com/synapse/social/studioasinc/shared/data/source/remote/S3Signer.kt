@@ -2,12 +2,12 @@ package com.synapse.social.studioasinc.shared.data.source.remote
 
 import com.synapse.social.studioasinc.shared.data.PlatformUtils
 
-// TODO(KOTLIN-STDLIB): Remove @OptIn when toHexString() becomes stable.
-@OptIn(ExperimentalStdlibApi::class)
 object S3Signer {
 
     private const val S3_SERVICE = "s3"
 
+    // TODO(KOTLIN-STDLIB): Remove @OptIn when toHexString() becomes stable.
+    @OptIn(ExperimentalStdlibApi::class)
     fun signS3(
         method: String,
         canonicalPath: String,

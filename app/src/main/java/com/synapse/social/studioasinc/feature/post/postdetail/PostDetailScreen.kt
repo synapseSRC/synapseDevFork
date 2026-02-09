@@ -209,12 +209,12 @@ fun PostDetailScreen(
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top),
+        contentWindowInsets = WindowInsets.systemBars,
         bottomBar = {
             Column(
                  modifier = Modifier
                      .fillMaxWidth()
-                     .windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars))
+                     .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
             ) {
 
                  if (uiState.replyToComment != null) {

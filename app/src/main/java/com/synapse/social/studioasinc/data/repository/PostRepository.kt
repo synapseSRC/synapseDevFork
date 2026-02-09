@@ -331,8 +331,9 @@ class PostRepository @Inject constructor(
 
             val idsToDelete = mutableListOf<String>()
 
-            // Process in chunks of 500 to respect URL length limits and server load
-            localIds.chunked(500).forEach { chunk ->
+            // Process in chunks of 50 to respect URL length limits (approx 2KB max for safe GET)
+            // 50 UUIDs * 36 chars = 1800 chars + overhead
+            localIds.chunked(50).forEach { chunk ->
                 try {
                     val response = client.from("posts")
                         .select(columns = Columns.raw("id, is_deleted")) {

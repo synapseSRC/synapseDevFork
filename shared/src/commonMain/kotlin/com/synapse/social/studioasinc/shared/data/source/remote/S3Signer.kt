@@ -2,6 +2,7 @@ package com.synapse.social.studioasinc.shared.data.source.remote
 
 import com.synapse.social.studioasinc.shared.data.PlatformUtils
 
+@OptIn(ExperimentalStdlibApi::class)
 object S3Signer {
 
     private const val S3_SERVICE = "s3"
@@ -30,7 +31,7 @@ object S3Signer {
         val stringToSign = "AWS4-HMAC-SHA256\n$amzDate\n$credentialScope\n${PlatformUtils.sha256(canonicalRequest)}"
 
         val signingKey = getSignatureKey(secretAccessKey, dateStamp, region, S3_SERVICE)
-        val signature = bytesToHex(PlatformUtils.hmacSha256(signingKey, stringToSign))
+        val signature = PlatformUtils.hmacSha256(signingKey, stringToSign).toHexString()
         val authorization = "AWS4-HMAC-SHA256 Credential=$accessKeyId/$credentialScope, SignedHeaders=$signedHeaders, Signature=$signature"
 
         return mapOf(
@@ -50,16 +51,5 @@ object S3Signer {
         return PlatformUtils.hmacSha256(kService, "aws4_request")
     }
 
-    private fun bytesToHex(bytes: ByteArray): String {
-        val hexChars = "0123456789abcdef"
-        val result = StringBuilder(bytes.size * 2)
-        for (b in bytes) {
-            val i = b.toInt()
-            val char1 = hexChars[(i shr 4) and 0x0f]
-            val char2 = hexChars[i and 0x0f]
-            result.append(char1)
-            result.append(char2)
-        }
-        return result.toString()
-    }
+
 }

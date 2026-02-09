@@ -5,8 +5,7 @@ import java.security.MessageDigest
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
-
-
+@OptIn(ExperimentalStdlibApi::class)
 object S3Signer {
 
     private const val S3_SERVICE = "s3"
@@ -35,7 +34,7 @@ object S3Signer {
         val stringToSign = "AWS4-HMAC-SHA256\n$amzDate\n$credentialScope\n${sha256Hex(canonicalRequest)}"
 
         val signingKey = getSignatureKey(secretAccessKey, dateStamp, region, S3_SERVICE)
-        val signature = bytesToHex(hmacSHA256(signingKey, stringToSign))
+        val signature = hmacSHA256(signingKey, stringToSign).toHexString()
         val authorization = "AWS4-HMAC-SHA256 Credential=$accessKeyId/$credentialScope, SignedHeaders=$signedHeaders, Signature=$signature"
         conn.setRequestProperty("Authorization", authorization)
     }
@@ -43,7 +42,7 @@ object S3Signer {
     private fun sha256Hex(s: String): String {
         val md = MessageDigest.getInstance("SHA-256")
         val d = md.digest(s.toByteArray(StandardCharsets.UTF_8))
-        return d.joinToString("") { "%02x".format(it) }
+        return d.toHexString()
     }
 
     private fun hmacSHA256(key: ByteArray, data: String): ByteArray {
@@ -59,9 +58,5 @@ object S3Signer {
         val kRegion = hmacSHA256(kDate, regionName)
         val kService = hmacSHA256(kRegion, serviceName)
         return hmacSHA256(kService, "aws4_request")
-    }
-
-    private fun bytesToHex(bytes: ByteArray): String {
-        return bytes.joinToString("") { "%02x".format(it) }
     }
 }

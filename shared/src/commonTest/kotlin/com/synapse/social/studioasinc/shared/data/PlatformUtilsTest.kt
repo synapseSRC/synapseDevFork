@@ -3,6 +3,7 @@ package com.synapse.social.studioasinc.shared.data
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@OptIn(ExperimentalStdlibApi::class)
 class PlatformUtilsTest {
 
     @Test
@@ -41,7 +42,7 @@ class PlatformUtilsTest {
 
 
         val expectedHex = "734cc62f32841568f45715aeb9f4d7891324e6d948e4c6c60c0621cdac48623a"
-        val resultHex = result.joinToString("") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }
+        val resultHex = result.toHexString()
 
         assertEquals(expectedHex, resultHex)
     }
@@ -58,7 +59,7 @@ class PlatformUtilsTest {
             val result = PlatformUtils.hmacSha256(key, data)
 
             val expectedHex = "b613679a0814d9ec772f95d778c35fc5ff1697c493715653c6c712144292c5ad"
-            val resultHex = result.joinToString("") { (it.toInt() and 0xFF).toString(16).padStart(2, '0') }
+            val resultHex = result.toHexString()
 
             assertEquals(expectedHex, resultHex)
         } catch (e: IllegalArgumentException) {

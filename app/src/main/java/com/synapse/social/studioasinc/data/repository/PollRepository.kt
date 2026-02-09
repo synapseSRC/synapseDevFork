@@ -191,8 +191,8 @@ class PollRepository @Inject constructor(
 
         counts.groupBy { it.postId }
             .mapValues { (_, postCounts) ->
-                // Warning: Potential integer overflow if votes > Int.MAX_VALUE, but limited by return type signature
-                postCounts.associate { it.optionIndex to it.voteCount.toInt() }
+                // Clamping to Int.MAX_VALUE to prevent negative numbers on overflow, preserving best effort count
+                postCounts.associate { it.optionIndex to it.voteCount.coerceAtMost(Int.MAX_VALUE.toLong()).toInt() }
             }
     }
 

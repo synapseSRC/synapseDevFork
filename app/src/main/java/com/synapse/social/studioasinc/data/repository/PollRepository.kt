@@ -6,6 +6,8 @@ import com.synapse.social.studioasinc.domain.model.PollOptionResult
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.rpc
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -25,6 +27,13 @@ class PollRepository @Inject constructor(
         @SerialName("user_id") val userId: String,
         @SerialName("option_index") val optionIndex: Int,
         @SerialName("created_at") val createdAt: String? = null
+    )
+
+    @Serializable
+    private data class PollVoteCount(
+        @SerialName("post_id") val postId: String,
+        @SerialName("option_index") val optionIndex: Int,
+        @SerialName("vote_count") val voteCount: Long
     )
 
     @Serializable
@@ -105,7 +114,7 @@ class PollRepository @Inject constructor(
                 ))
         }
 
-        Log.d(TAG, "Vote submitted: post=$postId, option=$optionIndex")
+        Log.d(TAG, "Vote submitted: post=, option=")
     }
 
 
@@ -122,7 +131,7 @@ class PollRepository @Inject constructor(
             }
         }
 
-        Log.d(TAG, "Vote revoked: post=$postId")
+        Log.d(TAG, "Vote revoked: post=")
     }
 
 
@@ -175,16 +184,14 @@ class PollRepository @Inject constructor(
     suspend fun getBatchPollVotes(postIds: List<String>): Result<Map<String, Map<Int, Int>>> = runCatching {
         if (postIds.isEmpty()) return Result.success(emptyMap())
 
+        val counts = client.postgrest.rpc(
+            "get_poll_votes_count",
+            mapOf("post_ids" to postIds)
+        ).decodeList<PollVoteCount>()
 
-        val votes = client.from("poll_votes")
-            .select(Columns.list("post_id", "option_index")) {
-                filter { isIn("post_id", postIds) }
-            }
-            .decodeList<PollVote>()
-
-        votes.groupBy { it.postId }
-            .mapValues { (_, postVotes) ->
-                postVotes.groupingBy { it.optionIndex }.eachCount()
+        counts.groupBy { it.postId }
+            .mapValues { (_, postCounts) ->
+                postCounts.associate { it.optionIndex to it.voteCount.toInt() }
             }
     }
 

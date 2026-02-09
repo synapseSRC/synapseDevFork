@@ -6,6 +6,7 @@ import com.synapse.social.studioasinc.shared.data.model.UserProfileInsert
 import com.synapse.social.studioasinc.shared.data.model.UserSettingsInsert
 import com.synapse.social.studioasinc.shared.data.model.UserPresenceInsert
 import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.OAuthProvider
 import io.github.jan.supabase.postgrest.from
@@ -15,20 +16,20 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 import io.github.aakira.napier.Napier
 import kotlin.time.ExperimentalTime
+import io.github.jan.supabase.SupabaseClient as SupabaseClientLib
 
 
-
-class AuthRepository {
+class AuthRepository(private val client: SupabaseClientLib = SupabaseClient.client) {
     private val TAG = "AuthRepository"
 
     suspend fun signUp(email: String, password: String): Result<String> {
         return try {
             withContext(Dispatchers.Default) {
-                SupabaseClient.client.auth.signUpWith(Email) {
+                client.auth.signUpWith(Email) {
                     this.email = email
                     this.password = password
                 }
-                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
+                val userId = client.auth.currentUserOrNull()?.id
                     ?: throw Exception("User ID not found")
                 Napier.d("User signed up: $userId", tag = TAG)
                 Result.success(userId)
@@ -58,7 +59,7 @@ class AuthRepository {
         return try {
             withContext(Dispatchers.Default) {
 
-                val count = SupabaseClient.client.from("user_profiles").select(columns = Columns.list("id")) {
+                val count = client.from("user_profiles").select(columns = Columns.list("id")) {
                     count(Count.EXACT)
                     filter {
                         eq("id", userId)
@@ -84,15 +85,15 @@ class AuthRepository {
                         user_level_xp = 0,
                         status = "active"
                     )
-                    SupabaseClient.client.from("user_profiles").insert(profileInsert)
+                    client.from("user_profiles").insert(profileInsert)
 
 
                     val settingsInsert = UserSettingsInsert(user_id = userId)
-                    SupabaseClient.client.from("user_settings").insert(settingsInsert)
+                    client.from("user_settings").insert(settingsInsert)
 
 
                     val presenceInsert = UserPresenceInsert(user_id = userId)
-                    SupabaseClient.client.from("user_presence").insert(presenceInsert)
+                    client.from("user_presence").insert(presenceInsert)
 
                     Napier.d("User profile created: $userId", tag = TAG)
                 }
@@ -107,11 +108,11 @@ class AuthRepository {
     suspend fun signIn(email: String, password: String): Result<String> {
         return try {
             withContext(Dispatchers.Default) {
-                SupabaseClient.client.auth.signInWith(Email) {
+                client.auth.signInWith(Email) {
                     this.email = email
                     this.password = password
                 }
-                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
+                val userId = client.auth.currentUserOrNull()?.id
                     ?: throw Exception("User ID not found")
                 Napier.d("User signed in: $userId", tag = TAG)
                 Result.success(userId)
@@ -125,7 +126,7 @@ class AuthRepository {
     suspend fun signOut(): Result<Unit> {
         return try {
             withContext(Dispatchers.Default) {
-                SupabaseClient.client.auth.signOut()
+                client.auth.signOut()
                 Napier.d("User signed out", tag = TAG)
                 Result.success(Unit)
             }
@@ -137,7 +138,7 @@ class AuthRepository {
 
     suspend fun getCurrentUserId(): String? {
         return try {
-            SupabaseClient.client.auth.currentUserOrNull()?.id
+            client.auth.currentUserOrNull()?.id
         } catch (e: Exception) {
             Napier.e("Failed to get current user ID", e, tag = TAG)
             null
@@ -146,7 +147,7 @@ class AuthRepository {
 
     suspend fun getCurrentUserEmail(): String? {
         return try {
-            SupabaseClient.client.auth.currentUserOrNull()?.email
+            client.auth.currentUserOrNull()?.email
         } catch (e: Exception) {
             Napier.e("Failed to get current user email", e, tag = TAG)
             null
@@ -156,7 +157,7 @@ class AuthRepository {
     @OptIn(ExperimentalTime::class)
     suspend fun isEmailVerified(): Boolean {
         return try {
-            SupabaseClient.client.auth.currentUserOrNull()?.emailConfirmedAt != null
+            client.auth.currentUserOrNull()?.emailConfirmedAt != null
         } catch (e: Exception) {
             Napier.e("Failed to check email verification", e, tag = TAG)
             false
@@ -166,7 +167,7 @@ class AuthRepository {
     suspend fun refreshSession(): Result<Unit> {
         return try {
             withContext(Dispatchers.Default) {
-                SupabaseClient.client.auth.refreshCurrentSession()
+                client.auth.refreshCurrentSession()
                 Napier.d("Session refreshed", tag = TAG)
                 Result.success(Unit)
             }
@@ -178,7 +179,7 @@ class AuthRepository {
 
     suspend fun restoreSession(): Boolean {
         return try {
-            SupabaseClient.client.auth.currentSessionOrNull() != null
+            client.auth.currentSessionOrNull() != null
         } catch (e: Exception) {
             Napier.e("Session restore failed", e, tag = TAG)
             false
@@ -188,7 +189,7 @@ class AuthRepository {
     suspend fun sendPasswordResetEmail(email: String): Result<Unit> {
         return try {
             withContext(Dispatchers.Default) {
-                SupabaseClient.client.auth.resetPasswordForEmail(email)
+                client.auth.resetPasswordForEmail(email)
                 Napier.d("Password reset email sent", tag = TAG)
                 Result.success(Unit)
             }
@@ -199,13 +200,22 @@ class AuthRepository {
     }
 
     suspend fun resendVerificationEmail(email: String): Result<Unit> {
-        return sendPasswordResetEmail(email)
+        return try {
+            withContext(Dispatchers.Default) {
+                client.auth.resendEmail(OtpType.Email.SIGNUP, email)
+                Napier.d("Verification email resent", tag = TAG)
+                Result.success(Unit)
+            }
+        } catch (e: Exception) {
+            Napier.e("Resend verification email failed", e, tag = TAG)
+            Result.failure(e)
+        }
     }
 
     suspend fun updatePassword(password: String): Result<Unit> {
         return try {
             withContext(Dispatchers.Default) {
-                SupabaseClient.client.auth.updateUser {
+                client.auth.updateUser {
                     this.password = password
                 }
                 Napier.d("Password updated", tag = TAG)
@@ -219,7 +229,7 @@ class AuthRepository {
 
     suspend fun getOAuthUrl(provider: String, redirectUrl: String): Result<String> {
         return try {
-            val supabaseUrl = SupabaseClient.client.supabaseUrl
+            val supabaseUrl = client.supabaseUrl
             val oauthUrl = "$supabaseUrl/auth/v1/authorize?provider=$provider&redirect_to=$redirectUrl"
             Result.success(oauthUrl)
         } catch (e: Exception) {
@@ -233,10 +243,10 @@ class AuthRepository {
             withContext(Dispatchers.Default) {
                 when {
                     code != null -> {
-                        SupabaseClient.client.auth.exchangeCodeForSession(code)
+                        client.auth.exchangeCodeForSession(code)
                     }
                     accessToken != null && refreshToken != null -> {
-                        SupabaseClient.client.auth.importAuthToken(accessToken, refreshToken)
+                        client.auth.importAuthToken(accessToken, refreshToken)
                     }
                     else -> {
                         throw Exception("No valid OAuth parameters")
@@ -254,7 +264,7 @@ class AuthRepository {
     suspend fun signInWithOAuth(provider: OAuthProvider, redirectUrl: String): Result<Unit> {
         return try {
             withContext(Dispatchers.Default) {
-                SupabaseClient.client.auth.signInWith(provider)
+                client.auth.signInWith(provider)
                 Napier.d("OAuth sign-in initiated for ${provider.name}", tag = TAG)
                 Result.success(Unit)
             }

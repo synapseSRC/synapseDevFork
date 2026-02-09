@@ -6,8 +6,6 @@ object S3Signer {
 
     private const val S3_SERVICE = "s3"
 
-    // TODO(KOTLIN-STDLIB): Remove @OptIn when toHexString() becomes stable.
-    @OptIn(ExperimentalStdlibApi::class)
     fun signS3(
         method: String,
         canonicalPath: String,
@@ -32,6 +30,8 @@ object S3Signer {
         val stringToSign = "AWS4-HMAC-SHA256\n$amzDate\n$credentialScope\n${PlatformUtils.sha256(canonicalRequest)}"
 
         val signingKey = getSignatureKey(secretAccessKey, dateStamp, region, S3_SERVICE)
+        // TODO(KOTLIN-STDLIB): Remove @OptIn when toHexString() becomes stable.
+        @OptIn(ExperimentalStdlibApi::class)
         val signature = PlatformUtils.hmacSha256(signingKey, stringToSign).toHexString()
         val authorization = "AWS4-HMAC-SHA256 Credential=$accessKeyId/$credentialScope, SignedHeaders=$signedHeaders, Signature=$signature"
 

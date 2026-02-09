@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @ExperimentalCoroutinesApi
@@ -39,6 +40,7 @@ class SavePostUseCaseTest {
         // Then
         assertTrue(result.isSuccess)
         assertEquals(Unit, result.getOrNull())
+        verify(repository).savePost(postId, userId)
     }
 
     @Test
@@ -55,5 +57,6 @@ class SavePostUseCaseTest {
         // Then
         assertTrue(result.isFailure)
         assertEquals(exception, result.exceptionOrNull())
+        verify(repository).savePost(postId, userId)
     }
 }

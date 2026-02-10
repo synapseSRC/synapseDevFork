@@ -17,7 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.synapse.social.studioasinc.feature.profile.ProfileEditActivity
 import com.synapse.social.studioasinc.feature.settings.SettingsActivity
-import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.repository.AuthRepository
 import com.synapse.social.studioasinc.feature.profile.profile.ProfileScreen
 import com.synapse.social.studioasinc.feature.profile.profile.ProfileViewModel
@@ -25,7 +24,6 @@ import com.synapse.social.studioasinc.feature.shared.components.FollowListActivi
 import com.synapse.social.studioasinc.ui.settings.AppearanceViewModel
 import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,13 +47,14 @@ class ProfileActivity : ComponentActivity() {
         }
 
         val currentUserId = try {
-            SupabaseClient.client.auth.currentUserOrNull()?.id
+            authRepository.getCurrentUserId()
         } catch (e: Exception) {
             android.util.Log.e("ProfileActivity", "Failed to fetch user ID in onCreate", e)
             null
         }
 
         if (currentUserId == null) {
+            Toast.makeText(this, "Failed to get user information.", Toast.LENGTH_SHORT).show()
             finish()
             return
         }

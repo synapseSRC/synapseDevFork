@@ -13,8 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.synapse.social.studioasinc.feature.profile.ProfileEditActivity
@@ -51,10 +49,10 @@ class ProfileActivity : ComponentActivity() {
         }
 
         val currentUserId = try {
-             SupabaseClient.client.auth.currentUserOrNull()?.id
+            SupabaseClient.client.auth.currentUserOrNull()?.id
         } catch (e: Exception) {
-             android.util.Log.e("ProfileActivity", "Error fetching user ID", e)
-             null
+            android.util.Log.e("ProfileActivity", "Error fetching user ID", e)
+            null
         }
 
         if (currentUserId == null) {

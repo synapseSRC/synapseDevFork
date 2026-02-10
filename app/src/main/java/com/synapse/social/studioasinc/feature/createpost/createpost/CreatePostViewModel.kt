@@ -569,8 +569,8 @@ class CreatePostViewModel @Inject constructor(
 
                             if (!filePath.startsWith("content://")) {
                                 val dataDir = getApplication<Application>().applicationInfo.dataDir
-                                val isInDataDir = file.absolutePath.startsWith(dataDir)
-                                val isInCacheDir = file.absolutePath.startsWith(getApplication<Application>().cacheDir.absolutePath)
+                                val isInDataDir = file.canonicalPath.startsWith(dataDir)
+                                val isInCacheDir = file.canonicalPath.startsWith(getApplication<Application>().cacheDir.canonicalPath)
 
                                 if (isInDataDir && !isInCacheDir) {
                                     android.util.Log.e("CreatePost", "Invalid file source: $filePath")
@@ -697,8 +697,8 @@ class CreatePostViewModel @Inject constructor(
 
         if (!isContentUri) {
             val dataDir = getApplication<Application>().applicationInfo.dataDir
-            val isInDataDir = file.absolutePath.startsWith(dataDir)
-            val isInCacheDir = file.absolutePath.startsWith(getApplication<Application>().cacheDir.absolutePath)
+            val isInDataDir = file.canonicalPath.startsWith(dataDir)
+            val isInCacheDir = file.canonicalPath.startsWith(getApplication<Application>().cacheDir.canonicalPath)
 
             if (isInDataDir && !isInCacheDir) {
                 _uiState.update { it.copy(error = "Invalid video file source") }

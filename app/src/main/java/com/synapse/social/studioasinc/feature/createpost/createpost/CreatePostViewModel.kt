@@ -567,6 +567,20 @@ class CreatePostViewModel @Inject constructor(
                                 return@async null
                             }
 
+                            if (!filePath.startsWith("content://")) {
+                                val dataDir = getApplication<Application>().applicationInfo.dataDir
+                                val isInDataDir = file.absolutePath.startsWith(dataDir)
+                                val isInCacheDir = file.absolutePath.startsWith(getApplication<Application>().cacheDir.absolutePath)
+
+                                if (isInDataDir && !isInCacheDir) {
+                                    android.util.Log.e("CreatePost", "Invalid file source: $filePath")
+                                    // Set progress to 100% for skipped item
+                                    progressMap[index] = 1.0f
+                                    updateTotalProgress(progressMap, totalItems)
+                                    return@async null
+                                }
+                            }
+
                             val sharedMediaType = when (mediaItem.type) {
                                 MediaType.IMAGE -> com.synapse.social.studioasinc.shared.domain.model.MediaType.PHOTO
                                 MediaType.VIDEO -> com.synapse.social.studioasinc.shared.domain.model.MediaType.VIDEO

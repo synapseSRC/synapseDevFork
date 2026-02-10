@@ -38,6 +38,7 @@ import java.util.UUID
 import com.synapse.social.studioasinc.domain.model.PostMetadata
 import com.synapse.social.studioasinc.domain.model.FeelingActivity
 import kotlinx.coroutines.async
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -553,7 +554,7 @@ class CreatePostViewModel @Inject constructor(
 
             val uploadedResults = coroutineScope {
                 newMedia.mapIndexed { index, mediaItem ->
-                    async {
+                    async(Dispatchers.IO) {
                         try {
                             val filePath = mediaItem.url
                             val file = java.io.File(filePath)

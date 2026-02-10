@@ -210,7 +210,7 @@ fun PostDetailScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        contentWindowInsets = WindowInsets.safeDrawing,
+        contentWindowInsets = WindowInsets.safeDrawing.exclude(WindowInsets.ime),
         bottomBar = {
             Column(
                  modifier = Modifier.windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars))

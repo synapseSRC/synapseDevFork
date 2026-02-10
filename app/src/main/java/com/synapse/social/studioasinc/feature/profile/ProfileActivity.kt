@@ -36,6 +36,8 @@ class ProfileActivity : ComponentActivity() {
     @Inject
     lateinit var authRepository: AuthRepository
 
+    private var currentUserId: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -46,7 +48,13 @@ class ProfileActivity : ComponentActivity() {
             return
         }
 
-        val currentUserId = runCatching {
+        if (targetUserId.isBlank()) {
+            Toast.makeText(this, "Invalid user ID", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        currentUserId = runCatching {
             authRepository.getCurrentUserId()
         }.onFailure { e ->
             android.util.Log.e("ProfileActivity", "Failed to fetch user ID in onCreate", e)
@@ -79,7 +87,7 @@ class ProfileActivity : ComponentActivity() {
                 Surface(color = MaterialTheme.colorScheme.background) {
                     ProfileScreen(
                         userId = targetUserId,
-                        currentUserId = currentUserId,
+                        currentUserId = currentUserId!!,
                         onNavigateBack = { finish() },
                         onNavigateToEditProfile = { navigateToEditProfile() },
                         onNavigateToFollowers = { navigateToFollowers(targetUserId) },
@@ -149,12 +157,13 @@ class ProfileActivity : ComponentActivity() {
     private fun navigateToChat(targetUserId: String) {
         lifecycleScope.launch {
             try {
-                val currentUserId = authRepository.getCurrentUserUid()
+                // Use cached currentUserId
+                val currentUserId = this@ProfileActivity.currentUserId
 
                 if (currentUserId == null) {
                     Toast.makeText(
                         this@ProfileActivity,
-                        "Failed to get user info",
+                        R.string.profile_get_user_info_failed,
                         Toast.LENGTH_SHORT
                     ).show()
                     return@launch

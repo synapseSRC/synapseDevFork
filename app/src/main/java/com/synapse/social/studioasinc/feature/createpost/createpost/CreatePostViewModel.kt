@@ -557,7 +557,6 @@ class CreatePostViewModel @Inject constructor(
                     async(Dispatchers.IO) {
                         try {
                             val filePath = mediaItem.url
-                            val filePath = mediaItem.url
                             val cleanPath = validateAndCleanPath(filePath)
                             if (cleanPath == null) {
                                 // Set progress to 100% for skipped item
@@ -679,7 +678,7 @@ class CreatePostViewModel @Inject constructor(
             val result = kotlinx.coroutines.withContext(Dispatchers.IO) {
                 val cleanPath = validateAndCleanPath(videoPath)
                 if (cleanPath == null) {
-                    return@withContext Result.failure<Unit>(Exception("Invalid video file or file not found"))
+                    return@withContext Result.failure(Exception("Invalid video file or file not found"))
                 }
 
                 val isContentUri = videoPath.startsWith("content://")

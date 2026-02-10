@@ -69,6 +69,7 @@ class AuthRepository(private val client: SupabaseClientLib = SupabaseClient.clie
                     val actualUsername = username ?: email.substringBefore("@")
 
 
+                    // SECURITY: Do not include sensitive fields (account_premium, verify, banned) here. They must be handled server-side.
                     val profileInsert = UserProfileInsert(
                         username = actualUsername,
                         email = email

@@ -31,8 +31,17 @@ import androidx.activity.enableEdgeToEdge
 import io.github.jan.supabase.auth.auth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.material3.CircularProgressIndicator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 @Deprecated("Use ProfileScreen within MainActivity navigation graph instead")
@@ -51,17 +60,6 @@ class ProfileActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val targetUserId = intent.getStringExtra("uid") ?: run {
-            finish()
-            return
-        }
-
-        val currentUserId = runBlocking {
-            try {
-                SupabaseClient.client.auth.currentUserOrNull()?.id
-            } catch (e: Exception) {
-                null
-            }
-        } ?: run {
             finish()
             return
         }
@@ -88,19 +86,47 @@ class ProfileActivity : ComponentActivity() {
                 dynamicColor = dynamicColor
             ) {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    ProfileScreen(
-                        userId = targetUserId,
-                        currentUserId = currentUserId,
-                        onNavigateBack = { finish() },
-                        onNavigateToEditProfile = { navigateToEditProfile() },
-                        onNavigateToFollowers = { navigateToFollowers(targetUserId) },
-                        onNavigateToFollowing = { navigateToFollowing(targetUserId) },
-                        onNavigateToSettings = { navigateToSettings() },
-                        onNavigateToActivityLog = { navigateToActivityLog() },
-                        onNavigateToUserProfile = { userId -> navigateToUserProfile(userId) },
-                        onNavigateToChat = { userId -> navigateToChat(userId) },
-                        viewModel = viewModel
-                    )
+                    var currentUserId by remember { mutableStateOf<String?>(null) }
+                    var isLoading by remember { mutableStateOf(true) }
+
+                    LaunchedEffect(Unit) {
+                        try {
+                            val id = withContext(Dispatchers.IO) {
+                                SupabaseClient.client.auth.currentUserOrNull()?.id
+                            }
+                            if (id != null) {
+                                currentUserId = id
+                            } else {
+                                finish()
+                            }
+                        } catch (e: Exception) {
+                            finish()
+                        } finally {
+                            isLoading = false
+                        }
+                    }
+
+                    if (isLoading) {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    } else {
+                        currentUserId?.let { uid ->
+                            ProfileScreen(
+                                userId = targetUserId,
+                                currentUserId = uid,
+                                onNavigateBack = { finish() },
+                                onNavigateToEditProfile = { navigateToEditProfile() },
+                                onNavigateToFollowers = { navigateToFollowers(targetUserId) },
+                                onNavigateToFollowing = { navigateToFollowing(targetUserId) },
+                                onNavigateToSettings = { navigateToSettings() },
+                                onNavigateToActivityLog = { navigateToActivityLog() },
+                                onNavigateToUserProfile = { userId -> navigateToUserProfile(userId) },
+                                onNavigateToChat = { userId -> navigateToChat(userId) },
+                                viewModel = viewModel
+                            )
+                        }
+                    }
                 }
             }
         }

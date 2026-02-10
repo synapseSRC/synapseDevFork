@@ -1,7 +1,6 @@
 package com.synapse.social.studioasinc.shared.data.repository
 
 import com.synapse.social.studioasinc.shared.core.network.SupabaseClient
-import com.synapse.social.studioasinc.shared.core.util.getCurrentIsoTime
 import com.synapse.social.studioasinc.shared.data.model.UserProfileInsert
 import com.synapse.social.studioasinc.shared.data.model.UserSettingsInsert
 import com.synapse.social.studioasinc.shared.data.model.UserPresenceInsert
@@ -72,18 +71,7 @@ class AuthRepository(private val client: SupabaseClientLib = SupabaseClient.clie
 
                     val profileInsert = UserProfileInsert(
                         username = actualUsername,
-                        email = email,
-                        created_at = getCurrentIsoTime(),
-                        updated_at = getCurrentIsoTime(),
-                        join_date = getCurrentIsoTime(),
-                        account_premium = false,
-                        verify = false,
-                        banned = false,
-                        followers_count = 0,
-                        following_count = 0,
-                        posts_count = 0,
-                        user_level_xp = 0,
-                        status = "active"
+                        email = email
                     )
                     client.from("user_profiles").insert(profileInsert)
 

@@ -2,7 +2,6 @@ package com.synapse.social.studioasinc.data.repository
 
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
 import io.github.jan.supabase.auth.providers.OAuthProvider
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
@@ -42,15 +41,15 @@ class AuthRepository @Inject constructor(
 
 
     fun getCurrentUserId(): String? {
-        return runBlocking { sharedAuthRepository.getCurrentUserId() }
+        return sharedAuthRepository.getCurrentUserId()
     }
 
     fun getCurrentUserEmail(): String? {
-        return runBlocking { sharedAuthRepository.getCurrentUserEmail() }
+        return sharedAuthRepository.getCurrentUserEmail()
     }
 
     fun isEmailVerified(): Boolean {
-        return runBlocking { sharedAuthRepository.isEmailVerified() }
+        return sharedAuthRepository.isEmailVerified()
     }
 
     suspend fun refreshSession(): Result<Unit> {

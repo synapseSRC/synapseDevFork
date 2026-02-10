@@ -124,7 +124,7 @@ class AuthRepository(private val client: SupabaseClientLib = SupabaseClient.clie
         }
     }
 
-    suspend fun getCurrentUserId(): String? {
+    fun getCurrentUserId(): String? {
         return try {
             client.auth.currentUserOrNull()?.id
         } catch (e: Exception) {
@@ -133,7 +133,7 @@ class AuthRepository(private val client: SupabaseClientLib = SupabaseClient.clie
         }
     }
 
-    suspend fun getCurrentUserEmail(): String? {
+    fun getCurrentUserEmail(): String? {
         return try {
             client.auth.currentUserOrNull()?.email
         } catch (e: Exception) {
@@ -143,7 +143,7 @@ class AuthRepository(private val client: SupabaseClientLib = SupabaseClient.clie
     }
 
     @OptIn(ExperimentalTime::class)
-    suspend fun isEmailVerified(): Boolean {
+    fun isEmailVerified(): Boolean {
         return try {
             client.auth.currentUserOrNull()?.emailConfirmedAt != null
         } catch (e: Exception) {
@@ -165,7 +165,7 @@ class AuthRepository(private val client: SupabaseClientLib = SupabaseClient.clie
         }
     }
 
-    suspend fun restoreSession(): Boolean {
+    fun restoreSession(): Boolean {
         return try {
             client.auth.currentSessionOrNull() != null
         } catch (e: Exception) {

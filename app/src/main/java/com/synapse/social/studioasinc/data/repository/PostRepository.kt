@@ -193,44 +193,57 @@ class PostRepository @Inject constructor(
     fun getPosts(): Flow<Result<List<Post>>> {
         return postDao.getAllPosts().flatMapLatest { entities ->
             flow {
-                val posts = entities.map { PostMapper.toModel(it) }
+                val posts = withContext(Dispatchers.Default) {
+                    val mappedPosts = entities.map { PostMapper.toModel(it) }
 
-
-                // Apply cache immediately
-                posts.forEach { post ->
-                    if (post.username == null) {
-                        profileCache[post.authorUid]?.data?.let { profile ->
-                            post.username = profile.username
-                            post.avatarUrl = profile.avatarUrl
-                            post.isVerified = profile.isVerified
+                    // Apply cache immediately
+                    mappedPosts.map { post ->
+                        if (post.username == null) {
+                            profileCache[post.authorUid]?.data?.let { profile ->
+                                post.copy(
+                                    username = profile.username,
+                                    avatarUrl = profile.avatarUrl,
+                                    isVerified = profile.isVerified
+                                )
+                            } ?: post
+                        } else {
+                            post
                         }
                     }
                 }
 
                 emit(Result.success(posts))
 
-                val missingUserIds = posts.filter { it.username == null }
-                    .map { it.authorUid }
-                    .distinct()
-                    .filter { userId ->
-                        profileCache[userId]?.let { !it.isExpired() } != true
-                    }
+                val missingUserIds = withContext(Dispatchers.Default) {
+                    posts.filter { it.username == null }
+                        .map { it.authorUid }
+                        .distinct()
+                        .filter { userId ->
+                            profileCache[userId]?.let { !it.isExpired() } != true
+                        }
+                }
 
 
                 if (missingUserIds.isNotEmpty()) {
                     fetchUserProfilesBatch(missingUserIds)
 
                     // Re-apply profiles
-                    posts.forEach { post ->
-                        if (post.username == null) {
-                            profileCache[post.authorUid]?.data?.let { profile ->
-                                post.username = profile.username
-                                post.avatarUrl = profile.avatarUrl
-                                post.isVerified = profile.isVerified
+                    val updatedPosts = withContext(Dispatchers.Default) {
+                        posts.map { post ->
+                            if (post.username == null) {
+                                profileCache[post.authorUid]?.data?.let { profile ->
+                                    post.copy(
+                                        username = profile.username,
+                                        avatarUrl = profile.avatarUrl,
+                                        isVerified = profile.isVerified
+                                    )
+                                } ?: post
+                            } else {
+                                post
                             }
                         }
                     }
-                    emit(Result.success(posts.toList()))
+                    emit(Result.success(updatedPosts))
                 }
             }
         }.catch { e ->
@@ -554,7 +567,7 @@ class PostRepository @Inject constructor(
         }
     }
 
-    private suspend fun fetchUserProfilesBatch(userIds: List<String>) {
+    private suspend fun fetchUserProfilesBatch(userIds: List<String>) = withContext(Dispatchers.IO) {
         try {
             val users = client.from("users").select {
                 filter { isIn("uid", userIds) }

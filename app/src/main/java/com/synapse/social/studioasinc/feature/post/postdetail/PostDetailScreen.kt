@@ -209,11 +209,11 @@ fun PostDetailScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars)),
+        modifier = Modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets.safeDrawing,
         bottomBar = {
             Column(
-                 modifier = Modifier
+                 modifier = Modifier.windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars))
                      .fillMaxWidth()
             ) {
 
@@ -258,7 +258,7 @@ fun PostDetailScreen(
             )
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+        Box(modifier = Modifier.windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars)).fillMaxSize().padding(paddingValues)) {
         if (uiState.isLoading && uiState.post == null) {
              Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                  ExpressiveLoadingIndicator()
@@ -326,7 +326,7 @@ fun PostDetailScreen(
                             post = mergedPost,
                             actions = actions,
                             isExpanded = true,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars)).fillMaxWidth()
                         )
                      }
                  )

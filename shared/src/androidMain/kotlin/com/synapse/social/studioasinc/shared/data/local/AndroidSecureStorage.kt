@@ -10,6 +10,7 @@ class AndroidSecureStorage(private val context: Context, private val sharedPrefe
 
     private val prefs: SharedPreferences by lazy {
         sharedPreferences ?: try {
+            // Use MasterKey.Builder for stronger key derivation as MasterKeys is deprecated.
             val masterKey = MasterKey.Builder(context)
                 .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
                 .build()

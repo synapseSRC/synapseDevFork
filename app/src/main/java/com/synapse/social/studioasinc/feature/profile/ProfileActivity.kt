@@ -50,6 +50,18 @@ class ProfileActivity : ComponentActivity() {
             return
         }
 
+        val currentUserId = try {
+             SupabaseClient.client.auth.currentUserOrNull()?.id
+        } catch (e: Exception) {
+             android.util.Log.e("ProfileActivity", "Error fetching user ID", e)
+             null
+        }
+
+        if (currentUserId == null) {
+            finish()
+            return
+        }
+
         setContent {
             val appearanceViewModel: AppearanceViewModel = viewModel()
             val appearanceSettings by appearanceViewModel.appearanceSettings.collectAsState()
@@ -69,34 +81,19 @@ class ProfileActivity : ComponentActivity() {
                 dynamicColor = dynamicColor
             ) {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    val currentUserId = remember {
-                         try {
-                             SupabaseClient.client.auth.currentUserOrNull()?.id
-                         } catch (e: Exception) {
-                             android.util.Log.e("ProfileActivity", "Error fetching user ID", e)
-                             null
-                         }
-                    }
-
-                    if (currentUserId == null) {
-                        LaunchedEffect(Unit) {
-                            finish()
-                        }
-                    } else {
-                        ProfileScreen(
-                            userId = targetUserId,
-                            currentUserId = currentUserId,
-                            onNavigateBack = { finish() },
-                            onNavigateToEditProfile = { navigateToEditProfile() },
-                            onNavigateToFollowers = { navigateToFollowers(targetUserId) },
-                            onNavigateToFollowing = { navigateToFollowing(targetUserId) },
-                            onNavigateToSettings = { navigateToSettings() },
-                            onNavigateToActivityLog = { navigateToActivityLog() },
-                            onNavigateToUserProfile = { userId -> navigateToUserProfile(userId) },
-                            onNavigateToChat = { userId -> navigateToChat(userId) },
-                            viewModel = viewModel
-                        )
-                    }
+                    ProfileScreen(
+                        userId = targetUserId,
+                        currentUserId = currentUserId,
+                        onNavigateBack = { finish() },
+                        onNavigateToEditProfile = { navigateToEditProfile() },
+                        onNavigateToFollowers = { navigateToFollowers(targetUserId) },
+                        onNavigateToFollowing = { navigateToFollowing(targetUserId) },
+                        onNavigateToSettings = { navigateToSettings() },
+                        onNavigateToActivityLog = { navigateToActivityLog() },
+                        onNavigateToUserProfile = { userId -> navigateToUserProfile(userId) },
+                        onNavigateToChat = { userId -> navigateToChat(userId) },
+                        viewModel = viewModel
+                    )
                 }
             }
         }

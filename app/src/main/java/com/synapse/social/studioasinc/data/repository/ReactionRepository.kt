@@ -10,6 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.rpc
 import javax.inject.Inject
 
 
@@ -176,45 +180,58 @@ class ReactionRepository @Inject constructor(
 
 
 
+    @Serializable
+    internal data class PostReactionSummary(
+        @SerialName("post_id") val postId: String,
+        @SerialName("reaction_counts") val reactionCounts: Map<String, Int> = emptyMap(),
+        @SerialName("user_reaction") val userReaction: String? = null
+    )
+
+    internal fun applyReactionSummaries(
+        posts: List<com.synapse.social.studioasinc.domain.model.Post>,
+        summaries: List<PostReactionSummary>
+    ): List<com.synapse.social.studioasinc.domain.model.Post> {
+        val summariesByPost = summaries.associateBy { it.postId }
+
+        return posts.map { post ->
+            val summaryData = summariesByPost[post.id]
+
+            val summary = summaryData?.reactionCounts?.entries
+                ?.groupingBy { ReactionType.fromString(it.key) }
+                ?.fold(0) { acc, entry -> acc + entry.value }
+                ?: emptyMap()
+
+            val userReactionType = summaryData?.userReaction?.let { ReactionType.fromString(it) }
+
+            post.copy(
+                reactions = summary,
+                userReaction = userReactionType,
+                likesCount = summary.values.sum()
+            )
+        }
+    }
+
     suspend fun populatePostReactions(posts: List<com.synapse.social.studioasinc.domain.model.Post>): List<com.synapse.social.studioasinc.domain.model.Post> = withContext(Dispatchers.IO) {
         if (posts.isEmpty()) return@withContext posts
 
         try {
             val allPostIds = posts.map { it.id }
-            val currentUserId = client.auth.currentUserOrNull()?.id
-            val allReactions = mutableListOf<JsonObject>()
-
+            val summaries = mutableListOf<PostReactionSummary>()
 
             allPostIds.chunked(20).forEach { chunkIds ->
                  try {
-                     val chunkReactions = client.from("reactions")
-                        .select { filter { isIn("post_id", chunkIds) } }
-                        .decodeList<JsonObject>()
-                     allReactions.addAll(chunkReactions)
+                     val chunkSummaries = client.postgrest.rpc(
+                        "get_posts_reactions_summary",
+                        mapOf("post_ids" to chunkIds)
+                     ).decodeList<PostReactionSummary>()
+                     summaries.addAll(chunkSummaries)
                  } catch(e: Exception) {
-                     Log.e(TAG, "Failed to fetch reactions for chunk", e)
+                     Log.e(TAG, "Failed to fetch reaction summaries for chunk", e)
                  }
             }
 
+            applyReactionSummaries(posts, summaries)
 
-            val reactionsByPost = allReactions.groupBy { it["post_id"]?.jsonPrimitive?.contentOrNull }
-
-            posts.map { post ->
-                val postReactions = reactionsByPost[post.id] ?: emptyList()
-
-
-                val summary = postReactions
-                    .groupBy { ReactionType.fromString(it["reaction_type"]?.jsonPrimitive?.contentOrNull ?: "LIKE") }
-                    .mapValues { it.value.size }
-
-
-                val userReactionType = if (currentUserId != null) {
-                    postReactions.find { it["user_id"]?.jsonPrimitive?.contentOrNull == currentUserId }
-                        ?.let { ReactionType.fromString(it["reaction_type"]?.jsonPrimitive?.contentOrNull ?: "LIKE") }
-                } else null
-
-                post.copy(reactions = summary, userReaction = userReactionType, likesCount = summary.values.sum())
-            }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to populate reactions", e)
             posts

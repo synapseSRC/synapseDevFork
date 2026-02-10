@@ -37,6 +37,10 @@ import java.util.UUID
 
 import com.synapse.social.studioasinc.domain.model.PostMetadata
 import com.synapse.social.studioasinc.domain.model.FeelingActivity
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import java.util.concurrent.ConcurrentHashMap
 import com.synapse.social.studioasinc.domain.model.FeelingType
 import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
 import io.ktor.utils.io.jvm.javaio.toByteReadChannel
@@ -539,66 +543,68 @@ class CreatePostViewModel @Inject constructor(
 
     private suspend fun uploadMediaAndSave(post: Post, newMedia: List<MediaItem>, existingMedia: List<MediaItem>) {
         try {
-            val uploadedItems = mutableListOf<MediaItem>()
             val totalItems = newMedia.size
-            var completedItems = 0
+            val progressMap = ConcurrentHashMap<Int, Float>()
 
-            newMedia.forEach { mediaItem ->
-                try {
-                    val filePath = mediaItem.url
-                    val file = java.io.File(filePath)
+            // Initialize progress map
+            for (i in 0 until totalItems) {
+                progressMap[i] = 0f
+            }
 
-                    if (!filePath.startsWith("content://") && !file.exists()) {
-                        android.util.Log.e("CreatePost", "File not found: $filePath")
-                        completedItems++
-                        val progress = completedItems.toFloat() / totalItems
-                        _uiState.update { it.copy(uploadProgress = progress) }
-                        return@forEach
-                    }
+            val uploadedResults = coroutineScope {
+                newMedia.mapIndexed { index, mediaItem ->
+                    async {
+                        try {
+                            val filePath = mediaItem.url
+                            val file = java.io.File(filePath)
 
+                            if (!filePath.startsWith("content://") && !file.exists()) {
+                                android.util.Log.e("CreatePost", "File not found: $filePath")
+                                // Set progress to 100% for skipped item
+                                progressMap[index] = 1.0f
+                                updateTotalProgress(progressMap, totalItems)
+                                return@async null
+                            }
 
-                    val sharedMediaType = when (mediaItem.type) {
-                        MediaType.IMAGE -> com.synapse.social.studioasinc.shared.domain.model.MediaType.PHOTO
-                        MediaType.VIDEO -> com.synapse.social.studioasinc.shared.domain.model.MediaType.VIDEO
-                        else -> com.synapse.social.studioasinc.shared.domain.model.MediaType.OTHER
-                    }
+                            val sharedMediaType = when (mediaItem.type) {
+                                MediaType.IMAGE -> com.synapse.social.studioasinc.shared.domain.model.MediaType.PHOTO
+                                MediaType.VIDEO -> com.synapse.social.studioasinc.shared.domain.model.MediaType.VIDEO
+                                else -> com.synapse.social.studioasinc.shared.domain.model.MediaType.OTHER
+                            }
 
-                    val result = uploadMediaUseCase(
-                        filePath = filePath,
-                        mediaType = sharedMediaType,
-                        onProgress = { progress ->
-                            val itemProgress = progress / totalItems
-                            val baseProgress = completedItems.toFloat() / totalItems
-                            _uiState.update { it.copy(uploadProgress = baseProgress + itemProgress) }
-                        }
-                    )
+                            val result = uploadMediaUseCase(
+                                filePath = filePath,
+                                mediaType = sharedMediaType,
+                                onProgress = { progress ->
+                                    progressMap[index] = progress
+                                    updateTotalProgress(progressMap, totalItems)
+                                }
+                            )
 
-                    result.onSuccess { uploadedUrl ->
-                         uploadedItems.add(
+                            // If upload succeeds, return the new MediaItem
+                            val uploadedUrl = result.getOrThrow()
+
+                            // Set progress to 100%
+                            progressMap[index] = 1.0f
+                            updateTotalProgress(progressMap, totalItems)
+
+                            android.util.Log.d("CreatePost", "Uploaded ${mediaItem.type}: $uploadedUrl")
+
                             mediaItem.copy(
                                 id = java.util.UUID.randomUUID().toString(),
                                 url = uploadedUrl,
                                 mimeType = getApplication<Application>().contentResolver.getType(android.net.Uri.parse(filePath))
                             )
-                        )
-                         android.util.Log.d("CreatePost", "Uploaded ${mediaItem.type}: $uploadedUrl")
-                    }.onFailure { e ->
-                        android.util.Log.e("CreatePost", "Upload failed: ${e.message}")
-                        _uiState.update { it.copy(isLoading = false, error = "Upload failed: ${e.message}") }
-                        return
+                        } catch (e: Exception) {
+                            android.util.Log.e("CreatePost", "Media upload failed: ${e.message}", e)
+                            // Propagate exception to cancel other uploads
+                            throw e
+                        }
                     }
-
-                    completedItems++
-                    val progress = completedItems.toFloat() / totalItems
-                    _uiState.update { it.copy(uploadProgress = progress) }
-
-                } catch (e: Exception) {
-                    android.util.Log.e("CreatePost", "Media upload failed: ${e.message}", e)
-                    _uiState.update { it.copy(isLoading = false, error = "Upload failed: ${e.message}") }
-                    return
-                }
+                }.awaitAll()
             }
 
+            val uploadedItems = uploadedResults.filterNotNull()
             val allMedia = existingMedia + uploadedItems
             val updatedPost = post.copy(
                 mediaItems = allMedia.toMutableList(),
@@ -610,6 +616,11 @@ class CreatePostViewModel @Inject constructor(
             android.util.Log.e("CreatePost", "Upload process failed", e)
             _uiState.update { it.copy(isLoading = false, error = "Upload failed: ${e.message}") }
         }
+    }
+
+    private fun updateTotalProgress(progressMap: ConcurrentHashMap<Int, Float>, totalItems: Int) {
+        val totalProgress = progressMap.values.sum() / totalItems
+        _uiState.update { it.copy(uploadProgress = totalProgress) }
     }
 
     private fun saveOrUpdatePost(post: Post) {

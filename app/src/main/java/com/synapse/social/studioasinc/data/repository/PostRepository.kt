@@ -68,6 +68,20 @@ class PostRepository @Inject constructor(
         private const val TAG = "PostRepository"
         private val PGRST_REGEX = Regex("PGRST\\d+")
         private val COLUMN_REGEX = Regex("column \"([^\"]+)\"")
+
+        internal fun findDeletedIds(localChunk: List<String>, serverResponse: List<JsonObject>): List<String> {
+            val serverIds = serverResponse.mapNotNull { it["id"]?.jsonPrimitive?.contentOrNull }.toSet()
+
+            // Hard deleted: in localChunk but not in serverIds
+            val missingIds = localChunk.filter { !serverIds.contains(it) }
+
+            // Soft deleted: in serverResponse with is_deleted=true
+            val softDeletedIds = serverResponse.filter {
+                it["is_deleted"]?.jsonPrimitive?.booleanOrNull == true
+            }.mapNotNull { it["id"]?.jsonPrimitive?.contentOrNull }
+
+            return (missingIds + softDeletedIds).distinct()
+        }
     }
 
     private data class ProfileData(
@@ -312,38 +326,38 @@ class PostRepository @Inject constructor(
 
     private suspend fun syncDeletedPosts() {
         try {
+            val localIds = postDao.getAllPostIds()
+            if (localIds.isEmpty()) return
 
-            val serverIds = mutableSetOf<String>()
-            val pageSize = 1000
-            var offset = 0
+            val idsToDelete = mutableListOf<String>()
 
-            while (true) {
-                val response = client.from("posts")
-                    .select(columns = Columns.raw("id")) {
-                        range(offset.toLong(), (offset + pageSize - 1).toLong())
-                    }
-                    .decodeList<JsonObject>()
+            // Process in chunks of 50 to respect URL length limits (approx 2KB max for safe GET)
+            // 50 UUIDs * 36 chars = 1800 chars + overhead
+            localIds.chunked(50).forEach { chunk ->
+                try {
+                    val response = client.from("posts")
+                        .select(columns = Columns.raw("id, is_deleted")) {
+                            filter { isIn("id", chunk) }
+                        }
+                        .decodeList<JsonObject>()
 
-                val pageIds = response.mapNotNull { it["id"]?.jsonPrimitive?.contentOrNull }
-                serverIds.addAll(pageIds)
+                    idsToDelete.addAll(findDeletedIds(chunk, response))
 
-                if (pageIds.size < pageSize) break
-                offset += pageSize
+                } catch (e: Exception) {
+                    android.util.Log.e(TAG, "Failed to check chunk existence", e)
+                }
             }
 
-            val localIds = postDao.getAllPostIds()
-            val idsToDelete = localIds.filter { !serverIds.contains(it) }
-
             if (idsToDelete.isNotEmpty()) {
-                android.util.Log.d(TAG, "Syncing deletions: removing ${idsToDelete.size} posts")
+                val uniqueIdsToDelete = idsToDelete.distinct()
+                android.util.Log.d(TAG, "Syncing deletions: removing ${uniqueIdsToDelete.size} posts")
 
-                idsToDelete.chunked(500).forEach { batch ->
+                uniqueIdsToDelete.chunked(500).forEach { batch ->
                     postDao.deletePosts(batch)
                 }
             }
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to sync deleted posts", e)
-
         }
     }
 

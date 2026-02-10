@@ -557,30 +557,12 @@ class CreatePostViewModel @Inject constructor(
                     async(Dispatchers.IO) {
                         try {
                             val filePath = mediaItem.url
-                            val file = java.io.File(filePath)
-
-                            if (!filePath.startsWith("content://") && !file.exists()) {
-                                android.util.Log.e("CreatePost", "File not found: $filePath")
+                            if (!validateFileSource(filePath)) {
                                 // Set progress to 100% for skipped item
                                 progressMap[index] = 1.0f
                                 updateTotalProgress(progressMap, totalItems)
                                 return@async null
                             }
-
-                            if (!filePath.startsWith("content://")) {
-                                val dataDir = getApplication<Application>().applicationInfo.dataDir
-                                val isInDataDir = file.canonicalPath.startsWith(dataDir)
-                                val isInCacheDir = file.canonicalPath.startsWith(getApplication<Application>().cacheDir.canonicalPath)
-
-                                if (isInDataDir && !isInCacheDir) {
-                                    android.util.Log.e("CreatePost", "Invalid file source: $filePath")
-                                    // Set progress to 100% for skipped item
-                                    progressMap[index] = 1.0f
-                                    updateTotalProgress(progressMap, totalItems)
-                                    return@async null
-                                }
-                            }
-
                             val sharedMediaType = when (mediaItem.type) {
                                 MediaType.IMAGE -> com.synapse.social.studioasinc.shared.domain.model.MediaType.PHOTO
                                 MediaType.VIDEO -> com.synapse.social.studioasinc.shared.domain.model.MediaType.VIDEO
@@ -687,25 +669,13 @@ class CreatePostViewModel @Inject constructor(
         val videoItem = currentState.mediaItems.firstOrNull { it.type == MediaType.VIDEO } ?: return
         val videoPath = videoItem.url
         val isContentUri = videoPath.startsWith("content://")
-        val file = java.io.File(videoPath)
-
-        if (!isContentUri && !file.exists()) {
-            _uiState.update { it.copy(error = "Video file not found") }
+        if (!validateFileSource(videoPath)) {
+            _uiState.update { it.copy(error = "Invalid video file or file not found") }
             return
         }
 
-
-        if (!isContentUri) {
-            val dataDir = getApplication<Application>().applicationInfo.dataDir
-            val isInDataDir = file.canonicalPath.startsWith(dataDir)
-            val isInCacheDir = file.canonicalPath.startsWith(getApplication<Application>().cacheDir.canonicalPath)
-
-            if (isInDataDir && !isInCacheDir) {
-                _uiState.update { it.copy(error = "Invalid video file source") }
-                return
-            }
-        }
-
+        val cleanPath = if (videoPath.startsWith("file://")) videoPath.substring(7) else videoPath
+        val file = java.io.File(cleanPath)
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, uploadProgress = 0f) }
 
@@ -764,6 +734,38 @@ class CreatePostViewModel @Inject constructor(
             }
         }
     }
+    private fun validateFileSource(path: String): Boolean {
+        if (path.startsWith("content://")) return true
+
+        try {
+            // Fix: Strip file:// prefix if present
+            val cleanPath = if (path.startsWith("file://")) path.substring(7) else path
+            val file = java.io.File(cleanPath)
+
+            if (!file.exists()) {
+                android.util.Log.e("CreatePost", "File not found: $path")
+                return false
+            }
+
+            val canonicalPath = file.canonicalPath
+            val dataDir = getApplication<Application>().applicationInfo.dataDir
+            val cacheDir = getApplication<Application>().cacheDir.canonicalPath
+
+            val isInDataDir = canonicalPath.startsWith(dataDir)
+            val isInCacheDir = canonicalPath.startsWith(cacheDir)
+
+            // Block access to private data directory unless it's in the cache directory
+            if (isInDataDir && !isInCacheDir) {
+                android.util.Log.e("CreatePost", "Invalid file source (private data dir): $path")
+                return false
+            }
+            return true
+        } catch (e: Exception) {
+            android.util.Log.e("CreatePost", "Path validation failed: ${e.message}")
+            return false
+        }
+    }
+
     companion object {
         private const val DEFAULT_LAYOUT_TYPE = "COLUMNS"
     }

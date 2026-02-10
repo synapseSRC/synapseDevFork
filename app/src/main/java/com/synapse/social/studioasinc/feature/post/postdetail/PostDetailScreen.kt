@@ -258,7 +258,7 @@ fun PostDetailScreen(
             )
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars)).fillMaxSize().padding(paddingValues)) {
+        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
         if (uiState.isLoading && uiState.post == null) {
              Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                  ExpressiveLoadingIndicator()
@@ -326,7 +326,7 @@ fun PostDetailScreen(
                             post = mergedPost,
                             actions = actions,
                             isExpanded = true,
-                            modifier = Modifier.windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars)).fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth()
                         )
                      }
                  )

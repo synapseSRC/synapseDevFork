@@ -557,12 +557,14 @@ class CreatePostViewModel @Inject constructor(
                     async(Dispatchers.IO) {
                         try {
                             val filePath = mediaItem.url
-                            if (!validateFileSource(filePath)) {
+                            val cleanPath = validateAndCleanPath(filePath)
+                            if (cleanPath == null) {
                                 // Set progress to 100% for skipped item
                                 progressMap[index] = 1.0f
                                 updateTotalProgress(progressMap, totalItems)
                                 return@async null
                             }
+                            val file = java.io.File(cleanPath)
                             val sharedMediaType = when (mediaItem.type) {
                                 MediaType.IMAGE -> com.synapse.social.studioasinc.shared.domain.model.MediaType.PHOTO
                                 MediaType.VIDEO -> com.synapse.social.studioasinc.shared.domain.model.MediaType.VIDEO
@@ -670,14 +672,13 @@ class CreatePostViewModel @Inject constructor(
         val videoPath = videoItem.url
 
         viewModelScope.launch {
-            val isValid = kotlinx.coroutines.withContext(Dispatchers.IO) { validateFileSource(videoPath) }
-            if (!isValid) {
+            val cleanPath = kotlinx.coroutines.withContext(Dispatchers.IO) { validateAndCleanPath(videoPath) }
+            if (cleanPath == null) {
                 _uiState.update { it.copy(error = "Invalid video file or file not found") }
                 return@launch
             }
 
             val isContentUri = videoPath.startsWith("content://")
-            val cleanPath = if (videoPath.startsWith("file://")) videoPath.substring(7) else videoPath
             val file = java.io.File(cleanPath)
 
             _uiState.update { it.copy(isLoading = true, uploadProgress = 0f) }
@@ -737,8 +738,8 @@ class CreatePostViewModel @Inject constructor(
             }
         }
     }
-    private fun validateFileSource(path: String): Boolean {
-        if (path.startsWith("content://")) return true
+    private fun validateAndCleanPath(path: String): String? {
+        if (path.startsWith("content://")) return path
 
         try {
             // Fix: Strip file:// prefix if present
@@ -746,34 +747,33 @@ class CreatePostViewModel @Inject constructor(
             val file = java.io.File(cleanPath)
 
             if (!file.exists()) {
-                android.util.Log.e("CreatePost", "File not found: ${file.name}")
-                return false
+                android.util.Log.e("CreatePost", "File not found")
+                return null
             }
 
             val canonicalPath = file.canonicalPath
-            val dataDir = getApplication<Application>().applicationInfo.dataDir
+            val dataDir = java.io.File(getApplication<Application>().applicationInfo.dataDir).canonicalPath
             val cacheDir = getApplication<Application>().cacheDir.canonicalPath
 
-            // Robust check for directory containment (Issue 2)
+            // Robust check for directory containment
             val isInDataDir = canonicalPath == dataDir || canonicalPath.startsWith(dataDir + java.io.File.separator)
             val isInCacheDir = canonicalPath == cacheDir || canonicalPath.startsWith(cacheDir + java.io.File.separator)
 
             // Block access to private data directory unless it's in the cache directory
             if (isInDataDir && !isInCacheDir) {
-                // Log only filename to avoid PII leakage (Issue 3)
-                android.util.Log.e("CreatePost", "Invalid file source (private data dir): ${file.name}")
-                return false
+                android.util.Log.e("CreatePost", "Invalid file source (private data dir)")
+                return null
             }
-            return true
+            return cleanPath
         } catch (e: java.io.IOException) {
-            android.util.Log.e("CreatePost", "Path validation failed with IO error: ${e.message}")
-            return false
+            android.util.Log.e("CreatePost", "Path validation failed with IO error")
+            return null
         } catch (e: SecurityException) {
-            android.util.Log.e("CreatePost", "Path validation failed with security error: ${e.message}")
-            return false
+            android.util.Log.e("CreatePost", "Path validation failed with security error")
+            return null
         } catch (e: Exception) {
-            android.util.Log.e("CreatePost", "Path validation failed: ${e.message}")
-            return false
+            android.util.Log.e("CreatePost", "Path validation failed")
+            return null
         }
     }
 

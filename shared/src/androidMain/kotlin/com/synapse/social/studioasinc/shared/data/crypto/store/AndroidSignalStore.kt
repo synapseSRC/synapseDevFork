@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
 import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
 import org.whispersystems.libsignal.IdentityKey
 import org.whispersystems.libsignal.IdentityKeyPair
 import org.whispersystems.libsignal.SignalProtocolAddress
@@ -22,12 +22,14 @@ class AndroidSignalStore(context: Context, private val sharedPreferences: Shared
 
     private val prefs: SharedPreferences by lazy {
         sharedPreferences ?: try {
-            val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+            val masterKey = MasterKey.Builder(context)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build()
 
             EncryptedSharedPreferences.create(
-                "signal_secure_store",
-                masterKeyAlias,
                 context,
+                "signal_secure_store",
+                masterKey,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )

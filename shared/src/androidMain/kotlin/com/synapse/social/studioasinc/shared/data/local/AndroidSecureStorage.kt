@@ -3,19 +3,21 @@ package com.synapse.social.studioasinc.shared.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
 import java.io.IOException
 
-class AndroidSecureStorage(private val context: Context) : SecureStorage {
+class AndroidSecureStorage(private val context: Context, private val sharedPreferences: SharedPreferences? = null) : SecureStorage {
 
     private val prefs: SharedPreferences by lazy {
-        try {
-            val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        sharedPreferences ?: try {
+            val masterKey = MasterKey.Builder(context)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build()
 
             EncryptedSharedPreferences.create(
-                "secure_storage_prefs",
-                masterKeyAlias,
                 context,
+                "secure_storage_prefs",
+                masterKey,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )

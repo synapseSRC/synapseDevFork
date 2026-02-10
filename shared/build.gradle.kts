@@ -87,7 +87,7 @@ kotlin {
             dependencies {
                 implementation("io.ktor:ktor-client-okhttp:3.2.2")
                 implementation("org.whispersystems:signal-protocol-android:2.8.1")
-                implementation("androidx.security:security-crypto:1.0.0")
+                implementation("androidx.security:security-crypto:1.1.0-alpha06")
                 implementation("app.cash.sqldelight:android-driver:2.0.2")
                 implementation("io.insert-koin:koin-android:4.0.0")
             }

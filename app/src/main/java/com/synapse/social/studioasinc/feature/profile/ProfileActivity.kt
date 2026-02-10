@@ -46,12 +46,11 @@ class ProfileActivity : ComponentActivity() {
             return
         }
 
-        val currentUserId = try {
+        val currentUserId = runCatching {
             authRepository.getCurrentUserId()
-        } catch (e: Exception) {
+        }.onFailure { e ->
             android.util.Log.e("ProfileActivity", "Failed to fetch user ID in onCreate", e)
-            null
-        }
+        }.getOrNull()
 
         if (currentUserId == null) {
             Toast.makeText(this, R.string.profile_get_user_info_failed, Toast.LENGTH_SHORT).show()

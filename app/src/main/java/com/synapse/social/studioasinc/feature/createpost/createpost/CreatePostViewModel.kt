@@ -38,6 +38,7 @@ import java.util.UUID
 import com.synapse.social.studioasinc.domain.model.PostMetadata
 import com.synapse.social.studioasinc.domain.model.FeelingActivity
 import kotlinx.coroutines.async
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
@@ -553,19 +554,17 @@ class CreatePostViewModel @Inject constructor(
 
             val uploadedResults = coroutineScope {
                 newMedia.mapIndexed { index, mediaItem ->
-                    async {
+                    async(Dispatchers.IO) {
                         try {
                             val filePath = mediaItem.url
-                            val file = java.io.File(filePath)
-
-                            if (!filePath.startsWith("content://") && !file.exists()) {
-                                android.util.Log.e("CreatePost", "File not found: $filePath")
+                            val cleanPath = validateAndCleanPath(filePath)
+                            if (cleanPath == null) {
                                 // Set progress to 100% for skipped item
                                 progressMap[index] = 1.0f
                                 updateTotalProgress(progressMap, totalItems)
                                 return@async null
                             }
-
+                            val file = java.io.File(cleanPath)
                             val sharedMediaType = when (mediaItem.type) {
                                 MediaType.IMAGE -> com.synapse.social.studioasinc.shared.domain.model.MediaType.PHOTO
                                 MediaType.VIDEO -> com.synapse.social.studioasinc.shared.domain.model.MediaType.VIDEO
@@ -671,84 +670,115 @@ class CreatePostViewModel @Inject constructor(
 
         val videoItem = currentState.mediaItems.firstOrNull { it.type == MediaType.VIDEO } ?: return
         val videoPath = videoItem.url
-        val isContentUri = videoPath.startsWith("content://")
-        val file = java.io.File(videoPath)
-
-        if (!isContentUri && !file.exists()) {
-            _uiState.update { it.copy(error = "Video file not found") }
-            return
-        }
-
-
-        if (!isContentUri) {
-            val dataDir = getApplication<Application>().applicationInfo.dataDir
-            val isInDataDir = file.absolutePath.startsWith(dataDir)
-            val isInCacheDir = file.absolutePath.startsWith(getApplication<Application>().cacheDir.absolutePath)
-
-            if (isInDataDir && !isInCacheDir) {
-                _uiState.update { it.copy(error = "Invalid video file source") }
-                return
-            }
-        }
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, uploadProgress = 0f) }
 
-            val fileName = "reel_${System.currentTimeMillis()}.mp4"
-            var channel: io.ktor.utils.io.ByteReadChannel?
-            var size: Long
-
-            try {
-                if (isContentUri) {
-                    val uri = Uri.parse(videoPath)
-                    val resolver = getApplication<Application>().contentResolver
-                    val inputStream = resolver.openInputStream(uri)
-                        ?: throw java.io.IOException("Failed to open input stream")
-                    channel = inputStream.toByteReadChannel()
-                    size = resolver.openFileDescriptor(uri, "r")?.statSize ?: 0L
-                } else {
-                    channel = file.inputStream().toByteReadChannel()
-                    size = file.length()
+            // Move all I/O and validation to background
+            val result = kotlinx.coroutines.withContext(Dispatchers.IO) {
+                val cleanPath = validateAndCleanPath(videoPath)
+                if (cleanPath == null) {
+                    return@withContext Result.failure(Exception("Invalid video file or file not found"))
                 }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false, error = "Failed to prepare video: ${e.message}") }
-                return@launch
-            }
 
-            if (channel == null) {
-                 _uiState.update { it.copy(isLoading = false, error = "Failed to create read channel") }
-                 return@launch
-            }
+                val isContentUri = videoPath.startsWith("content://")
+                val file = java.io.File(cleanPath)
+                val fileName = "reel_${System.currentTimeMillis()}.mp4"
 
-            val metadataMap = mutableMapOf<String, Any?>()
-            currentState.feeling?.let { metadataMap["feeling"] = mapOf("emoji" to it.emoji, "text" to it.text, "type" to it.type.name) }
-            if (currentState.taggedPeople.isNotEmpty()) {
-                metadataMap["tagged_people"] = currentState.taggedPeople.map { mapOf("uid" to it.uid, "username" to it.username) }
-            }
-            metadataMap["layout_type"] = DEFAULT_LAYOUT_TYPE
-            currentState.textBackgroundColor?.let { metadataMap["background_color"] = it }
+                try {
+                    val channel: io.ktor.utils.io.ByteReadChannel
+                    val size: Long
 
-            reelRepository.uploadReel(
-                dataChannel = channel,
-                size = size,
-                fileName = fileName,
-                caption = currentState.postText,
-                musicTrack = "Original Audio",
-                locationName = currentState.location?.name,
-                locationAddress = currentState.location?.address,
-                locationLatitude = currentState.location?.latitude,
-                locationLongitude = currentState.location?.longitude,
-                metadata = metadataMap,
-                onProgress = { progress ->
-                    _uiState.update { it.copy(uploadProgress = progress) }
+                    if (isContentUri) {
+                        val uri = Uri.parse(videoPath)
+                        val resolver = getApplication<Application>().contentResolver
+                        val inputStream = resolver.openInputStream(uri)
+                            ?: throw java.io.IOException("Failed to open input stream")
+                        channel = inputStream.toByteReadChannel()
+                        size = resolver.openFileDescriptor(uri, "r")?.statSize ?: 0L
+                    } else {
+                        channel = file.inputStream().toByteReadChannel()
+                        size = file.length()
+                    }
+
+                    Result.success(Triple(channel, size, fileName))
+                } catch (e: Exception) {
+                    Result.failure(e)
                 }
-            ).onSuccess {
-                _uiState.update { it.copy(isLoading = false, isPostCreated = true) }
-            }.onFailure { e ->
-                _uiState.update { it.copy(isLoading = false, error = "Reel upload failed: ${e.message}") }
+            }
+
+            result.onFailure { e ->
+                _uiState.update { it.copy(isLoading = false, error = e.message) }
+            }.onSuccess { (channel, size, fileName) ->
+                val metadataMap = mutableMapOf<String, Any?>()
+                currentState.feeling?.let { metadataMap["feeling"] = mapOf("emoji" to it.emoji, "text" to it.text, "type" to it.type.name) }
+                if (currentState.taggedPeople.isNotEmpty()) {
+                    metadataMap["tagged_people"] = currentState.taggedPeople.map { mapOf("uid" to it.uid, "username" to it.username) }
+                }
+                metadataMap["layout_type"] = DEFAULT_LAYOUT_TYPE
+                currentState.textBackgroundColor?.let { metadataMap["background_color"] = it }
+
+                reelRepository.uploadReel(
+                    dataChannel = channel,
+                    size = size,
+                    fileName = fileName,
+                    caption = currentState.postText,
+                    musicTrack = "Original Audio",
+                    locationName = currentState.location?.name,
+                    locationAddress = currentState.location?.address,
+                    locationLatitude = currentState.location?.latitude,
+                    locationLongitude = currentState.location?.longitude,
+                    metadata = metadataMap,
+                    onProgress = { progress ->
+                        _uiState.update { it.copy(uploadProgress = progress) }
+                    }
+                ).onSuccess {
+                    _uiState.update { it.copy(isLoading = false, isPostCreated = true) }
+                }.onFailure { e ->
+                    _uiState.update { it.copy(isLoading = false, error = "Reel upload failed: ${e.message}") }
+                }
             }
         }
     }
+    private fun validateAndCleanPath(path: String): String? {
+        if (path.startsWith("content://")) return path
+
+        try {
+            // Fix: Strip file:// prefix if present
+            val cleanPath = if (path.startsWith("file://")) path.substring(7) else path
+            val file = java.io.File(cleanPath)
+
+            if (!file.exists()) {
+                android.util.Log.e("CreatePost", "File not found")
+                return null
+            }
+
+            val canonicalPath = file.canonicalPath
+            val dataDir = java.io.File(getApplication<Application>().applicationInfo.dataDir).canonicalPath
+            val cacheDir = getApplication<Application>().cacheDir.canonicalPath
+
+            // Robust check for directory containment
+            val isInDataDir = canonicalPath == dataDir || canonicalPath.startsWith(dataDir + java.io.File.separator)
+            val isInCacheDir = canonicalPath == cacheDir || canonicalPath.startsWith(cacheDir + java.io.File.separator)
+
+            // Block access to private data directory unless it's in the cache directory
+            if (isInDataDir && !isInCacheDir) {
+                android.util.Log.e("CreatePost", "Invalid file source (private data dir)")
+                return null
+            }
+            return cleanPath
+        } catch (e: java.io.IOException) {
+            android.util.Log.e("CreatePost", "Path validation failed with IO error", e)
+            return null
+        } catch (e: SecurityException) {
+            android.util.Log.e("CreatePost", "Path validation failed with security error", e)
+            return null
+        } catch (e: Exception) {
+            android.util.Log.e("CreatePost", "Path validation failed", e)
+            return null
+        }
+    }
+
     companion object {
         private const val DEFAULT_LAYOUT_TYPE = "COLUMNS"
     }

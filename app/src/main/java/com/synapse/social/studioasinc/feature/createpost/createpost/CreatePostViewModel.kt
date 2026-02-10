@@ -768,13 +768,13 @@ class CreatePostViewModel @Inject constructor(
             }
             return cleanPath
         } catch (e: java.io.IOException) {
-            android.util.Log.e("CreatePost", "Path validation failed with IO error")
+            android.util.Log.e("CreatePost", "Path validation failed with IO error", e)
             return null
         } catch (e: SecurityException) {
-            android.util.Log.e("CreatePost", "Path validation failed with security error")
+            android.util.Log.e("CreatePost", "Path validation failed with security error", e)
             return null
         } catch (e: Exception) {
-            android.util.Log.e("CreatePost", "Path validation failed")
+            android.util.Log.e("CreatePost", "Path validation failed", e)
             return null
         }
     }

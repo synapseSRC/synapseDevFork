@@ -70,6 +70,7 @@ class AuthRepository(private val client: SupabaseClientLib = SupabaseClient.clie
 
 
                     // SECURITY: Do not include sensitive fields (account_premium, verify, banned) here. They must be handled server-side.
+                    // VULNERABILITY FIX: Ensure account_premium, verify, and banned are handled server-side ONLY.
                     val profileInsert = UserProfileInsert(
                         username = actualUsername,
                         email = email

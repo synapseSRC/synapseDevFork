@@ -198,7 +198,7 @@ class FeedViewModel @Inject constructor(
 
 
              try {
-                  reactionRepository.toggleReaction(post.id, "post", reactionType).onFailure {
+                  reactionRepository.toggleReaction(post.id, "post", reactionType, currentReaction, skipCheck = true).onFailure {
 
                       cacheModifiedPost(post)
                       PostEventBus.emit(PostEvent.Updated(post))

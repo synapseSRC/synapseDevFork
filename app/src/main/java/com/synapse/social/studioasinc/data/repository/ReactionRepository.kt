@@ -31,7 +31,9 @@ class ReactionRepository @Inject constructor(
     suspend fun toggleReaction(
         targetId: String,
         targetType: String,
-        reactionType: ReactionType
+        reactionType: ReactionType,
+        oldReaction: ReactionType? = null,
+        skipCheck: Boolean = false
     ): Result<ReactionToggleResult> = withContext(Dispatchers.IO) {
         try {
             val currentUser = client.auth.currentUserOrNull()
@@ -42,6 +44,34 @@ class ReactionRepository @Inject constructor(
             val idColumn = getIdColumn(targetType)
 
             Log.d(TAG, "Toggling reaction: ${reactionType.name} for $targetType $targetId by user $userId")
+
+            // Optimized path if oldReaction is known
+            if (skipCheck) {
+                try {
+                     if (oldReaction == reactionType) {
+                         // Removing - Single Round Trip
+                         client.from(tableName)
+                             .delete { filter { eq(idColumn, targetId); eq("user_id", userId) } }
+                         Log.d(TAG, "Reaction removed for $targetType $targetId (Optimized)")
+                         return@withContext Result.success(ReactionToggleResult.REMOVED)
+                     } else {
+                         // Updating/Inserting - Single Round Trip (Upsert)
+                         client.from(tableName).upsert(buildJsonObject {
+                            put("user_id", userId)
+                            put(idColumn, targetId)
+                            put("reaction_type", reactionType.name.lowercase())
+                            put("updated_at", java.time.Instant.now().toString())
+                        }) {
+                            onConflict = "user_id, " + idColumn
+                        }
+                         Log.d(TAG, "Reaction updated to ${reactionType.name} for $targetType $targetId (Optimized)")
+                         return@withContext Result.success(ReactionToggleResult.UPDATED)
+                     }
+                } catch (e: Exception) {
+                     Log.w(TAG, "Optimized toggle failed, falling back to standard Check-Then-Act: ${e.message}")
+                     // Fallthrough to standard logic
+                }
+            }
 
             var lastException: Exception? = null
             repeat(MAX_RETRIES) { attempt ->
@@ -193,11 +223,9 @@ class ReactionRepository @Inject constructor(
 
 
 
-    suspend fun togglePostReaction(postId: String, reactionType: ReactionType) =
-        toggleReaction(postId, "post", reactionType)
+    suspend fun togglePostReaction(postId: String, reactionType: ReactionType, oldReaction: ReactionType? = null, skipCheck: Boolean = false) = toggleReaction(postId, "post", reactionType, oldReaction, skipCheck)
 
-    suspend fun toggleCommentReaction(commentId: String, reactionType: ReactionType) =
-        toggleReaction(commentId, "comment", reactionType)
+    suspend fun toggleCommentReaction(commentId: String, reactionType: ReactionType, oldReaction: ReactionType? = null, skipCheck: Boolean = false) = toggleReaction(commentId, "comment", reactionType, oldReaction, skipCheck)
 
     suspend fun getPostReactionSummary(postId: String) =
         getReactionSummary(postId, "post")

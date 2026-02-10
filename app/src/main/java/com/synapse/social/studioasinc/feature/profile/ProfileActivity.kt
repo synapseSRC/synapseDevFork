@@ -51,7 +51,7 @@ class ProfileActivity : ComponentActivity() {
         val currentUserId = try {
             SupabaseClient.client.auth.currentUserOrNull()?.id
         } catch (e: Exception) {
-            android.util.Log.e("ProfileActivity", "Error fetching user ID", e)
+            android.util.Log.e("ProfileActivity", "Failed to fetch user ID in onCreate", e)
             null
         }
 

@@ -668,15 +668,18 @@ class CreatePostViewModel @Inject constructor(
 
         val videoItem = currentState.mediaItems.firstOrNull { it.type == MediaType.VIDEO } ?: return
         val videoPath = videoItem.url
-        val isContentUri = videoPath.startsWith("content://")
-        if (!validateFileSource(videoPath)) {
-            _uiState.update { it.copy(error = "Invalid video file or file not found") }
-            return
-        }
 
-        val cleanPath = if (videoPath.startsWith("file://")) videoPath.substring(7) else videoPath
-        val file = java.io.File(cleanPath)
         viewModelScope.launch {
+            val isValid = kotlinx.coroutines.withContext(Dispatchers.IO) { validateFileSource(videoPath) }
+            if (!isValid) {
+                _uiState.update { it.copy(error = "Invalid video file or file not found") }
+                return@launch
+            }
+
+            val isContentUri = videoPath.startsWith("content://")
+            val cleanPath = if (videoPath.startsWith("file://")) videoPath.substring(7) else videoPath
+            val file = java.io.File(cleanPath)
+
             _uiState.update { it.copy(isLoading = true, uploadProgress = 0f) }
 
             val fileName = "reel_${System.currentTimeMillis()}.mp4"
@@ -743,7 +746,7 @@ class CreatePostViewModel @Inject constructor(
             val file = java.io.File(cleanPath)
 
             if (!file.exists()) {
-                android.util.Log.e("CreatePost", "File not found: $path")
+                android.util.Log.e("CreatePost", "File not found: ${file.name}")
                 return false
             }
 
@@ -751,15 +754,23 @@ class CreatePostViewModel @Inject constructor(
             val dataDir = getApplication<Application>().applicationInfo.dataDir
             val cacheDir = getApplication<Application>().cacheDir.canonicalPath
 
-            val isInDataDir = canonicalPath.startsWith(dataDir)
-            val isInCacheDir = canonicalPath.startsWith(cacheDir)
+            // Robust check for directory containment (Issue 2)
+            val isInDataDir = canonicalPath == dataDir || canonicalPath.startsWith(dataDir + java.io.File.separator)
+            val isInCacheDir = canonicalPath == cacheDir || canonicalPath.startsWith(cacheDir + java.io.File.separator)
 
             // Block access to private data directory unless it's in the cache directory
             if (isInDataDir && !isInCacheDir) {
-                android.util.Log.e("CreatePost", "Invalid file source (private data dir): $path")
+                // Log only filename to avoid PII leakage (Issue 3)
+                android.util.Log.e("CreatePost", "Invalid file source (private data dir): ${file.name}")
                 return false
             }
             return true
+        } catch (e: java.io.IOException) {
+            android.util.Log.e("CreatePost", "Path validation failed with IO error: ${e.message}")
+            return false
+        } catch (e: SecurityException) {
+            android.util.Log.e("CreatePost", "Path validation failed with security error: ${e.message}")
+            return false
         } catch (e: Exception) {
             android.util.Log.e("CreatePost", "Path validation failed: ${e.message}")
             return false

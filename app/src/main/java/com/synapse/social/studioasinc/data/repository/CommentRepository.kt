@@ -103,7 +103,10 @@ class CommentRepository @Inject constructor(
                 parseCommentFromJson(json)?.let { comments.add(it) }
             }
 
-            Result.success(comments)
+            // Optimized: Bulk fetch reactions
+            val populatedComments = reactionRepository.populateCommentReactions(comments)
+
+            Result.success(populatedComments)
         } catch (e: Exception) {
             Log.e(TAG, "Failed to fetch comments list: ${e.message}", e)
             Result.failure(e)
@@ -135,14 +138,17 @@ class CommentRepository @Inject constructor(
                 }
             }
 
-            Log.d(TAG, "Successfully parsed ${replies.size} replies")
+            // Optimized: Bulk fetch reactions
+            val populatedReplies = reactionRepository.populateCommentReactions(replies)
+
+            Log.d(TAG, "Successfully parsed ${populatedReplies.size} replies")
 
 
-            commentDao.insertAll(replies.map {
+            commentDao.insertAll(populatedReplies.map {
                 CommentMapper.toEntity(it.toComment(), it.user?.username, it.user?.avatar)
             })
 
-            Result.success(replies)
+            Result.success(populatedReplies)
         } catch (e: Exception) {
             Log.e(TAG, "Failed to fetch replies: ${e.message}", e)
             Result.failure(e)
@@ -433,8 +439,9 @@ class CommentRepository @Inject constructor(
             val user = parseUserProfileFromJson(data["users"]?.jsonObject)
             val commentId = data["id"]?.jsonPrimitive?.contentOrNull ?: return null
 
-            val reactionSummary = reactionRepository.getReactionSummary(commentId, "comment").getOrDefault(emptyMap())
-            val userReaction = reactionRepository.getUserReaction(commentId, "comment").getOrNull()
+            // Optimized: No N+1 fetching here. Reactions populated in batch later.
+            val reactionSummary = emptyMap<ReactionType, Int>()
+            val userReaction = null
 
             CommentWithUser(
                 id = commentId,

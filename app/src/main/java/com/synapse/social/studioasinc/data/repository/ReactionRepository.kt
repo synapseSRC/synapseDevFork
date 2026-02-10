@@ -3,6 +3,7 @@ package com.synapse.social.studioasinc.data.repository
 import android.util.Log
 import com.synapse.social.studioasinc.domain.model.CommentReaction
 import com.synapse.social.studioasinc.domain.model.ReactionType
+import com.synapse.social.studioasinc.domain.model.CommentWithUser
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
@@ -136,6 +137,33 @@ class ReactionRepository @Inject constructor(
         targetType: String
     ): Result<Map<ReactionType, Int>> = withContext(Dispatchers.IO) {
         try {
+            // Optimized RPC calls for supported types
+            if (targetType.equals("post", ignoreCase = true)) {
+                 val summaryList = client.postgrest.rpc(
+                    "get_posts_reactions_summary",
+                    mapOf("post_ids" to listOf(targetId))
+                 ).decodeList<PostReactionSummary>()
+
+                 val summary = summaryList.firstOrNull()?.reactionCounts?.entries
+                    ?.groupingBy { ReactionType.fromString(it.key) }
+                    ?.fold(0) { acc, entry -> acc + entry.value }
+                    ?: emptyMap()
+                 return@withContext Result.success(summary)
+
+            } else if (targetType.equals("comment", ignoreCase = true)) {
+                 val summaryList = client.postgrest.rpc(
+                    "get_comments_reactions_summary",
+                    mapOf("comment_ids" to listOf(targetId))
+                 ).decodeList<CommentReactionSummary>()
+
+                 val summary = summaryList.firstOrNull()?.reactionCounts?.entries
+                    ?.groupingBy { ReactionType.fromString(it.key) }
+                    ?.fold(0) { acc, entry -> acc + entry.value }
+                    ?: emptyMap()
+                 return@withContext Result.success(summary)
+            }
+
+            // Fallback for other types
             val tableName = getTableName(targetType)
             val idColumn = getIdColumn(targetType)
 
@@ -187,6 +215,13 @@ class ReactionRepository @Inject constructor(
         @SerialName("user_reaction") val userReaction: String? = null
     )
 
+    @Serializable
+    internal data class CommentReactionSummary(
+        @SerialName("comment_id") val commentId: String,
+        @SerialName("reaction_counts") val reactionCounts: Map<String, Int> = emptyMap(),
+        @SerialName("user_reaction") val userReaction: String? = null
+    )
+
     internal fun applyReactionSummaries(
         posts: List<com.synapse.social.studioasinc.domain.model.Post>,
         summaries: List<PostReactionSummary>
@@ -205,6 +240,30 @@ class ReactionRepository @Inject constructor(
 
             post.copy(
                 reactions = summary,
+                userReaction = userReactionType,
+                likesCount = summary.values.sum()
+            )
+        }
+    }
+
+    internal fun applyCommentReactionSummaries(
+        comments: List<CommentWithUser>,
+        summaries: List<CommentReactionSummary>
+    ): List<CommentWithUser> {
+        val summariesByComment = summaries.associateBy { it.commentId }
+
+        return comments.map { comment ->
+            val summaryData = summariesByComment[comment.id]
+
+            val summary = summaryData?.reactionCounts?.entries
+                ?.groupingBy { ReactionType.fromString(it.key) }
+                ?.fold(0) { acc, entry -> acc + entry.value }
+                ?: emptyMap()
+
+            val userReactionType = summaryData?.userReaction?.let { ReactionType.fromString(it) }
+
+            comment.copy(
+                reactionSummary = summary,
                 userReaction = userReactionType,
                 likesCount = summary.values.sum()
             )
@@ -235,6 +294,33 @@ class ReactionRepository @Inject constructor(
         } catch (e: Exception) {
             Log.e(TAG, "Failed to populate reactions", e)
             posts
+        }
+    }
+
+    suspend fun populateCommentReactions(comments: List<CommentWithUser>): List<CommentWithUser> = withContext(Dispatchers.IO) {
+        if (comments.isEmpty()) return@withContext comments
+
+        try {
+            val allCommentIds = comments.map { it.id }
+            val summaries = mutableListOf<CommentReactionSummary>()
+
+            allCommentIds.chunked(20).forEach { chunkIds ->
+                 try {
+                     val chunkSummaries = client.postgrest.rpc(
+                        "get_comments_reactions_summary",
+                        mapOf("comment_ids" to chunkIds)
+                     ).decodeList<CommentReactionSummary>()
+                     summaries.addAll(chunkSummaries)
+                 } catch(e: Exception) {
+                     Log.e(TAG, "Failed to fetch reaction summaries for comment chunk", e)
+                 }
+            }
+
+            applyCommentReactionSummaries(comments, summaries)
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to populate comment reactions", e)
+            comments
         }
     }
 

@@ -54,7 +54,7 @@ class ProfileActivity : ComponentActivity() {
         }
 
         if (currentUserId == null) {
-            Toast.makeText(this, "Failed to get user information.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.profile_get_user_info_failed, Toast.LENGTH_SHORT).show()
             finish()
             return
         }

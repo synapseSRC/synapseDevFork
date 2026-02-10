@@ -6,9 +6,6 @@ struct SplashView: View {
     @State private var size = 0.8
     @State private var opacity = 0.5
 
-    // In a real app, this would come from the Shared Engine's AuthRepository
-    // @StateObject var viewModel = ...
-
     var body: some View {
         if isActive {
             ContentView()

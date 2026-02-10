@@ -557,6 +557,7 @@ class CreatePostViewModel @Inject constructor(
                     async(Dispatchers.IO) {
                         try {
                             val filePath = mediaItem.url
+                            val filePath = mediaItem.url
                             val cleanPath = validateAndCleanPath(filePath)
                             if (cleanPath == null) {
                                 // Set progress to 100% for skipped item
@@ -672,69 +673,71 @@ class CreatePostViewModel @Inject constructor(
         val videoPath = videoItem.url
 
         viewModelScope.launch {
-            val cleanPath = kotlinx.coroutines.withContext(Dispatchers.IO) { validateAndCleanPath(videoPath) }
-            if (cleanPath == null) {
-                _uiState.update { it.copy(error = "Invalid video file or file not found") }
-                return@launch
-            }
-
-            val isContentUri = videoPath.startsWith("content://")
-            val file = java.io.File(cleanPath)
-
             _uiState.update { it.copy(isLoading = true, uploadProgress = 0f) }
 
-            val fileName = "reel_${System.currentTimeMillis()}.mp4"
-            var channel: io.ktor.utils.io.ByteReadChannel?
-            var size: Long
-
-            try {
-                if (isContentUri) {
-                    val uri = Uri.parse(videoPath)
-                    val resolver = getApplication<Application>().contentResolver
-                    val inputStream = resolver.openInputStream(uri)
-                        ?: throw java.io.IOException("Failed to open input stream")
-                    channel = inputStream.toByteReadChannel()
-                    size = resolver.openFileDescriptor(uri, "r")?.statSize ?: 0L
-                } else {
-                    channel = file.inputStream().toByteReadChannel()
-                    size = file.length()
+            // Move all I/O and validation to background
+            val result = kotlinx.coroutines.withContext(Dispatchers.IO) {
+                val cleanPath = validateAndCleanPath(videoPath)
+                if (cleanPath == null) {
+                    return@withContext Result.failure<Unit>(Exception("Invalid video file or file not found"))
                 }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false, error = "Failed to prepare video: ${e.message}") }
-                return@launch
-            }
 
-            if (channel == null) {
-                 _uiState.update { it.copy(isLoading = false, error = "Failed to create read channel") }
-                 return@launch
-            }
+                val isContentUri = videoPath.startsWith("content://")
+                val file = java.io.File(cleanPath)
+                val fileName = "reel_${System.currentTimeMillis()}.mp4"
 
-            val metadataMap = mutableMapOf<String, Any?>()
-            currentState.feeling?.let { metadataMap["feeling"] = mapOf("emoji" to it.emoji, "text" to it.text, "type" to it.type.name) }
-            if (currentState.taggedPeople.isNotEmpty()) {
-                metadataMap["tagged_people"] = currentState.taggedPeople.map { mapOf("uid" to it.uid, "username" to it.username) }
-            }
-            metadataMap["layout_type"] = DEFAULT_LAYOUT_TYPE
-            currentState.textBackgroundColor?.let { metadataMap["background_color"] = it }
+                try {
+                    val channel: io.ktor.utils.io.ByteReadChannel
+                    val size: Long
 
-            reelRepository.uploadReel(
-                dataChannel = channel,
-                size = size,
-                fileName = fileName,
-                caption = currentState.postText,
-                musicTrack = "Original Audio",
-                locationName = currentState.location?.name,
-                locationAddress = currentState.location?.address,
-                locationLatitude = currentState.location?.latitude,
-                locationLongitude = currentState.location?.longitude,
-                metadata = metadataMap,
-                onProgress = { progress ->
-                    _uiState.update { it.copy(uploadProgress = progress) }
+                    if (isContentUri) {
+                        val uri = Uri.parse(videoPath)
+                        val resolver = getApplication<Application>().contentResolver
+                        val inputStream = resolver.openInputStream(uri)
+                            ?: throw java.io.IOException("Failed to open input stream")
+                        channel = inputStream.toByteReadChannel()
+                        size = resolver.openFileDescriptor(uri, "r")?.statSize ?: 0L
+                    } else {
+                        channel = file.inputStream().toByteReadChannel()
+                        size = file.length()
+                    }
+
+                    Result.success(Triple(channel, size, fileName))
+                } catch (e: Exception) {
+                    Result.failure(e)
                 }
-            ).onSuccess {
-                _uiState.update { it.copy(isLoading = false, isPostCreated = true) }
-            }.onFailure { e ->
-                _uiState.update { it.copy(isLoading = false, error = "Reel upload failed: ${e.message}") }
+            }
+
+            result.onFailure { e ->
+                _uiState.update { it.copy(isLoading = false, error = e.message) }
+            }.onSuccess { (channel, size, fileName) ->
+                val metadataMap = mutableMapOf<String, Any?>()
+                currentState.feeling?.let { metadataMap["feeling"] = mapOf("emoji" to it.emoji, "text" to it.text, "type" to it.type.name) }
+                if (currentState.taggedPeople.isNotEmpty()) {
+                    metadataMap["tagged_people"] = currentState.taggedPeople.map { mapOf("uid" to it.uid, "username" to it.username) }
+                }
+                metadataMap["layout_type"] = DEFAULT_LAYOUT_TYPE
+                currentState.textBackgroundColor?.let { metadataMap["background_color"] = it }
+
+                reelRepository.uploadReel(
+                    dataChannel = channel,
+                    size = size,
+                    fileName = fileName,
+                    caption = currentState.postText,
+                    musicTrack = "Original Audio",
+                    locationName = currentState.location?.name,
+                    locationAddress = currentState.location?.address,
+                    locationLatitude = currentState.location?.latitude,
+                    locationLongitude = currentState.location?.longitude,
+                    metadata = metadataMap,
+                    onProgress = { progress ->
+                        _uiState.update { it.copy(uploadProgress = progress) }
+                    }
+                ).onSuccess {
+                    _uiState.update { it.copy(isLoading = false, isPostCreated = true) }
+                }.onFailure { e ->
+                    _uiState.update { it.copy(isLoading = false, error = "Reel upload failed: ${e.message}") }
+                }
             }
         }
     }

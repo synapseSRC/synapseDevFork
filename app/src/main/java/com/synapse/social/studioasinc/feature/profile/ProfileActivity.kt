@@ -73,6 +73,7 @@ class ProfileActivity : ComponentActivity() {
                          try {
                              SupabaseClient.client.auth.currentUserOrNull()?.id
                          } catch (e: Exception) {
+                             android.util.Log.e("ProfileActivity", "Error fetching user ID", e)
                              null
                          }
                     }

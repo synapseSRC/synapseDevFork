@@ -96,6 +96,7 @@ fun PostDetailScreen(
         PostOptionsBottomSheet(
             post = postDetail.post,
             isOwner = currentUserId == postDetail.post.authorUid,
+            commentsDisabled = postDetail.post.postDisableComments == "true",
             onDismiss = { showPostOptions = false },
             onEdit = { onNavigateToEditPost(postId) },
             onDelete = {

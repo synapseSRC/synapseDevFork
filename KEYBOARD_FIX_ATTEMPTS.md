@@ -394,6 +394,75 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 ---
 
+## Attempt #8 - Exclude IME from Scaffold contentWindowInsets (Commit 223e370)
+**Date:** 2026-02-11 06:26:xx
+
+### Context
+User reported that commit 8846338 had:
+- ✅ Bottom bar position correct (not too high)
+- ❌ TopAppBar still went off-screen
+- Issue: "It felt like it's moving the entire screen instead of just comment items and post"
+
+### Root Cause Analysis
+Commit 8846338 configuration:
+- `adjustResize` - shrinks entire window when keyboard opens
+- `contentWindowInsets = WindowInsets(0,0,0,0)` - Scaffold ignores all insets
+- `.navigationBarsPadding()` on bottom bar
+- NO `.imePadding()` on bottom bar
+
+**Problem:** When window resizes with `adjustResize`, Scaffold by default applies IME insets to ALL areas including topBar, causing it to be pushed off-screen.
+
+### What We Tried
+**AndroidManifest.xml:**
+```xml
+<activity
+    android:name=".feature.post.PostDetailActivity"
+    android:windowSoftInputMode="adjustResize"  <!-- Kept -->
+    ...
+/>
+```
+
+**PostDetailScreen.kt:**
+```kotlin
+Scaffold(
+    contentWindowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.ime),  // NEW
+    topBar = {
+        TopAppBar(
+            modifier = Modifier.statusBarsPadding()
+        )
+    },
+    bottomBar = {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .imePadding()  // RESTORED
+        ) { ... }
+    }
+)
+```
+
+### Key Changes
+1. ✅ **Use `ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.ime)`**
+   - Tells Scaffold to NOT apply IME insets to its layout areas
+   - Prevents topBar from being pushed off-screen
+   - Content area still adjusts naturally
+2. ✅ **Restored `.imePadding()` on bottom bar**
+   - Manually pushes bottom bar above keyboard
+   - Works with excluded IME insets
+
+### Expected Behavior
+- Window resizes with `adjustResize`
+- Scaffold excludes IME from its internal layout calculations
+- TopAppBar stays anchored at top (not affected by IME)
+- Content area shrinks naturally to fit available space
+- Bottom bar manually moves up with `.imePadding()`
+
+### Result
+⏳ **Awaiting user testing**
+
+---
+
 ## Lessons Learned
 
 1. **Don't revert without understanding the root cause**
@@ -417,7 +486,12 @@ override fun onCreate(savedInstanceState: Bundle?) {
    - Bottom bar: apply `.imePadding()` (moves above keyboard)
    - Content: use `weight(1f)` (resizes dynamically)
 
-6. **Logging can be misleading**
+6. **Scaffold's default IME handling can push topBar off-screen**
+   - With `adjustResize`, Scaffold applies IME insets to all areas by default
+   - Use `.exclude(WindowInsets.ime)` to prevent topBar from being affected
+   - Let bottom bar handle IME manually with `.imePadding()`
+
+7. **Logging can be misleading**
    - Logs showed correct behavior at Compose level
    - Visual issue was at Activity level (higher in the stack)
    - Always test visually, not just logs

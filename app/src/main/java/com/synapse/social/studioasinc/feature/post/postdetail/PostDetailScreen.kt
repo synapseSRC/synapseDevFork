@@ -235,6 +235,7 @@ fun PostDetailScreen(
             Column(
                  modifier = Modifier
                      .fillMaxWidth()
+                     .navigationBarsPadding()
                      .imePadding()
                      .onGloballyPositioned { coordinates ->
                          android.util.Log.d("PostDetailScreen", "=== BOTTOM BAR POSITION ===")
@@ -278,7 +279,9 @@ fun PostDetailScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
-                modifier = Modifier.onGloballyPositioned { coordinates ->
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .onGloballyPositioned { coordinates ->
                     android.util.Log.d("PostDetailScreen", "=== TOP APP BAR ===")
                     android.util.Log.d("PostDetailScreen", "Y Position: ${coordinates.positionInRoot().y}")
                     android.util.Log.d("PostDetailScreen", "Height: ${coordinates.size.height}")

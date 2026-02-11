@@ -1,13 +1,13 @@
 package com.synapse.social.studioasinc.shared.data.source.remote
 
 import com.synapse.social.studioasinc.shared.domain.model.StorageConfig
+import com.synapse.social.studioasinc.shared.util.TimeProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.plugins.onUpload
 import io.ktor.http.encodeURLPathPart
 import io.ktor.http.isSuccess
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -73,7 +73,7 @@ class R2UploadService(private val client: HttpClient) : UploadService {
     }
 
     private fun getAmzDate(): String {
-        val now = Clock.System.now()
+        val now = TimeProvider.nowInstant()
         val dateTime = now.toLocalDateTime(TimeZone.UTC)
         val year = dateTime.year.toString().padStart(4, '0')
         val month = dateTime.monthNumber.toString().padStart(2, '0')

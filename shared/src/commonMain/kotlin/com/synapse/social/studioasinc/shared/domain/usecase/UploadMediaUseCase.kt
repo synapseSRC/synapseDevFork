@@ -10,8 +10,8 @@ import com.synapse.social.studioasinc.shared.domain.model.MediaType
 import com.synapse.social.studioasinc.shared.domain.model.StorageConfig
 import com.synapse.social.studioasinc.shared.domain.model.StorageProvider
 import com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
+import com.synapse.social.studioasinc.shared.util.TimeProvider
 import kotlinx.coroutines.flow.first
-import kotlinx.datetime.Clock
 
 class UploadMediaUseCase(
     private val repository: StorageRepository,
@@ -54,7 +54,7 @@ class UploadMediaUseCase(
 
             val service = getUploadService(providerToUse)
             val fileBytes = fileUploader.readFile(filePath)
-            val fileName = fileUploader.getFileName(filePath).ifBlank { "upload_${Clock.System.now().toEpochMilliseconds()}" }
+            val fileName = fileUploader.getFileName(filePath).ifBlank { "upload_${TimeProvider.nowMillis()}" }
 
             val url = service.upload(fileBytes, fileName, config, bucketName, onProgress)
             Result.success(url)

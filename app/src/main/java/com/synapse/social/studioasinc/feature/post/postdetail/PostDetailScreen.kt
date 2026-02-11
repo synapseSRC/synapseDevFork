@@ -209,11 +209,11 @@ fun PostDetailScreen(
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets.safeDrawing,
         bottomBar = {
             Column(
                  modifier = Modifier
                      .fillMaxWidth()
+                     .imePadding()
             ) {
 
                  if (uiState.replyToComment != null) {
@@ -257,7 +257,8 @@ fun PostDetailScreen(
             )
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+        Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
         if (uiState.isLoading && uiState.post == null) {
              Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                  ExpressiveLoadingIndicator()
@@ -333,6 +334,8 @@ fun PostDetailScreen(
         }
 
 
+        }
+        }
         }
     }
 }

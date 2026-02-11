@@ -7,10 +7,11 @@ import io.ktor.client.request.setBody
 import io.ktor.client.plugins.onUpload
 import io.ktor.http.encodeURLPathPart
 import io.ktor.http.isSuccess
-import kotlinx.datetime.Clock as KClock
+import kotlinx.datetime.Clock.System as SystemClock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
+@OptIn(kotlin.time.ExperimentalTime::class)
 class R2UploadService(private val client: HttpClient) : UploadService {
     override suspend fun upload(
         fileBytes: ByteArray,
@@ -72,7 +73,7 @@ class R2UploadService(private val client: HttpClient) : UploadService {
     }
 
     private fun getAmzDate(): String {
-        val now = KClock.System.now()
+        val now = SystemClock.now()
         val dateTime = now.toLocalDateTime(TimeZone.UTC)
         val year = dateTime.year.toString().padStart(4, '0')
         val month = dateTime.monthNumber.toString().padStart(2, '0')

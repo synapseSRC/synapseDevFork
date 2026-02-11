@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import com.synapse.social.studioasinc.core.network.SupabaseErrorHandler
 
 class UserRepository @Inject constructor(
     private val userDao: UserDao,
@@ -40,17 +41,7 @@ class UserRepository @Inject constructor(
             }
             Result.success(user)
         } catch (e: Exception) {
-            android.util.Log.e("UserRepository", "Failed to fetch user by ID: $userId", e)
-            val errorMessage = when {
-                e.message?.contains("relation \"users\" does not exist", ignoreCase = true) == true ->
-                    "Database table 'users' does not exist. Please create the users table in your Supabase database."
-                e.message?.contains("connection", ignoreCase = true) == true ->
-                    "Cannot connect to Supabase. Check your internet connection and Supabase configuration."
-                e.message?.contains("unauthorized", ignoreCase = true) == true ->
-                    "Unauthorized access to Supabase. Check your API key and RLS policies."
-                else -> "Database error: ${e.message}"
-            }
-            Result.failure(Exception(errorMessage))
+            return SupabaseErrorHandler.toResult(e, "UserRepository", "Failed to fetch user by ID: $userId")
         }
     }
 
@@ -70,8 +61,7 @@ class UserRepository @Inject constructor(
 
             Result.success(user)
         } catch (e: Exception) {
-            android.util.Log.e("UserRepository", "Failed to fetch user by username: $username", e)
-            Result.failure(e)
+            return SupabaseErrorHandler.toResult(e, "UserRepository", "Failed to fetch user by username: $username")
         }
     }
 
@@ -106,8 +96,7 @@ class UserRepository @Inject constructor(
             android.util.Log.d("UserRepository", "User updated successfully: ${user.uid}")
             Result.success(user)
         } catch (e: Exception) {
-            android.util.Log.e("UserRepository", "Failed to update user: ${user.uid}", e)
-            Result.failure(Exception("Database update failed for table 'users': ${e.message}", e))
+            return SupabaseErrorHandler.toResult(e, "UserRepository", "Failed to update user: ${user.uid}")
         }
     }
 
@@ -132,8 +121,7 @@ class UserRepository @Inject constructor(
             android.util.Log.d("UserRepository", "Search found ${users.size} users for query: $query")
             Result.success(users)
         } catch (e: Exception) {
-            android.util.Log.e("UserRepository", "Failed to search users with query: $query", e)
-            Result.failure(e)
+            return SupabaseErrorHandler.toResult(e, "UserRepository", "Failed to search users with query: $query")
         }
     }
 
@@ -149,8 +137,7 @@ class UserRepository @Inject constructor(
 
             Result.success(existingUser == null)
         } catch (e: Exception) {
-            android.util.Log.e("UserRepository", "Failed to check username availability: $username", e)
-            Result.failure(e)
+            return SupabaseErrorHandler.toResult(e, "UserRepository", "Failed to check username availability: $username")
         }
     }
 }

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 
 
 
-object PostMapper {
+object PostUiMapper {
     fun mapToState(post: Post, currentProfile: UserProfile? = null, isExpanded: Boolean = false): PostCardState {
 
         val resolvedUsername = when {

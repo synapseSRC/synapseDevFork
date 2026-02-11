@@ -1,3 +1,4 @@
+// TODO: Migrate to shared module (See MIGRATION_PLAN.md)
 package com.synapse.social.studioasinc.data.local.database
 
 import androidx.room.*

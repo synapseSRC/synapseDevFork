@@ -7,6 +7,7 @@ import javax.inject.Inject
 import dagger.hilt.android.qualifiers.ApplicationContext
 import com.synapse.social.studioasinc.shared.domain.model.MediaType
 import com.synapse.social.studioasinc.core.network.SupabaseClient
+import com.synapse.social.studioasinc.core.network.SupabaseErrorHandler
 
 import com.synapse.social.studioasinc.domain.model.UserProfile
 import com.synapse.social.studioasinc.domain.model.UserStatus
@@ -37,9 +38,6 @@ class EditProfileRepository @Inject constructor(
 ) {
 
     private val client = SupabaseClient.client
-
-
-
 
     suspend fun getCurrentUserId(): String? {
         return client.auth.currentUserOrNull()?.id
@@ -76,7 +74,7 @@ class EditProfileRepository @Inject constructor(
                 emit(Result.failure(Exception("User not found")))
             }
         } catch (e: Exception) {
-            emit(Result.failure(e))
+            emit(SupabaseErrorHandler.toResult(e, "EditProfileRepository", "Failed to get user profile: $userId"))
         }
     }.flowOn(Dispatchers.IO)
 
@@ -88,7 +86,7 @@ class EditProfileRepository @Inject constructor(
                 }
                 Result.success(Unit)
             } catch (e: Exception) {
-                Result.failure(e)
+                SupabaseErrorHandler.toResult(e, "EditProfileRepository", "Failed to update profile: $userId")
             }
         }
     }
@@ -110,7 +108,7 @@ class EditProfileRepository @Inject constructor(
                 client.from("usernames").upsert(usernameData)
                 Result.success(Unit)
             } catch (e: Exception) {
-                Result.failure(e)
+                SupabaseErrorHandler.toResult(e, "EditProfileRepository", "Failed to sync username: $newUsername")
             }
         }
     }
@@ -133,7 +131,7 @@ class EditProfileRepository @Inject constructor(
                     Result.success(existingUserId == currentUserId)
                 }
             } catch (e: Exception) {
-                Result.failure(e)
+                SupabaseErrorHandler.toResult(e, "EditProfileRepository", "Failed to check username availability: $username")
             }
         }
     }
@@ -168,7 +166,7 @@ class EditProfileRepository @Inject constructor(
                 )
                 client.from("profile_history").insert(historyData)
             } catch (e: Exception) {
-
+                android.util.Log.e("EditProfileRepository", "Failed to add to profile history", e)
             }
         }
     }
@@ -186,7 +184,7 @@ class EditProfileRepository @Inject constructor(
                 )
                 client.from("cover_image_history").insert(historyData)
             } catch (e: Exception) {
-
+                android.util.Log.e("EditProfileRepository", "Failed to add to cover history", e)
             }
         }
     }
@@ -205,7 +203,7 @@ class EditProfileRepository @Inject constructor(
 
             emit(Result.success(items))
         } catch (e: Exception) {
-            emit(Result.failure(e))
+            emit(SupabaseErrorHandler.toResult(e, "EditProfileRepository", "Failed to get profile history: $userId"))
         }
     }.flowOn(Dispatchers.IO)
 
@@ -223,7 +221,7 @@ class EditProfileRepository @Inject constructor(
 
             emit(Result.success(items))
         } catch (e: Exception) {
-            emit(Result.failure(e))
+            emit(SupabaseErrorHandler.toResult(e, "EditProfileRepository", "Failed to get cover history: $userId"))
         }
     }.flowOn(Dispatchers.IO)
 
@@ -235,7 +233,7 @@ class EditProfileRepository @Inject constructor(
                 }
                 Result.success(Unit)
             } catch (e: Exception) {
-                Result.failure(e)
+                SupabaseErrorHandler.toResult(e, "EditProfileRepository", "Failed to delete profile history item: $key")
             }
         }
     }
@@ -248,7 +246,7 @@ class EditProfileRepository @Inject constructor(
                 }
                 Result.success(Unit)
             } catch (e: Exception) {
-                Result.failure(e)
+                SupabaseErrorHandler.toResult(e, "EditProfileRepository", "Failed to delete cover history item: $key")
             }
         }
     }

@@ -34,6 +34,9 @@ import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
 import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
 import com.synapse.social.studioasinc.shared.data.local.SecureStorage
 import com.synapse.social.studioasinc.shared.data.local.AndroidSecureStorage
+import com.synapse.social.studioasinc.shared.domain.usecase.notification.GetNotificationsUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.notification.MarkNotificationAsReadUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.notification.SubscribeToNotificationsUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -290,9 +293,31 @@ object RepositoryModule {
             r2UploadService
         )
     }
+
     @Provides
     @Singleton
-    fun provideSharedUserRepository(userRepository: UserRepository): com.synapse.social.studioasinc.shared.domain.repository.UserRepository {
-        return userRepository
+    fun provideGetNotificationsUseCase(
+        notificationRepository: NotificationRepository,
+        authRepository: SharedAuthRepository
+    ): GetNotificationsUseCase {
+        return GetNotificationsUseCase(notificationRepository, authRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMarkNotificationAsReadUseCase(
+        notificationRepository: NotificationRepository,
+        authRepository: SharedAuthRepository
+    ): MarkNotificationAsReadUseCase {
+        return MarkNotificationAsReadUseCase(notificationRepository, authRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSubscribeToNotificationsUseCase(
+        notificationRepository: NotificationRepository,
+        authRepository: SharedAuthRepository
+    ): SubscribeToNotificationsUseCase {
+        return SubscribeToNotificationsUseCase(notificationRepository, authRepository)
     }
 }

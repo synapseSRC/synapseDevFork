@@ -336,6 +336,5 @@ fun PostDetailScreen(
 
         }
         }
-        }
     }
 }

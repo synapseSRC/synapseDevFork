@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
-@Database(entities = [UserEntity::class, PostEntity::class, CommentEntity::class], version = 1)
+@Database(entities = [UserEntity::class, PostEntity::class, CommentEntity::class], version = 2)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun postDao(): PostDao

@@ -45,11 +45,7 @@ class UploadMediaUseCase(
             }
 
             if (provider == StorageProvider.DEFAULT && !config.isProviderConfigured(providerToUse)) {
-                 if (config.isProviderConfigured(StorageProvider.SUPABASE)) {
-                     providerToUse = StorageProvider.SUPABASE
-                 } else {
-                     return Result.failure(Exception("Default provider ($providerToUse) is not configured."))
-                 }
+                 providerToUse = StorageProvider.SUPABASE
             }
 
             val service = getUploadService(providerToUse)

@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -109,17 +110,13 @@ fun StoryCreatorScreen(
     }
 
     val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
+        contract = ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         uri?.let { viewModel.setMediaFromGallery(it) }
     }
 
     fun launchGallery() {
-        try {
-            galleryLauncher.launch("image/*")
-        } catch (e: android.content.ActivityNotFoundException) {
-            Toast.makeText(context, "No gallery app found. Please install a file manager.", Toast.LENGTH_LONG).show()
-        }
+        galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
     }
 
     LaunchedEffect(Unit) {

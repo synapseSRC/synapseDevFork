@@ -42,7 +42,7 @@
 			android:supportsPictureInPicture="true"
 			android:screenOrientation="portrait"
 			android:theme="@style/Theme.App.Starting"
-			android:windowSoftInputMode="stateHidden"
+			android:windowSoftInputMode="adjustResize"
 			android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -54,7 +54,7 @@
 			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
 			android:hardwareAccelerated="true"
 			android:supportsPictureInPicture="true"
-			android:windowSoftInputMode="stateHidden"
+			android:windowSoftInputMode="adjustResize"
 			android:launchMode="singleTop"
 			android:exported="true">
 			<!-- Deep link for general home navigation -->

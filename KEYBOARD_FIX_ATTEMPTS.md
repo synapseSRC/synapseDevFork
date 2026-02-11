@@ -112,10 +112,10 @@ When no `contentWindowInsets` is specified, Scaffold has **default inset handlin
 
 ---
 
-## Final Solution (Commit 4b4a526)
+## Attempt #4 - Scaffold Configuration (Commit 4b4a526)
 **Date:** 2026-02-11 04:xx:xx
 
-### What We Did
+### What We Tried
 ```kotlin
 Scaffold(
     contentWindowInsets = WindowInsets(0, 0, 0, 0),  // NEW: Explicitly ignore all insets
@@ -135,8 +135,57 @@ Scaffold(
 2. ✅ **Re-added `.imePadding()` to bottom bar** - Makes only bottom bar respond to keyboard
 3. ✅ **Added root Scaffold position logging** - Verifies screen stays fixed
 
+### Result
+- ✅ Logs showed Root Y position staying constant at 78.0
+- ✅ Logs showed TopAppBar Y position staying constant at 78.0
+- ✅ Logs showed Bottom bar moving up correctly (2196 → 1206)
+- ❌ **BUT:** Visually, entire screen still shifted up and top bar went off-screen!
+
+### Why It Didn't Work
+The Scaffold configuration was correct, but the **Activity window itself** was still resizing. The `AndroidManifest.xml` had `android:windowSoftInputMode="adjustResize"` which told Android to resize the entire Activity window when keyboard appears, overriding our Compose-level fixes.
+
+---
+
+## Final Solution (Commit f788337)
+**Date:** 2026-02-11 04:58:xx
+
+### What We Did
+**AndroidManifest.xml:**
+```xml
+<activity
+    android:name=".feature.post.PostDetailActivity"
+    android:windowSoftInputMode="adjustNothing"  <!-- Changed from adjustResize -->
+    ...
+/>
+```
+
+**PostDetailScreen.kt (from Attempt #4):**
+```kotlin
+Scaffold(
+    contentWindowInsets = WindowInsets(0, 0, 0, 0),
+    bottomBar = {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .imePadding()
+        ) { ... }
+    }
+)
+```
+
+### Key Changes
+1. ✅ **Changed `windowSoftInputMode` from `adjustResize` to `adjustNothing`** - Prevents Activity window from resizing
+2. ✅ **Kept `contentWindowInsets = WindowInsets(0, 0, 0, 0)`** - Scaffold ignores insets
+3. ✅ **Kept `.imePadding()` on bottom bar** - Only bottom bar responds to keyboard
+
 ### Why This Works
-- Scaffold container stays completely fixed (doesn't consume insets)
+**Two-layer fix:**
+- **Activity level:** `adjustNothing` prevents window from resizing/shifting
+- **Compose level:** `contentWindowInsets(0,0,0,0)` + `.imePadding()` gives precise control
+
+Result:
+- Activity window stays fixed (no resize)
+- Scaffold container stays fixed (ignores insets)
 - TopAppBar stays pinned at top (no movement)
 - Only bottom bar reacts to keyboard via `.imePadding()`
 - Content area resizes naturally with `weight(1f)`
@@ -151,14 +200,25 @@ Scaffold(
 2. **Scaffold has default inset behavior**
    - Must explicitly set `contentWindowInsets = WindowInsets(0, 0, 0, 0)` to prevent automatic shifting
 
-3. **Selective inset handling is key**
-   - Scaffold: ignore all insets (stays fixed)
+3. **Activity-level configuration matters**
+   - `windowSoftInputMode` in AndroidManifest.xml controls window-level behavior
+   - `adjustResize` causes Activity window to resize/shift (bad for our use case)
+   - `adjustNothing` keeps Activity window fixed (required for Compose-level control)
+
+4. **Two-layer keyboard handling**
+   - **Activity layer:** Controls whether window resizes (`adjustNothing` = no resize)
+   - **Compose layer:** Controls which composables react (`.imePadding()` on specific elements)
+
+5. **Selective inset handling is key**
+   - Activity: don't adjust (`adjustNothing`)
+   - Scaffold: ignore all insets (`contentWindowInsets = WindowInsets(0,0,0,0)`)
    - Bottom bar: apply `.imePadding()` (moves above keyboard)
    - Content: use `weight(1f)` (resizes dynamically)
 
-4. **Logging is essential**
-   - Position tracking helped identify that entire screen was shifting
-   - Confirmed the fix by verifying root position stays constant
+6. **Logging can be misleading**
+   - Logs showed correct behavior at Compose level
+   - Visual issue was at Activity level (higher in the stack)
+   - Always test visually, not just logs
 
 ---
 

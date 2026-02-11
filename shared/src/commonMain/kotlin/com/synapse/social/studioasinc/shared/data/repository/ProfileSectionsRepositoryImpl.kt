@@ -1,10 +1,11 @@
 package com.synapse.social.studioasinc.shared.data.repository
 
 import com.synapse.social.studioasinc.shared.core.network.SupabaseClient
+import com.synapse.social.studioasinc.shared.core.network.SupabaseConstants
 import com.synapse.social.studioasinc.shared.domain.model.*
 import com.synapse.social.studioasinc.shared.domain.repository.ProfileSectionsRepository
 import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
-import com.synapse.social.studioasinc.shared.data.model.MediaType
+import com.synapse.social.studioasinc.shared.domain.model.MediaType
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
@@ -39,27 +40,27 @@ class ProfileSectionsRepositoryImpl(
 
             if (result != null) {
                 val socialLinks = result["social_links"]?.let {
-                    json.decodeFromJsonElement<List<SocialLink>>(it)
+                    try { json.decodeFromJsonElement<List<SocialLink>>(it) } catch(e: Exception) { emptyList() }
                 } ?: emptyList()
 
                 val workHistory = result["work_history"]?.let {
-                    json.decodeFromJsonElement<List<WorkExperience>>(it)
+                    try { json.decodeFromJsonElement<List<WorkExperience>>(it) } catch(e: Exception) { emptyList() }
                 } ?: emptyList()
 
                 val education = result["education"]?.let {
-                    json.decodeFromJsonElement<List<Education>>(it)
+                    try { json.decodeFromJsonElement<List<Education>>(it) } catch(e: Exception) { emptyList() }
                 } ?: emptyList()
 
                 val interests = result["interests"]?.let {
-                    json.decodeFromJsonElement<List<Interest>>(it)
+                    try { json.decodeFromJsonElement<List<Interest>>(it) } catch(e: Exception) { emptyList() }
                 } ?: emptyList()
 
                 val travel = result["travel"]?.let {
-                    json.decodeFromJsonElement<List<TravelPlace>>(it)
+                    try { json.decodeFromJsonElement<List<TravelPlace>>(it) } catch(e: Exception) { emptyList() }
                 } ?: emptyList()
 
                 val contactInfo = result["contact_info"]?.let {
-                    json.decodeFromJsonElement<ContactInfo>(it)
+                    try { json.decodeFromJsonElement<ContactInfo>(it) } catch(e: Exception) { ContactInfo() }
                 } ?: ContactInfo()
 
                 val relationshipStatusStr = result["relationship_status"]?.jsonPrimitive?.contentOrNull
@@ -68,7 +69,7 @@ class ProfileSectionsRepositoryImpl(
                 } ?: RelationshipStatus.HIDDEN
 
                 val privacySettings = result["privacy_settings"]?.let {
-                    json.decodeFromJsonElement<PrivacySettings>(it)
+                    try { json.decodeFromJsonElement<PrivacySettings>(it) } catch(e: Exception) { PrivacySettings() }
                 } ?: PrivacySettings()
 
                 val user = UserProfile(
@@ -82,10 +83,18 @@ class ProfileSectionsRepositoryImpl(
                     profileCoverImage = result["profile_cover_image"]?.jsonPrimitive?.contentOrNull,
                     gender = Gender.fromString(result["gender"]?.jsonPrimitive?.contentOrNull),
                     region = result["region"]?.jsonPrimitive?.contentOrNull,
-                    status = UserStatus.fromString(result["status"]?.jsonPrimitive?.contentOrNull),
+                    status = try { UserStatus.valueOf(result["status"]?.jsonPrimitive?.contentOrNull?.uppercase() ?: "OFFLINE") } catch(e: Exception) { UserStatus.OFFLINE },
                     followersCount = result["followers_count"]?.jsonPrimitive?.intOrNull ?: 0,
                     followingCount = result["following_count"]?.jsonPrimitive?.intOrNull ?: 0,
-                    postsCount = result["posts_count"]?.jsonPrimitive?.intOrNull ?: 0
+                    postsCount = result["posts_count"]?.jsonPrimitive?.intOrNull ?: 0,
+                    socialLinks = socialLinks,
+                    workHistory = workHistory,
+                    education = education,
+                    interests = interests,
+                    travel = travel,
+                    contactInfo = contactInfo,
+                    relationshipStatus = relationshipStatus,
+                    privacySettings = privacySettings
                 )
 
                 emit(Result.success(user))
@@ -203,7 +212,7 @@ class ProfileSectionsRepositoryImpl(
                 .decodeSingleOrNull<JsonObject>()
 
             val settings = result?.get("privacy_settings")?.let {
-                json.decodeFromJsonElement<PrivacySettings>(it)
+                try { json.decodeFromJsonElement<PrivacySettings>(it) } catch(e: Exception) { PrivacySettings() }
             } ?: PrivacySettings()
 
             emit(Result.success(settings))
@@ -302,7 +311,7 @@ class ProfileSectionsRepositoryImpl(
         return uploadMediaUseCase(
             filePath = filePath,
             mediaType = MediaType.PHOTO,
-            bucketName = SupabaseClient.BUCKET_USER_AVATARS,
+            bucketName = SupabaseConstants.BUCKET_USER_AVATARS,
             onProgress = {}
         )
     }
@@ -311,7 +320,7 @@ class ProfileSectionsRepositoryImpl(
         return uploadMediaUseCase(
             filePath = filePath,
             mediaType = MediaType.PHOTO,
-            bucketName = SupabaseClient.BUCKET_USER_COVERS,
+            bucketName = SupabaseConstants.BUCKET_USER_COVERS,
             onProgress = {}
         )
     }

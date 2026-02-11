@@ -247,7 +247,64 @@ Even with proper edge-to-edge inset handling, the issue persists. The combinatio
 
 ## Current Status
 
-**All attempts have failed.** The issue persists despite:
+**Attempt #6 in progress** - Testing Activity lifecycle fix.
+
+**Latest change (Commit 8d22ada):**
+- Fixed Activity lifecycle order: `super.onCreate()` now called FIRST
+- Replaced `enableEdgeToEdge()` with `WindowCompat.setDecorFitsSystemWindows(window, false)`
+- WindowCompat called AFTER `super.onCreate()` for proper inset handling
+
+**Hypothesis:** Previous attempts failed because `enableEdgeToEdge()` was called before `super.onCreate()`, breaking window inset handling at the Activity level.
+
+**Awaiting user testing to confirm if this fixes the issue.**
+
+---
+
+## Attempt #6 - Fix Activity Lifecycle Order (Commit 8d22ada)
+**Date:** 2026-02-11 05:44:xx
+**Status:** ⏳ **TESTING**
+
+### Discovery
+Found that `enableEdgeToEdge()` was being called BEFORE `super.onCreate()` in PostDetailActivity:
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()  // ❌ WRONG ORDER
+    super.onCreate(savedInstanceState)
+    ...
+}
+```
+
+This is incorrect and breaks window inset handling. The Activity window setup happens in `super.onCreate()`, so calling `enableEdgeToEdge()` before it causes the window to be configured incorrectly.
+
+### What We Tried
+**PostDetailActivity.kt:**
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)  // ✅ FIRST
+    WindowCompat.setDecorFitsSystemWindows(window, false)  // ✅ AFTER super
+    ...
+}
+```
+
+### Key Changes
+1. ✅ **Moved `super.onCreate()` to be FIRST line** - Proper Activity initialization order
+2. ✅ **Replaced `enableEdgeToEdge()` with `WindowCompat.setDecorFitsSystemWindows(window, false)`** - More explicit control
+3. ✅ **Called WindowCompat AFTER `super.onCreate()`** - Window is properly initialized before configuration
+
+### Why This Should Work
+- `super.onCreate()` initializes the Activity window
+- `WindowCompat.setDecorFitsSystemWindows(window, false)` tells the window to NOT automatically fit system windows (status bar, nav bar, keyboard)
+- This gives Compose full control over insets via the existing `.statusBarsPadding()`, `.navigationBarsPadding()`, and `.imePadding()` modifiers
+- Combined with `windowSoftInputMode="adjustNothing"` and `contentWindowInsets = WindowInsets(0,0,0,0)`, we have complete manual control
+
+### Result
+⏳ **Awaiting user testing**
+
+---
+
+## All Attempts Have Failed (Previous Status)
+
+**All previous attempts failed.** The issue persisted despite:
 - Configuring Scaffold to ignore insets
 - Adding manual inset padding to top and bottom bars
 - Trying different `windowSoftInputMode` values (adjustResize, adjustNothing, adjustPan)

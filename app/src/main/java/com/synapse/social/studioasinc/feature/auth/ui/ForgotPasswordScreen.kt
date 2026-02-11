@@ -61,7 +61,7 @@ fun ForgotPasswordScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            if (state.emailSent) {
+            if (state.isEmailSent) {
 
                 Text(
                     text = "Check your email",

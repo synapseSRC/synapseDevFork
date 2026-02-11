@@ -66,10 +66,11 @@ class SupabaseAuthenticationService(
         return try {
             withContext(Dispatchers.Default) {
                 val profileInsert = UserProfileInsert(
+                    uid = userId,
                     username = username,
                     email = email
                 )
-                client.from("user_profiles").insert(profileInsert)
+                client.from("users").insert(profileInsert)
 
                 val settingsInsert = UserSettingsInsert(user_id = userId)
                 client.from("user_settings").insert(settingsInsert)
@@ -89,7 +90,7 @@ class SupabaseAuthenticationService(
     override suspend fun ensureProfileExists(userId: String, email: String): Result<Unit> {
         return try {
             withContext(Dispatchers.Default) {
-                val count = client.from("user_profiles").select(columns = Columns.list("id")) {
+                val count = client.from("users").select(columns = Columns.list("id")) {
                     count(Count.EXACT)
                     filter {
                         eq("id", userId)

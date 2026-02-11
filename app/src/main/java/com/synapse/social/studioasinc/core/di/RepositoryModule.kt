@@ -55,17 +55,13 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideSharedAuthRepository(): SharedAuthRepository {
-        return SharedAuthRepository()
+    fun provideSharedAuthRepository(
+        client: SupabaseClientType
+    ): SharedAuthRepository {
+        return SharedAuthRepository(client)
     }
 
-    @Provides
-    @Singleton
-    fun provideAuthRepository(
-        sharedAuthRepository: SharedAuthRepository
-    ): AuthRepository {
-        return AuthRepository(sharedAuthRepository)
-    }
+    // Removed provideAuthRepository as it was deleted
 
     @Provides
     @Singleton

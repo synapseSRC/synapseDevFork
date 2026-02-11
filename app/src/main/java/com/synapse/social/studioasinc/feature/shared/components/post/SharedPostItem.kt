@@ -22,7 +22,7 @@ fun SharedPostItem(
 ) {
 
     val state = remember(post, currentProfile, isExpanded) {
-        PostMapper.mapToState(post, currentProfile, isExpanded)
+        PostUiMapper.mapToState(post, currentProfile, isExpanded)
     }
 
 

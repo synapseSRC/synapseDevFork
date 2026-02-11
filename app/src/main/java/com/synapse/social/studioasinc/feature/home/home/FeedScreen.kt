@@ -29,7 +29,9 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.StoryWithUser
+import com.synapse.social.studioasinc.feature.home.home.FeedViewModel
 import com.synapse.social.studioasinc.feature.shared.components.post.PostActions
+import com.synapse.social.studioasinc.feature.shared.components.post.PostActionsFactory
 import com.synapse.social.studioasinc.feature.shared.components.post.SharedPostItem
 import com.synapse.social.studioasinc.feature.shared.components.post.PostOptionsBottomSheet
 import com.synapse.social.studioasinc.ui.components.ExpressivePullToRefreshIndicator
@@ -70,17 +72,14 @@ fun FeedScreen(
 
 
 
-    val actions = remember(viewModel) {
-        PostActions(
-            onLike = viewModel::likePost,
+    val actions = remember(viewModel, currentOnCommentClick, currentOnUserClick, currentOnMediaClick) {
+        PostActionsFactory.create(
+            viewModel = viewModel,
             onComment = { post -> currentOnCommentClick(post.id) },
             onShare = viewModel::sharePost,
-            onBookmark = viewModel::bookmarkPost,
-            onOptionClick = { post -> selectedPost = post },
-            onPollVote = viewModel::votePoll,
             onUserClick = { userId -> currentOnUserClick(userId) },
-            onMediaClick = { index -> currentOnMediaClick(index) },
-            onReactionSelected = { post, reaction -> viewModel.reactToPost(post, reaction) }
+            onOptionClick = { post -> selectedPost = post },
+            onMediaClick = { index -> currentOnMediaClick(index) }
         )
     }
 

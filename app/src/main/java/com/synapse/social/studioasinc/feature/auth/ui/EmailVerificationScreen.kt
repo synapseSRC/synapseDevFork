@@ -101,7 +101,7 @@ fun EmailVerificationScreen(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
                     androidx.compose.material3.CircularProgressIndicator(
-                        progress = { state.resendCooldownSeconds / 60f },
+                        progress = state.resendCooldownSeconds / 60f,
                         modifier = Modifier.size(48.dp),
                     )
                     Spacer(modifier = Modifier.height(8.dp))

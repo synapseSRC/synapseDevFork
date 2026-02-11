@@ -14,7 +14,7 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.datetime.Clock.System as SystemClock
+import kotlinx.datetime.Clock
 
 class CloudinaryUploadService(private val client: HttpClient) : UploadService {
     override suspend fun upload(
@@ -27,7 +27,7 @@ class CloudinaryUploadService(private val client: HttpClient) : UploadService {
         val cloudName = config.cloudinaryCloudName
         val apiKey = config.cloudinaryApiKey
         val apiSecret = config.cloudinaryApiSecret
-        val timestamp = SystemClock.now().epochSeconds.toString()
+        val timestamp = Clock.System.now().epochSeconds.toString()
 
         val toSign = "timestamp=$timestamp$apiSecret"
         val signature = PlatformUtils.sha1(toSign)

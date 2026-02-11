@@ -90,6 +90,8 @@ kotlin {
                 implementation("androidx.security:security-crypto:1.1.0-alpha06")
                 implementation("app.cash.sqldelight:android-driver:2.0.2")
                 implementation("io.insert-koin:koin-android:4.0.0")
+                // Explicitly add kotlinx-datetime for Android to avoid resolution issues
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
             }
         }
 

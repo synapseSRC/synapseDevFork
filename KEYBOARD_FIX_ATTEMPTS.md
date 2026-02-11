@@ -148,6 +148,7 @@ The Scaffold configuration was correct, but the **Activity window itself** was s
 
 ## Final Solution (Commit f788337)
 **Date:** 2026-02-11 04:58:xx
+**Status:** ❌ **DID NOT WORK**
 
 ### What We Did
 **AndroidManifest.xml:**
@@ -178,17 +179,86 @@ Scaffold(
 2. ✅ **Kept `contentWindowInsets = WindowInsets(0, 0, 0, 0)`** - Scaffold ignores insets
 3. ✅ **Kept `.imePadding()` on bottom bar** - Only bottom bar responds to keyboard
 
-### Why This Works
-**Two-layer fix:**
-- **Activity level:** `adjustNothing` prevents window from resizing/shifting
-- **Compose level:** `contentWindowInsets(0,0,0,0)` + `.imePadding()` gives precise control
+### Result
+- ❌ **User reported: Still doesn't fix the issue**
+- ❌ Screen still shifts upward when keyboard opens
+- ❌ Top bar still goes off-screen
 
-Result:
-- Activity window stays fixed (no resize)
-- Scaffold container stays fixed (ignores insets)
-- TopAppBar stays pinned at top (no movement)
-- Only bottom bar reacts to keyboard via `.imePadding()`
-- Content area resizes naturally with `weight(1f)`
+### Why It Didn't Work
+`adjustNothing` prevents window adjustment entirely, which may cause keyboard to cover content. The disconnect between log data (showing correct behavior) and visual observation (showing incorrect behavior) suggests the issue may be at a different layer or the Activity window is being manipulated by something else.
+
+---
+
+## Attempt #5 - Edge-to-Edge Inset Handling (Commit 97a508b)
+**Date:** 2026-02-11 05:19:05
+**Status:** ❌ **DID NOT WORK**
+
+### Discovery
+Found that `PostDetailActivity` uses `enableEdgeToEdge()` which requires different inset handling approach.
+
+### What We Tried
+**AndroidManifest.xml:**
+```xml
+<activity
+    android:name=".feature.post.PostDetailActivity"
+    android:windowSoftInputMode="adjustNothing"  <!-- Kept from previous attempt -->
+    ...
+/>
+```
+
+**PostDetailScreen.kt:**
+```kotlin
+Scaffold(
+    contentWindowInsets = WindowInsets(0, 0, 0, 0),
+    topBar = {
+        TopAppBar(
+            modifier = Modifier
+                .statusBarsPadding()  // NEW: Prevent overlap with status bar
+                .onGloballyPositioned { ... }
+        )
+    },
+    bottomBar = {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()  // NEW: Handle navigation bar
+                .imePadding()
+        ) { ... }
+    }
+)
+```
+
+### Key Changes
+1. ✅ **Added `.statusBarsPadding()` to TopAppBar** - Prevents overlap with status bar in edge-to-edge mode
+2. ✅ **Added `.navigationBarsPadding()` to bottom bar** - Handles navigation bar insets
+3. ✅ **Kept `.imePadding()` on bottom bar** - Handles keyboard insets
+4. ✅ **Kept `contentWindowInsets = WindowInsets(0,0,0,0)`** - Manual inset control
+5. ✅ **Kept `windowSoftInputMode="adjustNothing"`** - Full manual control
+
+### Result
+- ❌ **User reported: Still doesn't fix the issue**
+- ❌ Screen still shifts upward when keyboard opens
+- ❌ Top bar still goes off-screen
+
+### Why It Didn't Work
+Even with proper edge-to-edge inset handling, the issue persists. The combination of `enableEdgeToEdge()` + `adjustNothing` + manual inset padding should work in theory, but something is still causing the entire screen to shift.
+
+---
+
+## Current Status
+
+**All attempts have failed.** The issue persists despite:
+- Configuring Scaffold to ignore insets
+- Adding manual inset padding to top and bottom bars
+- Trying different `windowSoftInputMode` values (adjustResize, adjustNothing, adjustPan)
+- Accounting for edge-to-edge mode with proper status/navigation bar padding
+
+**Possible remaining causes:**
+1. Theme-level `windowSoftInputMode` override
+2. Parent activity or navigation component interfering
+3. System UI controller or window insets controller configuration
+4. Edge-to-edge implementation conflicting with keyboard handling
+5. Something in the Activity lifecycle manipulating window insets
 
 ---
 

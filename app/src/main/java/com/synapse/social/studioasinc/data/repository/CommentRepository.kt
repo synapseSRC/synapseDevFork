@@ -20,6 +20,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
 import javax.inject.Inject
@@ -221,14 +223,16 @@ class CommentRepository @Inject constructor(
 
                     commentDao.insertAll(listOf(CommentMapper.toEntity(comment.toComment())))
 
-                    if (parentCommentId != null) {
-                        updateRepliesCount(parentCommentId, 1)
+                    coroutineScope {
+                        launch {
+                            if (parentCommentId != null) {
+                                updateRepliesCount(parentCommentId, 1)
+                            }
+                        }
+                        launch {
+                            processMentions(postId, comment.id, content, userId, parentCommentId)
+                        }
                     }
-
-
-
-
-                    processMentions(postId, comment.id, content, userId, parentCommentId)
 
                     Log.d(TAG, "Comment created successfully: ${comment.id}")
                     return@withContext Result.success(comment)

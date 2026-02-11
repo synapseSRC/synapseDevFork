@@ -224,7 +224,7 @@ fun PostDetailScreen(
         android.util.Log.d("PostDetailScreen", "SafeDrawing Bottom: ${safeDrawingInsets.getBottom(density)}")
     }
 
-    Scaffold(
+    Scaffold( contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
         modifier = Modifier.onGloballyPositioned { coordinates ->
             android.util.Log.d("PostDetailScreen", "=== ROOT SCAFFOLD POSITION ===")
             android.util.Log.d("PostDetailScreen", "Root Y Position: ${coordinates.positionInRoot().y}")
@@ -234,6 +234,7 @@ fun PostDetailScreen(
             Column(
                  modifier = Modifier
                      .fillMaxWidth()
+                     .padding(bottom = if (imeVisible) 0.dp else WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
                      .onGloballyPositioned { coordinates ->
                          android.util.Log.d("PostDetailScreen", "=== BOTTOM BAR POSITION ===")
                          android.util.Log.d("PostDetailScreen", "Y Position: ${coordinates.positionInRoot().y}")

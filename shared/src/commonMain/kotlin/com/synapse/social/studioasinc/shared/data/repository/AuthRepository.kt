@@ -17,7 +17,6 @@ import io.github.aakira.napier.Napier
 import kotlin.time.ExperimentalTime
 import io.github.jan.supabase.SupabaseClient as SupabaseClientLib
 
-
 class AuthRepository(private val client: SupabaseClientLib = SupabaseClient.client) {
     private val TAG = "AuthRepository"
 
@@ -57,29 +56,32 @@ class AuthRepository(private val client: SupabaseClientLib = SupabaseClient.clie
     suspend fun ensureProfileExists(userId: String, email: String, username: String? = null): Result<Unit> {
         return try {
             withContext(Dispatchers.Default) {
-
-                val count = client.from("user_profiles").select(columns = Columns.list("id")) {
+                val count = client.from("users").select(columns = Columns.list("id")) {
                     count(Count.EXACT)
                     filter {
-                        eq("id", userId)
+                        eq("uid", userId)
                     }
                 }.countOrNull()
 
                 if (count == null || count == 0L) {
                     val actualUsername = username ?: email.substringBefore("@")
 
-
                     // SECURITY: Do not include sensitive fields (account_premium, verify, banned) here. They must be handled server-side.
                     val profileInsert = UserProfileInsert(
+                        uid = userId, // Ensure ID is passed if model requires it
                         username = actualUsername,
                         email = email
                     )
-                    client.from("user_profiles").insert(profileInsert)
+                    // Note: Check table name. Previous code said "user_profiles", but supabase tables showed "users".
+                    // The app/UserRepository used "users". shared used "user_profiles".
+                    // I see "users" table in Supabase list_tables output earlier.
+                    // I will change it to "users" to match the actual DB.
+                    client.from("users").insert(profileInsert)
 
-
+                    // Also check if user_settings and user_presence exist in list_tables
+                    // Yes: user_settings, user_presence.
                     val settingsInsert = UserSettingsInsert(user_id = userId)
                     client.from("user_settings").insert(settingsInsert)
-
 
                     val presenceInsert = UserPresenceInsert(user_id = userId)
                     client.from("user_presence").insert(presenceInsert)

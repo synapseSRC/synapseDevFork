@@ -59,11 +59,15 @@ fun SearchScreen(
     )
 
     LaunchedEffect(uiState.selectedTab) {
-        pagerState.animateScrollToPage(uiState.selectedTab.ordinal)
+        if (pagerState.currentPage != uiState.selectedTab.ordinal) {
+            pagerState.animateScrollToPage(uiState.selectedTab.ordinal)
+        }
     }
 
-    LaunchedEffect(pagerState.currentPage) {
-        viewModel.onTabSelected(SearchTab.entries[pagerState.currentPage])
+    LaunchedEffect(pagerState.settledPage) {
+        if (uiState.selectedTab.ordinal != pagerState.settledPage) {
+            viewModel.onTabSelected(SearchTab.entries[pagerState.settledPage])
+        }
     }
 
     LaunchedEffect(uiState.error) {
@@ -116,14 +120,14 @@ fun SearchScreen(
         ) {
 
             TabRow(
-                selectedTabIndex = uiState.selectedTab.ordinal,
+                selectedTabIndex = pagerState.currentPage,
                 containerColor = MaterialTheme.colorScheme.surface,
                 contentColor = MaterialTheme.colorScheme.primary,
                 divider = { HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant) }
             ) {
                 SearchTab.entries.forEach { tab ->
                     Tab(
-                        selected = uiState.selectedTab == tab,
+                        selected = pagerState.currentPage == tab.ordinal,
                         onClick = { viewModel.onTabSelected(tab) },
                         text = {
                             Text(

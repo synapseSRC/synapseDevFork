@@ -101,5 +101,6 @@ data class PostActions(
     val onOptionClick: (Post) -> Unit,
     val onPollVote: (Post, Int) -> Unit,
     val onUserClick: (String) -> Unit,
-    val onMediaClick: (Int) -> Unit
+    val onMediaClick: (Int) -> Unit,
+    val onReactionSelected: (Post, ReactionType) -> Unit
 )

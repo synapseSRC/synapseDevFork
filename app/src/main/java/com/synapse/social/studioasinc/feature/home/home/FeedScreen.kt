@@ -79,7 +79,8 @@ fun FeedScreen(
             onOptionClick = { post -> selectedPost = post },
             onPollVote = viewModel::votePoll,
             onUserClick = { userId -> currentOnUserClick(userId) },
-            onMediaClick = { index -> currentOnMediaClick(index) }
+            onMediaClick = { index -> currentOnMediaClick(index) },
+            onReactionSelected = { post, reaction -> viewModel.reactToPost(post, reaction) }
         )
     }
 

@@ -2,6 +2,7 @@ package com.synapse.social.studioasinc.data.remote.services
 
 import android.content.Context
 import android.net.Uri
+import io.github.jan.supabase.storage.upload
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
@@ -49,61 +50,55 @@ class SupabaseStorageService {
 
     private suspend fun uploadImage(bucket: String, userId: String, filePath: String): Result<String> {
         return withContext(Dispatchers.IO) {
+
+            // Security: Sanitize userId to prevent path traversal
+            if (userId.contains("..") || userId.contains("/") || userId.contains("\\")) {
+                 android.util.Log.e("SupabaseStorage", "Invalid userId format")
+                 return@withContext Result.failure(Exception("Invalid userId"))
+            }
+
             try {
-                android.util.Log.d("SupabaseStorage", "Uploading image from: $filePath to bucket: $bucket")
+                // Sanitized log: Removed filePath
+                android.util.Log.d("SupabaseStorage", "Uploading image to bucket: $bucket")
 
                 val file = File(filePath)
                 if (!file.exists()) {
-                    android.util.Log.e("SupabaseStorage", "File not found: $filePath")
-                    return@withContext Result.failure(Exception("File not found: $filePath"))
+                    // Sanitized log: Removed filePath
+                    android.util.Log.e("SupabaseStorage", "File not found")
+                    return@withContext Result.failure(Exception("File not found"))
                 }
 
                 if (file.length() == 0L) {
-                    android.util.Log.e("SupabaseStorage", "File is empty: $filePath")
-                    return@withContext Result.failure(Exception("File is empty: $filePath"))
+                    // Sanitized log: Removed filePath
+                    android.util.Log.e("SupabaseStorage", "File is empty")
+                    return@withContext Result.failure(Exception("File is empty"))
                 }
 
-                val fileBytes = file.readBytes()
-                android.util.Log.d("SupabaseStorage", "File size: ${fileBytes.size} bytes")
+                // Optimization: Do not read file into bytes. Use File object directly.
+                android.util.Log.d("SupabaseStorage", "File size: ${file.length()} bytes")
 
                 val fileName = "${UUID.randomUUID()}.${file.extension}"
                 val path = "$userId/$fileName"
 
-                android.util.Log.d("SupabaseStorage", "Uploading to path: $path")
+                // Sanitized log: Removed path
+                android.util.Log.d("SupabaseStorage", "Uploading image...")
 
-
-                var uploadSuccess = false
-                var lastException: Exception? = null
-
-                for (attempt in 1..3) {
-                    try {
-                        storage.from(bucket).upload(path, fileBytes) { upsert = true }
-                        uploadSuccess = true
-                        break
-                    } catch (e: Exception) {
-                        lastException = e
-                        android.util.Log.w("SupabaseStorage", "Upload attempt $attempt failed", e)
-                        if (attempt < 3) {
-                            delay(1000L * attempt)
-                        }
+                // Refactored to use retryWithExponentialBackoff for consistency
+                retryWithExponentialBackoff(
+                    maxAttempts = 3, // Keep original 3 attempts for image upload
+                    operation = "uploadImage",
+                    block = {
+                         storage.from(bucket).upload(path, file) { upsert = true }
+                         val publicUrl = storage.from(bucket).publicUrl(path)
+                         if (publicUrl.isBlank()) {
+                             Result.failure(Exception("Failed to get public URL"))
+                         } else {
+                             // Sanitized log: Removed publicUrl
+                             android.util.Log.d("SupabaseStorage", "Upload successful")
+                             Result.success(publicUrl)
+                         }
                     }
-                }
-
-                if (!uploadSuccess) {
-                    android.util.Log.e("SupabaseStorage", "Upload failed after 3 attempts")
-                    return@withContext Result.failure(lastException ?: Exception("Upload failed after retries"))
-                }
-
-
-                val publicUrl = storage.from(bucket).publicUrl(path)
-
-                if (publicUrl.isBlank()) {
-                    android.util.Log.e("SupabaseStorage", "Failed to get public URL")
-                    return@withContext Result.failure(Exception("Failed to get public URL"))
-                }
-
-                android.util.Log.d("SupabaseStorage", "Upload successful: $publicUrl")
-                Result.success(publicUrl)
+                )
 
             } catch (e: Exception) {
                 android.util.Log.e("SupabaseStorage", "Upload failed", e)
@@ -134,13 +129,19 @@ class SupabaseStorageService {
     ): Result<String> {
         return withContext(Dispatchers.IO) {
             if (!file.exists()) {
-                return@withContext Result.failure(StorageException.FileNotFound("File not found: ${file.path}"))
+                return@withContext Result.failure(StorageException.FileNotFound("File not found"))
             }
             if (file.length() == 0L) {
-                return@withContext Result.failure(StorageException.InvalidFile("File is empty: ${file.path}"))
+                return@withContext Result.failure(StorageException.InvalidFile("File is empty"))
             }
-            val bytes = file.readBytes()
-            uploadFileBytes(bytes, path, onProgress)
+
+            retryWithExponentialBackoff(
+                maxAttempts = MAX_RETRY_ATTEMPTS,
+                operation = "uploadFile",
+                block = {
+                    uploadFileInternal(file, path, onProgress)
+                }
+            )
         }
     }
 
@@ -162,6 +163,42 @@ class SupabaseStorageService {
         }
     }
 
+    private suspend fun uploadFileInternal(
+        file: File,
+        path: String,
+        onProgress: (Float) -> Unit
+    ): Result<String> {
+        try {
+            // Security: Sanitize path to prevent path traversal
+            if (path.contains("..")) {
+                 android.util.Log.e(TAG, "Invalid path format")
+                 return Result.failure(StorageException.InvalidPath("Invalid path containing traversal characters"))
+            }
+
+            // Sanitized log: Removed path
+            android.util.Log.d(TAG, "Uploading file to chat-media (${file.length()} bytes)")
+
+            onProgress(0.0f)
+
+            storage.from(CHAT_MEDIA_BUCKET).upload(path, file) { upsert = true }
+
+            // Simplified progress: Removed 0.9f intermediate step as per review
+
+            val publicUrl = storage.from(CHAT_MEDIA_BUCKET).publicUrl(path)
+
+            onProgress(1.0f)
+            // Sanitized log: Removed publicUrl
+            android.util.Log.d(TAG, "Upload successful")
+
+            return Result.success(publicUrl)
+
+        } catch (e: Exception) {
+            // Sanitized log: Removed path
+            android.util.Log.e(TAG, "Upload failed", e)
+            return Result.failure(mapStorageException(e, "Upload failed"))
+        }
+    }
+
 
 
     private suspend fun uploadFileBytesInternal(
@@ -170,7 +207,8 @@ class SupabaseStorageService {
         onProgress: (Float) -> Unit
     ): Result<String> {
         try {
-            android.util.Log.d(TAG, "Uploading bytes to chat-media: $path (${fileBytes.size} bytes)")
+            // Sanitized log: Removed path
+            android.util.Log.d(TAG, "Uploading bytes to chat-media (${fileBytes.size} bytes)")
 
             if (fileBytes.isEmpty()) {
                 return Result.failure(StorageException.InvalidFile("File bytes are empty"))
@@ -188,12 +226,12 @@ class SupabaseStorageService {
             val publicUrl = storage.from(CHAT_MEDIA_BUCKET).publicUrl(path)
 
             onProgress(1.0f)
-            android.util.Log.d(TAG, "Upload successful: $publicUrl")
+            android.util.Log.d(TAG, "Upload successful")
 
             return Result.success(publicUrl)
 
         } catch (e: Exception) {
-            android.util.Log.e(TAG, "Upload failed for path: $path", e)
+            android.util.Log.e(TAG, "Upload failed", e)
             return Result.failure(mapStorageException(e, "Upload failed"))
         }
     }
@@ -216,7 +254,7 @@ class SupabaseStorageService {
 
     private suspend fun downloadFileInternal(url: String): Result<ByteArray> {
         try {
-            android.util.Log.d(TAG, "Downloading file: $url")
+            android.util.Log.d(TAG, "Downloading file...")
 
             if (url.isBlank()) {
                 return Result.failure(StorageException.InvalidUrl("URL cannot be empty"))
@@ -224,7 +262,7 @@ class SupabaseStorageService {
 
 
             val path = extractPathFromUrl(url, CHAT_MEDIA_BUCKET)
-                ?: return Result.failure(StorageException.InvalidUrl("Invalid URL format: $url"))
+                ?: return Result.failure(StorageException.InvalidUrl("Invalid URL format"))
 
 
             val fileBytes = storage.from(CHAT_MEDIA_BUCKET).downloadAuthenticated(path)
@@ -237,7 +275,7 @@ class SupabaseStorageService {
             return Result.success(fileBytes)
 
         } catch (e: Exception) {
-            android.util.Log.e(TAG, "Download failed for URL: $url", e)
+            android.util.Log.e(TAG, "Download failed", e)
             return Result.failure(mapStorageException(e, "Download failed"))
         }
     }
@@ -260,7 +298,8 @@ class SupabaseStorageService {
 
     private suspend fun deleteFileInternal(path: String): Result<Unit> {
         try {
-            android.util.Log.d(TAG, "Deleting file: $path")
+            // Sanitized log: Removed path
+            android.util.Log.d(TAG, "Deleting file...")
 
             if (path.isBlank()) {
                 return Result.failure(StorageException.InvalidPath("Path cannot be empty"))
@@ -268,11 +307,11 @@ class SupabaseStorageService {
 
             storage.from(CHAT_MEDIA_BUCKET).delete(path)
 
-            android.util.Log.d(TAG, "Delete successful: $path")
+            android.util.Log.d(TAG, "Delete successful")
             return Result.success(Unit)
 
         } catch (e: Exception) {
-            android.util.Log.e(TAG, "Delete failed for path: $path", e)
+            android.util.Log.e(TAG, "Delete failed", e)
             return Result.failure(mapStorageException(e, "Delete failed"))
         }
     }

@@ -211,7 +211,7 @@ fun PostDetailScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.ime.union(WindowInsets.navigationBars)),
 
-        contentWindowInsets = WindowInsets.safeDrawing,
+        contentWindowInsets = WindowInsets.safeDrawing.exclude(WindowInsets.ime),
         bottomBar = {
             Column(
                  modifier = Modifier
@@ -261,11 +261,11 @@ fun PostDetailScreen(
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
         if (uiState.isLoading && uiState.post == null) {
-             Box( contentAlignment = Alignment.Center) {
+             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                  ExpressiveLoadingIndicator()
              }
         } else if (uiState.error != null && uiState.post == null) {
-             Box( contentAlignment = Alignment.Center) {
+             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                  Text("Error: ${uiState.error}")
              }
         } else {
@@ -288,6 +288,7 @@ fun PostDetailScreen(
                      onShowOptions = { showCommentOptions = it },
                      onUserClick = onNavigateToProfile,
                      onViewReplies = { commentId: String -> viewModel.loadReplies(commentId) },
+                     modifier = Modifier.fillMaxSize(),
 
                      headerContent = {
                         val mergedPost = remember(postDetail) {

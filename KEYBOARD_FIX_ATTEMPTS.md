@@ -247,22 +247,95 @@ Even with proper edge-to-edge inset handling, the issue persists. The combinatio
 
 ## Current Status
 
-**Attempt #6 in progress** - Testing Activity lifecycle fix.
+**Attempt #7 in progress** - Testing double padding fix.
 
-**Latest change (Commit 8d22ada):**
-- Fixed Activity lifecycle order: `super.onCreate()` now called FIRST
-- Replaced `enableEdgeToEdge()` with `WindowCompat.setDecorFitsSystemWindows(window, false)`
-- WindowCompat called AFTER `super.onCreate()` for proper inset handling
+**Latest changes:**
+- **Commit 8d22ada:** Fixed Activity lifecycle order
+- **Commit 53721d0:** Changed back to `adjustResize` 
+- **Commit 8846338:** Removed `.imePadding()` to fix double padding issue
 
-**Hypothesis:** Previous attempts failed because `enableEdgeToEdge()` was called before `super.onCreate()`, breaking window inset handling at the Activity level.
+**Discovery:** Bottom bar was appearing way too high (near status bar) because of double padding:
+- `adjustResize` shrinks window by keyboard height
+- `.imePadding()` adds ANOTHER keyboard height offset
+- Result: 2× keyboard height = bottom bar near top
 
 **Awaiting user testing to confirm if this fixes the issue.**
 
 ---
 
+## Attempt #7 - Fix Double Padding (Commits 8d22ada, 53721d0, 8846338)
+**Date:** 2026-02-11 06:06:xx
+**Status:** ⏳ **TESTING**
+
+### Discovery
+User reported: "bottom bar appears too much higher instead of over keyboard. The bottom bar is appearing approximately at the top (near status bar)"
+
+This revealed **double padding**:
+1. `adjustResize` shrinks the Activity window by keyboard height
+2. `.imePadding()` adds padding equal to keyboard height
+3. **Result:** Bottom bar pushed up by 2× keyboard height → appears near status bar!
+
+### What We Tried
+**PostDetailActivity.kt (Commit 8d22ada):**
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)  // ✅ FIRST
+    WindowCompat.setDecorFitsSystemWindows(window, false)  // ✅ AFTER super
+    ...
+}
+```
+
+**AndroidManifest.xml (Commit 53721d0):**
+```xml
+<activity
+    android:name=".feature.post.PostDetailActivity"
+    android:windowSoftInputMode="adjustResize"  <!-- Changed back from adjustNothing -->
+    ...
+/>
+```
+
+**PostDetailScreen.kt (Commit 8846338):**
+```kotlin
+Scaffold(
+    contentWindowInsets = WindowInsets(0, 0, 0, 0),
+    topBar = {
+        TopAppBar(
+            modifier = Modifier.statusBarsPadding()
+        )
+    },
+    bottomBar = {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                // REMOVED: .imePadding()  ← This was causing double padding!
+        ) { ... }
+    }
+)
+```
+
+### Key Changes
+1. ✅ **Fixed Activity lifecycle** - `super.onCreate()` first, then `WindowCompat`
+2. ✅ **Used `adjustResize`** - Let window resize naturally for keyboard
+3. ✅ **Removed `.imePadding()`** - Prevent double padding since `adjustResize` already handles it
+4. ✅ **Kept `contentWindowInsets = WindowInsets(0,0,0,0)`** - Manual control over insets
+5. ✅ **Kept `.statusBarsPadding()` and `.navigationBarsPadding()`** - Handle system bars only
+
+### Why This Should Work
+- `adjustResize` shrinks the window when keyboard opens
+- Window shrinks from bottom, so TopAppBar stays at top
+- Scaffold content area automatically fits in smaller window
+- Bottom bar sits at bottom of resized window (above keyboard)
+- No extra padding needed since window already resized
+
+### Result
+⏳ **Awaiting user testing**
+
+---
+
 ## Attempt #6 - Fix Activity Lifecycle Order (Commit 8d22ada)
 **Date:** 2026-02-11 05:44:xx
-**Status:** ⏳ **TESTING**
+**Status:** ❌ **FAILED - Led to Attempt #7**
 
 ### Discovery
 Found that `enableEdgeToEdge()` was being called BEFORE `super.onCreate()` in PostDetailActivity:
@@ -299,6 +372,8 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 ### Result
 ⏳ **Awaiting user testing**
+
+**Note:** This attempt combined with `adjustNothing` failed. The lifecycle fix was correct but incomplete - it revealed the double padding issue that led to Attempt #7.
 
 ---
 

@@ -1,11 +1,16 @@
 package com.synapse.social.studioasinc.domain.model
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
-
-
-@Serializable
+@Serializable(with = UserStatusSerializer::class)
 enum class UserStatus {
     @SerialName("online") ONLINE,
     @SerialName("offline") OFFLINE;
@@ -16,6 +21,25 @@ enum class UserStatus {
                 "online" -> ONLINE
                 else -> OFFLINE
             }
+        }
+    }
+}
+
+object UserStatusSerializer : KSerializer<UserStatus> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("UserStatus", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: UserStatus) {
+        encoder.encodeString(value.name.lowercase())
+    }
+
+    override fun deserialize(decoder: Decoder): UserStatus {
+        return try {
+            val string = decoder.decodeString()
+            UserStatus.fromString(string)
+        } catch (e: IllegalArgumentException) {
+            UserStatus.OFFLINE
+        } catch (e: SerializationException) {
+            UserStatus.OFFLINE
         }
     }
 }

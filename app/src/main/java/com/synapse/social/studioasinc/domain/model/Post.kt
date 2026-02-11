@@ -1,8 +1,18 @@
 package com.synapse.social.studioasinc.domain.model
 
+import com.synapse.social.studioasinc.core.util.json
+import com.synapse.social.studioasinc.core.util.toJsonElement
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.Transient
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.decodeFromJsonElement
 
 @Serializable
 data class PostMetadata(
@@ -12,9 +22,28 @@ data class PostMetadata(
     @SerialName("background_color") val backgroundColor: Long? = null
 )
 
+@Serializable(with = FeelingTypeSerializer::class)
 enum class FeelingType {
     MOOD,
     ACTIVITY
+}
+
+object FeelingTypeSerializer : KSerializer<FeelingType> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("FeelingType", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: FeelingType) {
+        encoder.encodeString(value.name)
+    }
+
+    override fun deserialize(decoder: Decoder): FeelingType {
+        return try {
+            FeelingType.valueOf(decoder.decodeString())
+        } catch (e: IllegalArgumentException) {
+            FeelingType.MOOD
+        } catch (e: SerializationException) {
+            FeelingType.MOOD
+        }
+    }
 }
 
 @Serializable
@@ -197,51 +226,4 @@ data class Post(
     }
 }
 
-fun HashMap<String, Any>.toPost(): Post = Post(
-    id = this["id"] as? String ?: "",
-    key = this["key"] as? String,
-    authorUid = this["author_uid"] as? String ?: "",
-    postText = this["post_text"] as? String,
-    postImage = this["post_image"] as? String,
-    postType = this["post_type"] as? String,
-    publishDate = this["publish_date"] as? String,
-    timestamp = (this["timestamp"] as? Number)?.toLong() ?: System.currentTimeMillis(),
-    likesCount = (this["likes_count"] as? Number)?.toInt() ?: 0,
-    commentsCount = (this["comments_count"] as? Number)?.toInt() ?: 0,
-    viewsCount = (this["views_count"] as? Number)?.toInt() ?: 0,
-    resharesCount = (this["reshares_count"] as? Number)?.toInt() ?: 0,
-    postHideViewsCount = this["post_hide_views_count"] as? String,
-    postHideLikeCount = this["post_hide_like_count"] as? String,
-    postHideCommentsCount = this["post_hide_comments_count"] as? String,
-    postDisableComments = this["post_disable_comments"] as? String,
-    postVisibility = this["post_visibility"] as? String,
-    avatarUrl = this["author_avatar_url"] as? String,
-    username = this["author_username"] as? String,
-    isVerified = this["author_is_verified"] as? Boolean ?: false,
-    metadata = (this["metadata"] as? Map<*, *>)?.let { map ->
-        PostMetadata(
-            layoutType = map["layout_type"] as? String,
-            backgroundColor = (map["background_color"] as? Number)?.toLong(),
-            feeling = (map["feeling"] as? Map<*, *>)?.let { f ->
-                FeelingActivity(
-                    emoji = f["emoji"] as? String ?: "",
-                    text = f["text"] as? String ?: "",
-                    type = (f["type"] as? String)?.let { typeStr ->
-                        try {
-                            FeelingType.valueOf(typeStr)
-                        } catch (e: Exception) {
-                            FeelingType.MOOD
-                        }
-                    } ?: FeelingType.MOOD
-                )
-            },
-            taggedPeople = (map["tagged_people"] as? List<*>)?.mapNotNull { item ->
-                (item as? Map<String, Any?>)?.let { userMap ->
-                    val hashMap = HashMap<String, Any?>()
-                    hashMap.putAll(userMap)
-                    hashMap.toUser()
-                }
-            }
-        )
-    }
-)
+fun HashMap<String, Any>.toPost(): Post = json.decodeFromJsonElement(this.toJsonElement())

@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.lifecycleScope
 import com.synapse.social.studioasinc.ProfileActivity
 import com.synapse.social.studioasinc.feature.shared.components.compose.FollowListScreen
-import com.synapse.social.studioasinc.data.repository.AuthRepository
+import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
 import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 import kotlinx.coroutines.launch
 import dagger.hilt.android.AndroidEntryPoint

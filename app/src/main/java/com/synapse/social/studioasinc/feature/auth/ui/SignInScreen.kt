@@ -129,7 +129,7 @@ private fun SignInForm(
             focusManager.clearFocus()
             onSignInClick()
         },
-        isLoading = state.isLoading
+        loading = state.isLoading
     )
 
     OAuthSection(

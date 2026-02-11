@@ -91,7 +91,7 @@ fun AuthScreen(
                         onEmailChanged = viewModel::onEmailChanged,
                         onPasswordChanged = viewModel::onPasswordChanged,
                         onSignInClick = {
-                             viewModel.onSignInClick(state.email, state.password)
+                             viewModel.onSignInClick()
                         },
                         onForgotPasswordClick = viewModel::onForgotPasswordClick,
                         onToggleModeClick = viewModel::onToggleModeClick,
@@ -109,7 +109,7 @@ fun AuthScreen(
                         onPasswordChanged = viewModel::onPasswordChanged,
                         onUsernameChanged = viewModel::onUsernameChanged,
                         onSignUpClick = {
-                             viewModel.onSignUpClick(state.email, state.password, state.username)
+                             viewModel.onSignUpClick()
                         },
                         onToggleModeClick = viewModel::onToggleModeClick,
                         onOAuthClick = viewModel::onOAuthClick
@@ -122,7 +122,7 @@ fun AuthScreen(
                 if (state is AuthUiState.EmailVerification) {
                     EmailVerificationScreen(
                         state = state,
-                        onResendClick = viewModel::onResendVerificationClick,
+                        onResendClick = viewModel::onResendVerificationEmail,
                         onBackToSignInClick = viewModel::onBackToSignInClick
                     )
                 }
@@ -135,7 +135,7 @@ fun AuthScreen(
                         state = state,
                         onEmailChanged = viewModel::onEmailChanged,
                         onSendResetLinkClick = {
-                             viewModel.sendPasswordResetEmail(state.email)
+                             viewModel.onSubmitNewPassword()
                         },
                         onBackClick = viewModel::onBackToSignInClick
                     )
@@ -152,7 +152,7 @@ fun AuthScreen(
                          onResetPasswordClick = {
 
 
-                             viewModel.onResetPasswordClick(state.password, state.confirmPassword, "")
+                             viewModel.onSubmitNewPassword()
                          }
                      )
                  }

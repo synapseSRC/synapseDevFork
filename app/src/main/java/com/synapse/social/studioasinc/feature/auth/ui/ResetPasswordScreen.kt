@@ -105,6 +105,7 @@ fun ResetPasswordScreen(
 
             AuthButton(
                 text = "Reset Password",
+                loading = state.isLoading,
                 onClick = {
                     focusManager.clearFocus()
                     onResetPasswordClick()

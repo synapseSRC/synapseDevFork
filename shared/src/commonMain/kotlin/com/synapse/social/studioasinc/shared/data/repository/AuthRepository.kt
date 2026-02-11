@@ -264,4 +264,7 @@ class AuthRepository(private val client: SupabaseClientLib = SupabaseClient.clie
             Result.failure(e)
         }
     }
+
+    // Compatibility alias
+    fun getCurrentUserUid(): String? = getCurrentUserId()
 }

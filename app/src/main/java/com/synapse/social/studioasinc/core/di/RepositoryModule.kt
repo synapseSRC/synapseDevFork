@@ -290,4 +290,9 @@ object RepositoryModule {
             r2UploadService
         )
     }
+    @Provides
+    @Singleton
+    fun provideSharedUserRepository(userRepository: UserRepository): com.synapse.social.studioasinc.shared.domain.repository.UserRepository {
+        return userRepository
+    }
 }

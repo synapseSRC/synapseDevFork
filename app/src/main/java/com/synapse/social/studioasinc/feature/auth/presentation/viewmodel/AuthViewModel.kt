@@ -9,8 +9,8 @@ import com.synapse.social.studioasinc.shared.domain.model.PasswordStrength
 import com.synapse.social.studioasinc.shared.domain.model.ValidationResult
 import com.synapse.social.studioasinc.shared.domain.usecase.auth.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jan.supabase.auth.providers.builtin.Github
-import io.github.jan.supabase.auth.providers.builtin.Google
+import io.github.jan.supabase.auth.providers.Github
+import io.github.jan.supabase.auth.providers.Google
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -374,5 +374,31 @@ class AuthViewModel @Inject constructor(
         super.onCleared()
         cooldownJob?.cancel()
         usernameCheckJob?.cancel()
+    }
+    fun onSubmitNewPassword() {
+        val state = _uiState.value as? AuthUiState.ResetPassword ?: return
+        val passwordValidation = validatePasswordUseCase(state.password)
+        if (passwordValidation is ValidationResult.Invalid) {
+            _uiState.value = state.copy(passwordError = passwordValidation.errorMessage)
+            return
+        }
+        if (state.password != state.confirmPassword) {
+            _uiState.value = state.copy(confirmPasswordError = "Passwords do not match")
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.value = state.copy(isLoading = true)
+            resetPasswordUseCase(state.password).fold(
+                onSuccess = {
+                    _uiState.value = state.copy(isLoading = false)
+                    _navigationEvent.emit(AuthNavigationEvent.NavigateToSignIn)
+                },
+                onFailure = { error ->
+                    // Show error in state (add generalError to ResetPassword state if needed, or re-use passwordError)
+                    _uiState.value = state.copy(isLoading = false, passwordError = error.message)
+                }
+            )
+        }
     }
 }

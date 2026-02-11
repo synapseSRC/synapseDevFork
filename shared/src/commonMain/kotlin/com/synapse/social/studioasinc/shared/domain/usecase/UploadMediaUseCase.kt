@@ -31,7 +31,7 @@ class UploadMediaUseCase(
             val config = repository.getStorageConfig().first()
             val provider = getProviderForMediaType(config, mediaType)
 
-            val providerToUse = if (provider == StorageProvider.DEFAULT) {
+            var providerToUse = if (provider == StorageProvider.DEFAULT) {
                  when (mediaType) {
                      MediaType.PHOTO, MediaType.IMAGE -> StorageProvider.IMGBB
                      else -> StorageProvider.CLOUDINARY
@@ -46,10 +46,10 @@ class UploadMediaUseCase(
 
             if (provider == StorageProvider.DEFAULT && !config.isProviderConfigured(providerToUse)) {
                  if (config.isProviderConfigured(StorageProvider.SUPABASE)) {
-
+                     providerToUse = StorageProvider.SUPABASE
+                 } else {
                      return Result.failure(Exception("Default provider ($providerToUse) is not configured."))
                  }
-                 return Result.failure(Exception("Default provider ($providerToUse) is not configured."))
             }
 
             val service = getUploadService(providerToUse)

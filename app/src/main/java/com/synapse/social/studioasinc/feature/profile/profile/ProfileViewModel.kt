@@ -1,29 +1,46 @@
 package com.synapse.social.studioasinc.feature.profile.profile
 
 import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.data.model.UserProfile
-import com.synapse.social.studioasinc.domain.usecase.profile.*
-import com.synapse.social.studioasinc.domain.usecase.post.*
+import com.synapse.social.studioasinc.data.repository.AuthRepository
+import com.synapse.social.studioasinc.domain.model.MediaItem
+import com.synapse.social.studioasinc.domain.model.Post
+import com.synapse.social.studioasinc.domain.model.ReactionType
+import com.synapse.social.studioasinc.domain.usecase.post.BookmarkPostUseCase
+import com.synapse.social.studioasinc.domain.usecase.post.DeletePostUseCase
+import com.synapse.social.studioasinc.domain.usecase.post.ReactToPostUseCase
+import com.synapse.social.studioasinc.domain.usecase.post.ReportPostUseCase
+import com.synapse.social.studioasinc.domain.usecase.post.VotePollUseCase
+import com.synapse.social.studioasinc.domain.usecase.profile.ArchiveProfileUseCase
+import com.synapse.social.studioasinc.domain.usecase.profile.BlockUserUseCase
+import com.synapse.social.studioasinc.domain.usecase.profile.FollowUserUseCase
+import com.synapse.social.studioasinc.domain.usecase.profile.GetFollowingUseCase
+import com.synapse.social.studioasinc.domain.usecase.profile.GetProfileContentUseCase
+import com.synapse.social.studioasinc.domain.usecase.profile.GetProfileUseCase
+import com.synapse.social.studioasinc.domain.usecase.profile.IsFollowingUseCase
+import com.synapse.social.studioasinc.domain.usecase.profile.LockProfileUseCase
+import com.synapse.social.studioasinc.domain.usecase.profile.MuteUserUseCase
+import com.synapse.social.studioasinc.domain.usecase.profile.ReportUserUseCase
+import com.synapse.social.studioasinc.domain.usecase.profile.UnfollowUserUseCase
 import com.synapse.social.studioasinc.domain.usecase.story.HasActiveStoryUseCase
-import com.synapse.social.studioasinc.feature.profile.profile.components.ViewAsMode
 import com.synapse.social.studioasinc.feature.profile.profile.components.FollowingUser
-import com.synapse.social.studioasinc.feature.profile.profile.utils.MemoryManager
-import com.synapse.social.studioasinc.feature.profile.profile.utils.NetworkOptimizer
+import com.synapse.social.studioasinc.feature.profile.profile.components.ViewAsMode
+import com.synapse.social.studioasinc.feature.shared.components.post.PostCardState
+import com.synapse.social.studioasinc.feature.shared.components.post.PostEvent
+import com.synapse.social.studioasinc.feature.shared.components.post.PostEventBus
+import com.synapse.social.studioasinc.feature.shared.components.post.PostUiMapper
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.feature.shared.components.post.PostCardState
-import com.synapse.social.studioasinc.feature.shared.components.post.PollOption
-import com.synapse.social.studioasinc.feature.shared.components.post.PostEventBus
-import com.synapse.social.studioasinc.feature.shared.components.post.PostEvent
-import com.synapse.social.studioasinc.feature.shared.components.post.PostMapper
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 data class ProfileScreenState(
     val profileState: ProfileUiState = ProfileUiState.Loading,
@@ -55,19 +72,17 @@ data class ProfileScreenState(
     val isRefreshing: Boolean = false
 )
 
-
-
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
     private val getProfileUseCase: GetProfileUseCase,
     private val getProfileContentUseCase: GetProfileContentUseCase,
     private val getFollowingUseCase: GetFollowingUseCase,
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase,
-    private val likePostUseCase: LikePostUseCase,
-    private val unlikePostUseCase: UnlikePostUseCase,
-    private val savePostUseCase: SavePostUseCase,
-    private val unsavePostUseCase: UnsavePostUseCase,
+    private val reactToPostUseCase: ReactToPostUseCase,
+    private val votePollUseCase: VotePollUseCase,
+    private val bookmarkPostUseCase: BookmarkPostUseCase,
     private val deletePostUseCase: DeletePostUseCase,
     private val reportPostUseCase: ReportPostUseCase,
     private val lockProfileUseCase: LockProfileUseCase,
@@ -82,6 +97,8 @@ class ProfileViewModel @Inject constructor(
     private val _state = MutableStateFlow(ProfileScreenState())
     val state: StateFlow<ProfileScreenState> = _state.asStateFlow()
 
+    private var searchJob: Job? = null
+
     init {
         viewModelScope.launch {
             PostEventBus.events.collect { event ->
@@ -94,250 +111,101 @@ class ProfileViewModel @Inject constructor(
                             currentState.copy(posts = updatedPosts)
                         }
                     }
+                    is PostEvent.Deleted -> {
+                         _state.update { currentState ->
+                            val updatedPosts = currentState.posts.filterNot { item ->
+                                item is Post && item.id == event.postId
+                            }
+                            currentState.copy(posts = updatedPosts)
+                        }
+                    }
                     else -> {}
                 }
             }
         }
     }
 
-    fun loadProfile(userId: String, currentUserId: String, isPullToRefresh: Boolean = false) {
-        if (isPullToRefresh) {
-            _state.update { it.copy(isRefreshing = true, currentUserId = currentUserId) }
-        } else {
-            _state.update { it.copy(profileState = ProfileUiState.Loading, currentUserId = currentUserId) }
-        }
-
+    fun loadProfile(userId: String) {
         viewModelScope.launch {
+            _state.update { it.copy(profileState = ProfileUiState.Loading) }
+            val currentUserUid = authRepository.getCurrentUserId() ?: ""
+            val isOwnProfile = currentUserUid == userId
 
-            if (userId != currentUserId) {
-                launch {
-                    isFollowingUseCase(currentUserId, userId).onSuccess { isFollowing ->
-                        _state.update { it.copy(isFollowing = isFollowing) }
-                    }
-                }
+            _state.update {
+                it.copy(
+                    currentUserId = currentUserUid,
+                    isOwnProfile = isOwnProfile
+                )
             }
 
-            getProfileUseCase(userId).collect { result ->
-                result.onSuccess { profile ->
-                    _state.update {
-                        it.copy(
-                            profileState = ProfileUiState.Success(profile),
-                            isOwnProfile = userId == currentUserId,
-                            isRefreshing = false
-                        )
-                    }
-                    loadContent(userId, ProfileContentFilter.POSTS)
-                    checkStory(userId)
-                }.onFailure { exception ->
-                    _state.update {
-                        it.copy(
-                            profileState = ProfileUiState.Error(
-                                exception.message ?: "Failed to load profile",
-                                exception
-                            ),
-                            isRefreshing = false
-                        )
-                    }
+            getProfileUseCase(userId).onSuccess { profile ->
+                _state.update { it.copy(profileState = ProfileUiState.Success(profile)) }
+                checkStory(userId)
+
+                if (!isOwnProfile) {
+                     isFollowingUseCase(userId).onSuccess { isFollowing ->
+                         _state.update { it.copy(isFollowing = isFollowing) }
+                     }
                 }
+
+                loadContent(userId, _state.value.contentFilter)
+
+            }.onFailure { error ->
+                _state.update { it.copy(profileState = ProfileUiState.Error(error.message ?: "Unknown error")) }
             }
         }
     }
 
-    fun refreshProfile(userId: String) {
-        loadProfile(userId, _state.value.currentUserId, isPullToRefresh = true)
-    }
-
-    fun switchContentFilter(filter: ProfileContentFilter) {
-        _state.update { it.copy(contentFilter = filter) }
-        val profile = (_state.value.profileState as? ProfileUiState.Success)?.profile ?: return
-        loadContent(profile.id, filter)
-    }
-
-    fun loadMoreContent(filter: ProfileContentFilter) {
-        val profile = (_state.value.profileState as? ProfileUiState.Success)?.profile ?: return
-        _state.update { it.copy(isLoadingMore = true) }
+    fun followUser(userId: String) {
         viewModelScope.launch {
-            when (filter) {
-                ProfileContentFilter.POSTS -> {
-                    val offset = _state.value.postsOffset
-                    getProfileContentUseCase.getPosts(profile.id, offset = offset).onSuccess { posts ->
-                        _state.update {
-                            val allPosts = MemoryManager.limitCacheSize(it.posts + posts)
-                            it.copy(
-                                posts = allPosts,
-                                postsOffset = offset + posts.size,
-                                isLoadingMore = false
-                            )
-                        }
-                    }.onFailure {
-                        _state.update { it.copy(isLoadingMore = false) }
-                    }
-                }
-                ProfileContentFilter.PHOTOS -> {
-                    val offset = _state.value.photosOffset
-                    getProfileContentUseCase.getPhotos(profile.id, offset = offset).onSuccess { photos ->
-                        _state.update {
-                            it.copy(
-                                photos = it.photos + photos,
-                                photosOffset = offset + photos.size,
-                                isLoadingMore = false
-                            )
-                        }
-                    }.onFailure {
-                        _state.update { it.copy(isLoadingMore = false) }
-                    }
-                }
-                ProfileContentFilter.REELS -> {
-                    val offset = _state.value.reelsOffset
-                    getProfileContentUseCase.getReels(profile.id, offset = offset).onSuccess { reels ->
-                        _state.update {
-                            it.copy(
-                                reels = it.reels + reels,
-                                reelsOffset = offset + reels.size,
-                                isLoadingMore = false
-                            )
-                        }
-                    }.onFailure {
-                        _state.update { it.copy(isLoadingMore = false) }
-                    }
-                }
+            _state.update { it.copy(isFollowLoading = true) }
+            followUserUseCase(userId).onSuccess {
+                _state.update { it.copy(isFollowing = true, isFollowLoading = false) }
+            }.onFailure {
+                _state.update { it.copy(isFollowLoading = false) }
             }
         }
     }
 
-    fun followUser(targetUserId: String) {
-        _state.update { it.copy(isFollowing = true, isFollowLoading = true) }
+    fun unfollowUser(userId: String) {
+         viewModelScope.launch {
+            _state.update { it.copy(isFollowLoading = true) }
+            unfollowUserUseCase(userId).onSuccess {
+                _state.update { it.copy(isFollowing = false, isFollowLoading = false) }
+            }.onFailure {
+                _state.update { it.copy(isFollowLoading = false) }
+            }
+        }
+    }
+
+    fun reactToPost(post: Post, reactionType: ReactionType) {
         viewModelScope.launch {
-            followUserUseCase(_state.value.currentUserId, targetUserId).fold(
-                onSuccess = {
-                     _state.update { it.copy(isFollowLoading = false) }
-                },
-                onFailure = {
-                    _state.update { it.copy(isFollowing = false, isFollowLoading = false) }
-
-                    PostEventBus.emit(PostEvent.Error("Failed to follow user"))
+            reactToPostUseCase(post, reactionType).collect { result ->
+                result.onSuccess { updatedPost ->
+                     PostEventBus.emit(PostEvent.Updated(updatedPost))
                 }
-            )
-        }
-    }
-
-    fun unfollowUser(targetUserId: String) {
-        _state.update { it.copy(isFollowing = false, isFollowLoading = true) }
-        viewModelScope.launch {
-            unfollowUserUseCase(_state.value.currentUserId, targetUserId).fold(
-                onSuccess = {
-                    _state.update { it.copy(isFollowLoading = false) }
-                },
-                onFailure = {
-                    _state.update { it.copy(isFollowing = true, isFollowLoading = false) }
-
-                    PostEventBus.emit(PostEvent.Error("Failed to unfollow user"))
-                }
-            )
-        }
-    }
-
-    fun toggleMoreMenu() {
-        _state.update { it.copy(showMoreMenu = !it.showMoreMenu) }
-    }
-
-    private val reactionRepository = com.synapse.social.studioasinc.data.repository.ReactionRepository()
-
-    fun toggleLike(postId: String) {
-         reactToPost(postId, com.synapse.social.studioasinc.domain.model.ReactionType.LIKE)
-    }
-
-    fun reactToPost(postId: String, reactionType: com.synapse.social.studioasinc.domain.model.ReactionType) {
-
-        val post = _state.value.posts.filterIsInstance<Post>().find { it.id == postId } ?: return
-        val currentReaction = post.userReaction
-
-
-        val isRemoving = currentReaction == reactionType
-        val newReaction = if (isRemoving) null else reactionType
-
-        val countChange = when {
-             isRemoving -> -1
-             currentReaction == null -> 1
-             else -> 0
-        }
-
-        val newCount = post.likesCount + countChange
-
-        val updatedReactions = post.reactions?.toMutableMap() ?: mutableMapOf()
-        if (isRemoving) {
-             val currentCount = updatedReactions[reactionType] ?: 1
-             updatedReactions[reactionType] = maxOf(0, currentCount - 1)
-        } else {
-             if (currentReaction != null) {
-                 val oldTypeCount = updatedReactions[currentReaction] ?: 1
-                 updatedReactions[currentReaction] = maxOf(0, oldTypeCount - 1)
-             }
-             val newTypeCount = updatedReactions[reactionType] ?: 0
-             updatedReactions[reactionType] = newTypeCount + 1
-        }
-
-        val updatedPost = post.copy(
-            likesCount = maxOf(0, newCount),
-            userReaction = newReaction,
-            reactions = updatedReactions
-        )
-
-
-        _state.update { state ->
-            val updatedPosts = state.posts.map { if (it is Post && it.id == postId) updatedPost else it }
-            state.copy(posts = updatedPosts)
-        }
-
-
-        PostEventBus.emit(PostEvent.Updated(updatedPost))
-
-
-        viewModelScope.launch {
-            reactionRepository.toggleReaction(postId, "post", reactionType, post.userReaction, skipCheck = true)
-                .onFailure {
-
-                     _state.update { state ->
-                        val updatedPosts = state.posts.map { if (it is Post && it.id == postId) post else it }
-                        state.copy(posts = updatedPosts)
-                    }
-                    PostEventBus.emit(PostEvent.Updated(post))
-                }
+            }
         }
     }
 
     fun toggleSave(postId: String) {
         val isSaved = postId in _state.value.savedPostIds
+        val currentUserId = _state.value.currentUserId
 
-
+        // Optimistic update
         _state.update { state ->
             val savedPostIds = state.savedPostIds.toMutableSet()
-            if (isSaved) {
-                savedPostIds.remove(postId)
-            } else {
-                savedPostIds.add(postId)
-            }
+            if (isSaved) savedPostIds.remove(postId) else savedPostIds.add(postId)
             state.copy(savedPostIds = savedPostIds)
         }
 
-
         viewModelScope.launch {
-            val result = if (isSaved) {
-                unsavePostUseCase(postId, _state.value.currentUserId)
-            } else {
-                savePostUseCase(postId, _state.value.currentUserId)
-            }
-
-            result.collect { res ->
-                res.onFailure {
-
+            bookmarkPostUseCase(postId, currentUserId, isSaved).collect { result ->
+                result.onFailure {
+                    // Revert optimistic update
                     _state.update { state ->
                         val savedPostIds = state.savedPostIds.toMutableSet()
-                        if (isSaved) {
-                            savedPostIds.add(postId)
-                        } else {
-                            savedPostIds.remove(postId)
-                        }
+                        if (isSaved) savedPostIds.add(postId) else savedPostIds.remove(postId)
                         state.copy(savedPostIds = savedPostIds)
                     }
                 }
@@ -345,14 +213,22 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun votePoll(post: Post, optionIndex: Int) {
+        viewModelScope.launch {
+            votePollUseCase(post, optionIndex).collect { result ->
+                result.onSuccess { updatedPost ->
+                    PostEventBus.emit(PostEvent.Updated(updatedPost))
+                }
+            }
+        }
+    }
+
     fun deletePost(postId: String) {
         viewModelScope.launch {
-            deletePostUseCase(postId, _state.value.currentUserId).collect { result ->
+            val currentUserId = _state.value.currentUserId
+            deletePostUseCase(postId, currentUserId).collect { result ->
                 result.onSuccess {
-
-                    _state.update { state ->
-                        state.copy(posts = state.posts.filterNot { (it as? Any)?.toString()?.contains(postId) == true })
-                    }
+                    PostEventBus.emit(PostEvent.Deleted(postId))
                 }
             }
         }
@@ -360,76 +236,21 @@ class ProfileViewModel @Inject constructor(
 
     fun reportPost(postId: String, reason: String) {
         viewModelScope.launch {
-            reportPostUseCase(postId, reason, null).collect { result ->
-                result.onSuccess {
-
-                }
+            reportPostUseCase(postId, reason, null).collect {
+                // Handle result if needed
             }
         }
     }
 
-    fun votePoll(postId: String, optionIndex: Int) {
-        val post = _state.value.posts.filterIsInstance<Post>().find { it.id == postId } ?: return
-        val currentOptions = post.pollOptions ?: return
-        if (post.userPollVote != null) return
-
-        val updatedOptions = currentOptions.mapIndexed { index, option ->
-            if (index == optionIndex) option.copy(votes = option.votes + 1) else option
-        }
-
-        val updatedPost = post.copy(
-            pollOptions = updatedOptions,
-            userPollVote = optionIndex
-        )
-
-        _state.update { state ->
-            val updatedPosts = state.posts.map { if (it is Post && it.id == postId) updatedPost else it }
-            state.copy(posts = updatedPosts)
-        }
-        PostEventBus.emit(PostEvent.Updated(updatedPost))
-
-        viewModelScope.launch {
-            try {
-                val pollRepository = com.synapse.social.studioasinc.data.repository.PollRepository()
-                pollRepository.submitVote(postId, optionIndex)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-
-    fun showShareSheet() {
-        _state.update { it.copy(showShareSheet = true) }
-    }
-
-    fun hideShareSheet() {
-        _state.update { it.copy(showShareSheet = false) }
-    }
-
-    fun showViewAsSheet() {
-        _state.update { it.copy(showViewAsSheet = true) }
-    }
-
-    fun hideViewAsSheet() {
-        _state.update { it.copy(showViewAsSheet = false) }
-    }
-
-    fun showQrCode() {
-        _state.update { it.copy(showQrCode = true) }
-    }
-
-    fun hideQrCode() {
-        _state.update { it.copy(showQrCode = false) }
-    }
-
-    fun showReportDialog() {
-        _state.update { it.copy(showReportDialog = true) }
-    }
-
-    fun hideReportDialog() {
-        _state.update { it.copy(showReportDialog = false) }
-    }
+    // UI Helpers
+    fun showShareSheet() { _state.update { it.copy(showShareSheet = true) } }
+    fun hideShareSheet() { _state.update { it.copy(showShareSheet = false) } }
+    fun showViewAsSheet() { _state.update { it.copy(showViewAsSheet = true) } }
+    fun hideViewAsSheet() { _state.update { it.copy(showViewAsSheet = false) } }
+    fun showQrCode() { _state.update { it.copy(showQrCode = true) } }
+    fun hideQrCode() { _state.update { it.copy(showQrCode = false) } }
+    fun showReportDialog() { _state.update { it.copy(showReportDialog = true) } }
+    fun hideReportDialog() { _state.update { it.copy(showReportDialog = false) } }
 
     fun setViewAsMode(mode: ViewAsMode, userName: String? = null) {
         _state.update { it.copy(viewAsMode = mode, viewAsUserName = userName) }
@@ -439,12 +260,23 @@ class ProfileViewModel @Inject constructor(
         _state.update { it.copy(viewAsMode = null, viewAsUserName = null) }
     }
 
-    private var searchJob: kotlinx.coroutines.Job? = null
+    fun toggleMoreMenu() {
+        _state.update { it.copy(showMoreMenu = !it.showMoreMenu) }
+    }
+
+    fun switchContentFilter(filter: ProfileContentFilter) {
+        if (_state.value.contentFilter == filter) return
+        _state.update { it.copy(contentFilter = filter) }
+        val profile = (_state.value.profileState as? ProfileUiState.Success)?.profile
+        if (profile != null) {
+             loadContent(profile.id, filter)
+        }
+    }
 
     fun searchUsers(query: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            kotlinx.coroutines.delay(300)
+            delay(300)
             if (query.isBlank()) {
                 _state.update { it.copy(searchResults = emptyList(), isSearching = false) }
                 return@launch
@@ -453,8 +285,10 @@ class ProfileViewModel @Inject constructor(
             _state.update { it.copy(isSearching = true) }
 
             try {
-
-                val results = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                // Assuming UserProfileManager exists and is accessible directly or should be injected?
+                // Original code used com.synapse.social.studioasinc.UserProfileManager.
+                // If it's a singleton object, it's fine.
+                val results = withContext(Dispatchers.IO) {
                     com.synapse.social.studioasinc.UserProfileManager.searchUsers(query)
                 }
                 _state.update { it.copy(searchResults = results, isSearching = false) }
@@ -470,62 +304,37 @@ class ProfileViewModel @Inject constructor(
 
     fun lockProfile(isLocked: Boolean) {
         viewModelScope.launch {
-            lockProfileUseCase(_state.value.currentUserId, isLocked).collect { result ->
-                result.onSuccess {
-
-                }
-            }
+            lockProfileUseCase(_state.value.currentUserId, isLocked).collect {}
         }
     }
 
     fun archiveProfile(isArchived: Boolean) {
         viewModelScope.launch {
-            archiveProfileUseCase(_state.value.currentUserId, isArchived).collect { result ->
-                result.onSuccess {
-
-                }
-            }
+            archiveProfileUseCase(_state.value.currentUserId, isArchived).collect {}
         }
     }
 
     fun blockUser(blockedUserId: String) {
         viewModelScope.launch {
-            blockUserUseCase(_state.value.currentUserId, blockedUserId).collect { result ->
-                result.onSuccess {
-
-                }
-            }
+            blockUserUseCase(_state.value.currentUserId, blockedUserId).collect {}
         }
     }
 
     fun reportUser(reportedUserId: String, reason: String) {
         viewModelScope.launch {
-            reportUserUseCase(_state.value.currentUserId, reportedUserId, reason).collect { result ->
-                result.onSuccess {
-
-                }
-            }
+            reportUserUseCase(_state.value.currentUserId, reportedUserId, reason).collect {}
         }
     }
 
     fun muteUser(mutedUserId: String) {
         viewModelScope.launch {
-            muteUserUseCase(_state.value.currentUserId, mutedUserId).collect { result ->
-                result.onSuccess {
-
-                }
-            }
+            muteUserUseCase(_state.value.currentUserId, mutedUserId).collect {}
         }
     }
 
-
-
-
-
     fun mapPostToState(post: Post): PostCardState {
-
         val currentProfile = (_state.value.profileState as? ProfileUiState.Success)?.profile
-        return PostMapper.mapToState(post, currentProfile)
+        return PostUiMapper.mapToState(post, currentProfile)
     }
 
     private fun checkStory(userId: String) {
@@ -556,12 +365,8 @@ class ProfileViewModel @Inject constructor(
             when (filter) {
                 ProfileContentFilter.POSTS -> {
                     getProfileContentUseCase.getPosts(userId).onSuccess { posts ->
-
-                        val enrichedPosts = if (posts.isNotEmpty()) {
-                            reactionRepository.populatePostReactions(posts.filterIsInstance<Post>())
-                        } else posts
-
-                        _state.update { it.copy(posts = enrichedPosts, postsOffset = posts.size) }
+                        // Removed populatePostReactions as discussed
+                        _state.update { it.copy(posts = posts, postsOffset = posts.size) }
                     }
                 }
                 ProfileContentFilter.PHOTOS -> {

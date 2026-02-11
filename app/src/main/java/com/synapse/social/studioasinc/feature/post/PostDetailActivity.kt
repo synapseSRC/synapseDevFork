@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import com.synapse.social.studioasinc.CreatePostActivity
 import com.synapse.social.studioasinc.ProfileActivity
 import com.synapse.social.studioasinc.feature.post.postdetail.PostDetailScreen
@@ -26,8 +27,9 @@ class PostDetailActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
 
         val postId = intent.getStringExtra(EXTRA_POST_ID)
 

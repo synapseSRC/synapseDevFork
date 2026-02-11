@@ -2,6 +2,7 @@ package com.synapse.social.studioasinc.data.remote.services
 
 import android.content.Context
 import android.net.Uri
+import io.github.jan.supabase.storage.upload
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
@@ -63,8 +64,9 @@ class SupabaseStorageService {
                     return@withContext Result.failure(Exception("File is empty: $filePath"))
                 }
 
-                val fileBytes = file.readBytes()
-                android.util.Log.d("SupabaseStorage", "File size: ${fileBytes.size} bytes")
+                // Optimization: Do not read file into bytes. Use File object directly.
+                // val fileBytes = file.readBytes()
+                android.util.Log.d("SupabaseStorage", "File size: ${file.length()} bytes")
 
                 val fileName = "${UUID.randomUUID()}.${file.extension}"
                 val path = "$userId/$fileName"
@@ -77,7 +79,8 @@ class SupabaseStorageService {
 
                 for (attempt in 1..3) {
                     try {
-                        storage.from(bucket).upload(path, fileBytes) { upsert = true }
+                        // Optimized: Upload using File object directly to avoid memory overhead
+                        storage.from(bucket).upload(path, file) { upsert = true }
                         uploadSuccess = true
                         break
                     } catch (e: Exception) {
@@ -139,8 +142,18 @@ class SupabaseStorageService {
             if (file.length() == 0L) {
                 return@withContext Result.failure(StorageException.InvalidFile("File is empty: ${file.path}"))
             }
-            val bytes = file.readBytes()
-            uploadFileBytes(bytes, path, onProgress)
+
+            // Optimization: Avoid reading bytes into memory
+            // val bytes = file.readBytes()
+            // uploadFileBytes(bytes, path, onProgress)
+
+            retryWithExponentialBackoff(
+                maxAttempts = MAX_RETRY_ATTEMPTS,
+                operation = "uploadFile",
+                block = {
+                    uploadFileInternal(file, path, onProgress)
+                }
+            )
         }
     }
 
@@ -159,6 +172,33 @@ class SupabaseStorageService {
                     uploadFileBytesInternal(bytes, path, onProgress)
                 }
             )
+        }
+    }
+
+    private suspend fun uploadFileInternal(
+        file: File,
+        path: String,
+        onProgress: (Float) -> Unit
+    ): Result<String> {
+        try {
+            android.util.Log.d(TAG, "Uploading file to chat-media: $path (${file.length()} bytes)")
+
+            onProgress(0.1f)
+
+            storage.from(CHAT_MEDIA_BUCKET).upload(path, file) { upsert = true }
+
+            onProgress(0.9f)
+
+            val publicUrl = storage.from(CHAT_MEDIA_BUCKET).publicUrl(path)
+
+            onProgress(1.0f)
+            android.util.Log.d(TAG, "Upload successful: $publicUrl")
+
+            return Result.success(publicUrl)
+
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "Upload failed for path: $path", e)
+            return Result.failure(mapStorageException(e, "Upload failed"))
         }
     }
 

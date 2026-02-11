@@ -138,28 +138,39 @@ class ProfileViewModel @Inject constructor(
                 )
             }
 
-            getProfileUseCase(userId).onSuccess { profile ->
-                _state.update { it.copy(profileState = ProfileUiState.Success(profile)) }
-                checkStory(userId)
+            getProfileUseCase(userId).collect { result ->
+                result.onSuccess { profile ->
+                    _state.update { it.copy(profileState = ProfileUiState.Success(profile)) }
+                    checkStory(userId)
 
-                if (!isOwnProfile) {
-                     isFollowingUseCase(userId).onSuccess { isFollowing ->
-                         _state.update { it.copy(isFollowing = isFollowing) }
-                     }
+                    if (!isOwnProfile) {
+                         // Fix: Pass currentUserId
+                         val followResult = isFollowingUseCase(currentUserUid, userId)
+                         followResult.onSuccess { isFollowing ->
+                             _state.update { it.copy(isFollowing = isFollowing) }
+                         }
+                    }
+
+                    loadContent(userId, _state.value.contentFilter)
+                }.onFailure { error ->
+                    _state.update { it.copy(profileState = ProfileUiState.Error(error.message ?: "Unknown error")) }
                 }
-
-                loadContent(userId, _state.value.contentFilter)
-
-            }.onFailure { error ->
-                _state.update { it.copy(profileState = ProfileUiState.Error(error.message ?: "Unknown error")) }
             }
         }
     }
 
+    fun refreshProfile(userId: String) {
+        _state.update { it.copy(isRefreshing = true) }
+        loadProfile(userId)
+        _state.update { it.copy(isRefreshing = false) }
+    }
+
     fun followUser(userId: String) {
         viewModelScope.launch {
+            val currentUserId = _state.value.currentUserId
             _state.update { it.copy(isFollowLoading = true) }
-            followUserUseCase(userId).onSuccess {
+            // Fix: Pass currentUserId
+            followUserUseCase(currentUserId, userId).onSuccess {
                 _state.update { it.copy(isFollowing = true, isFollowLoading = false) }
             }.onFailure {
                 _state.update { it.copy(isFollowLoading = false) }
@@ -169,8 +180,10 @@ class ProfileViewModel @Inject constructor(
 
     fun unfollowUser(userId: String) {
          viewModelScope.launch {
+            val currentUserId = _state.value.currentUserId
             _state.update { it.copy(isFollowLoading = true) }
-            unfollowUserUseCase(userId).onSuccess {
+            // Fix: Pass currentUserId
+            unfollowUserUseCase(currentUserId, userId).onSuccess {
                 _state.update { it.copy(isFollowing = false, isFollowLoading = false) }
             }.onFailure {
                 _state.update { it.copy(isFollowLoading = false) }
@@ -192,7 +205,6 @@ class ProfileViewModel @Inject constructor(
         val isSaved = postId in _state.value.savedPostIds
         val currentUserId = _state.value.currentUserId
 
-        // Optimistic update
         _state.update { state ->
             val savedPostIds = state.savedPostIds.toMutableSet()
             if (isSaved) savedPostIds.remove(postId) else savedPostIds.add(postId)
@@ -202,7 +214,6 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             bookmarkPostUseCase(postId, currentUserId, isSaved).collect { result ->
                 result.onFailure {
-                    // Revert optimistic update
                     _state.update { state ->
                         val savedPostIds = state.savedPostIds.toMutableSet()
                         if (isSaved) savedPostIds.add(postId) else savedPostIds.remove(postId)
@@ -236,9 +247,7 @@ class ProfileViewModel @Inject constructor(
 
     fun reportPost(postId: String, reason: String) {
         viewModelScope.launch {
-            reportPostUseCase(postId, reason, null).collect {
-                // Handle result if needed
-            }
+            reportPostUseCase(postId, reason, null).collect { }
         }
     }
 
@@ -285,9 +294,6 @@ class ProfileViewModel @Inject constructor(
             _state.update { it.copy(isSearching = true) }
 
             try {
-                // Assuming UserProfileManager exists and is accessible directly or should be injected?
-                // Original code used com.synapse.social.studioasinc.UserProfileManager.
-                // If it's a singleton object, it's fine.
                 val results = withContext(Dispatchers.IO) {
                     com.synapse.social.studioasinc.UserProfileManager.searchUsers(query)
                 }
@@ -365,7 +371,6 @@ class ProfileViewModel @Inject constructor(
             when (filter) {
                 ProfileContentFilter.POSTS -> {
                     getProfileContentUseCase.getPosts(userId).onSuccess { posts ->
-                        // Removed populatePostReactions as discussed
                         _state.update { it.copy(posts = posts, postsOffset = posts.size) }
                     }
                 }

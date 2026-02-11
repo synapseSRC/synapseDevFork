@@ -45,8 +45,8 @@ class ReactToPostUseCase @Inject constructor(
         emit(Result.success(updatedPost))
 
         reactionRepository.toggleReaction(
-            contentId = post.id,
-            contentType = "post",
+            targetId = post.id,
+            targetType = "post",
             reactionType = reactionType,
             oldReaction = currentReaction,
             skipCheck = true

@@ -19,6 +19,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.synapse.social.studioasinc.feature.shared.components.post.PostActionsFactory
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -98,7 +99,7 @@ fun ProfileScreen(
     }
 
     LaunchedEffect(userId) {
-        viewModel.loadProfile(userId, currentUserId)
+        viewModel.loadProfile(userId)
     }
 
     Scaffold(
@@ -408,9 +409,8 @@ private fun ProfileContent(
 
 
     val actions = remember(context, viewModel) {
-        PostActions(
-            onUserClick = { userId -> currentOnNavigateToUserProfile(userId) },
-            onLike = { post -> viewModel.toggleLike(post.id) },
+        PostActionsFactory.create(
+            viewModel = viewModel,
             onComment = { post ->
                 val intent = Intent(context, PostDetailActivity::class.java).apply {
                     putExtra(PostDetailActivity.EXTRA_POST_ID, post.id)
@@ -425,15 +425,9 @@ private fun ProfileContent(
                 }
                 context.startActivity(Intent.createChooser(intent, "Share Post"))
             },
-            onBookmark = { post -> viewModel.toggleSave(post.id) },
+            onUserClick = { userId -> currentOnNavigateToUserProfile(userId) },
             onOptionClick = { post -> currentOnShowPostOptions(post) },
-            onMediaClick = { index ->
-
-
-
-            },
-            onPollVote = { post, idx -> viewModel.votePoll(post.id, idx) },
-            onReactionSelected = { post, reaction -> viewModel.reactToPost(post.id, reaction) }
+            onMediaClick = { index -> }
         )
     }
 
@@ -548,6 +542,7 @@ private fun ProfileContent(
                         }
                     }
                     ProfileContentFilter.POSTS -> {
+                        val profile = (state.profileState as? ProfileUiState.Success)?.profile ?: return@crossfadeContent
                         Column {
 
                             Spacer(modifier = Modifier.height(16.dp))

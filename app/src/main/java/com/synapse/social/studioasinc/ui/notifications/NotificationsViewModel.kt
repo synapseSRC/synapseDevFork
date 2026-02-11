@@ -1,24 +1,24 @@
 package com.synapse.social.studioasinc.ui.notifications
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.R
 import com.synapse.social.studioasinc.core.util.TimeUtils
-import com.synapse.social.studioasinc.data.repository.AuthRepository
-import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
-import com.synapse.social.studioasinc.shared.data.model.NotificationDto
+import com.synapse.social.studioasinc.shared.domain.model.Notification
+import com.synapse.social.studioasinc.shared.domain.model.NotificationMessageType
+import com.synapse.social.studioasinc.shared.domain.usecase.notification.GetNotificationsUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.notification.MarkNotificationAsReadUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.notification.SubscribeToNotificationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.contentOrNull
+import io.github.aakira.napier.Napier
 
 @Immutable
 data class NotificationsUiState(
@@ -29,12 +29,14 @@ data class NotificationsUiState(
 
 @HiltViewModel
 class NotificationsViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
-    private val notificationRepository: NotificationRepository,
-    @ApplicationContext private val context: Context
+    private val getNotificationsUseCase: GetNotificationsUseCase,
+    private val markNotificationAsReadUseCase: MarkNotificationAsReadUseCase,
+    private val subscribeToNotificationsUseCase: SubscribeToNotificationsUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(NotificationsUiState())
     val uiState: StateFlow<NotificationsUiState> = _uiState.asStateFlow()
+
+    private var realtimeJob: Job? = null
 
     init {
         loadNotifications()
@@ -43,61 +45,61 @@ class NotificationsViewModel @Inject constructor(
     fun loadNotifications() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            try {
-                val currentUserId = authRepository.getCurrentUserId()
 
-                if (currentUserId != null) {
-
-                    val dtos = notificationRepository.fetchNotifications(currentUserId)
-                    val notifications = dtos.map { mapDtoToUi(it) }
-
-                     _uiState.update {
+            getNotificationsUseCase().collect { result ->
+                result.onSuccess { notifications ->
+                    val uiNotifications = notifications.map { mapDomainToUi(it) }
+                    _uiState.update {
                         it.copy(
-                            notifications = notifications,
+                            notifications = uiNotifications,
                             isLoading = false,
-                            unreadCount = notifications.count { !it.isRead }
+                            unreadCount = uiNotifications.count { !it.isRead }
                         )
                     }
-
-
-                    launch {
-                        try {
-                            notificationRepository.getRealtimeNotifications(currentUserId).collect { dto ->
-                                val newNotification = mapDtoToUi(dto)
-                                _uiState.update { state ->
-                                    state.copy(
-                                        notifications = listOf(newNotification) + state.notifications,
-                                        unreadCount = state.unreadCount + 1
-                                    )
-                                }
-                            }
-                        } catch (e: Exception) {
-                            android.util.Log.e("NotificationsViewModel", "Realtime error", e)
-                        }
-                    }
-                } else {
-                     _uiState.update { it.copy(isLoading = false) }
+                    subscribeToRealtime()
+                }.onFailure { error ->
+                    Napier.e("Failed to load notifications: $error")
+                    _uiState.update { it.copy(isLoading = false) }
                 }
-            } catch (e: Exception) {
-                android.util.Log.e("NotificationsViewModel", "Failed to load notifications", e)
-                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }
 
-    private fun mapDtoToUi(dto: NotificationDto): UiNotification {
-        val fallback = context.getString(R.string.notification_fallback_message)
-        val newActivity = context.getString(R.string.notification_new_activity)
+    private fun subscribeToRealtime() {
+        realtimeJob?.cancel()
+        realtimeJob = viewModelScope.launch {
+            try {
+                subscribeToNotificationsUseCase().collect { notification ->
+                    val newNotification = mapDomainToUi(notification)
+                    _uiState.update { state ->
+                        state.copy(
+                            notifications = listOf(newNotification) + state.notifications,
+                            unreadCount = state.unreadCount + 1
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                Napier.e("Realtime error", e)
+            }
+        }
+    }
+
+    private fun mapDomainToUi(notification: Notification): UiNotification {
+        val message = when (notification.messageType) {
+            NotificationMessageType.CUSTOM -> notification.message?.let { UiText.DynamicString(it) } ?: UiText.StringResource(R.string.notification_fallback_message)
+            NotificationMessageType.FALLBACK -> UiText.StringResource(R.string.notification_fallback_message)
+        }
+        val actorName = notification.actorName?.let { UiText.DynamicString(it) } ?: UiText.StringResource(R.string.notification_new_activity)
 
         return UiNotification(
-            id = dto.id,
-            type = dto.type,
-            actorName = dto.actor?.displayName ?: newActivity,
-            actorAvatar = dto.actor?.avatar,
-            message = dto.body["en"]?.jsonPrimitive?.contentOrNull ?: fallback,
-            timestamp = TimeUtils.getTimeAgo(dto.createdAt),
-            isRead = dto.isRead,
-            targetId = dto.data?.get("target_id")?.jsonPrimitive?.contentOrNull
+            id = notification.id,
+            type = notification.type,
+            actorName = actorName,
+            actorAvatar = notification.actorAvatar,
+            message = message,
+            timestamp = TimeUtils.getTimeAgo(notification.timestamp),
+            isRead = notification.isRead,
+            targetId = notification.targetId
         )
     }
 
@@ -107,16 +109,12 @@ class NotificationsViewModel @Inject constructor(
 
     fun markAsRead(notificationId: String) {
         viewModelScope.launch {
-            val userId = authRepository.getCurrentUserId() ?: return@launch
-
-
+            // Optimistic update
             setNotificationReadState(notificationId, isRead = true)
 
-            try {
-                notificationRepository.markAsRead(userId, notificationId)
-            } catch (e: Exception) {
-                android.util.Log.e("NotificationsViewModel", "Failed to mark as read for notification $notificationId", e)
-
+            markNotificationAsReadUseCase(notificationId).onFailure { e ->
+                Napier.e("Failed to mark as read for notification $notificationId", e)
+                // Revert optimistic update
                 setNotificationReadState(notificationId, isRead = false)
             }
         }

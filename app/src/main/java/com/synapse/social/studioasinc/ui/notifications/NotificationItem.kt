@@ -1,5 +1,6 @@
 package com.synapse.social.studioasinc.ui.notifications
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,20 +15,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Immutable
 import com.synapse.social.studioasinc.ui.components.CircularAvatar
 
+sealed interface UiText {
+    data class DynamicString(val value: String) : UiText
+    class StringResource(@StringRes val resId: Int, val args: List<Any> = emptyList()) : UiText
+
+    @Composable
+    fun asString(): String {
+        return when (this) {
+            is DynamicString -> value
+            is StringResource -> stringResource(resId, *args.toTypedArray())
+        }
+    }
+}
 
 @Immutable
 data class UiNotification(
     val id: String,
     val type: String,
-    val actorName: String,
+    val actorName: UiText,
     val actorAvatar: String?,
-    val message: String,
+    val message: UiText,
     val timestamp: String,
     val isRead: Boolean,
     val targetId: String? = null
@@ -40,6 +54,9 @@ fun NotificationItem(
     onUserClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val actorNameString = notification.actorName.asString()
+    val messageString = notification.message.asString()
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -51,7 +68,7 @@ fun NotificationItem(
             imageUrl = notification.actorAvatar,
             contentDescription = "Avatar",
             size = 48.dp,
-            onClick = { onUserClick(notification.actorName) }
+            onClick = { onUserClick(actorNameString) }
         )
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -59,14 +76,14 @@ fun NotificationItem(
         Column(modifier = Modifier.weight(1f)) {
             Row {
                 Text(
-                    text = notification.actorName,
+                    text = actorNameString,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable(onClick = { onUserClick(notification.actorName) })
+                    modifier = Modifier.clickable(onClick = { onUserClick(actorNameString) })
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = notification.message,
+                    text = messageString,
                     style = MaterialTheme.typography.bodyLarge
                 )
             }

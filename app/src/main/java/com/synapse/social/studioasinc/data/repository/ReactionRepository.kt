@@ -12,6 +12,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
 import kotlinx.serialization.SerialName
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kotlinx.serialization.Serializable
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.rpc
@@ -275,18 +280,24 @@ class ReactionRepository @Inject constructor(
 
         try {
             val allPostIds = posts.map { it.id }
-            val summaries = mutableListOf<PostReactionSummary>()
+            val semaphore = Semaphore(5)
 
-            allPostIds.chunked(20).forEach { chunkIds ->
-                 try {
-                     val chunkSummaries = client.postgrest.rpc(
-                        "get_posts_reactions_summary",
-                        mapOf("post_ids" to chunkIds)
-                     ).decodeList<PostReactionSummary>()
-                     summaries.addAll(chunkSummaries)
-                 } catch(e: Exception) {
-                     Log.e(TAG, "Failed to fetch reaction summaries for chunk", e)
-                 }
+            val summaries = supervisorScope {
+                 allPostIds.chunked(20).map { chunkIds ->
+                     async {
+                         semaphore.withPermit {
+                             try {
+                                 client.postgrest.rpc(
+                                    "get_posts_reactions_summary",
+                                    mapOf("post_ids" to chunkIds)
+                                 ).decodeList<PostReactionSummary>()
+                             } catch(e: Exception) {
+                                 Log.e(TAG, "Failed to fetch reaction summaries for chunk", e)
+                                 emptyList<PostReactionSummary>()
+                             }
+                         }
+                     }
+                 }.awaitAll().flatten()
             }
 
             applyReactionSummaries(posts, summaries)
@@ -302,18 +313,24 @@ class ReactionRepository @Inject constructor(
 
         try {
             val allCommentIds = comments.map { it.id }
-            val summaries = mutableListOf<CommentReactionSummary>()
+            val semaphore = Semaphore(5)
 
-            allCommentIds.chunked(20).forEach { chunkIds ->
-                 try {
-                     val chunkSummaries = client.postgrest.rpc(
-                        "get_comments_reactions_summary",
-                        mapOf("comment_ids" to chunkIds)
-                     ).decodeList<CommentReactionSummary>()
-                     summaries.addAll(chunkSummaries)
-                 } catch(e: Exception) {
-                     Log.e(TAG, "Failed to fetch reaction summaries for comment chunk", e)
-                 }
+            val summaries = supervisorScope {
+                 allCommentIds.chunked(20).map { chunkIds ->
+                     async {
+                         semaphore.withPermit {
+                             try {
+                                 client.postgrest.rpc(
+                                    "get_comments_reactions_summary",
+                                    mapOf("comment_ids" to chunkIds)
+                                 ).decodeList<CommentReactionSummary>()
+                             } catch(e: Exception) {
+                                 Log.e(TAG, "Failed to fetch reaction summaries for comment chunk", e)
+                                 emptyList<CommentReactionSummary>()
+                             }
+                         }
+                     }
+                 }.awaitAll().flatten()
             }
 
             applyCommentReactionSummaries(comments, summaries)

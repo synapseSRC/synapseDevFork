@@ -13,6 +13,8 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Count
 import io.github.jan.supabase.postgrest.postgrest
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.contentOrNull
 import io.github.jan.supabase.SupabaseClient as SupabaseClientLib
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
@@ -172,7 +174,8 @@ class SupabaseAuthenticationService(
     @OptIn(ExperimentalTime::class)
     override suspend fun isEmailVerified(): Boolean {
         return try {
-            client.auth.currentUserOrNull()?.emailConfirmedAt != null
+            val user = client.auth.currentUserOrNull()
+            user?.identities?.any { it.provider == "email" && it.identityData["email_verified"]?.jsonPrimitive?.contentOrNull == "true" } == true
         } catch (e: Exception) {
             Napier.e("Failed to check email verification", e)
             false

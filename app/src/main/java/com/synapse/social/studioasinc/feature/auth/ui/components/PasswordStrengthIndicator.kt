@@ -17,12 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.feature.auth.ui.models.PasswordStrength
+import com.synapse.social.studioasinc.shared.domain.model.PasswordStrength
 import com.synapse.social.studioasinc.feature.auth.ui.util.AnimationUtil
-
-
 
 @Composable
 fun PasswordStrengthIndicator(
@@ -74,3 +73,25 @@ fun PasswordStrengthIndicator(
         )
     }
 }
+
+// Extension properties for mapping Shared Domain Model to UI
+val PasswordStrength.color: Color
+    get() = when(this) {
+        PasswordStrength.Weak -> Color.Red
+        PasswordStrength.Fair -> Color(0xFFFFA500) // Orange
+        PasswordStrength.Strong -> Color.Green
+    }
+
+val PasswordStrength.label: String
+    get() = when(this) {
+        PasswordStrength.Weak -> "Weak"
+        PasswordStrength.Fair -> "Fair"
+        PasswordStrength.Strong -> "Strong"
+    }
+
+val PasswordStrength.progress: Float
+    get() = when(this) {
+        PasswordStrength.Weak -> 0.33f
+        PasswordStrength.Fair -> 0.66f
+        PasswordStrength.Strong -> 1.0f
+    }

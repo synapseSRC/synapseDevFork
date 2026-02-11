@@ -52,17 +52,13 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideSharedAuthRepository(): SharedAuthRepository {
-        return SharedAuthRepository()
+    fun provideSharedAuthRepository(
+        client: SupabaseClientType
+    ): SharedAuthRepository {
+        return SharedAuthRepository(client)
     }
 
-    @Provides
-    @Singleton
-    fun provideAuthRepository(
-        sharedAuthRepository: SharedAuthRepository
-    ): AuthRepository {
-        return AuthRepository(sharedAuthRepository)
-    }
+    // Removed provideAuthRepository as it was deleted
 
     @Provides
     @Singleton
@@ -293,5 +289,10 @@ object RepositoryModule {
             supabaseUploadService,
             r2UploadService
         )
+    }
+    @Provides
+    @Singleton
+    fun provideSharedUserRepository(userRepository: UserRepository): com.synapse.social.studioasinc.shared.domain.repository.UserRepository {
+        return userRepository
     }
 }

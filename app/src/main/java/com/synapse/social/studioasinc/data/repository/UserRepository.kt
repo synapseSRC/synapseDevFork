@@ -10,11 +10,12 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import com.synapse.social.studioasinc.core.network.SupabaseErrorHandler
+import com.synapse.social.studioasinc.shared.domain.repository.UserRepository as SharedUserRepository
 
 class UserRepository @Inject constructor(
     private val userDao: UserDao,
     private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
-) {
+) : SharedUserRepository {
 
     suspend fun getUserById(userId: String): Result<User?> {
         return try {
@@ -139,5 +140,9 @@ class UserRepository @Inject constructor(
         } catch (e: Exception) {
             return SupabaseErrorHandler.toResult(e, "UserRepository", "Failed to check username availability: $username")
         }
+    }
+
+    override suspend fun isUsernameAvailable(username: String): Result<Boolean> {
+        return checkUsernameAvailability(username)
     }
 }

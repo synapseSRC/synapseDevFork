@@ -3,7 +3,7 @@ package com.synapse.social.studioasinc.ui.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.data.local.database.StorageMigration
-import com.synapse.social.studioasinc.data.repository.AuthRepository
+import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
 import com.synapse.social.studioasinc.data.repository.UserRepository
 import com.synapse.social.studioasinc.domain.model.User
 import com.synapse.social.studioasinc.shared.domain.model.MediaType

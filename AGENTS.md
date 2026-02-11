@@ -38,8 +38,16 @@ This platform is designed to be **widely available across operating systems**, i
 > Violations here are **non-negotiable** and will block acceptance.
 
 ### 🧱 Architecture Rules
-- ❌ **NO Retrofit**  
-  → Use **Ktor + Supabase-kt**
+- ❌ **NO Direct Backend SDK Usage in Domain/UseCases**  
+  → All backend access through **Repository Interfaces**  
+  → Supabase/REST/BaaS clients stay in `data` layer only
+- ❌ **NO Backend-Specific Types in Domain Layer**  
+  → Use **DTOs** for network responses  
+  → Use **Domain Models** for business logic  
+  → Require **Mapper** classes between layers
+- ❌ **NO Hardcoded Backend Assumptions**  
+  → Design for swappable backends (REST, Supabase, custom like Signal)  
+  → Use **DataSource** abstractions (`SupabaseDataSource`, `RestApiDataSource`)
 - ❌ **NO Android-only Room usage**  
   → Databases must live in `shared`  
   → Use **SQLDelight** or **Room KMP**
@@ -57,6 +65,37 @@ This platform is designed to be **widely available across operating systems**, i
   → **One ViewModel per feature/screen**
 - No cache should be committed to the repository
 
+### 🏗️ Layer Boundaries (Production-Ready)
+```
+┌─────────────────────────────────────────────┐
+│  UI Layer (app/)                            │
+│  • ViewModels + Composables                 │
+│  • NO business logic                        │
+└─────────────────┬───────────────────────────┘
+                  │ StateFlow
+┌─────────────────▼───────────────────────────┐
+│  Domain Layer (shared/domain/)              │
+│  • UseCases (business logic)                │
+│  • Domain Models (pure Kotlin)              │
+│  • Repository Interfaces                    │
+│  • NO backend SDK imports                   │
+└─────────────────┬───────────────────────────┘
+                  │ Repository Interface
+┌─────────────────▼───────────────────────────┐
+│  Data Layer (shared/data/)                  │
+│  • Repository Implementations               │
+│  • DataSource Abstractions                  │
+│  • DTOs + Mappers                           │
+│  • Backend SDKs (Supabase/Ktor/etc.)        │
+└─────────────────────────────────────────────┘
+```
+
+### 📦 Dependency Rules
+- **Domain** depends on: Nothing (pure Kotlin)
+- **Data** depends on: Domain interfaces
+- **UI** depends on: Domain (UseCases + Models)
+- **Backend SDKs** live in: Data layer only
+
 > [!Warning]
 > Any PR violating these rules will be **rejected without review**.
 
@@ -71,9 +110,15 @@ Before moving forward:
    - Do **not** start submission without a successful build.
 2. 🔍 **Code Review MUST be completed**
    - Self-review or peer-review required.
+3. 🧹 **Cache Files MUST NOT be committed**
+   - Check for `.gradle/`, `build/`, `.idea/`, `*.iml`, `local.properties`, etc.
+   - Run `git status` to verify no cache/build artifacts staged
+4. 🚫 **NO Empty Commits**
+   - Commits must contain meaningful changes
+   - Use `git diff --cached` to verify staged changes exist
 
 > [!Important]
-> No build + no review = **no submission**
+> No build + no review + cache files + empty commits = **no submission**
 
 ---
 

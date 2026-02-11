@@ -5,6 +5,7 @@ import com.synapse.social.studioasinc.core.util.toJsonElement
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.Transient
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -37,7 +38,9 @@ object FeelingTypeSerializer : KSerializer<FeelingType> {
     override fun deserialize(decoder: Decoder): FeelingType {
         return try {
             FeelingType.valueOf(decoder.decodeString())
-        } catch (e: Exception) {
+        } catch (e: IllegalArgumentException) {
+            FeelingType.MOOD
+        } catch (e: SerializationException) {
             FeelingType.MOOD
         }
     }

@@ -3,6 +3,7 @@ package com.synapse.social.studioasinc.domain.model
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -35,7 +36,9 @@ object UserStatusSerializer : KSerializer<UserStatus> {
         return try {
             val string = decoder.decodeString()
             UserStatus.fromString(string)
-        } catch (e: Exception) {
+        } catch (e: IllegalArgumentException) {
+            UserStatus.OFFLINE
+        } catch (e: SerializationException) {
             UserStatus.OFFLINE
         }
     }

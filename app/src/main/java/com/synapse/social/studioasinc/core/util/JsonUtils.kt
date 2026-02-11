@@ -20,7 +20,7 @@ fun Any?.toJsonElement(): JsonElement = when (this) {
         } else {
             val d = this.toDouble()
             if (!d.isFinite()) {
-                JsonPrimitive(this)
+                JsonNull
             } else if (d % 1.0 == 0.0) {
                 JsonPrimitive(d.toLong())
             } else {

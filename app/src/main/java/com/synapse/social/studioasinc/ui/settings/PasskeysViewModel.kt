@@ -48,6 +48,10 @@ class PasskeysViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
+    companion object {
+        private const val PASSKEY_VERIFICATION_FUNCTION = "verify-passkey-registration"
+    }
+
     private val _passkeys = MutableStateFlow<List<PasskeyItem>>(emptyList())
     val passkeys: StateFlow<List<PasskeyItem>> = _passkeys.asStateFlow()
 
@@ -151,31 +155,15 @@ class PasskeysViewModel @Inject constructor(
 
                     val response = credentialManager.createCredential(activityContext, request)
                     if (response is androidx.credentials.CreatePublicKeyCredentialResponse) {
-
-                    Log.d("PasskeysViewModel", "Credential created successfully: ${response.registrationResponseJson}")
+                        Log.d("PasskeysViewModel", "Credential created successfully: ${response.registrationResponseJson}")
+                        registerPasskeyOnServer(response.registrationResponseJson)
+                    } else {
+                        _error.value = "Unexpected response type from Credential Manager"
                     }
-
-
-
-
-
-                    savePasskeyMetadata(userId)
 
                 } catch (e: CreateCredentialException) {
                     Log.e("PasskeysViewModel", "Credential Manager Error", e)
-
-
-
-
-
-
-
-
-
-
-
-                    savePasskeyMetadata(userId)
-                    _error.value = "Note: Passkey creation simulated (System error: ${e.message})"
+                    _error.value = "Passkey creation failed: ${e.message}"
                 }
 
             } catch (e: Exception) {
@@ -187,18 +175,32 @@ class PasskeysViewModel @Inject constructor(
         }
     }
 
-    private suspend fun savePasskeyMetadata(userId: String) {
-        val simulatedId = UUID.randomUUID().toString()
-        val newItem = PasskeyTableItem(
-            id = simulatedId,
-            user_id = userId,
-            credential_id = "cred_${System.currentTimeMillis()}",
-            device_name = Build.MODEL,
-            date_added = System.currentTimeMillis()
-        )
+    private suspend fun registerPasskeyOnServer(registrationResponseJson: String) {
+        try {
+            _isLoading.value = true
+            val response = SupabaseClient.client.functions.invoke(
+                function = PASSKEY_VERIFICATION_FUNCTION,
+                body = mapOf(
+                    "registrationResponse" to registrationResponseJson,
+                    "deviceName" to Build.MODEL
+                )
+            )
 
-        SupabaseClient.client.from("user_passkeys").insert(newItem)
-        loadPasskeys()
+            if (response.response.status.value in 200..299) {
+                Log.d("PasskeysViewModel", "Passkey registered successfully on server")
+                loadPasskeys()
+            } else {
+                val errorBody = response.response.body<Map<String, String>>()
+                val errorMessage = errorBody["error"] ?: "Server returned status ${response.response.status.value}"
+                Log.e("PasskeysViewModel", "Server registration failed: $errorMessage")
+                _error.value = "Failed to register passkey on server: $errorMessage"
+            }
+        } catch (e: Exception) {
+            Log.e("PasskeysViewModel", "Error during server registration", e)
+            _error.value = "Failed to register passkey on server: ${e.message}"
+        } finally {
+            _isLoading.value = false
+        }
     }
 
     fun removePasskey(id: String) {

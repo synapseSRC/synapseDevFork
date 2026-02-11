@@ -133,7 +133,7 @@ fun SearchScreen(
                             Text(
                                 text = tab.title,
                                 style = MaterialTheme.typography.labelLarge,
-                                fontWeight = if (uiState.selectedTab == tab) FontWeight.Bold else FontWeight.Normal
+                                fontWeight = if (pagerState.currentPage == tab.ordinal) FontWeight.Bold else FontWeight.Normal
                             )
                         }
                     )

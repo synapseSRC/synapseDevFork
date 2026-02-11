@@ -78,10 +78,10 @@ class PostDetailViewModel @Inject constructor(
 
     fun refreshComments() {
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
             postDetailRepository.getPostWithDetails(postId).onSuccess { updatedPost ->
                 _uiState.update { it.copy(post = updatedPost) }
+                PostEventBus.emit(PostEvent.Updated(updatedPost))
             }
         }
     }
@@ -92,12 +92,44 @@ class PostDetailViewModel @Inject constructor(
 
     fun toggleReaction(reactionType: ReactionType) {
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
+        val currentPost = _uiState.value.post ?: return
+        
         viewModelScope.launch {
-            reactionRepository.toggleReaction(postId, "post", reactionType, currentReaction, skipCheck = true).onSuccess {
-                 postDetailRepository.getPostWithDetails(postId).onSuccess { updatedPost ->
-                     _uiState.update { it.copy(post = updatedPost) }
-                 }
+            val currentReaction = currentPost.userReaction
+            val isRemoving = currentReaction == reactionType
+            val newReaction = if (isRemoving) null else reactionType
+            
+            val countChange = when {
+                isRemoving -> -1
+                currentReaction == null -> 1
+                else -> 0
+            }
+            
+            val updatedReactions = currentPost.reactions?.toMutableMap() ?: mutableMapOf()
+            if (isRemoving) {
+                val currentCount = updatedReactions[reactionType] ?: 1
+                updatedReactions[reactionType] = maxOf(0, currentCount - 1)
+            } else {
+                if (currentReaction != null) {
+                    val oldTypeCount = updatedReactions[currentReaction] ?: 1
+                    updatedReactions[currentReaction] = maxOf(0, oldTypeCount - 1)
+                }
+                val newTypeCount = updatedReactions[reactionType] ?: 0
+                updatedReactions[reactionType] = newTypeCount + 1
+            }
+            
+            val optimisticPost = currentPost.copy(
+                likesCount = maxOf(0, currentPost.likesCount + countChange),
+                userReaction = newReaction,
+                reactions = updatedReactions
+            )
+            
+            _uiState.update { it.copy(post = optimisticPost) }
+            PostEventBus.emit(PostEvent.Updated(optimisticPost))
+            
+            reactionRepository.toggleReaction(postId, "post", reactionType, currentReaction, skipCheck = true).onFailure {
+                _uiState.update { it.copy(post = currentPost) }
+                PostEventBus.emit(PostEvent.Updated(currentPost))
             }
         }
     }

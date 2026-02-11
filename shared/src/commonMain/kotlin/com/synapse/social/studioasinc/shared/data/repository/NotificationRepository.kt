@@ -65,7 +65,7 @@ class NotificationRepository(
         }
 
         return callbackFlow {
-            val channel = supabase.channel("notifications:$userId")
+            val channel = supabase.realtime.channel("notifications:$userId") {}
             val flow = channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
                 table = "notifications"
                 filter("recipient_id", FilterOperator.EQ, userId)

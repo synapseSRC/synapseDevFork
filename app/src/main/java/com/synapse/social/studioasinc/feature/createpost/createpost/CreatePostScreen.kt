@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
@@ -115,35 +116,16 @@ fun CreatePostScreen(
 
 
     val mediaLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetMultipleContents()
+        contract = ActivityResultContracts.PickMultipleVisualMedia()
     ) { uris ->
         viewModel.addMedia(uris)
-    }
-
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        if (permissions.values.all { it }) {
-            try {
-                mediaLauncher.launch("**")
-            } catch (e: android.content.ActivityNotFoundException) {
-                Toast.makeText(context, "No file picker app found. Please install a file manager.", Toast.LENGTH_LONG).show()
-            }
-        } else {
-            Toast.makeText(context, "Permissions required to access media", Toast.LENGTH_SHORT).show()
-        }
     }
 
     fun launchMediaPicker() {
         if (uiState.pollData != null) {
             Toast.makeText(context, "Remove poll to add media", Toast.LENGTH_SHORT).show()
         } else {
-            val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO)
-            } else {
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-            }
-            permissionLauncher.launch(permissions)
+            mediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
         }
     }
 

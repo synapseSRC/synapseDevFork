@@ -1,14 +1,16 @@
-package com.synapse.social.studioasinc.presentation.editprofile
+package com.synapse.social.studioasinc.feature.profile.editprofile
 
 import android.net.Uri
-import com.synapse.social.studioasinc.domain.model.UserProfile
-import com.synapse.social.studioasinc.domain.model.Gender
+import com.synapse.social.studioasinc.shared.domain.model.UserProfile
+import com.synapse.social.studioasinc.shared.domain.model.Gender
+import com.synapse.social.studioasinc.shared.domain.model.state.ProfileSectionsState
 import kotlinx.serialization.Serializable
 
 data class EditProfileUiState(
     val isLoading: Boolean = true,
     val isSaving: Boolean = false,
     val profile: UserProfile? = null,
+    val sections: ProfileSectionsState = ProfileSectionsState(),
     val avatarUrl: String? = null,
     val coverUrl: String? = null,
     val avatarUploadState: UploadState = UploadState.Idle,
@@ -59,4 +61,5 @@ sealed class EditProfileNavigation {
     object NavigateToRegionSelection : EditProfileNavigation()
     object NavigateToProfileHistory : EditProfileNavigation()
     object NavigateToCoverHistory : EditProfileNavigation()
+    object NavigateToPrivacy : EditProfileNavigation()
 }

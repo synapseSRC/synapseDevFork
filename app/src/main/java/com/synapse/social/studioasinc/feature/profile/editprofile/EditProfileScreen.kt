@@ -1,32 +1,16 @@
-package com.synapse.social.studioasinc.presentation.editprofile
+package com.synapse.social.studioasinc.feature.profile.editprofile
 
-import android.content.Intent
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,10 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.synapse.social.studioasinc.R
+import com.synapse.social.studioasinc.feature.profile.editprofile.components.sections.SectionCard
 import com.synapse.social.studioasinc.presentation.editprofile.components.GenderSelector
 import com.synapse.social.studioasinc.presentation.editprofile.components.ProfileFormFields
 import com.synapse.social.studioasinc.presentation.editprofile.components.ProfileImageSection
@@ -47,6 +31,7 @@ import com.synapse.social.studioasinc.ui.settings.SettingsCard
 import com.synapse.social.studioasinc.ui.settings.SettingsNavigationItem
 import com.synapse.social.studioasinc.ui.settings.SettingsSpacing
 import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
+import com.synapse.social.studioasinc.shared.domain.model.PrivacyLevel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,13 +39,13 @@ fun EditProfileScreen(
     viewModel: EditProfileViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
     onNavigateToRegionSelection: (String) -> Unit,
-    onNavigateToPhotoHistory: (String) -> Unit
+    onNavigateToPhotoHistory: (String) -> Unit,
+    onNavigateToPrivacy: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-
 
     val avatarPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -94,7 +79,6 @@ fun EditProfileScreen(
         }
     }
 
-
     LaunchedEffect(viewModel) {
         viewModel.navigationEvents.collect { event ->
             when (event) {
@@ -108,10 +92,12 @@ fun EditProfileScreen(
                 EditProfileNavigation.NavigateToCoverHistory -> {
                     onNavigateToPhotoHistory("COVER")
                 }
+                EditProfileNavigation.NavigateToPrivacy -> {
+                    onNavigateToPrivacy()
+                }
             }
         }
     }
-
 
     LaunchedEffect(uiState.error) {
         uiState.error?.let { error ->
@@ -134,8 +120,11 @@ fun EditProfileScreen(
                         }
                     },
                     actions = {
+                        IconButton(onClick = onNavigateToPrivacy) {
+                            Icon(imageVector = Icons.Default.Lock, contentDescription = "Privacy")
+                        }
                         if (uiState.isSaving) {
-                             ExpressiveLoadingIndicator(
+                             CircularProgressIndicator(
                                  modifier = Modifier.padding(end = 16.dp).size(24.dp)
                              )
                         } else {
@@ -162,7 +151,7 @@ fun EditProfileScreen(
         ) { paddingValues ->
             if (uiState.isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    ExpressiveLoadingIndicator()
+                    CircularProgressIndicator()
                 }
             } else {
                 LazyColumn(
@@ -193,7 +182,6 @@ fun EditProfileScreen(
                         )
                     }
 
-
                     item {
                         ProfileFormFields(
                             username = uiState.username,
@@ -208,14 +196,12 @@ fun EditProfileScreen(
                         )
                     }
 
-
                     item {
                         GenderSelector(
                             selectedGender = uiState.selectedGender,
                             onGenderSelected = { viewModel.onEvent(EditProfileEvent.GenderSelected(it)) }
                         )
                     }
-
 
                     item {
                         SettingsCard {
@@ -230,6 +216,30 @@ fun EditProfileScreen(
                         }
                     }
 
+                    // New Sections
+                    item {
+                        SectionCard(
+                            title = "Social Links",
+                            privacyLevel = PrivacyLevel.PUBLIC, // Fetch from state in real app
+                            onEditClick = { /* Open Dialog */ },
+                            onPrivacyClick = onNavigateToPrivacy
+                        ) {
+                            Text("Facebook, Instagram...", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+
+                    item {
+                        SectionCard(
+                            title = "Work History",
+                            privacyLevel = PrivacyLevel.FRIENDS,
+                            onEditClick = { /* Open Dialog */ },
+                            onPrivacyClick = onNavigateToPrivacy
+                        ) {
+                            Text("Add work experience", style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+
+                    // ... Add other sections similarly
 
                     item {
                         SettingsCard {

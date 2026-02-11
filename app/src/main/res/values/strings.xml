@@ -1059,4 +1059,9 @@ Please explain the following message from %3$s in detail, considering the contex
     <string name="synapse_plus_feature_extended_desc">Write up to 4000 chars</string>
     <string name="synapse_plus_upgrade_button">Upgrade Now</string>
     <string name="synapse_plus_price">$4.99/month</string>
+    <string name="profile_get_user_info_failed">Failed to get user information.</string>
+    <string name="invalid_user_id">Invalid user ID</string>
+    <string name="profile_message_self_error">You cannot message yourself</string>
+    <string name="chat_not_implemented">Chat feature not implemented</string>
+    <string name="chat_error_start">Error starting chat: %1$s</string>
 </resources>

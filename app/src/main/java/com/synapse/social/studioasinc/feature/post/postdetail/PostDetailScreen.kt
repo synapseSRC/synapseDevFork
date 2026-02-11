@@ -225,7 +225,6 @@ fun PostDetailScreen(
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         modifier = Modifier.onGloballyPositioned { coordinates ->
             android.util.Log.d("PostDetailScreen", "=== ROOT SCAFFOLD POSITION ===")
             android.util.Log.d("PostDetailScreen", "Root Y Position: ${coordinates.positionInRoot().y}")

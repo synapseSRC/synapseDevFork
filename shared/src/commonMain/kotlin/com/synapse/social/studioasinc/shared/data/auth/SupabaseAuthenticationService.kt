@@ -1,6 +1,7 @@
 package com.synapse.social.studioasinc.shared.data.auth
 
 import com.synapse.social.studioasinc.shared.core.network.SupabaseClient
+import com.synapse.social.studioasinc.shared.data.local.SecureStorage
 import com.synapse.social.studioasinc.shared.data.model.UserProfileInsert
 import com.synapse.social.studioasinc.shared.data.model.UserSettingsInsert
 import com.synapse.social.studioasinc.shared.data.model.UserPresenceInsert
@@ -18,8 +19,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlin.time.ExperimentalTime
 
 class SupabaseAuthenticationService(
-    private val client: SupabaseClientLib = SupabaseClient.client
+    private val client: SupabaseClientLib = SupabaseClient.client,
+    private val secureStorage: SecureStorage? = null
 ) : IAuthenticationService {
+
+    private val KEY_ACCESS_TOKEN = "auth_access_token"
+    private val KEY_REFRESH_TOKEN = "auth_refresh_token"
+    private val KEY_USER_ID = "auth_user_id"
+    private val KEY_USER_EMAIL = "auth_user_email"
+    private val KEY_EXPIRES_IN = "auth_expires_in"
 
     override suspend fun signUp(email: String, password: String): Result<String> {
         return try {
@@ -27,6 +35,17 @@ class SupabaseAuthenticationService(
                 client.auth.signUpWith(Email) {
                     this.email = email
                     this.password = password
+                }
+
+                val session = client.auth.currentSessionOrNull()
+                if (session != null) {
+                    storeSessionTokens(
+                        accessToken = session.accessToken,
+                        refreshToken = session.refreshToken,
+                        userId = session.user?.id ?: "",
+                        userEmail = session.user?.email ?: "",
+                        expiresIn = session.expiresIn.toInt()
+                    )
                 }
 
                 val userId = client.auth.currentUserOrNull()?.id
@@ -95,6 +114,17 @@ class SupabaseAuthenticationService(
                     this.password = password
                 }
 
+                val session = client.auth.currentSessionOrNull()
+                if (session != null) {
+                    storeSessionTokens(
+                        accessToken = session.accessToken,
+                        refreshToken = session.refreshToken,
+                        userId = session.user?.id ?: "",
+                        userEmail = session.user?.email ?: "",
+                        expiresIn = session.expiresIn.toInt()
+                    )
+                }
+
                 val userId = client.auth.currentUserOrNull()?.id
                     ?: return@withContext Result.failure(IllegalStateException("User ID not found after sign in"))
 
@@ -111,6 +141,7 @@ class SupabaseAuthenticationService(
         return try {
             withContext(Dispatchers.Default) {
                 client.auth.signOut()
+                clearStoredTokens()
                 Napier.d("User signed out successfully")
                 Result.success(Unit)
             }
@@ -153,6 +184,18 @@ class SupabaseAuthenticationService(
         return try {
             withContext(Dispatchers.Default) {
                 client.auth.refreshCurrentSession()
+
+                val session = client.auth.currentSessionOrNull()
+                if (session != null) {
+                    storeSessionTokens(
+                        accessToken = session.accessToken,
+                        refreshToken = session.refreshToken,
+                        userId = session.user?.id ?: "",
+                        userEmail = session.user?.email ?: "",
+                        expiresIn = session.expiresIn.toInt()
+                    )
+                }
+
                 Napier.d("Session refreshed successfully")
                 Result.success(Unit)
             }
@@ -166,7 +209,23 @@ class SupabaseAuthenticationService(
     override suspend fun restoreSession(): Boolean {
         return try {
             withContext(Dispatchers.Default) {
-                val session = client.auth.currentSessionOrNull()
+                var session = client.auth.currentSessionOrNull()
+
+                if (session == null && secureStorage != null) {
+                    val accessToken = secureStorage.getString(KEY_ACCESS_TOKEN)
+                    val refreshToken = secureStorage.getString(KEY_REFRESH_TOKEN)
+
+                    if (!accessToken.isNullOrBlank() && !refreshToken.isNullOrBlank()) {
+                        try {
+                            client.auth.importAuthToken(accessToken, refreshToken)
+                            session = client.auth.currentSessionOrNull()
+                            Napier.d("Session restored from storage")
+                        } catch (e: Exception) {
+                            Napier.e("Failed to restore session from storage", e)
+                        }
+                    }
+                }
+
                 session != null
             }
         } catch (e: Exception) {
@@ -257,6 +316,18 @@ class SupabaseAuthenticationService(
                         throw Exception("No valid OAuth parameters provided")
                     }
                 }
+
+                val session = client.auth.currentSessionOrNull()
+                if (session != null) {
+                    storeSessionTokens(
+                        accessToken = session.accessToken,
+                        refreshToken = session.refreshToken,
+                        userId = session.user?.id ?: "",
+                        userEmail = session.user?.email ?: "",
+                        expiresIn = session.expiresIn.toInt()
+                    )
+                }
+
                 Napier.d("OAuth callback handled successfully")
                 Result.success(Unit)
             }
@@ -267,10 +338,28 @@ class SupabaseAuthenticationService(
     }
 
     override suspend fun storeSessionTokens(accessToken: String, refreshToken: String, userId: String, userEmail: String, expiresIn: Int) {
-        Napier.d("Session tokens stored for user: $userId")
+        secureStorage?.let { storage ->
+            storage.save(KEY_ACCESS_TOKEN, accessToken)
+            storage.save(KEY_REFRESH_TOKEN, refreshToken)
+            storage.save(KEY_USER_ID, userId)
+            storage.save(KEY_USER_EMAIL, userEmail)
+            storage.save(KEY_EXPIRES_IN, expiresIn.toString())
+            Napier.d("Session tokens stored for user: $userId")
+        } ?: run {
+            Napier.w("SecureStorage not available. Session tokens not persisted.")
+        }
     }
 
     override suspend fun clearStoredTokens() {
-        Napier.d("Stored tokens cleared")
+        secureStorage?.let { storage ->
+            storage.clear(KEY_ACCESS_TOKEN)
+            storage.clear(KEY_REFRESH_TOKEN)
+            storage.clear(KEY_USER_ID)
+            storage.clear(KEY_USER_EMAIL)
+            storage.clear(KEY_EXPIRES_IN)
+            Napier.d("Stored tokens cleared")
+        } ?: run {
+            Napier.w("SecureStorage not available. Cannot clear stored tokens.")
+        }
     }
 }

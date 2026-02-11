@@ -211,9 +211,7 @@ fun PostDetailScreen(
     Scaffold(
         bottomBar = {
             Column(
-                 modifier = Modifier
-                     .fillMaxWidth()
-                     .imePadding()
+                 modifier = Modifier.fillMaxWidth()
             ) {
 
                  if (uiState.replyToComment != null) {

@@ -12,6 +12,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.synapse.social.studioasinc.data.repository.*
 import com.synapse.social.studioasinc.domain.model.*
+import com.synapse.social.studioasinc.feature.shared.components.post.PostEvent
+import com.synapse.social.studioasinc.feature.shared.components.post.PostEventBus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
@@ -105,7 +107,7 @@ class PostDetailViewModel @Inject constructor(
                 else -> 0
             }
             
-            val updatedReactions = currentPost.reactions?.toMutableMap() ?: mutableMapOf()
+            val updatedReactions = currentPost.reactionSummary.toMutableMap()
             if (isRemoving) {
                 val currentCount = updatedReactions[reactionType] ?: 1
                 updatedReactions[reactionType] = maxOf(0, currentCount - 1)
@@ -119,17 +121,19 @@ class PostDetailViewModel @Inject constructor(
             }
             
             val optimisticPost = currentPost.copy(
-                likesCount = maxOf(0, currentPost.likesCount + countChange),
+                post = currentPost.post.copy(
+                    likesCount = maxOf(0, currentPost.post.likesCount + countChange)
+                ),
                 userReaction = newReaction,
-                reactions = updatedReactions
+                reactionSummary = updatedReactions
             )
             
             _uiState.update { it.copy(post = optimisticPost) }
-            PostEventBus.emit(PostEvent.Updated(optimisticPost))
+            PostEventBus.emit(PostEvent.Updated(optimisticPost.post))
             
             reactionRepository.toggleReaction(postId, "post", reactionType, currentReaction, skipCheck = true).onFailure {
                 _uiState.update { it.copy(post = currentPost) }
-                PostEventBus.emit(PostEvent.Updated(currentPost))
+                PostEventBus.emit(PostEvent.Updated(currentPost.post))
             }
         }
     }

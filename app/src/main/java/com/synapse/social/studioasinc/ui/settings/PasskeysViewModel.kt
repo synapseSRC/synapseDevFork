@@ -178,7 +178,7 @@ class PasskeysViewModel @Inject constructor(
     private suspend fun registerPasskeyOnServer(registrationResponseJson: String) {
         try {
             _isLoading.value = true
-            val response = SupabaseClient.client.functions.invoke(
+            val result = SupabaseClient.client.functions.invoke(
                 function = PASSKEY_VERIFICATION_FUNCTION,
                 body = mapOf(
                     "registrationResponse" to registrationResponseJson,
@@ -186,12 +186,12 @@ class PasskeysViewModel @Inject constructor(
                 )
             )
 
-            if (response.response.status.value in 200..299) {
+            if (result.status.value in 200..299) {
                 Log.d("PasskeysViewModel", "Passkey registered successfully on server")
                 loadPasskeys()
             } else {
-                val errorBody = response.response.body<Map<String, String>>()
-                val errorMessage = errorBody["error"] ?: "Server returned status ${response.response.status.value}"
+                val errorBody = result.body<Map<String, String>>()
+                val errorMessage = errorBody["error"] ?: "Server returned status ${result.status.value}"
                 Log.e("PasskeysViewModel", "Server registration failed: $errorMessage")
                 _error.value = "Failed to register passkey on server: $errorMessage"
             }

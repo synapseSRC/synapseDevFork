@@ -289,7 +289,8 @@ fun PostDetailScreen(
                                     onMediaClick = { index ->
                                         selectedMediaIndex = index
                                         showMediaViewer = true
-                                    }
+                                    },
+                                    onReactionSelected = { _, reaction -> viewModel.toggleReaction(reaction) }
                                 )
                             }
 

@@ -42,7 +42,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 // Supabase & Ktor
-                implementation(project.dependencies.platform("io.github.jan-tennert.supabase:bom:3.0.2"))
+                implementation(project.dependencies.platform("io.github.jan-tennert.supabase:bom:3.2.6"))
                 implementation("io.github.jan-tennert.supabase:postgrest-kt")
                 implementation("io.github.jan-tennert.supabase:auth-kt")
                 implementation("io.github.jan-tennert.supabase:realtime-kt")
@@ -90,6 +90,8 @@ kotlin {
                 implementation("androidx.security:security-crypto:1.1.0-alpha06")
                 implementation("app.cash.sqldelight:android-driver:2.0.2")
                 implementation("io.insert-koin:koin-android:4.0.0")
+                // Explicitly add kotlinx-datetime for Android to avoid resolution issues
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
             }
         }
 

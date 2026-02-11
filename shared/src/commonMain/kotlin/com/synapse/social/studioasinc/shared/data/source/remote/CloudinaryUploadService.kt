@@ -2,6 +2,7 @@ package com.synapse.social.studioasinc.shared.data.source.remote
 
 import com.synapse.social.studioasinc.shared.data.PlatformUtils
 import com.synapse.social.studioasinc.shared.domain.model.StorageConfig
+import com.synapse.social.studioasinc.shared.util.TimeProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.MultiPartFormDataContent
@@ -14,7 +15,6 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.datetime.Clock
 
 class CloudinaryUploadService(private val client: HttpClient) : UploadService {
     override suspend fun upload(
@@ -27,7 +27,7 @@ class CloudinaryUploadService(private val client: HttpClient) : UploadService {
         val cloudName = config.cloudinaryCloudName
         val apiKey = config.cloudinaryApiKey
         val apiSecret = config.cloudinaryApiSecret
-        val timestamp = Clock.System.now().epochSeconds.toString()
+        val timestamp = (TimeProvider.nowMillis() / 1000).toString()
 
         val toSign = "timestamp=$timestamp$apiSecret"
         val signature = PlatformUtils.sha1(toSign)

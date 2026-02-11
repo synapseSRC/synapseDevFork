@@ -10,8 +10,8 @@ import com.synapse.social.studioasinc.shared.domain.model.MediaType
 import com.synapse.social.studioasinc.shared.domain.model.StorageConfig
 import com.synapse.social.studioasinc.shared.domain.model.StorageProvider
 import com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
+import com.synapse.social.studioasinc.shared.util.TimeProvider
 import kotlinx.coroutines.flow.first
-import kotlinx.datetime.Clock
 
 class UploadMediaUseCase(
     private val repository: StorageRepository,
@@ -31,7 +31,7 @@ class UploadMediaUseCase(
             val config = repository.getStorageConfig().first()
             val provider = getProviderForMediaType(config, mediaType)
 
-            val providerToUse = if (provider == StorageProvider.DEFAULT) {
+            var providerToUse = if (provider == StorageProvider.DEFAULT) {
                  when (mediaType) {
                      MediaType.PHOTO, MediaType.IMAGE -> StorageProvider.IMGBB
                      else -> StorageProvider.CLOUDINARY
@@ -46,15 +46,15 @@ class UploadMediaUseCase(
 
             if (provider == StorageProvider.DEFAULT && !config.isProviderConfigured(providerToUse)) {
                  if (config.isProviderConfigured(StorageProvider.SUPABASE)) {
-
+                     providerToUse = StorageProvider.SUPABASE
+                 } else {
                      return Result.failure(Exception("Default provider ($providerToUse) is not configured."))
                  }
-                 return Result.failure(Exception("Default provider ($providerToUse) is not configured."))
             }
 
             val service = getUploadService(providerToUse)
             val fileBytes = fileUploader.readFile(filePath)
-            val fileName = fileUploader.getFileName(filePath).ifBlank { "upload_${Clock.System.now().toEpochMilliseconds()}" }
+            val fileName = fileUploader.getFileName(filePath).ifBlank { "upload_${TimeProvider.nowMillis()}" }
 
             val url = service.upload(fileBytes, fileName, config, bucketName, onProgress)
             Result.success(url)

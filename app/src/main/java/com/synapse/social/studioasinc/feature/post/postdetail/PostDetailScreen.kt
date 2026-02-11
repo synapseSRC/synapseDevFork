@@ -236,7 +236,6 @@ fun PostDetailScreen(
                  modifier = Modifier
                      .fillMaxWidth()
                      .navigationBarsPadding()
-                     .imePadding()
                      .onGloballyPositioned { coordinates ->
                          android.util.Log.d("PostDetailScreen", "=== BOTTOM BAR POSITION ===")
                          android.util.Log.d("PostDetailScreen", "Y Position: ${coordinates.positionInRoot().y}")

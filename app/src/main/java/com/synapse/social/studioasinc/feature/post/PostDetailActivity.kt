@@ -27,7 +27,7 @@ class PostDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        // Removed WindowCompat.setDecorFitsSystemWindows - using default window behavior
 
         val postId = intent.getStringExtra(EXTRA_POST_ID)
 

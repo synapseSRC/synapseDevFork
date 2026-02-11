@@ -225,7 +225,6 @@ fun PostDetailScreen(
     }
 
     Scaffold(
-        contentWindowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.ime),
         modifier = Modifier.onGloballyPositioned { coordinates ->
             android.util.Log.d("PostDetailScreen", "=== ROOT SCAFFOLD POSITION ===")
             android.util.Log.d("PostDetailScreen", "Root Y Position: ${coordinates.positionInRoot().y}")
@@ -235,7 +234,6 @@ fun PostDetailScreen(
             Column(
                  modifier = Modifier
                      .fillMaxWidth()
-                     .navigationBarsPadding()
                      .onGloballyPositioned { coordinates ->
                          android.util.Log.d("PostDetailScreen", "=== BOTTOM BAR POSITION ===")
                          android.util.Log.d("PostDetailScreen", "Y Position: ${coordinates.positionInRoot().y}")
@@ -279,7 +277,6 @@ fun PostDetailScreen(
                     }
                 },
                 modifier = Modifier
-                    .statusBarsPadding()
                     .onGloballyPositioned { coordinates ->
                     android.util.Log.d("PostDetailScreen", "=== TOP APP BAR ===")
                     android.util.Log.d("PostDetailScreen", "Y Position: ${coordinates.positionInRoot().y}")

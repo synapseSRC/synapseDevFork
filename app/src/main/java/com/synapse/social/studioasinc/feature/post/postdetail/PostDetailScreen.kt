@@ -7,6 +7,8 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -208,10 +210,29 @@ fun PostDetailScreen(
         )
     }
 
+    val imeInsets = WindowInsets.ime
+    val imeVisible = WindowInsets.isImeVisible
+    val safeDrawingInsets = WindowInsets.safeDrawing
+    
+    // Log window insets and keyboard state
+    LaunchedEffect(imeVisible) {
+        android.util.Log.d("PostDetailScreen", "=== KEYBOARD STATE CHANGED ===")
+        android.util.Log.d("PostDetailScreen", "IME Visible: $imeVisible")
+        android.util.Log.d("PostDetailScreen", "IME Bottom: ${imeInsets.getBottom(LocalDensity.current)}")
+        android.util.Log.d("PostDetailScreen", "SafeDrawing Bottom: ${safeDrawingInsets.getBottom(LocalDensity.current)}")
+    }
+
     Scaffold(
         bottomBar = {
             Column(
-                 modifier = Modifier.fillMaxWidth()
+                 modifier = Modifier
+                     .fillMaxWidth()
+                     .onGloballyPositioned { coordinates ->
+                         android.util.Log.d("PostDetailScreen", "=== BOTTOM BAR POSITION ===")
+                         android.util.Log.d("PostDetailScreen", "Y Position: ${coordinates.positionInRoot().y}")
+                         android.util.Log.d("PostDetailScreen", "Height: ${coordinates.size.height}")
+                         android.util.Log.d("PostDetailScreen", "Screen Height: ${coordinates.size.height + coordinates.positionInRoot().y}")
+                     }
             ) {
 
                  if (uiState.replyToComment != null) {
@@ -248,6 +269,11 @@ fun PostDetailScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
+                modifier = Modifier.onGloballyPositioned { coordinates ->
+                    android.util.Log.d("PostDetailScreen", "=== TOP APP BAR ===")
+                    android.util.Log.d("PostDetailScreen", "Y Position: ${coordinates.positionInRoot().y}")
+                    android.util.Log.d("PostDetailScreen", "Height: ${coordinates.size.height}")
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     scrolledContainerColor = MaterialTheme.colorScheme.background
@@ -255,7 +281,19 @@ fun PostDetailScreen(
             )
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+        android.util.Log.d("PostDetailScreen", "=== SCAFFOLD PADDING ===")
+        android.util.Log.d("PostDetailScreen", "Top: ${paddingValues.calculateTopPadding()}")
+        android.util.Log.d("PostDetailScreen", "Bottom: ${paddingValues.calculateBottomPadding()}")
+        
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .onGloballyPositioned { coordinates ->
+                android.util.Log.d("PostDetailScreen", "=== CONTENT COLUMN ===")
+                android.util.Log.d("PostDetailScreen", "Y Position: ${coordinates.positionInRoot().y}")
+                android.util.Log.d("PostDetailScreen", "Height: ${coordinates.size.height}")
+            }
+        ) {
         Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
         if (uiState.isLoading && uiState.post == null) {
              Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

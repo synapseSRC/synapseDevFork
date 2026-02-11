@@ -432,7 +432,8 @@ private fun ProfileContent(
 
 
             },
-            onPollVote = { post, idx -> viewModel.votePoll(post.id, idx) }
+            onPollVote = { post, idx -> viewModel.votePoll(post.id, idx) },
+            onReactionSelected = { post, reaction -> viewModel.reactToPost(post.id, reaction) }
         )
     }
 

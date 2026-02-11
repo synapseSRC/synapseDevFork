@@ -209,6 +209,14 @@ class SearchViewModel @Inject constructor(
     }
 
 
+    fun reactToPost(post: com.synapse.social.studioasinc.domain.model.Post, reactionType: com.synapse.social.studioasinc.domain.model.ReactionType) {
+        viewModelScope.launch {
+            val userId = authRepository.getCurrentUserId() ?: return@launch
+            postRepository.toggleReaction(post.id, userId, reactionType, post.userReaction, skipCheck = true)
+                .onFailure { err -> _uiState.update { it.copy(error = err.message) } }
+        }
+    }
+
     fun likePost(post: com.synapse.social.studioasinc.domain.model.Post) {
         viewModelScope.launch {
             val userId = authRepository.getCurrentUserId() ?: return@launch

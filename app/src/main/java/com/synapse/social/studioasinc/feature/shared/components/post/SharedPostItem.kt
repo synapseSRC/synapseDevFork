@@ -65,7 +65,7 @@ fun SharedPostItem(
         onOptionsClick = onOptionsClick,
         onPollVote = onPollVote,
 
-        onReactionSelected = null,
+        onReactionSelected = { reaction -> actions.onReactionSelected(post, reaction) },
         modifier = modifier
     )
 }

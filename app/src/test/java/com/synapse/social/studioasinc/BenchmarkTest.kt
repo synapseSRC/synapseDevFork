@@ -9,18 +9,9 @@ class BenchmarkTest {
 
     @Test
     fun benchmarkMemoryUsage() {
-        val fileSize = 50 * 1024 * 1024 // 50MB
-        val tempFile = File.createTempFile("benchmark", ".tmp")
+        val fileSize = 50L * 1024 * 1024 // 50MB
+        val tempFile = createTempFile(fileSize, "benchmark", ".tmp")
         tempFile.deleteOnExit()
-
-        val random = Random()
-        val buffer = ByteArray(1024 * 1024)
-        FileOutputStream(tempFile).use { out ->
-            for (i in 0 until 50) {
-                random.nextBytes(buffer)
-                out.write(buffer)
-            }
-        }
 
         println("Benchmarking memory usage for 50MB file...")
 
@@ -45,7 +36,7 @@ class BenchmarkTest {
         assert(memorySpike > fileSize * 0.8) // Expect at least 80% of file size in memory spike
 
         // Clean up (make eligible for GC)
-        // fileBytes is now out of scope if we return, but let's null it out explicitly if this wasn't the end of method
+        // fileBytes is now out of scope if we return
     }
 
     @Test
@@ -53,18 +44,9 @@ class BenchmarkTest {
         // This test simulates the optimized approach where we DON'T read bytes into memory
         // We just pass the File object.
 
-        val fileSize = 50 * 1024 * 1024 // 50MB
-        val tempFile = File.createTempFile("benchmark_opt", ".tmp")
+        val fileSize = 50L * 1024 * 1024 // 50MB
+        val tempFile = createTempFile(fileSize, "benchmark_opt", ".tmp")
         tempFile.deleteOnExit()
-
-        val random = Random()
-        val buffer = ByteArray(1024 * 1024)
-        FileOutputStream(tempFile).use { out ->
-            for (i in 0 until 50) {
-                random.nextBytes(buffer)
-                out.write(buffer)
-            }
-        }
 
         println("Benchmarking optimized approach for 50MB file...")
 
@@ -76,7 +58,6 @@ class BenchmarkTest {
         println("Memory used before passing file: " + (usedMemoryBefore / 1024 / 1024) + " MB")
 
         // Simulate optimized loading: Just use the file reference
-        // In the real code, we pass 'tempFile' to the library which handles it efficiently (streaming)
         val fileReference = tempFile
 
         // Measure memory after "loading" (just passing reference)
@@ -88,5 +69,22 @@ class BenchmarkTest {
 
         // This confirms that passing File reference consumes negligible memory
         assert(memorySpike < 1 * 1024 * 1024) // Expect less than 1MB overhead
+    }
+
+    private fun createTempFile(sizeBytes: Long, prefix: String, suffix: String): File {
+        val tempFile = File.createTempFile(prefix, suffix)
+        tempFile.deleteOnExit()
+
+        val random = Random()
+        // Use a 1MB buffer to write to the file
+        val buffer = ByteArray(1024 * 1024)
+        FileOutputStream(tempFile).use { out ->
+            val mbToWrite = sizeBytes / (1024 * 1024)
+            for (i in 0 until mbToWrite) {
+                random.nextBytes(buffer)
+                out.write(buffer)
+            }
+        }
+        return tempFile
     }
 }

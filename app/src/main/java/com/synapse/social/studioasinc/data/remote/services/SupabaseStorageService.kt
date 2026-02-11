@@ -183,7 +183,7 @@ class SupabaseStorageService {
         try {
             android.util.Log.d(TAG, "Uploading file to chat-media: $path (${file.length()} bytes)")
 
-            onProgress(0.1f)
+            onProgress(0.0f)
 
             storage.from(CHAT_MEDIA_BUCKET).upload(path, file) { upsert = true }
 
@@ -217,7 +217,7 @@ class SupabaseStorageService {
             }
 
 
-            onProgress(0.1f)
+            onProgress(0.0f)
 
 
             storage.from(CHAT_MEDIA_BUCKET).upload(path, fileBytes) { upsert = true }

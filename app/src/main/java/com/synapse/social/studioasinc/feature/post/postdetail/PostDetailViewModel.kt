@@ -83,7 +83,7 @@ class PostDetailViewModel @Inject constructor(
         viewModelScope.launch {
             postDetailRepository.getPostWithDetails(postId).onSuccess { updatedPost ->
                 _uiState.update { it.copy(post = updatedPost) }
-                PostEventBus.emit(PostEvent.Updated(updatedPost))
+                PostEventBus.emit(PostEvent.Updated(updatedPost.post))
             }
         }
     }

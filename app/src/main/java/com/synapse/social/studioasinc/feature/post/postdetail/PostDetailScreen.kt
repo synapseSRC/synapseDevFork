@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -36,7 +37,7 @@ import com.synapse.social.studioasinc.feature.shared.components.post.SharedPostI
 import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun PostDetailScreen(
     postId: String,
@@ -210,6 +211,7 @@ fun PostDetailScreen(
         )
     }
 
+    val density = LocalDensity.current
     val imeInsets = WindowInsets.ime
     val imeVisible = WindowInsets.isImeVisible
     val safeDrawingInsets = WindowInsets.safeDrawing
@@ -218,8 +220,8 @@ fun PostDetailScreen(
     LaunchedEffect(imeVisible) {
         android.util.Log.d("PostDetailScreen", "=== KEYBOARD STATE CHANGED ===")
         android.util.Log.d("PostDetailScreen", "IME Visible: $imeVisible")
-        android.util.Log.d("PostDetailScreen", "IME Bottom: ${imeInsets.getBottom(LocalDensity.current)}")
-        android.util.Log.d("PostDetailScreen", "SafeDrawing Bottom: ${safeDrawingInsets.getBottom(LocalDensity.current)}")
+        android.util.Log.d("PostDetailScreen", "IME Bottom: ${imeInsets.getBottom(density)}")
+        android.util.Log.d("PostDetailScreen", "SafeDrawing Bottom: ${safeDrawingInsets.getBottom(density)}")
     }
 
     Scaffold(

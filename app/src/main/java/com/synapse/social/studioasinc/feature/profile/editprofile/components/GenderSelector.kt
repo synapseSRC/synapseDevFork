@@ -3,7 +3,6 @@ package com.synapse.social.studioasinc.presentation.editprofile.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,12 +22,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.domain.model.Gender
+import com.synapse.social.studioasinc.shared.domain.model.Gender
 import com.synapse.social.studioasinc.ui.settings.SettingsColors
 import com.synapse.social.studioasinc.ui.settings.SettingsShapes
 
@@ -81,8 +79,8 @@ fun GenderSelector(
                 CompactGenderOption(
                     label = "Other",
                     iconRes = R.drawable.ic_person,
-                    selected = selectedGender == Gender.Hidden,
-                    onClick = { onGenderSelected(Gender.Hidden) },
+                    selected = selectedGender == Gender.Hidden || selectedGender == Gender.Other,
+                    onClick = { onGenderSelected(Gender.Other) },
                     modifier = Modifier.weight(1f)
                 )
             }

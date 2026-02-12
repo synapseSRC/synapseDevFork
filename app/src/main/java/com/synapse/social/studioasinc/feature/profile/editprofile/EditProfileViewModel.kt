@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.shared.domain.model.Gender
 import com.synapse.social.studioasinc.shared.domain.model.UserProfile
 import com.synapse.social.studioasinc.shared.domain.usecase.*
-import com.synapse.social.studioasinc.shared.util.FileManager
+import com.synapse.social.studioasinc.core.util.FileManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,13 +27,6 @@ class EditProfileViewModel @Inject constructor(
     private val uploadProfileImageUseCase: UploadProfileImageUseCase,
     private val checkUsernameAvailabilityUseCase: CheckUsernameAvailabilityUseCase,
     private val syncUsernameChangeUseCase: SyncUsernameChangeUseCase,
-    // We assume GetCurrentUserIdUseCase is available or we inject AuthRepository directly if needed.
-    // For now, let's inject AuthRepository to get the ID, as I haven't strictly created GetCurrentUserIdUseCase
-    // but I can create it or just use the repository here if the rule permits (AGENTS.md says "NO direct backend SDK usage",
-    // using Repository is fine). Ideally UseCase.
-    // I will assume I can instantiate one or I'll just use a placeholder for now and fix if build fails.
-    // Actually, I should create GetCurrentUserIdUseCase to be clean.
-    // But to save time and tokens, I'll assume I can access the ID via a UseCase I'll create now.
     private val getCurrentUserIdUseCase: com.synapse.social.studioasinc.shared.domain.usecase.GetCurrentUserIdUseCase
 ) : AndroidViewModel(application) {
 

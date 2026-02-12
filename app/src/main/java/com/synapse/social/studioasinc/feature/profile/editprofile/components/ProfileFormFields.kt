@@ -12,7 +12,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +21,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.presentation.editprofile.UsernameValidation
+import com.synapse.social.studioasinc.feature.profile.editprofile.UsernameValidation
 import com.synapse.social.studioasinc.ui.settings.SettingsColors
 import com.synapse.social.studioasinc.ui.settings.SettingsShapes
 

@@ -1,14 +1,14 @@
-package com.synapse.social.studioasinc.ui.navigation
+package com.synapse.social.studioasinc.feature.shared.navigation
 
 sealed class AppDestination(val route: String) {
     object Auth : AppDestination("auth")
     object Home : AppDestination("home")
-    object Profile : AppDestination("profile") {
+    object Profile : AppDestination("profile/{userId}") {
         fun createRoute(userId: String) = "profile/$userId"
     }
     object Inbox : AppDestination("inbox")
     object Search : AppDestination("search")
-    object PostDetail : AppDestination("post_detail") {
+    object PostDetail : AppDestination("post_detail/{postId}") {
         fun createRoute(postId: String) = "post_detail/$postId"
     }
     object CreatePost : AppDestination("create_post?postId={postId}&type={type}") {
@@ -21,15 +21,13 @@ sealed class AppDestination(val route: String) {
     object PhotoHistory : AppDestination("photo_history/{type}") {
         fun createRoute(type: String) = "photo_history/$type"
     }
-    object FollowList : AppDestination("follow_list") {
+    object FollowList : AppDestination("follow_list/{userId}/{type}") {
         fun createRoute(userId: String, type: String) = "follow_list/$userId/$type"
     }
-    object Chat : AppDestination("chat") {
+    object Chat : AppDestination("chat/{chatId}?userId={userId}") {
         fun createRoute(chatId: String, userId: String? = null) =
             if (userId != null) "chat/$chatId?userId=$userId" else "chat/$chatId"
     }
-
-
     object StoryViewer : AppDestination("story_viewer/{userId}") {
         fun createRoute(userId: String) = "story_viewer/$userId"
     }

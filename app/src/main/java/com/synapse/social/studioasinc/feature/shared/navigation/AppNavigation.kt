@@ -10,33 +10,32 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.synapse.social.studioasinc.core.util.SoundManager
-import com.synapse.social.studioasinc.feature.auth.AuthScreen
-import com.synapse.social.studioasinc.feature.chat.chat.ChatScreen
-import com.synapse.social.studioasinc.feature.chat.inbox.InboxScreen
-import com.synapse.social.studioasinc.feature.post.createpost.CreatePostScreen
-import com.synapse.social.studioasinc.feature.post.createpost.CreatePostViewModel
+// import com.synapse.social.studioasinc.core.util.SoundManager
+import com.synapse.social.studioasinc.feature.auth.ui.AuthScreen
+import com.synapse.social.studioasinc.feature.inbox.inbox.InboxScreen
+import com.synapse.social.studioasinc.feature.createpost.createpost.CreatePostScreen
+import com.synapse.social.studioasinc.feature.createpost.createpost.CreatePostViewModel
 import com.synapse.social.studioasinc.feature.post.postdetail.PostDetailScreen
 import com.synapse.social.studioasinc.feature.profile.editprofile.EditProfileEvent
 import com.synapse.social.studioasinc.feature.profile.editprofile.EditProfileScreen
 import com.synapse.social.studioasinc.feature.profile.editprofile.EditProfileViewModel
 import com.synapse.social.studioasinc.feature.profile.privacy.PrivacySecurityScreen
-import com.synapse.social.studioasinc.feature.profile.followlist.FollowListScreen
+import com.synapse.social.studioasinc.feature.shared.components.compose.FollowListScreen
 import com.synapse.social.studioasinc.feature.profile.profile.ProfileScreen
-import com.synapse.social.studioasinc.feature.search.SearchScreen
-import com.synapse.social.studioasinc.feature.search.SearchViewModel
+import com.synapse.social.studioasinc.feature.search.search.SearchScreen
+import com.synapse.social.studioasinc.feature.search.search.SearchViewModel
 import com.synapse.social.studioasinc.feature.stories.viewer.StoryViewerScreen
 import com.synapse.social.studioasinc.feature.stories.viewer.StoryViewerViewModel
 import com.synapse.social.studioasinc.presentation.editprofile.photohistory.PhotoHistoryScreen
 import com.synapse.social.studioasinc.presentation.editprofile.photohistory.PhotoType
 import com.synapse.social.studioasinc.shared.core.network.SupabaseClient
-import com.synapse.social.studioasinc.ui.settings.RegionSelectionScreen
+import com.synapse.social.studioasinc.feature.profile.editprofile.RegionSelectionScreen
 import io.github.jan.supabase.auth.auth
 
 @Composable
 fun AppNavigation(
     navController: NavHostController,
-    soundManager: SoundManager
+    // soundManager: SoundManager // Removed usage
 ) {
     NavHost(
         navController = navController,
@@ -54,8 +53,9 @@ fun AppNavigation(
         }
 
         composable(AppDestination.Home.route) {
-            com.synapse.social.studioasinc.feature.home.HomeScreen(
-                soundManager = soundManager,
+            com.synapse.social.studioasinc.feature.home.home.HomeScreen(
+                // soundManager = soundManager,
+                reelUploadManager = com.synapse.social.studioasinc.feature.shared.reels.ReelUploadManager(),
                 onNavigateToSearch = {
                     navController.navigate(AppDestination.Search.route)
                 },
@@ -104,7 +104,7 @@ fun AppNavigation(
                     navController.navigate(AppDestination.Settings.route)
                 },
                 onNavigateToChat = { targetUserId ->
-                    navController.navigate(AppDestination.Chat.createRoute(chatId = "new", userId = targetUserId))
+                    // Chat missing
                 },
                 onNavigateToFollowers = {
                     navController.navigate(AppDestination.FollowList.createRoute(userId, "followers"))
@@ -124,6 +124,7 @@ fun AppNavigation(
             )
         }
 
+        /*
         composable(
             route = AppDestination.Chat.route,
             arguments = listOf(
@@ -135,18 +136,9 @@ fun AppNavigation(
                 }
             )
         ) { backStackEntry ->
-            val chatId = backStackEntry.arguments?.getString("chatId") ?: return@composable
-            val targetUserId = backStackEntry.arguments?.getString("userId")
-
-            ChatScreen(
-                chatId = chatId,
-                targetUserId = targetUserId,
-                onNavigateBack = { navController.popBackStack() },
-                onNavigateToProfile = { userId ->
-                    navController.navigate(AppDestination.Profile.createRoute(userId))
-                }
-            )
+            // ChatScreen missing
         }
+        */
 
         composable(AppDestination.Search.route) {
             val viewModel: SearchViewModel = hiltViewModel()
@@ -316,7 +308,7 @@ fun AppNavigation(
                     navController.navigate(AppDestination.Profile.createRoute(profileUserId))
                 },
                 onMessageClick = { chatId ->
-                    navController.navigate(AppDestination.Chat.createRoute(chatId))
+                    // navController.navigate(AppDestination.Chat.createRoute(chatId))
                 }
             )
         }

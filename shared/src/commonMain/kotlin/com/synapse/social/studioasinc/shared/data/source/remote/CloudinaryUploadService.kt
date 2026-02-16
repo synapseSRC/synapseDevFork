@@ -50,6 +50,6 @@ class CloudinaryUploadService(private val client: HttpClient) : UploadService {
             }
         }.body()
 
-        return response["secure_url"]?.jsonPrimitive?.content ?: throw Exception("Cloudinary upload failed")
+        return response["secure_url"]?.jsonPrimitive?.content ?: throw Exception("Cloudinary upload failed. Response: $response")
     }
 }

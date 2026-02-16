@@ -3,7 +3,7 @@ package com.synapse.social.studioasinc.feature.profile.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.data.model.UserProfile
-import com.synapse.social.studioasinc.data.repository.AuthRepository
+import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
 import com.synapse.social.studioasinc.domain.model.MediaItem
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.ReactionType

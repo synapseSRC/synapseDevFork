@@ -77,6 +77,12 @@ object RepositoryModule {
 
     @Provides
     @Singleton
+    fun provideSharedUserRepository(userRepository: UserRepository): com.synapse.social.studioasinc.shared.domain.repository.UserRepository {
+        return userRepository
+    }
+
+    @Provides
+    @Singleton
     fun providePostRepository(
         postDao: PostDao,
         client: SupabaseClientType

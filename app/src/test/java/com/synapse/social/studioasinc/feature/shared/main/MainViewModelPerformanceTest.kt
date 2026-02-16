@@ -5,7 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.synapse.social.studioasinc.data.repository.AuthRepository
+import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
 import com.synapse.social.studioasinc.data.repository.UserRepository
 import com.synapse.social.studioasinc.ui.navigation.AppDestination
 import com.synapse.social.studioasinc.domain.model.User

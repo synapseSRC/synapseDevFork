@@ -1,7 +1,7 @@
 package com.synapse.social.studioasinc.feature.auth.presentation.viewmodel
 
 import android.content.SharedPreferences
-import com.synapse.social.studioasinc.data.repository.AuthRepository
+import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
 import com.synapse.social.studioasinc.data.repository.UsernameRepository
 import com.synapse.social.studioasinc.feature.auth.ui.models.AuthNavigationEvent
 import com.synapse.social.studioasinc.feature.auth.ui.models.AuthUiState

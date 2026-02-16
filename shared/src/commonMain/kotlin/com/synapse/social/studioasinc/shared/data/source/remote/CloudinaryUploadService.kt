@@ -15,6 +15,7 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.jsonObject
 
 class CloudinaryUploadService(private val client: HttpClient) : UploadService {
     override suspend fun upload(
@@ -50,6 +51,18 @@ class CloudinaryUploadService(private val client: HttpClient) : UploadService {
             }
         }.body()
 
-        return response["secure_url"]?.jsonPrimitive?.content ?: throw Exception("Cloudinary upload failed")
+        if (response.containsKey("error")) {
+             val errorElement = response["error"]
+             val errorMessage = try {
+                 errorElement?.jsonObject?.get("message")?.jsonPrimitive?.content
+             } catch (e: Exception) {
+                 errorElement.toString()
+             } ?: errorElement.toString()
+
+             throw Exception("Cloudinary upload failed: $errorMessage")
+        }
+
+        return response["secure_url"]?.jsonPrimitive?.content
+            ?: throw Exception("Cloudinary upload failed: secure_url missing in response: $response")
     }
 }

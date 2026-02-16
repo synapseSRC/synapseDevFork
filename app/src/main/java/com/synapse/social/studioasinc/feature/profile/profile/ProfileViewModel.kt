@@ -3,7 +3,7 @@ package com.synapse.social.studioasinc.feature.profile.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.data.model.UserProfile
-import com.synapse.social.studioasinc.data.repository.AuthRepository
+import com.synapse.social.studioasinc.shared.domain.usecase.auth.GetCurrentUserIdUseCase
 import com.synapse.social.studioasinc.domain.model.MediaItem
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.ReactionType
@@ -74,7 +74,7 @@ data class ProfileScreenState(
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
+    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
     private val getProfileUseCase: GetProfileUseCase,
     private val getProfileContentUseCase: GetProfileContentUseCase,
     private val getFollowingUseCase: GetFollowingUseCase,
@@ -128,7 +128,7 @@ class ProfileViewModel @Inject constructor(
     fun loadProfile(userId: String) {
         viewModelScope.launch {
             _state.update { it.copy(profileState = ProfileUiState.Loading) }
-            val currentUserUid = authRepository.getCurrentUserId() ?: ""
+            val currentUserUid = getCurrentUserIdUseCase() ?: ""
             val isOwnProfile = currentUserUid == userId
 
             _state.update {

@@ -54,6 +54,10 @@ object SupabaseClient {
     const val BUCKET_USER_AVATARS = "avatars"
     const val BUCKET_USER_COVERS = "covers"
 
+    /**
+     * Validated base URL for Supabase. Initialized lazily to avoid parsing overhead on every call.
+     * Throws [ConfigurationException] if the configured URL is invalid.
+     */
     private val validatedSupabaseUrl by lazy {
         val supabaseUrl = BuildConfig.SUPABASE_URL
         try {

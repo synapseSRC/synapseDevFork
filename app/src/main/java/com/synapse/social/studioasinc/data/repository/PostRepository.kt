@@ -323,14 +323,11 @@ class PostRepository @Inject constructor(
             Result.failure(e)
         }
     }
-
     private suspend fun syncDeletedPosts() {
         try {
             val localIds = postDao.getAllPostIds()
             if (localIds.isEmpty()) return
-
             val idsToDelete = mutableListOf<String>()
-
             // Process in chunks of 50 to respect URL length limits (approx 2KB max for safe GET)
             // 50 UUIDs * 36 chars = 1800 chars + overhead
             localIds.chunked(50).forEach { chunk ->
@@ -340,18 +337,14 @@ class PostRepository @Inject constructor(
                             filter { isIn("id", chunk) }
                         }
                         .decodeList<JsonObject>()
-
                     idsToDelete.addAll(findDeletedIds(chunk, response))
-
                 } catch (e: Exception) {
                     android.util.Log.e(TAG, "Failed to check chunk existence", e)
                 }
             }
-
             if (idsToDelete.isNotEmpty()) {
                 val uniqueIdsToDelete = idsToDelete.distinct()
                 android.util.Log.d(TAG, "Syncing deletions: removing ${uniqueIdsToDelete.size} posts")
-
                 uniqueIdsToDelete.chunked(500).forEach { batch ->
                     postDao.deletePosts(batch)
                 }
@@ -360,10 +353,8 @@ class PostRepository @Inject constructor(
             android.util.Log.e(TAG, "Failed to sync deleted posts", e)
         }
     }
-
     suspend fun getUserPosts(userId: String): Result<List<Post>> = withContext(Dispatchers.IO) {
         try {
-
             val response = client.from("posts")
                 .select(
                     columns = Columns.raw("""
@@ -375,7 +366,6 @@ class PostRepository @Inject constructor(
                     filter { eq("author_uid", userId) }
                 }
                 .decodeList<PostSelectDto>()
-
             val posts = response.map { postDto ->
                 postDto.toDomain(::constructMediaUrl, ::constructAvatarUrl).also { post ->
                      postDto.user?.let { user ->
@@ -391,17 +381,14 @@ class PostRepository @Inject constructor(
                     }
                 }
             }
-
             val postsWithReactions = populatePostReactions(posts)
             val postsWithPolls = populatePostPolls(postsWithReactions)
-
             Result.success(postsWithPolls)
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to fetch user posts: ${e.message}", e)
             Result.failure(e)
         }
     }
-
     suspend fun updatePost(postId: String, updates: Map<String, Any?>): Result<Post> = withContext(Dispatchers.IO) {
         try {
             client.from("posts").update(updates) {
@@ -414,26 +401,20 @@ class PostRepository @Inject constructor(
             Result.failure(Exception(mapSupabaseError(e)))
         }
     }
-
     suspend fun updatePost(post: Post): Result<Post> = withContext(Dispatchers.IO) {
         try {
             val updateDto = post.toUpdateDto()
-
             client.from("posts").update(updateDto) {
                 filter { eq("id", post.id) }
             }
-
-
             postDao.insertAll(listOf(PostMapper.toEntity(post)))
             invalidateCache()
-
             Result.success(post)
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to update full post", e)
             Result.failure(Exception(mapSupabaseError(e)))
         }
     }
-
     suspend fun deletePost(postId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             client.from("posts").delete {
@@ -448,7 +429,6 @@ class PostRepository @Inject constructor(
         }
     }
 
-    suspend fun searchPosts(query: String): Result<List<Post>> = Result.success(emptyList())
     private val reactionRepository = ReactionRepository()
     private val pollRepository = PollRepository()
 

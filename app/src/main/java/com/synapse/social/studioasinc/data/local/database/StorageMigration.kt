@@ -14,9 +14,7 @@ class StorageMigration @Inject constructor(
     @ApplicationContext private val context: Context,
     private val storageRepository: StorageRepository
 ) {
-    private val prefs: SharedPreferences = context.getSharedPreferences("migration_prefs", Context.MODE_PRIVATE)
-    private val MIGRATION_VERSION_KEY = "storage_migration_version"
-    private val CURRENT_VERSION = 1
+    private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     suspend fun migrateIfNeeded() = withContext(Dispatchers.IO) {
         val currentVersion = prefs.getInt(MIGRATION_VERSION_KEY, 0)
@@ -35,5 +33,11 @@ class StorageMigration @Inject constructor(
                 storageRepository.ensureDefault()
             }
         }
+    }
+
+    companion object {
+        private const val PREFS_NAME = "migration_prefs"
+        private const val MIGRATION_VERSION_KEY = "storage_migration_version"
+        private const val CURRENT_VERSION = 1
     }
 }

@@ -1,11 +1,7 @@
 import './Greeting.css';
 
 import { useState } from 'react';
-import { Greeting as KotlinGreeting } from 'shared';
 import type { AnimationEvent } from 'react';
-
-// Instantiate KotlinGreeting once at module level to avoid re-creation on renders
-const greeting = new KotlinGreeting();
 
 export function Greeting() {
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -34,7 +30,7 @@ export function Greeting() {
 
       {isVisible && (
         <div className={isAnimating ? 'greeting-content fade-out' : 'greeting-content'} onAnimationEnd={handleAnimationEnd}>
-          <div>React: {greeting.greet()}</div>
+          <div>React: Hello, World!</div>
         </div>
       )}
     </div>

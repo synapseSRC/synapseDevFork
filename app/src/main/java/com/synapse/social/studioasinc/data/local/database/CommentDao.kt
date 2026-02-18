@@ -1,14 +1,9 @@
-// TODO: Migrate to shared module (See MIGRATION_PLAN.md)
 package com.synapse.social.studioasinc.data.local.database
 
-import androidx.room.*
 import kotlinx.coroutines.flow.Flow
+import com.synapse.social.studioasinc.shared.data.database.Comment as SharedComment
 
-@Dao
 interface CommentDao {
-    @Query("SELECT * FROM comments WHERE postId = :postId")
-    fun getCommentsForPost(postId: String): Flow<List<CommentEntity>>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(comments: List<CommentEntity>)
+    fun getCommentsForPost(postId: String): Flow<List<SharedComment>>
+    suspend fun insertAll(comments: List<SharedComment>)
 }

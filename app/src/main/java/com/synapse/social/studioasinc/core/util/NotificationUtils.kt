@@ -5,22 +5,20 @@ import com.synapse.social.studioasinc.R
 import com.synapse.social.studioasinc.data.remote.services.SupabaseAuthenticationService
 import com.synapse.social.studioasinc.core.config.NotificationConfig
 import com.synapse.social.studioasinc.core.util.NotificationHelper
-import com.synapse.social.studioasinc.data.local.database.AppDatabase
+import dagger.hilt.android.EntryPointAccessors
+import com.synapse.social.studioasinc.core.di.UtilsEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
-
 object NotificationUtils {
-
-
 
     fun sendPostLikeNotification(context: Context, postKey: String, postAuthorUid: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val authService = SupabaseAuthenticationService()
-                val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+                val entryPoint = EntryPointAccessors.fromApplication(context.applicationContext, UtilsEntryPoint::class.java)
+                val userRepository = entryPoint.userRepository()
 
                 val currentUser = authService.getCurrentUser()
                 if (currentUser == null || currentUser.id == postAuthorUid) {
@@ -48,13 +46,12 @@ object NotificationUtils {
         }
     }
 
-
-
     fun sendPostCommentNotification(context: Context, postKey: String, postAuthorUid: String, commentText: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val authService = SupabaseAuthenticationService()
-                val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+                val entryPoint = EntryPointAccessors.fromApplication(context.applicationContext, UtilsEntryPoint::class.java)
+                val userRepository = entryPoint.userRepository()
 
                 val currentUser = authService.getCurrentUser()
                 if (currentUser == null || currentUser.id == postAuthorUid) {
@@ -83,13 +80,12 @@ object NotificationUtils {
         }
     }
 
-
-
     fun sendCommentLikeNotification(context: Context, postKey: String, commentKey: String, commentAuthorUid: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val authService = SupabaseAuthenticationService()
-                val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+                val entryPoint = EntryPointAccessors.fromApplication(context.applicationContext, UtilsEntryPoint::class.java)
+                val userRepository = entryPoint.userRepository()
 
                 val currentUser = authService.getCurrentUser()
                 if (currentUser == null || currentUser.id == commentAuthorUid) {
@@ -118,13 +114,12 @@ object NotificationUtils {
         }
     }
 
-
-
     fun sendFollowNotification(context: Context, followedUid: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val authService = SupabaseAuthenticationService()
-                val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+                val entryPoint = EntryPointAccessors.fromApplication(context.applicationContext, UtilsEntryPoint::class.java)
+                val userRepository = entryPoint.userRepository()
 
                 val currentUser = authService.getCurrentUser()
                 if (currentUser == null || currentUser.id == followedUid) {
@@ -152,13 +147,12 @@ object NotificationUtils {
         }
     }
 
-
-
     fun sendChatMessageNotification(context: Context, recipientUid: String, messageText: String, chatId: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val authService = SupabaseAuthenticationService()
-                val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+                val entryPoint = EntryPointAccessors.fromApplication(context.applicationContext, UtilsEntryPoint::class.java)
+                val userRepository = entryPoint.userRepository()
 
                 val currentUser = authService.getCurrentUser()
                 if (currentUser == null || currentUser.id == recipientUid) {
@@ -167,7 +161,6 @@ object NotificationUtils {
 
                 val senderUser = userRepository.getUserById(currentUser.id).getOrNull()
                 val senderName = senderUser?.username ?: context.getString(R.string.someone)
-
 
                 val truncatedMessage = if (messageText.length > 50) {
                     messageText.take(47) + "..."
@@ -195,13 +188,12 @@ object NotificationUtils {
         }
     }
 
-
-
     fun sendMentionNotification(context: Context, mentionedUid: String, postKey: String, commentKey: String?, contentType: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val authService = SupabaseAuthenticationService()
-                val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+                val entryPoint = EntryPointAccessors.fromApplication(context.applicationContext, UtilsEntryPoint::class.java)
+                val userRepository = entryPoint.userRepository()
 
                 val currentUser = authService.getCurrentUser()
                 if (currentUser == null || currentUser.id == mentionedUid) {

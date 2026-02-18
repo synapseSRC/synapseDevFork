@@ -1,30 +1,15 @@
-// TODO: Migrate to shared module (See MIGRATION_PLAN.md)
 package com.synapse.social.studioasinc.data.local.database
 
 import androidx.paging.PagingSource
-import androidx.room.*
 import kotlinx.coroutines.flow.Flow
+import com.synapse.social.studioasinc.shared.data.database.Post as SharedPost
 
-@Dao
 interface PostDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(posts: List<PostEntity>)
-
-    @Query("DELETE FROM posts WHERE id = :postId")
+    suspend fun insertAll(posts: List<SharedPost>)
     suspend fun deletePost(postId: String)
-
-    @Query("SELECT * FROM posts WHERE id = :postId")
-    suspend fun getPostById(postId: String): PostEntity?
-
-    @Query("SELECT * FROM posts")
-    fun getAllPosts(): Flow<List<PostEntity>>
-
-    @Query("SELECT id FROM posts")
+    suspend fun getPostById(postId: String): SharedPost?
+    fun getAllPosts(): Flow<List<SharedPost>>
     suspend fun getAllPostIds(): List<String>
-
-    @Query("DELETE FROM posts WHERE id IN (:ids)")
     suspend fun deletePosts(ids: List<String>)
-
-    @Query("SELECT * FROM posts")
-    fun getVideoPostsPaged(): PagingSource<Int, PostEntity>
+    fun getVideoPostsPaged(): PagingSource<Int, SharedPost>
 }

@@ -8,28 +8,22 @@ import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.synapse.social.studioasinc.ProfileActivity
 import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.data.remote.services.SupabaseDatabaseService
 import com.synapse.social.studioasinc.core.util.NotificationHelper
 import com.synapse.social.studioasinc.core.config.NotificationConfig
-import com.synapse.social.studioasinc.data.local.database.AppDatabase
+import dagger.hilt.android.EntryPointAccessors
+import com.synapse.social.studioasinc.core.di.UtilsEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.regex.Matcher
 import java.util.regex.Pattern
-
-
 
 object MentionUtils {
 
-
-
     fun handleMentions(context: Context, textView: TextView, text: String) {
         val spannableString = SpannableString(text)
-        val pattern = Pattern.compile("@(\\w+)")
+        val pattern = Pattern.compile("@(\w+)")
         val matcher = pattern.matcher(text)
 
         while (matcher.find()) {
@@ -40,10 +34,10 @@ object MentionUtils {
 
                 val clickableSpan = object : ClickableSpan() {
                     override fun onClick(widget: View) {
-
                         CoroutineScope(Dispatchers.IO).launch {
                             try {
-                                val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+                                val entryPoint = EntryPointAccessors.fromApplication(context.applicationContext, UtilsEntryPoint::class.java)
+                                val userRepository = entryPoint.userRepository()
                                 val userResult = userRepository.getUserByUsername(username)
 
                                 userResult.fold(
@@ -80,8 +74,6 @@ object MentionUtils {
         textView.movementMethod = android.text.method.LinkMovementMethod.getInstance()
     }
 
-
-
     fun sendMentionNotifications(
         context: Context,
         text: String,
@@ -92,7 +84,7 @@ object MentionUtils {
     ) {
         if (text.isBlank()) return
 
-        val pattern = Pattern.compile("@(\\w+)")
+        val pattern = Pattern.compile("@(\w+)")
         val matcher = pattern.matcher(text)
 
         val mentionedUsernames = mutableSetOf<String>()
@@ -105,10 +97,10 @@ object MentionUtils {
 
         if (mentionedUsernames.isEmpty()) return
 
-
         coroutineScope.launch(Dispatchers.IO) {
             try {
-                val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+                val entryPoint = EntryPointAccessors.fromApplication(context.applicationContext, UtilsEntryPoint::class.java)
+                val userRepository = entryPoint.userRepository()
 
                 for (username in mentionedUsernames) {
                     val userResult = userRepository.getUserByUsername(username)
@@ -129,8 +121,6 @@ object MentionUtils {
         }
     }
 
-
-
     private suspend fun sendMentionNotification(
         context: Context,
         mentionedUid: String,
@@ -140,7 +130,8 @@ object MentionUtils {
     ) {
         try {
             val authService = com.synapse.social.studioasinc.data.remote.services.SupabaseAuthenticationService()
-            val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+            val entryPoint = EntryPointAccessors.fromApplication(context.applicationContext, UtilsEntryPoint::class.java)
+            val userRepository = entryPoint.userRepository()
 
             val currentUser = authService.getCurrentUser()
             if (currentUser == null || currentUser.id == mentionedUid) {
@@ -168,10 +159,8 @@ object MentionUtils {
         }
     }
 
-
-
     fun extractMentions(text: String): List<String> {
-        val pattern = Pattern.compile("@(\\w+)")
+        val pattern = Pattern.compile("@(\w+)")
         val matcher = pattern.matcher(text)
         val mentions = mutableListOf<String>()
 

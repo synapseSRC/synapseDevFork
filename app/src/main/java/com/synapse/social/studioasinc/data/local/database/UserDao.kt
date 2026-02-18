@@ -1,13 +1,8 @@
-// TODO: Migrate to shared module (See MIGRATION_PLAN.md)
 package com.synapse.social.studioasinc.data.local.database
 
-import androidx.room.*
+import com.synapse.social.studioasinc.shared.data.database.User as SharedUser
 
-@Dao
 interface UserDao {
-    @Query("SELECT * FROM users WHERE uid = :userId")
-    suspend fun getUserById(userId: String): UserEntity?
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(users: List<UserEntity>)
+    suspend fun getUserById(userId: String): SharedUser?
+    suspend fun insertAll(users: List<SharedUser>)
 }

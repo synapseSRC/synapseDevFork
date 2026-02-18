@@ -14,7 +14,8 @@ import com.synapse.social.studioasinc.R
 import com.synapse.social.studioasinc.data.remote.services.SupabaseDatabaseService
 import com.synapse.social.studioasinc.core.util.NotificationHelper
 import com.synapse.social.studioasinc.core.config.NotificationConfig
-import com.synapse.social.studioasinc.data.local.database.AppDatabase
+import dagger.hilt.android.EntryPointAccessors
+import com.synapse.social.studioasinc.core.di.DatabaseEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,7 +44,7 @@ object MentionUtils {
 
                         CoroutineScope(Dispatchers.IO).launch {
                             try {
-                                val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+                                val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(EntryPointAccessors.fromApplication(context.applicationContext, DatabaseEntryPoint::class.java).userDao())
                                 val userResult = userRepository.getUserByUsername(username)
 
                                 userResult.fold(
@@ -108,7 +109,7 @@ object MentionUtils {
 
         coroutineScope.launch(Dispatchers.IO) {
             try {
-                val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+                val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(EntryPointAccessors.fromApplication(context.applicationContext, DatabaseEntryPoint::class.java).userDao())
 
                 for (username in mentionedUsernames) {
                     val userResult = userRepository.getUserByUsername(username)
@@ -140,7 +141,7 @@ object MentionUtils {
     ) {
         try {
             val authService = com.synapse.social.studioasinc.data.remote.services.SupabaseAuthenticationService()
-            val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(AppDatabase.getDatabase(context.applicationContext).userDao())
+            val userRepository = com.synapse.social.studioasinc.data.repository.UserRepository(EntryPointAccessors.fromApplication(context.applicationContext, DatabaseEntryPoint::class.java).userDao())
 
             val currentUser = authService.getCurrentUser()
             if (currentUser == null || currentUser.id == mentionedUid) {

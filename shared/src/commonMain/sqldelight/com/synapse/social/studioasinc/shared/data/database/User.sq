@@ -4,6 +4,7 @@ import kotlin.Int;
 CREATE TABLE User (
     id TEXT NOT NULL PRIMARY KEY,
     username TEXT NOT NULL,
+    email TEXT,
     fullName TEXT,
     avatarUrl TEXT,
     bio TEXT,
@@ -17,7 +18,7 @@ CREATE TABLE User (
 
 insertUser:
 INSERT OR REPLACE INTO User(
-    id, username, fullName, avatarUrl, bio, website, location,
+    id, username, email, fullName, avatarUrl, bio, website, location,
     isVerified, followersCount, followingCount, postsCount
 ) VALUES ?;
 

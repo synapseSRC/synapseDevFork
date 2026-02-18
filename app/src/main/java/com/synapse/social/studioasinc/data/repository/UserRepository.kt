@@ -1,6 +1,6 @@
 package com.synapse.social.studioasinc.data.repository
 
-import com.synapse.social.studioasinc.data.local.database.UserDao
+import com.synapse.social.studioasinc.shared.data.local.database.UserDao
 import com.synapse.social.studioasinc.domain.model.User
 import com.synapse.social.studioasinc.domain.model.UserProfile
 import io.github.jan.supabase.SupabaseClient

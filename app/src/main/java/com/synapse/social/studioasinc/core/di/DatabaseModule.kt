@@ -3,7 +3,8 @@ package com.synapse.social.studioasinc.core.di
 import android.content.Context
 import androidx.room.Room
 import com.synapse.social.studioasinc.data.local.database.AppDatabase
-import com.synapse.social.studioasinc.data.local.database.UserDao
+import com.synapse.social.studioasinc.shared.data.local.database.UserDao
+import com.synapse.social.studioasinc.shared.data.local.database.UserDaoImpl
 import com.synapse.social.studioasinc.data.local.database.PostDao
 import com.synapse.social.studioasinc.data.local.database.CommentDao
 import dagger.Module
@@ -36,8 +37,8 @@ object DatabaseModule {
     }
 
     @Provides
-    fun provideUserDao(db: AppDatabase): UserDao {
-        return db.userDao()
+    fun provideUserDao(db: StorageDatabase): UserDao {
+        return UserDaoImpl(db)
     }
 
     @Provides
@@ -79,4 +80,10 @@ object DatabaseModule {
             )
         )
     }
+}
+
+@dagger.hilt.EntryPoint
+@dagger.hilt.InstallIn(dagger.hilt.components.SingletonComponent::class)
+interface DatabaseEntryPoint {
+    fun userDao(): UserDao
 }

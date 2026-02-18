@@ -58,4 +58,5 @@ object SupabaseClient {
         return SynapseConfig.SUPABASE_URL.isNotBlank() &&
                SynapseConfig.SUPABASE_ANON_KEY.isNotBlank()
     }
+    const val TABLE_USERS = "users"
 }

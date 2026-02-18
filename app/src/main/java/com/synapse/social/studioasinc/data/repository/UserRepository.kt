@@ -10,18 +10,20 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import com.synapse.social.studioasinc.core.network.SupabaseErrorHandler
+import com.synapse.social.studioasinc.core.network.SupabaseClient as AppSupabaseClient
+import com.synapse.social.studioasinc.shared.core.network.SupabaseClient as SharedSupabaseClient
 import com.synapse.social.studioasinc.shared.domain.repository.UserRepository as SharedUserRepository
 
 class UserRepository @Inject constructor(
     private val userDao: UserDao,
-    private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client
+    private val client: SupabaseClient = AppSupabaseClient.client
 ) : SharedUserRepository {
 
     suspend fun getUserById(userId: String): Result<User?> {
         return try {
             var user = userDao.getUserById(userId)?.let { UserMapper.toModel(it) }
             if (user == null) {
-                val userProfile = client.from("users")
+                val userProfile = client.from(SharedSupabaseClient.TABLE_USERS)
                     .select() {
                         filter {
                             eq("uid", userId)
@@ -52,7 +54,7 @@ class UserRepository @Inject constructor(
                 return Result.failure(Exception("Username cannot be empty"))
             }
 
-            val user = client.from("users")
+            val user = client.from(SharedSupabaseClient.TABLE_USERS)
                 .select() {
                     filter {
                         eq("username", username)
@@ -87,7 +89,7 @@ class UserRepository @Inject constructor(
                 "banned" to user.banned
             )
 
-            client.from("users")
+            client.from(SharedSupabaseClient.TABLE_USERS)
                 .update(updateData) {
                     filter {
                         eq("uid", user.uid)
@@ -107,7 +109,7 @@ class UserRepository @Inject constructor(
                 return Result.success(emptyList())
             }
 
-            val users = client.from("users")
+            val users = client.from(SharedSupabaseClient.TABLE_USERS)
                 .select() {
                     filter {
                         or {
@@ -128,7 +130,7 @@ class UserRepository @Inject constructor(
 
     suspend fun checkUsernameAvailability(username: String): Result<Boolean> {
         return try {
-            val existingUser = client.from("users")
+            val existingUser = client.from(SharedSupabaseClient.TABLE_USERS)
                 .select() {
                     filter {
                         eq("username", username)

@@ -2,7 +2,6 @@ package com.synapse.social.studioasinc.data.repository
 
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.local.database.PostDao
-import com.synapse.social.studioasinc.data.repository.PostMapper
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.domain.model.UserReaction

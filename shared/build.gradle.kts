@@ -36,6 +36,7 @@ kotlin {
             languageSettings.apply {
                 apiVersion = "2.1"
                 languageVersion = "2.1"
+                optIn("kotlin.ExperimentalStdlibApi")
             }
         }
 

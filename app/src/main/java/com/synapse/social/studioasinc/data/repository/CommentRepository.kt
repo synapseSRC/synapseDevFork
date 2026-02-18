@@ -23,6 +23,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.json.*
 import javax.inject.Inject
 
@@ -37,6 +39,8 @@ class CommentRepository @Inject constructor(
         private const val MAX_RETRIES = 3
         private const val RETRY_DELAY_MS = 100L
     }
+
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     fun getComments(postId: String): Flow<Result<List<Comment>>> {
         return commentDao.getCommentsForPost(postId).map<List<CommentEntity>, Result<List<Comment>>> { entities ->
@@ -223,15 +227,15 @@ class CommentRepository @Inject constructor(
 
                     commentDao.insertAll(listOf(CommentMapper.toEntity(comment.toComment())))
 
-                    coroutineScope {
-                        launch {
-                            if (parentCommentId != null) {
-                                updateRepliesCount(parentCommentId, 1)
-                            }
+
+                    // Optimized: Launch in separate scope to return immediately
+                    scope.launch {
+                        if (parentCommentId != null) {
+                            updateRepliesCount(parentCommentId, 1)
                         }
-                        launch {
-                            processMentions(postId, comment.id, content, userId, parentCommentId)
-                        }
+                    }
+                    scope.launch {
+                        processMentions(postId, comment.id, content, userId, parentCommentId)
                     }
 
                     Log.d(TAG, "Comment created successfully: ${comment.id}")

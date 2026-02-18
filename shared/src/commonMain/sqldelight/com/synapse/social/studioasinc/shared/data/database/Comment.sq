@@ -10,12 +10,14 @@ CREATE TABLE Comment (
     likesCount INTEGER AS Int NOT NULL DEFAULT 0,
     repliesCount INTEGER AS Int NOT NULL DEFAULT 0,
     isDeleted INTEGER AS Boolean NOT NULL DEFAULT 0,
-    parentCommentId TEXT
+    parentCommentId TEXT,
+    username TEXT,
+    avatarUrl TEXT
 );
 
 insertComment:
 INSERT OR REPLACE INTO Comment(
-    id, postId, authorId, text, timestamp, likesCount, repliesCount, isDeleted, parentCommentId
+    id, postId, authorId, text, timestamp, likesCount, repliesCount, isDeleted, parentCommentId, username, avatarUrl
 ) VALUES ?;
 
 selectByPostId:

@@ -1,11 +1,6 @@
 package com.synapse.social.studioasinc.core.di
 
 import android.content.Context
-import androidx.room.Room
-import com.synapse.social.studioasinc.data.local.database.AppDatabase
-import com.synapse.social.studioasinc.data.local.database.UserDao
-import com.synapse.social.studioasinc.data.local.database.PostDao
-import com.synapse.social.studioasinc.data.local.database.CommentDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,33 +20,6 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "app_database"
-        )
-        .fallbackToDestructiveMigration()
-        .build()
-    }
-
-    @Provides
-    fun provideUserDao(db: AppDatabase): UserDao {
-        return db.userDao()
-    }
-
-    @Provides
-    fun providePostDao(db: AppDatabase): PostDao {
-        return db.postDao()
-    }
-
-    @Provides
-    fun provideCommentDao(db: AppDatabase): CommentDao {
-        return db.commentDao()
-    }
-
-    @Provides
-    @Singleton
     fun provideStorageDatabase(@ApplicationContext context: Context): StorageDatabase {
         val driver = AndroidSqliteDriver(StorageDatabase.Schema, context, "storage.db")
         return StorageDatabase(
@@ -66,7 +34,8 @@ object DatabaseModule {
                 commentsCountAdapter = intAdapter,
                 viewsCountAdapter = intAdapter,
                 resharesCountAdapter = intAdapter,
-                userPollVoteAdapter = intAdapter
+                userPollVoteAdapter = intAdapter,
+                encryptedContentAdapter = stringMapAdapter
             ),
             CommentAdapter = Comment.Adapter(
                 likesCountAdapter = intAdapter,

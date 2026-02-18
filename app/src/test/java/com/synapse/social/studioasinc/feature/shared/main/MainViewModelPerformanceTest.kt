@@ -15,6 +15,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
+import kotlinx.coroutines.flow.flow
+import io.github.jan.supabase.auth.status.SessionStatus
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -68,20 +70,18 @@ class MainViewModelPerformanceTest {
     }
 
     @Test
-    fun `checkUserAuthentication waits unnecessarily long when session is ready early`() = runTest(testDispatcher) {
-        // Arrange: Session becomes available after 100ms
-        // Initially false
-        var sessionReady = false
-
-        // Mock restoreSession to return true only after 100ms
-        whenever(authRepository.restoreSession()).thenAnswer {
-            sessionReady
-        }
-
-        // Let's set up the mocks for success path
+    fun `checkUserAuthentication completes faster with reactive flow`() = runTest(testDispatcher) {
         val userId = "user123"
         whenever(authRepository.getCurrentUserId()).thenReturn(userId)
         whenever(authRepository.getCurrentUserEmail()).thenReturn("test@test.com")
+
+        // Mock sessionStatus flow: Loading -> NotAuthenticated (after 100ms)
+        whenever(authRepository.sessionStatus).thenReturn(flow {
+            delay(100)
+            emit(SessionStatus.NotAuthenticated())
+        })
+
+        whenever(authRepository.restoreSession()).thenReturn(true)
 
         val user = User(
             id = userId,
@@ -109,25 +109,12 @@ class MainViewModelPerformanceTest {
         )
         whenever(userRepository.getUserById(userId)).thenReturn(Result.success(user))
 
-        // Act
-        // We launch a background coroutine to set sessionReady = true after 100ms
-        val job = launch {
-            delay(100)
-            sessionReady = true
-        }
-
         viewModel = MainViewModel(application, authRepository, userRepository)
 
-        // Run pending tasks
         advanceUntilIdle()
 
-        // Assert
         println("Virtual time elapsed: ${currentTime}ms")
-
-        // We assert that it took at least 500ms (because of the hardcoded delay)
-        // Even though the session was ready at 100ms.
-        assertEquals(500L, currentTime)
-
-        job.cancel()
+        // It should take exactly 100ms (the simulated delay)
+        assertEquals(100L, currentTime)
     }
 }

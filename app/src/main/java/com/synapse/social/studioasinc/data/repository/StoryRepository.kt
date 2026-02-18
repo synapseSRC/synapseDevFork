@@ -27,8 +27,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.time.Instant
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
 
 interface StoryRepository {
 
@@ -331,10 +329,12 @@ class StoryRepositoryImpl @Inject constructor(
     }
 
     override suspend fun markAsSeen(storyId: String, viewerId: String): Result<Unit> = try {
-        val view = buildJsonObject {
-            put("story_id", storyId)
-            put("viewer_id", viewerId)
-        }
+        val view = StoryView(
+            storyId = storyId,
+            viewerId = viewerId,
+            // viewedAt is null to let the database use its default value (e.g., now())
+            viewedAt = null
+        )
 
         client.from(TABLE_STORY_VIEWS).upsert(view) {
             onConflict = "story_id, viewer_id"

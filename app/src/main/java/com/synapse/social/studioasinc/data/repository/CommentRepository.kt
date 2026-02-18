@@ -20,15 +20,18 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.json.*
 import javax.inject.Inject
+import javax.inject.Named
 
 class CommentRepository @Inject constructor(
     private val commentDao: CommentDao,
     private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client,
+    @Named("ApplicationScope") private val externalScope: CoroutineScope,
     private val reactionRepository: ReactionRepository = ReactionRepository()
 ) {
 
@@ -37,6 +40,7 @@ class CommentRepository @Inject constructor(
         private const val MAX_RETRIES = 3
         private const val RETRY_DELAY_MS = 100L
     }
+
 
     fun getComments(postId: String): Flow<Result<List<Comment>>> {
         return commentDao.getCommentsForPost(postId).map<List<CommentEntity>, Result<List<Comment>>> { entities ->
@@ -223,15 +227,15 @@ class CommentRepository @Inject constructor(
 
                     commentDao.insertAll(listOf(CommentMapper.toEntity(comment.toComment())))
 
-                    coroutineScope {
-                        launch {
-                            if (parentCommentId != null) {
-                                updateRepliesCount(parentCommentId, 1)
-                            }
+
+                    // Optimized: Launch in separate scope to return immediately
+                    externalScope.launch {
+                        if (parentCommentId != null) {
+                            updateRepliesCount(parentCommentId, 1)
                         }
-                        launch {
-                            processMentions(postId, comment.id, content, userId, parentCommentId)
-                        }
+                    }
+                    externalScope.launch {
+                        processMentions(postId, comment.id, content, userId, parentCommentId)
                     }
 
                     Log.d(TAG, "Comment created successfully: ${comment.id}")

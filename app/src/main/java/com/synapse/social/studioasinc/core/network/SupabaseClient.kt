@@ -50,6 +50,7 @@ object SupabaseClient {
 
     fun getUrl(): String = BuildConfig.SUPABASE_URL
 
+    const val TABLE_USERS = "users"
     const val BUCKET_POST_MEDIA = "posts"
     const val BUCKET_USER_AVATARS = "avatars"
     const val BUCKET_USER_COVERS = "covers"

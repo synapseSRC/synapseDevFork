@@ -329,29 +329,15 @@ class StoryRepositoryImpl @Inject constructor(
     }
 
     override suspend fun markAsSeen(storyId: String, viewerId: String): Result<Unit> = try {
+        val view = StoryView(
+            storyId = storyId,
+            viewerId = viewerId,
+            viewedAt = Instant.now().toString()
+        )
 
-        val existingView = client.from(TABLE_STORY_VIEWS)
-            .select {
-                filter {
-                    eq("story_id", storyId)
-                    eq("viewer_id", viewerId)
-                }
-                count(io.github.jan.supabase.postgrest.query.Count.EXACT)
-            }
-            .countOrNull() ?: 0
-
-        if (existingView == 0L) {
-
-            val view = StoryView(
-                storyId = storyId,
-                viewerId = viewerId,
-                viewedAt = Instant.now().toString()
-            )
-
-            client.from(TABLE_STORY_VIEWS).insert(view)
-
-
-
+        client.from(TABLE_STORY_VIEWS).upsert(view) {
+            onConflict = "story_id, viewer_id"
+            ignoreDuplicates = true
         }
 
         Result.success(Unit)

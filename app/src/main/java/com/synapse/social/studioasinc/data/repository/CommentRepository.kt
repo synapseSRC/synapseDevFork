@@ -11,9 +11,10 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import io.github.jan.supabase.functions.functions
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.rpc
 import io.ktor.client.statement.bodyAsText
 import io.github.jan.supabase.postgrest.query.Columns
-import io.github.jan.supabase.postgrest.query.Count
 import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -500,20 +501,10 @@ class CommentRepository @Inject constructor(
 
     private suspend fun updateRepliesCount(commentId: String, delta: Int) {
         try {
-            val actualCount = client.from("comments")
-                .select(columns = Columns.raw("")) {
-                    filter {
-                        eq("parent_comment_id", commentId)
-                        eq("is_deleted", false)
-                    }
-                    count(Count.EXACT)
-                }
-                .countOrNull() ?: 0
-
-            client.from("comments")
-                .update({ set("replies_count", actualCount) }) {
-                    filter { eq("id", commentId) }
-                }
+            client.postgrest.rpc(
+                "increment_replies_count",
+                mapOf("comment_id" to commentId, "delta" to delta)
+            )
         } catch (e: Exception) {
             Log.e(TAG, "Failed to update replies count: ${e.message}")
         }

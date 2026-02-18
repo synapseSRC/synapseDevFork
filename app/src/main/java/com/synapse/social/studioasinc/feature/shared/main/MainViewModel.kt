@@ -20,6 +20,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import io.github.jan.supabase.auth.status.SessionStatus
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -113,19 +115,9 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             try {
 
-                var isAuthenticated = authRepository.restoreSession()
-
-
-                if (!isAuthenticated) {
-
-                    for (attempt in 1..2) {
-                        delay((500 * attempt).toLong())
-                        isAuthenticated = authRepository.restoreSession()
-                        if (isAuthenticated) {
-                            break
-                        }
-                    }
-                }
+                // Wait for session to be fully loaded
+                authRepository.sessionStatus.first { it is SessionStatus.Authenticated || it is SessionStatus.NotAuthenticated }
+                val isAuthenticated = authRepository.restoreSession()
 
                 if (isAuthenticated) {
                     val userId = authRepository.getCurrentUserId()

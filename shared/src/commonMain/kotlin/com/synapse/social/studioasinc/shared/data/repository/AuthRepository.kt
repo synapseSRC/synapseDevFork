@@ -5,6 +5,8 @@ import com.synapse.social.studioasinc.shared.data.model.UserProfileInsert
 import com.synapse.social.studioasinc.shared.data.model.UserSettingsInsert
 import com.synapse.social.studioasinc.shared.data.model.UserPresenceInsert
 import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.status.SessionStatus
+import kotlinx.coroutines.flow.Flow
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.OAuthProvider
@@ -20,6 +22,7 @@ import kotlin.time.ExperimentalTime
 import io.github.jan.supabase.SupabaseClient as SupabaseClientLib
 
 class AuthRepository(private val client: SupabaseClientLib = SupabaseClient.client) {
+    val sessionStatus: Flow<SessionStatus> get() = client.auth.sessionStatus
     private val TAG = "AuthRepository"
 
     suspend fun signUp(email: String, password: String): Result<String> {

@@ -13,7 +13,8 @@ import com.synapse.social.studioasinc.shared.data.database.postMetadataAdapter
 import com.synapse.social.studioasinc.shared.data.database.intAdapter
 import com.synapse.social.studioasinc.shared.data.database.booleanAdapter
 import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
-
+import com.synapse.social.studioasinc.shared.data.local.database.CommentDao
+import com.synapse.social.studioasinc.shared.data.local.database.SqlDelightCommentDao
 
 
 import com.synapse.social.studioasinc.shared.data.source.remote.CloudinaryUploadService
@@ -60,7 +61,7 @@ val storageModule = module {
             ),
             CommentAdapter = Comment.Adapter(
                 likesCountAdapter = intAdapter,
-                repliesCountAdapter = intAdapter
+                repliesCountAdapter = intAdapter,
             ),
             UserAdapter = User.Adapter(
                 followersCountAdapter = intAdapter,
@@ -71,8 +72,7 @@ val storageModule = module {
     }
 
     single<StorageRepository> { StorageRepositoryImpl(get(), get()) }
-
-
+    single<CommentDao> { SqlDelightCommentDao(get()) }
 
 
     single {

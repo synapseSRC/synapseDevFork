@@ -556,8 +556,6 @@ object FileManager {
         val src = BitmapFactory.decodeFile(fromPath)
         val cm = ColorMatrix(
             floatArrayOf(
-                1f, 0f, 0f, 0f, brightness,
-                0f, 1f, 0f, 0f, brightness,
                 0f, 0f, 1f, 0f, brightness,
                 0f, 0f, 0f, 1f, 0f
             )
@@ -940,6 +938,44 @@ object FileManager {
             finalFileName += extension
         }
         return FileInfo(finalFileName, mimeType, extension)
+    }
+
+
+    fun validateAndCleanPath(context: Context, path: String): String? {
+        if (path.startsWith("content://", ignoreCase = true)) return path
+
+        try {
+            // Fix: Strip file:// prefix if present
+            val cleanPath = if (path.startsWith("file:", ignoreCase = true)) {
+                 Uri.parse(path).path ?: path
+            } else {
+                 path
+            }
+            val file = java.io.File(cleanPath)
+
+            if (!file.exists()) {
+                Log.e(TAG, "File not found: $cleanPath")
+                return null
+            }
+
+            val canonicalPath = file.canonicalPath
+            val dataDir = java.io.File(context.applicationInfo.dataDir).canonicalPath
+            val cacheDir = context.cacheDir.canonicalPath
+
+            // Robust check for directory containment
+            val isInDataDir = canonicalPath == dataDir || canonicalPath.startsWith(dataDir + java.io.File.separator)
+            val isInCacheDir = canonicalPath == cacheDir || canonicalPath.startsWith(cacheDir + java.io.File.separator)
+
+            // Block access to private data directory unless it's in the cache directory
+            if (isInDataDir && !isInCacheDir) {
+                Log.e(TAG, "Invalid file source (private data dir): $canonicalPath")
+                return null
+            }
+            return cleanPath
+        } catch (e: Exception) {
+            Log.e(TAG, "Path validation failed", e)
+            return null
+        }
     }
 
     fun shutdown() {

@@ -557,7 +557,7 @@ class CreatePostViewModel @Inject constructor(
                     async(Dispatchers.IO) {
                         try {
                             val filePath = mediaItem.url
-                            val cleanPath = validateAndCleanPath(filePath)
+                            val cleanPath = FileManager.validateAndCleanPath(getApplication(), filePath)
                             if (cleanPath == null) {
                                 // Set progress to 100% for skipped item
                                 progressMap[index] = 1.0f
@@ -676,7 +676,7 @@ class CreatePostViewModel @Inject constructor(
 
             // Move all I/O and validation to background
             val result = kotlinx.coroutines.withContext(Dispatchers.IO) {
-                val cleanPath = validateAndCleanPath(videoPath)
+                val cleanPath = FileManager.validateAndCleanPath(getApplication(), videoPath)
                 if (cleanPath == null) {
                     return@withContext Result.failure(Exception("Invalid video file or file not found"))
                 }
@@ -740,45 +740,6 @@ class CreatePostViewModel @Inject constructor(
             }
         }
     }
-    private fun validateAndCleanPath(path: String): String? {
-        if (path.startsWith("content://")) return path
-
-        try {
-            // Fix: Strip file:// prefix if present
-            val cleanPath = if (path.startsWith("file://")) path.substring(7) else path
-            val file = java.io.File(cleanPath)
-
-            if (!file.exists()) {
-                android.util.Log.e("CreatePost", "File not found")
-                return null
-            }
-
-            val canonicalPath = file.canonicalPath
-            val dataDir = java.io.File(getApplication<Application>().applicationInfo.dataDir).canonicalPath
-            val cacheDir = getApplication<Application>().cacheDir.canonicalPath
-
-            // Robust check for directory containment
-            val isInDataDir = canonicalPath == dataDir || canonicalPath.startsWith(dataDir + java.io.File.separator)
-            val isInCacheDir = canonicalPath == cacheDir || canonicalPath.startsWith(cacheDir + java.io.File.separator)
-
-            // Block access to private data directory unless it's in the cache directory
-            if (isInDataDir && !isInCacheDir) {
-                android.util.Log.e("CreatePost", "Invalid file source (private data dir)")
-                return null
-            }
-            return cleanPath
-        } catch (e: java.io.IOException) {
-            android.util.Log.e("CreatePost", "Path validation failed with IO error", e)
-            return null
-        } catch (e: SecurityException) {
-            android.util.Log.e("CreatePost", "Path validation failed with security error", e)
-            return null
-        } catch (e: Exception) {
-            android.util.Log.e("CreatePost", "Path validation failed", e)
-            return null
-        }
-    }
-
     companion object {
         private const val DEFAULT_LAYOUT_TYPE = "COLUMNS"
     }

@@ -21,17 +21,7 @@ class CommentDaoImpl @Inject constructor(
     override suspend fun insertAll(comments: List<SharedComment>) {
         db.transaction {
             comments.forEach { comment ->
-                db.commentQueries.insertComment(
-                    id = comment.id,
-                    postId = comment.postId,
-                    authorId = comment.authorId,
-                    text = comment.text,
-                    timestamp = comment.timestamp,
-                    likesCount = comment.likesCount,
-                    repliesCount = comment.repliesCount,
-                    isDeleted = comment.isDeleted,
-                    parentCommentId = comment.parentCommentId
-                )
+                db.commentQueries.insertComment(comment)
             }
         }
     }

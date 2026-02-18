@@ -17,52 +17,7 @@ class PostDaoImpl @Inject constructor(
     override suspend fun insertAll(posts: List<SharedPost>) {
         db.transaction {
             posts.forEach { post ->
-                db.postQueries.insertPost(
-                    id = post.id,
-                    key = post.key,
-                    authorUid = post.authorUid,
-                    postText = post.postText,
-                    postImage = post.postImage,
-                    postType = post.postType,
-                    postHideViewsCount = post.postHideViewsCount,
-                    postHideLikeCount = post.postHideLikeCount,
-                    postHideCommentsCount = post.postHideCommentsCount,
-                    postDisableComments = post.postDisableComments,
-                    postVisibility = post.postVisibility,
-                    publishDate = post.publishDate,
-                    timestamp = post.timestamp,
-                    likesCount = post.likesCount,
-                    commentsCount = post.commentsCount,
-                    viewsCount = post.viewsCount,
-                    resharesCount = post.resharesCount,
-                    mediaItems = post.mediaItems,
-                    isEncrypted = post.isEncrypted,
-                    nonce = post.nonce,
-                    encryptionKeyId = post.encryptionKeyId,
-                    isDeleted = post.isDeleted,
-                    isEdited = post.isEdited,
-                    editedAt = post.editedAt,
-                    deletedAt = post.deletedAt,
-                    hasPoll = post.hasPoll,
-                    pollQuestion = post.pollQuestion,
-                    pollOptions = post.pollOptions,
-                    pollEndTime = post.pollEndTime,
-                    pollAllowMultiple = post.pollAllowMultiple,
-                    hasLocation = post.hasLocation,
-                    locationName = post.locationName,
-                    locationAddress = post.locationAddress,
-                    locationLatitude = post.locationLatitude,
-                    locationLongitude = post.locationLongitude,
-                    locationPlaceId = post.locationPlaceId,
-                    youtubeUrl = post.youtubeUrl,
-                    reactions = post.reactions,
-                    userReaction = post.userReaction,
-                    username = post.username,
-                    avatarUrl = post.avatarUrl,
-                    isVerified = post.isVerified,
-                    metadata = post.metadata,
-                    userPollVote = post.userPollVote
-                )
+                db.postQueries.insertPost(post)
             }
         }
     }

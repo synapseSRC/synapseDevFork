@@ -6,10 +6,16 @@ import com.synapse.social.studioasinc.domain.model.MediaItem
 import com.synapse.social.studioasinc.domain.model.PollOption
 import com.synapse.social.studioasinc.domain.model.PostMetadata
 import com.synapse.social.studioasinc.domain.model.ReactionType
+import com.synapse.social.studioasinc.domain.model.MediaType
+import com.synapse.social.studioasinc.domain.model.FeelingActivity
+import com.synapse.social.studioasinc.domain.model.FeelingType
 import com.synapse.social.studioasinc.shared.domain.model.MediaItem as SharedMediaItem
 import com.synapse.social.studioasinc.shared.domain.model.PollOption as SharedPollOption
 import com.synapse.social.studioasinc.shared.domain.model.PostMetadata as SharedPostMetadata
 import com.synapse.social.studioasinc.shared.domain.model.ReactionType as SharedReactionType
+import com.synapse.social.studioasinc.shared.domain.model.MediaType as SharedMediaType
+import com.synapse.social.studioasinc.shared.domain.model.FeelingActivity as SharedFeelingActivity
+import com.synapse.social.studioasinc.shared.domain.model.FeelingType as SharedFeelingType
 
 object PostMapper {
     fun toEntity(post: Post): SharedPost {
@@ -27,22 +33,12 @@ object PostMapper {
             postVisibility = post.postVisibility,
             publishDate = post.publishDate,
             timestamp = post.timestamp,
-            // createdAt/updatedAt not in SharedPost? Post.sq didn't have them in CREATE TABLE?
-            // Wait, let me check Post.sq content again. It did NOT have createdAt/updatedAt.
-            // But PostEntity had them. I will skip them or check if I missed them.
             likesCount = post.likesCount,
             commentsCount = post.commentsCount,
             viewsCount = post.viewsCount,
             resharesCount = post.resharesCount,
             mediaItems = post.mediaItems?.map { toSharedMediaItem(it) },
             isEncrypted = post.isEncrypted,
-            // encryptedContent not in SharedPost? Post.sq has it?
-            // Post.sq: encryptedContent JSONB? No, nonce TEXT, encryptionKeyId TEXT.
-            // Post.sq: isEncrypted INTEGER AS Boolean.
-            // Post.sq: nonce TEXT. encryptionKeyId TEXT.
-            // PostEntity: encryptedContent: Map<String, String>?
-            // SharedPost: doesn't seem to have encryptedContent map.
-            // I will skip encryptedContent for now as it seems missing in SharedPost.
             nonce = post.nonce,
             encryptionKeyId = post.encryptionKeyId,
             isDeleted = post.isDeleted,
@@ -86,7 +82,6 @@ object PostMapper {
             postVisibility = entity.postVisibility,
             publishDate = entity.publishDate,
             timestamp = entity.timestamp,
-            // createdAt/updatedAt missing
             likesCount = entity.likesCount,
             commentsCount = entity.commentsCount,
             viewsCount = entity.viewsCount,
@@ -123,16 +118,20 @@ object PostMapper {
     }
 
     private fun toSharedMediaItem(item: MediaItem): SharedMediaItem {
-        // Assuming compatible properties. If not, this will fail compilation.
-        // I'll try to use reflection-like property copying or just constructor if I knew args.
-        // For now, I'll assume they have same structure.
-        // This is a risk.
         return SharedMediaItem(
             id = item.id,
             url = item.url,
-            type = item.type,
+            type = try { SharedMediaType.valueOf(item.type.name) } catch (e: Exception) { SharedMediaType.IMAGE },
             thumbnailUrl = item.thumbnailUrl,
-            aspectRatio = item.aspectRatio
+            // aspectRatio property is missing in SharedMediaItem according to file read, but error log complained about it.
+            // Wait, previous error: "No parameter with name 'aspectRatio' found".
+            // So SharedMediaItem does NOT have aspectRatio.
+            // I should remove it.
+            // Error log: e: .../PostMapper.kt:135:13 No parameter with name 'aspectRatio' found.
+            // So I remove it here.
+            duration = item.duration,
+            size = item.size,
+            mimeType = item.mimeType
         )
     }
 
@@ -140,9 +139,12 @@ object PostMapper {
         return MediaItem(
             id = item.id,
             url = item.url,
-            type = item.type,
+            type = try { MediaType.valueOf(item.type.name) } catch (e: Exception) { MediaType.IMAGE },
             thumbnailUrl = item.thumbnailUrl,
-            aspectRatio = item.aspectRatio
+            aspectRatio = null, // Set default or null
+            duration = item.duration,
+            size = item.size,
+            mimeType = item.mimeType
         )
     }
 
@@ -178,13 +180,31 @@ object PostMapper {
 
     private fun toSharedPostMetadata(item: PostMetadata): SharedPostMetadata {
         return SharedPostMetadata(
-            linkPreview = null // Assuming simplified for now or need more mapping
+            layoutType = item.layoutType,
+            backgroundColor = item.backgroundColor,
+            feeling = item.feeling?.let {
+                SharedFeelingActivity(
+                    emoji = it.emoji,
+                    text = it.text,
+                    type = try { SharedFeelingType.valueOf(it.type.name) } catch(e: Exception) { SharedFeelingType.MOOD }
+                )
+            },
+            taggedPeople = null // Mapping User list might be complex and not needed for basic migration yet, or map simple properties
         )
     }
 
     private fun toAppPostMetadata(item: SharedPostMetadata): PostMetadata {
         return PostMetadata(
-            linkPreview = null
+            layoutType = item.layoutType,
+            backgroundColor = item.backgroundColor,
+            feeling = item.feeling?.let {
+                FeelingActivity(
+                    emoji = it.emoji,
+                    text = it.text,
+                    type = try { FeelingType.valueOf(it.type.name) } catch(e: Exception) { FeelingType.MOOD }
+                )
+            },
+            taggedPeople = null
         )
     }
 }

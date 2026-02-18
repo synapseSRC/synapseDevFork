@@ -23,7 +23,7 @@ object MentionUtils {
 
     fun handleMentions(context: Context, textView: TextView, text: String) {
         val spannableString = SpannableString(text)
-        val pattern = Pattern.compile("@(\w+)")
+        val pattern = Pattern.compile("@(\\w+)")
         val matcher = pattern.matcher(text)
 
         while (matcher.find()) {
@@ -84,7 +84,7 @@ object MentionUtils {
     ) {
         if (text.isBlank()) return
 
-        val pattern = Pattern.compile("@(\w+)")
+        val pattern = Pattern.compile("@(\\w+)")
         val matcher = pattern.matcher(text)
 
         val mentionedUsernames = mutableSetOf<String>()
@@ -160,7 +160,7 @@ object MentionUtils {
     }
 
     fun extractMentions(text: String): List<String> {
-        val pattern = Pattern.compile("@(\w+)")
+        val pattern = Pattern.compile("@(\\w+)")
         val matcher = pattern.matcher(text)
         val mentions = mutableListOf<String>()
 

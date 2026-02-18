@@ -9,11 +9,11 @@ object UserMapper {
     fun toEntity(user: User): SharedUser {
         return SharedUser(
             id = user.uid,
-            username = user.username,
+            username = user.username ?: "",
             email = user.email,
-            fullName = null, // Not present in Domain User
+            fullName = null,
             avatarUrl = user.avatar,
-            bio = null, // Not present in Domain User
+            bio = null,
             website = null,
             location = null,
             isVerified = user.verify,

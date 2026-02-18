@@ -15,20 +15,7 @@ class UserDaoImpl @Inject constructor(
     override suspend fun insertAll(users: List<SharedUser>) {
         db.transaction {
             users.forEach { user ->
-                db.userQueries.insertUser(
-                    id = user.id,
-                    username = user.username,
-                    email = user.email,
-                    fullName = user.fullName,
-                    avatarUrl = user.avatarUrl,
-                    bio = user.bio,
-                    website = user.website,
-                    location = user.location,
-                    isVerified = user.isVerified,
-                    followersCount = user.followersCount,
-                    followingCount = user.followingCount,
-                    postsCount = user.postsCount
-                )
+                db.userQueries.insertUser(user)
             }
         }
     }

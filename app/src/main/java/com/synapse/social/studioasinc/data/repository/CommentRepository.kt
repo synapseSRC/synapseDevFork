@@ -17,235 +17,162 @@ import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
 import javax.inject.Inject
+import java.time.Instant
+import com.synapse.social.studioasinc.shared.data.database.Comment as SharedComment
 
 class CommentRepository @Inject constructor(
-    private val commentDao: CommentDao,
     private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client,
-    private val reactionRepository: ReactionRepository = ReactionRepository()
+    private val commentDao: CommentDao,
+    private val userRepository: UserRepository
 ) {
+    private val TAG = "CommentRepository"
 
-    companion object {
-        private const val TAG = "CommentRepository"
-        private const val MAX_RETRIES = 3
-        private const val RETRY_DELAY_MS = 100L
-    }
-
-    fun getComments(postId: String): Flow<Result<List<Comment>>> {
-        return commentDao.getCommentsForPost(postId).map<List<CommentEntity>, Result<List<Comment>>> { entities ->
-            Result.success(entities.map { CommentMapper.toModel(it) })
-        }.catch { e ->
-            emit(Result.failure(Exception("Error getting comments from database: ${e.message}")))
-        }
-    }
-
-    suspend fun refreshComments(postId: String, limit: Int = 50, offset: Int = 0): Result<Unit> {
-        return try {
+    suspend fun getComments(postId: String): Result<List<CommentWithUser>> = withContext(Dispatchers.IO) {
+        try {
             val response = client.from("comments")
-                .select(
-                    columns = Columns.raw("""
-                        *,
-                        users!comments_user_id_fkey(uid, username, display_name, email, bio, avatar, followers_count, following_count, posts_count, status, account_type, verify, banned)
-                    """.trimIndent())
-                ) {
+                .select(columns = Columns.raw("*, users(uid, username, display_name, avatar, bio, verify, status, account_type, followers_count, following_count, posts_count, banned)")) {
                     filter {
                         eq("post_id", postId)
-                        exact("parent_comment_id", null)
+                        eq("is_deleted", false)
+                        isExact("parent_comment_id", null)
                     }
                     order("created_at", Order.ASCENDING)
-                    limit(limit.toLong())
-                    range(offset.toLong(), (offset + limit - 1).toLong())
                 }
-                .decodeList<JsonObject>()
 
-            val comments = mutableListOf<CommentWithUser>()
-            for (json in response) {
-                parseCommentFromJson(json)?.let { comments.add(it) }
-            }
+            val commentsJson = response.decodeList<JsonObject>()
+            val comments = commentsJson.mapNotNull { parseCommentFromJson(it) }
 
-            commentDao.insertAll(comments.map {
+
+            val commentsToCache = comments.map {
                 CommentMapper.toEntity(it.toComment(), it.user?.username, it.user?.avatar)
-            })
-            Result.success(Unit)
+            }
+            commentDao.insertAll(commentsToCache)
+
+            Result.success(comments)
         } catch (e: Exception) {
             Log.e(TAG, "Failed to fetch comments: ${e.message}", e)
-            Result.failure(e)
+            Result.failure(Exception(mapSupabaseError(e)))
         }
     }
 
+    fun getCommentsForPost(postId: String): Flow<List<CommentWithUser>> {
+        return commentDao.getCommentsForPost(postId).map { entities ->
+            entities.map { entity ->
 
-    suspend fun fetchComments(postId: String, limit: Int = 50, offset: Int = 0): Result<List<CommentWithUser>> = withContext(Dispatchers.IO) {
-        try {
-             val response = client.from("comments")
-                .select(
-                    columns = Columns.raw("""
-                        *,
-                        users!comments_user_id_fkey(uid, username, display_name, email, bio, avatar, followers_count, following_count, posts_count, status, account_type, verify, banned)
-                    """.trimIndent())
-                ) {
-                    filter {
-                        eq("post_id", postId)
-                        exact("parent_comment_id", null)
+                val comment = CommentMapper.toModel(entity)
+
+                val user = if (entity.username != null) {
+                    UserProfile(
+                        uid = entity.authorId,
+                        username = entity.username ?: "",
+                        displayName = entity.username ?: "",
+                        email = "",
+                        bio = null,
+                        avatar = entity.avatarUrl,
+                        followersCount = 0,
+                        followingCount = 0,
+                        postsCount = 0,
+                        status = UserStatus.OFFLINE,
+                        account_type = "user",
+                        verify = false,
+                        banned = false
+                    )
+                } else {
+
+                    try {
+                        userRepository.getUserById(entity.authorId).getOrNull()?.let { domainUser ->
+                            UserProfile(
+                                uid = domainUser.uid,
+                                username = domainUser.username ?: "",
+                                displayName = domainUser.displayName ?: "",
+                                email = domainUser.email ?: "",
+                                bio = domainUser.bio,
+                                avatar = domainUser.avatar,
+                                followersCount = domainUser.followersCount,
+                                followingCount = domainUser.followingCount,
+                                postsCount = domainUser.postsCount,
+                                status = domainUser.status,
+                                account_type = domainUser.accountType,
+                                verify = domainUser.verify,
+                                banned = domainUser.banned
+                            )
+                        }
+                    } catch (e: Exception) {
+                        null
                     }
-                    order("created_at", Order.ASCENDING)
-                    limit(limit.toLong())
-                    range(offset.toLong(), (offset + limit - 1).toLong())
                 }
-                .decodeList<JsonObject>()
 
-            val comments = mutableListOf<CommentWithUser>()
-            for (json in response) {
-                parseCommentFromJson(json)?.let { comments.add(it) }
+                CommentWithUser(
+                    id = comment.key,
+                    postId = comment.postKey,
+                    userId = comment.uid,
+                    parentCommentId = comment.replyCommentKey,
+                    content = comment.comment,
+                    mediaUrl = null,
+                    createdAt = comment.push_time,
+                    updatedAt = null,
+                    likesCount = entity.likesCount,
+                    repliesCount = entity.repliesCount,
+                    isDeleted = entity.isDeleted,
+                    isEdited = false,
+                    isPinned = false,
+                    user = user,
+                    reactionSummary = emptyMap(),
+                    userReaction = null
+                )
             }
-
-            // Optimized: Bulk fetch reactions
-            val populatedComments = reactionRepository.populateCommentReactions(comments)
-
-            Result.success(populatedComments)
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to fetch comments list: ${e.message}", e)
-            Result.failure(e)
         }
     }
 
-    suspend fun getReplies(commentId: String): Result<List<CommentWithUser>> = withContext(Dispatchers.IO) {
-        try {
-            Log.d(TAG, "Fetching replies for comment: $commentId")
-            val response = client.from("comments")
-                .select(
-                    columns = Columns.raw("""
-                        *,
-                        users!comments_user_id_fkey(uid, username, display_name, email, bio, avatar, followers_count, following_count, posts_count, status, account_type, verify, banned)
-                    """.trimIndent())
-                ) {
-                    filter { eq("parent_comment_id", commentId) }
-                    order("created_at", Order.ASCENDING)
-                }
-                .decodeList<JsonObject>()
-
-            Log.d(TAG, "Raw response size: ${response.size}")
-
-            val replies = mutableListOf<CommentWithUser>()
-            for (json in response) {
-                parseCommentFromJson(json)?.let {
-                    replies.add(it)
-                    Log.d(TAG, "Parsed reply: ${it.id} - ${it.content}")
-                }
-            }
-
-            // Optimized: Bulk fetch reactions
-            val populatedReplies = reactionRepository.populateCommentReactions(replies)
-
-            Log.d(TAG, "Successfully parsed ${populatedReplies.size} replies")
-
-
-            commentDao.insertAll(populatedReplies.map {
-                CommentMapper.toEntity(it.toComment(), it.user?.username, it.user?.avatar)
-            })
-
-            Result.success(populatedReplies)
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to fetch replies: ${e.message}", e)
-            Result.failure(e)
-        }
-    }
-
-    suspend fun createComment(
-        postId: String,
-        content: String,
-        mediaUrl: String? = null,
-        parentCommentId: String? = null
-    ): Result<CommentWithUser> = withContext(Dispatchers.IO) {
+    suspend fun addComment(postId: String, content: String, parentCommentId: String? = null): Result<CommentWithUser> = withContext(Dispatchers.IO) {
         try {
             val currentUser = client.auth.currentUserOrNull()
-            if (currentUser == null) {
-                return@withContext Result.failure(Exception("User must be authenticated to comment"))
+                ?: return@withContext Result.failure(Exception("User must be authenticated"))
+
+            if (content.isBlank()) {
+                return@withContext Result.failure(Exception("Comment cannot be empty"))
             }
 
-            val userId = currentUser.id
-            val clientGeneratedId = java.util.UUID.randomUUID().toString()
-            Log.d(TAG, "Creating comment for post: $postId by user: $userId with client-generated ID: $clientGeneratedId")
-
-            var lastException: Exception? = null
-            repeat(MAX_RETRIES) { attempt ->
-                try {
-                    val insertData = buildJsonObject {
-                        put("id", clientGeneratedId)
-                        put("post_id", postId)
-                        put("user_id", userId)
-                        put("content", content)
-                        if (mediaUrl != null) put("media_url", mediaUrl)
-                        if (parentCommentId != null) put("parent_comment_id", parentCommentId)
-                    }
-
-                    val response = try {
-                        client.from("comments")
-                            .insert(insertData) {
-                                select(
-                                    columns = Columns.raw("""
-                                        *,
-                                        users!comments_user_id_fkey(uid, username, display_name, email, bio, avatar, followers_count, following_count, posts_count, status, account_type, verify, banned)
-                                    """.trimIndent())
-                                )
-                            }
-                            .decodeSingleOrNull<JsonObject>()
-                    } catch (e: PostgrestRestException) {
-                        if (e.code == "23505") {
-                            Log.w(TAG, "Duplicate comment detected (23505). Fetching existing comment for ID: $clientGeneratedId")
-                            client.from("comments")
-                                .select(
-                                    columns = Columns.raw("""
-                                        *,
-                                        users!comments_user_id_fkey(uid, username, display_name, email, bio, avatar, followers_count, following_count, posts_count, status, account_type, verify, banned)
-                                    """.trimIndent())
-                                ) {
-                                    filter { eq("id", clientGeneratedId) }
-                                }
-                                .decodeSingleOrNull<JsonObject>()
-                        } else {
-                            throw e
-                        }
-                    }
-
-                    if (response == null) {
-                        return@withContext Result.failure(Exception("Failed to create or fetch comment"))
-                    }
-
-                    val comment = parseCommentFromJson(response)
-                        ?: return@withContext Result.failure(Exception("Failed to parse created comment"))
-
-                    commentDao.insertAll(listOf(CommentMapper.toEntity(comment.toComment())))
-
-                    coroutineScope {
-                        launch {
-                            if (parentCommentId != null) {
-                                updateRepliesCount(parentCommentId, 1)
-                            }
-                        }
-                        launch {
-                            processMentions(postId, comment.id, content, userId, parentCommentId)
-                        }
-                    }
-
-                    Log.d(TAG, "Comment created successfully: ${comment.id}")
-                    return@withContext Result.success(comment)
-                } catch (e: Exception) {
-                    lastException = e
-                    val isRLSError = e.message?.contains("policy", true) == true
-                    if (isRLSError || attempt == MAX_RETRIES - 1) throw e
-                    delay(RETRY_DELAY_MS * (attempt + 1))
+            val commentData = buildJsonObject {
+                put("post_id", postId)
+                put("user_id", currentUser.id)
+                put("content", content)
+                if (parentCommentId != null) {
+                    put("parent_comment_id", parentCommentId)
                 }
+                put("created_at", java.time.Instant.now().toString())
+                put("updated_at", java.time.Instant.now().toString())
             }
 
-            Result.failure(Exception(mapSupabaseError(lastException ?: Exception("Unknown error"))))
+            val response = client.from("comments")
+                .insert(commentData) {
+                    select(Columns.raw("*, users(uid, username, display_name, avatar, verify)"))
+                }
+                .decodeSingle<JsonObject>()
+
+            val newComment = parseCommentFromJson(response)
+                ?: return@withContext Result.failure(Exception("Failed to parse created comment"))
+
+
+            val commentEntity = CommentMapper.toEntity(newComment.toComment(), newComment.user?.username, newComment.user?.avatar)
+            commentDao.insertAll(listOf(commentEntity))
+
+
+            if (parentCommentId != null) {
+                updateRepliesCount(parentCommentId, 1)
+            }
+            updatePostCommentsCount(postId, 1)
+
+            processMentions(postId, newComment.id, content, currentUser.id, parentCommentId)
+
+            Result.success(newComment)
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to create comment: ${e.message}", e)
+            Log.e(TAG, "Failed to add comment: ${e.message}", e)
             Result.failure(Exception(mapSupabaseError(e)))
         }
     }
@@ -253,101 +180,111 @@ class CommentRepository @Inject constructor(
     suspend fun deleteComment(commentId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             val currentUser = client.auth.currentUserOrNull()
-            if (currentUser == null) {
-                return@withContext Result.failure(Exception("User must be authenticated to delete comment"))
-            }
+                ?: return@withContext Result.failure(Exception("User must be authenticated"))
 
-            Log.d(TAG, "Deleting comment: $commentId")
 
             val existingComment = client.from("comments")
                 .select { filter { eq("id", commentId) } }
                 .decodeSingleOrNull<JsonObject>()
-
-            if (existingComment == null) {
-                return@withContext Result.failure(Exception("Comment not found"))
-            }
+                ?: return@withContext Result.failure(Exception("Comment not found"))
 
             val commentUserId = existingComment["user_id"]?.jsonPrimitive?.contentOrNull
             if (commentUserId != currentUser.id) {
-                return@withContext Result.failure(Exception("Cannot delete another user's comment"))
+
+                val postId = existingComment["post_id"]?.jsonPrimitive?.contentOrNull
+                if (postId != null) {
+                    val post = client.from("posts")
+                        .select { filter { eq("id", postId) } }
+                        .decodeSingleOrNull<JsonObject>()
+                    val postAuthor = post?.get("author_uid")?.jsonPrimitive?.contentOrNull
+
+                    if (postAuthor != currentUser.id) {
+                         return@withContext Result.failure(Exception("Not authorized to delete this comment"))
+                    }
+                } else {
+                    return@withContext Result.failure(Exception("Not authorized to delete this comment"))
+                }
             }
 
-            val postId = existingComment["post_id"]?.jsonPrimitive?.contentOrNull
-            val parentCommentId = existingComment["parent_comment_id"]?.jsonPrimitive?.contentOrNull
 
             client.from("comments")
-                .update({
-                    set("is_deleted", true)
-                    set("content", "[deleted]")
-                    set("deleted_at", java.time.Instant.now().toString())
-                }) {
+                .update({ set("is_deleted", true) }) {
                     filter { eq("id", commentId) }
                 }
 
-            if (parentCommentId != null) {
-                updateRepliesCount(parentCommentId, -1)
+
+            val parentId = existingComment["parent_comment_id"]?.jsonPrimitive?.contentOrNull
+            if (parentId != null) {
+                updateRepliesCount(parentId, -1)
+            }
+            val postId = existingComment["post_id"]?.jsonPrimitive?.contentOrNull
+            if (postId != null) {
+                updatePostCommentsCount(postId, -1)
             }
 
-
-
-
-
-            Log.d(TAG, "Comment deleted successfully: $commentId")
             Result.success(Unit)
         } catch (e: Exception) {
             Log.e(TAG, "Failed to delete comment: ${e.message}", e)
-            Result.failure(Exception(mapSupabaseError(e)))
+            Result.failure(e)
         }
     }
 
-    suspend fun editComment(commentId: String, content: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun updateComment(commentId: String, newContent: String): Result<CommentWithUser> = withContext(Dispatchers.IO) {
         try {
             val currentUser = client.auth.currentUserOrNull()
-            if (currentUser == null) {
-                return@withContext Result.failure(Exception("User must be authenticated to edit comment"))
-            }
+                ?: return@withContext Result.failure(Exception("User must be authenticated"))
 
-            Log.d(TAG, "Editing comment: $commentId")
+            if (newContent.isBlank()) {
+                return@withContext Result.failure(Exception("Comment cannot be empty"))
+            }
 
             val existingComment = client.from("comments")
                 .select { filter { eq("id", commentId) } }
                 .decodeSingleOrNull<JsonObject>()
-
-            if (existingComment == null) {
-                return@withContext Result.failure(Exception("Comment not found"))
-            }
+                ?: return@withContext Result.failure(Exception("Comment not found"))
 
             val commentUserId = existingComment["user_id"]?.jsonPrimitive?.contentOrNull
             if (commentUserId != currentUser.id) {
-                return@withContext Result.failure(Exception("Cannot edit another user's comment"))
+                return@withContext Result.failure(Exception("Not authorized to edit this comment"))
             }
 
-            val isDeleted = existingComment["is_deleted"]?.jsonPrimitive?.booleanOrNull ?: false
-            if (isDeleted) {
-                return@withContext Result.failure(Exception("Cannot edit a deleted comment"))
-            }
-
-            client.from("comments")
+            val response = client.from("comments")
                 .update({
-                    set("content", content)
+                    set("content", newContent)
                     set("is_edited", true)
-                    set("updated_at", java.time.Instant.now().toString())
+                    set("edited_at", java.time.Instant.now().toString())
                 }) {
                     filter { eq("id", commentId) }
+                    select(Columns.raw("*, users(uid, username, display_name, avatar, verify)"))
                 }
+                .decodeSingle<JsonObject>()
 
-            Log.d(TAG, "Comment edited successfully: $commentId")
-            Result.success(Unit)
+            val updatedComment = parseCommentFromJson(response)
+                ?: return@withContext Result.failure(Exception("Failed to parse updated comment"))
+
+
+            val commentEntity = CommentMapper.toEntity(updatedComment.toComment(), updatedComment.user?.username, updatedComment.user?.avatar)
+            commentDao.insertAll(listOf(commentEntity))
+
+            Result.success(updatedComment)
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to edit comment: ${e.message}", e)
-            Result.failure(Exception(mapSupabaseError(e)))
+            Log.e(TAG, "Failed to update comment: ${e.message}", e)
+            Result.failure(e)
         }
     }
 
-    suspend fun pinComment(commentId: String, postId: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun pinComment(commentId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             val currentUser = client.auth.currentUserOrNull()
                 ?: return@withContext Result.failure(Exception("User must be authenticated"))
+
+            val existingComment = client.from("comments")
+                .select { filter { eq("id", commentId) } }
+                .decodeSingleOrNull<JsonObject>()
+                ?: return@withContext Result.failure(Exception("Comment not found"))
+
+            val postId = existingComment["post_id"]?.jsonPrimitive?.contentOrNull
+                ?: return@withContext Result.failure(Exception("Post ID not found for comment"))
 
             val post = client.from("posts")
                 .select { filter { eq("id", postId) } }
@@ -442,7 +379,6 @@ class CommentRepository @Inject constructor(
             val user = parseUserProfileFromJson(data["users"]?.jsonObject)
             val commentId = data["id"]?.jsonPrimitive?.contentOrNull ?: return null
 
-            // Optimized: No N+1 fetching here. Reactions populated in batch later.
             val reactionSummary = emptyMap<ReactionType, Int>()
             val userReaction = null
 
@@ -469,8 +405,6 @@ class CommentRepository @Inject constructor(
             null
         }
     }
-
-
 
     private fun parseUserProfileFromJson(userData: JsonObject?): UserProfile? {
         if (userData == null) return null
@@ -566,13 +500,10 @@ class CommentRepository @Inject constructor(
         parentCommentId: String?
     ) {
         try {
-
             val mentionedUsers = com.synapse.social.studioasinc.core.domain.parser.MentionParser.extractMentions(content)
-
 
             if (mentionedUsers.isNotEmpty()) {
                 Log.d(TAG, "Processing mentions: $mentionedUsers")
-
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to process mentions: ${e.message}", e)

@@ -6,7 +6,6 @@ object S3Signer {
 
     private const val S3_SERVICE = "s3"
 
-    @OptIn(ExperimentalStdlibApi::class) // TODO(KOTLIN-STDLIB): Remove when toHexString() becomes stable.
     fun signS3(
         method: String,
         canonicalPath: String,

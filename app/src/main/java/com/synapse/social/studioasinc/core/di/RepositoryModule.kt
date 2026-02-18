@@ -79,9 +79,10 @@ object RepositoryModule {
     @Singleton
     fun providePostRepository(
         postDao: PostDao,
-        client: SupabaseClientType
+        client: SupabaseClientType,
+        prefs: SharedPreferences
     ): PostRepository {
-        return PostRepository(postDao, client)
+        return PostRepository(postDao, client, prefs)
     }
 
     @Provides

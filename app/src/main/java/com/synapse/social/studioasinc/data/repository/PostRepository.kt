@@ -1,5 +1,9 @@
 package com.synapse.social.studioasinc.data.repository
 
+import android.content.SharedPreferences
+import kotlinx.datetime.Instant
+
+
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.local.database.PostDao
 import com.synapse.social.studioasinc.data.local.database.PostEntity
@@ -38,7 +42,8 @@ import io.github.jan.supabase.SupabaseClient as JanSupabaseClient
 @Singleton
 class PostRepository @Inject constructor(
     private val postDao: PostDao,
-    private val client: JanSupabaseClient
+    private val client: JanSupabaseClient,
+    private val prefs: SharedPreferences
 ) {
 
     fun getPostsPaged(): Flow<PagingData<Post>> {
@@ -64,6 +69,7 @@ class PostRepository @Inject constructor(
     private val profileCache = ConcurrentHashMap<String, CacheEntry<ProfileData>>()
 
     companion object {
+        private const val PREF_LAST_SYNC_TIME = "last_post_sync_time"
         private const val CACHE_EXPIRATION_MS = 5 * 60 * 1000L
         private const val TAG = "PostRepository"
         private val PGRST_REGEX = Regex("PGRST\\d+")
@@ -324,38 +330,64 @@ class PostRepository @Inject constructor(
         }
     }
 
-    private suspend fun syncDeletedPosts() {
+        @androidx.annotation.VisibleForTesting
+    internal suspend fun syncDeletedPosts() {
         try {
             val localIds = postDao.getAllPostIds()
             if (localIds.isEmpty()) return
 
-            val idsToDelete = mutableListOf<String>()
+            val lastSync = prefs.getLong(PREF_LAST_SYNC_TIME, 0L)
 
-            // Process in chunks of 50 to respect URL length limits (approx 2KB max for safe GET)
-            // 50 UUIDs * 36 chars = 1800 chars + overhead
-            localIds.chunked(50).forEach { chunk ->
-                try {
-                    val response = client.from("posts")
-                        .select(columns = Columns.raw("id, is_deleted")) {
-                            filter { isIn("id", chunk) }
-                        }
-                        .decodeList<JsonObject>()
+            if (lastSync == 0L) {
+                 android.util.Log.d(TAG, "First sync or migration: Checking all local posts for deletion (O(N))")
+                 val idsToDelete = mutableListOf<String>()
 
-                    idsToDelete.addAll(findDeletedIds(chunk, response))
+                 // Process in chunks of 50 to respect URL length limits
+                 localIds.chunked(50).forEach { chunk ->
+                     try {
+                         val response = client.from("posts")
+                             .select(columns = Columns.raw("id, is_deleted")) {
+                                 filter { isIn("id", chunk) }
+                             }
+                             .decodeList<JsonObject>()
 
-                } catch (e: Exception) {
-                    android.util.Log.e(TAG, "Failed to check chunk existence", e)
-                }
+                         idsToDelete.addAll(findDeletedIds(chunk, response))
+
+                     } catch (e: Exception) {
+                         android.util.Log.e(TAG, "Failed to check chunk existence", e)
+                     }
+                 }
+
+                 if (idsToDelete.isNotEmpty()) {
+                     val uniqueIdsToDelete = idsToDelete.distinct()
+                     android.util.Log.d(TAG, "Syncing deletions: removing ${uniqueIdsToDelete.size} posts")
+                     uniqueIdsToDelete.chunked(500).forEach { batch ->
+                         postDao.deletePosts(batch)
+                     }
+                 }
+            } else {
+                 val isoTime = Instant.fromEpochMilliseconds(lastSync).toString()
+                 android.util.Log.d(TAG, "Syncing deleted posts since $isoTime")
+
+                 val response = client.from("posts")
+                     .select(columns = Columns.raw("id")) {
+                         filter {
+                             gt("updated_at", isoTime)
+                             eq("is_deleted", true)
+                         }
+                     }
+                     .decodeList<JsonObject>()
+
+                 val deletedIds = response.mapNotNull { it["id"]?.jsonPrimitive?.contentOrNull }
+
+                 if (deletedIds.isNotEmpty()) {
+                      android.util.Log.d(TAG, "Found ${deletedIds.size} deleted posts via timestamp sync")
+                      postDao.deletePosts(deletedIds)
+                 }
             }
 
-            if (idsToDelete.isNotEmpty()) {
-                val uniqueIdsToDelete = idsToDelete.distinct()
-                android.util.Log.d(TAG, "Syncing deletions: removing ${uniqueIdsToDelete.size} posts")
+            prefs.edit().putLong(PREF_LAST_SYNC_TIME, System.currentTimeMillis()).apply()
 
-                uniqueIdsToDelete.chunked(500).forEach { batch ->
-                    postDao.deletePosts(batch)
-                }
-            }
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to sync deleted posts", e)
         }

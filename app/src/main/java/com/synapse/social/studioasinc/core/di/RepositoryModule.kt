@@ -134,9 +134,10 @@ object RepositoryModule {
     fun provideCommentRepository(
         client: SupabaseClientType,
         commentDao: CommentDao,
-        reactionRepository: ReactionRepository
+        reactionRepository: ReactionRepository,
+        @Named("ApplicationScope") externalScope: CoroutineScope
     ): CommentRepository {
-        return CommentRepository(commentDao, client, reactionRepository)
+        return CommentRepository(commentDao, client, externalScope, reactionRepository)
     }
 
     @Provides

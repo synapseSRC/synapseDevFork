@@ -449,10 +449,6 @@ class PostRepository @Inject constructor(
     }
 
     suspend fun searchPosts(query: String): Result<List<Post>> = Result.success(emptyList())
-
-    fun observePosts(): Flow<List<Post>> = flow { emit(emptyList()) }
-
-
     private val reactionRepository = ReactionRepository()
     private val pollRepository = PollRepository()
 

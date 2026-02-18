@@ -1,6 +1,7 @@
 package com.synapse.social.studioasinc.shared.data.source.remote
 
 import com.synapse.social.studioasinc.shared.domain.model.StorageConfig
+import com.synapse.social.studioasinc.shared.domain.model.UploadError
 import com.synapse.social.studioasinc.shared.util.TimeProvider
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.storage.storage
@@ -37,7 +38,7 @@ class SupabaseUploadService(private val supabase: SupabaseClient) : UploadServic
             return publicUrl
         } catch (e: Exception) {
             Napier.e("Supabase upload failed to bucket: $bucketToUse", e, tag = "SupabaseUpload")
-            throw e
+            throw UploadError.SupabaseError("Supabase upload failed: ${e.message}")
         }
     }
 }

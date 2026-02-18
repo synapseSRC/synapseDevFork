@@ -2,6 +2,7 @@ package com.synapse.social.studioasinc.shared.data.source.remote
 
 import com.synapse.social.studioasinc.shared.data.PlatformUtils
 import com.synapse.social.studioasinc.shared.domain.model.StorageConfig
+import com.synapse.social.studioasinc.shared.domain.model.UploadError
 import com.synapse.social.studioasinc.shared.util.TimeProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -59,10 +60,10 @@ class CloudinaryUploadService(private val client: HttpClient) : UploadService {
                  errorElement.toString()
              } ?: errorElement.toString()
 
-             throw Exception("Cloudinary upload failed: $errorMessage")
+             throw UploadError.CloudinaryError("Cloudinary upload failed: $errorMessage")
         }
 
         return response["secure_url"]?.jsonPrimitive?.content
-            ?: throw Exception("Cloudinary upload failed: secure_url missing in response: $response")
+            ?: throw UploadError.CloudinaryError("Cloudinary upload failed: secure_url missing in response: $response")
     }
 }

@@ -123,12 +123,7 @@ object PostMapper {
             url = item.url,
             type = try { SharedMediaType.valueOf(item.type.name) } catch (e: Exception) { SharedMediaType.IMAGE },
             thumbnailUrl = item.thumbnailUrl,
-            // aspectRatio property is missing in SharedMediaItem according to file read, but error log complained about it.
-            // Wait, previous error: "No parameter with name 'aspectRatio' found".
-            // So SharedMediaItem does NOT have aspectRatio.
-            // I should remove it.
-            // Error log: e: .../PostMapper.kt:135:13 No parameter with name 'aspectRatio' found.
-            // So I remove it here.
+            // aspectRatio removed
             duration = item.duration,
             size = item.size,
             mimeType = item.mimeType
@@ -141,7 +136,20 @@ object PostMapper {
             url = item.url,
             type = try { MediaType.valueOf(item.type.name) } catch (e: Exception) { MediaType.IMAGE },
             thumbnailUrl = item.thumbnailUrl,
-            aspectRatio = null, // Set default or null
+            // aspectRatio removed as it is not in domain model constructor according to file read (it only has id, url, type, thumbnailUrl, duration, size, mimeType, +transients)
+            // Wait, previous file read showed:
+            // data class MediaItem(
+            //    val id: String = ...,
+            //    val url: String,
+            //    val type: MediaType,
+            //    val thumbnailUrl: String? = null,
+            //    val duration: Long? = null,
+            //    val size: Long? = null,
+            //    val mimeType: String? = null,
+            //    ... transients ...
+            // )
+            // There is NO aspectRatio in domain MediaItem either!
+            // So removing it from here is correct.
             duration = item.duration,
             size = item.size,
             mimeType = item.mimeType

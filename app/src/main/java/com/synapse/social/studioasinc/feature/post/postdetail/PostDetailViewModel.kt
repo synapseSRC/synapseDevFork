@@ -6,20 +6,33 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.synapse.social.studioasinc.data.repository.*
-import com.synapse.social.studioasinc.domain.model.*
-import com.synapse.social.studioasinc.feature.shared.components.post.PostEvent
-import com.synapse.social.studioasinc.feature.shared.components.post.PostEventBus
+import com.synapse.social.studioasinc.domain.model.CommentWithUser
+import com.synapse.social.studioasinc.domain.model.Post
+import com.synapse.social.studioasinc.domain.model.PostDetailItem
+import com.synapse.social.studioasinc.domain.model.ReactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.auth.auth
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class PostDetailUiState(
+    val post: Post? = null,
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val replyToComment: CommentWithUser? = null,
+    val editingComment: CommentWithUser? = null,
+    val refreshTrigger: Int = 0,
+    val commentActionsLoading: Set<String> = emptySet(),
+    val replies: Map<String, List<CommentWithUser>> = emptyMap(),
+    val replyLoading: Set<String> = emptySet()
+) {
+    val postDetailItems: List<PostDetailItem>
+        get() = post?.toDetailItems() ?: emptyList()
+}
 
 @HiltViewModel
 class PostDetailViewModel @Inject constructor(
@@ -29,46 +42,23 @@ class PostDetailViewModel @Inject constructor(
     private val pollRepository: PollRepository,
     private val bookmarkRepository: BookmarkRepository,
     private val reshareRepository: ReshareRepository,
-    private val reportRepository: ReportRepository,
-    private val userRepository: UserRepository,
-    private val client: SupabaseClient
+    private val reportRepository: ReportRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PostDetailUiState())
     val uiState: StateFlow<PostDetailUiState> = _uiState.asStateFlow()
 
-    private val _commentsPagingFlow = MutableStateFlow<Flow<PagingData<CommentWithUser>>>(emptyFlow())
-    val commentsPagingFlow: StateFlow<Flow<PagingData<CommentWithUser>>> = _commentsPagingFlow.asStateFlow()
-
     private var currentPostId: String? = null
 
-    init {
-        val currentUser = client.auth.currentUserOrNull()
-        _uiState.update { it.copy(currentUserId = currentUser?.id) }
-    }
-
     fun loadPost(postId: String) {
-
-        if (currentPostId != postId) {
-            currentPostId = postId
-            val flow = Pager(
-                PagingConfig(pageSize = 20)
-            ) {
-                 CommentPagingSource(commentRepository, postId)
-            }.flow.cachedIn(viewModelScope)
-
-            _commentsPagingFlow.value = flow
-        }
+        if (currentPostId == postId) return
+        currentPostId = postId
 
         viewModelScope.launch {
-
-            if (_uiState.value.post == null) {
-                _uiState.update { it.copy(isLoading = true, error = null) }
-            }
-
+            _uiState.update { it.copy(isLoading = true, error = null) }
             postDetailRepository.getPostWithDetails(postId).fold(
-                onSuccess = { postDetail ->
-                    _uiState.update { it.copy(isLoading = false, post = postDetail) }
+                onSuccess = { post ->
+                    _uiState.update { it.copy(post = post, isLoading = false) }
                 },
                 onFailure = { error ->
                     _uiState.update { it.copy(isLoading = false, error = error.message ?: "Failed to load post") }
@@ -153,20 +143,16 @@ class PostDetailViewModel @Inject constructor(
         }
     }
 
-
-
-
     private var isSubmittingComment = false
 
     fun addComment(content: String) {
         if (isSubmittingComment) return
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         val parentId = _uiState.value.replyToComment?.id
 
         isSubmittingComment = true
         viewModelScope.launch {
-            commentRepository.createComment(postId, content, null, parentId).onSuccess {
+            commentRepository.addComment(postId, content, parentId).onSuccess {
                 refreshComments()
                 setReplyTo(null)
             }.also {
@@ -185,7 +171,6 @@ class PostDetailViewModel @Inject constructor(
 
     fun deleteComment(commentId: String) {
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
              _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
             commentRepository.deleteComment(commentId).onSuccess {
@@ -198,10 +183,9 @@ class PostDetailViewModel @Inject constructor(
 
     fun editComment(commentId: String, content: String) {
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
             _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
-            commentRepository.editComment(commentId, content).onSuccess {
+            commentRepository.updateComment(commentId, content).onSuccess {
                 invalidateComments()
                 setEditingComment(null)
             }.also {
@@ -212,7 +196,6 @@ class PostDetailViewModel @Inject constructor(
 
     fun votePoll(optionIndex: Int) {
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
             pollRepository.submitVote(postId, optionIndex).onSuccess {
                 postDetailRepository.getPostWithDetails(postId).onSuccess { updatedPost ->
@@ -224,7 +207,6 @@ class PostDetailViewModel @Inject constructor(
 
     fun revokeVote() {
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
             pollRepository.revokeVote(postId).onSuccess {
                 postDetailRepository.getPostWithDetails(postId).onSuccess { updatedPost ->
@@ -236,7 +218,6 @@ class PostDetailViewModel @Inject constructor(
 
     fun toggleBookmark() {
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
             bookmarkRepository.toggleBookmark(postId, null).onSuccess {
                 postDetailRepository.getPostWithDetails(postId).onSuccess { updatedPost ->
@@ -248,7 +229,6 @@ class PostDetailViewModel @Inject constructor(
 
     fun createReshare(commentary: String?) {
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
             reshareRepository.createReshare(postId, commentary).onSuccess {
                 postDetailRepository.getPostWithDetails(postId).onSuccess { updatedPost ->
@@ -260,7 +240,6 @@ class PostDetailViewModel @Inject constructor(
 
     fun reportPost(reason: String) {
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch { reportRepository.createReport(postId, reason, null) }
     }
 
@@ -281,8 +260,6 @@ class PostDetailViewModel @Inject constructor(
     }
 
     fun hideComment(commentId: String) {
-        val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
             _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
             commentRepository.hideComment(commentId).onSuccess {
@@ -293,10 +270,10 @@ class PostDetailViewModel @Inject constructor(
         }
     }
 
-    fun pinComment(commentId: String, postId: String) {
+    fun pinComment(commentId: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
-            commentRepository.pinComment(commentId, postId).onSuccess {
+            commentRepository.pinComment(commentId).onSuccess {
                 invalidateComments()
             }.also {
                 _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading - commentId) }

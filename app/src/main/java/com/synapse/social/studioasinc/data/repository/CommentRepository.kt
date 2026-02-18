@@ -7,17 +7,12 @@ import com.synapse.social.studioasinc.domain.model.*
 import com.synapse.social.studioasinc.domain.model.UserStatus
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
-import io.github.jan.supabase.postgrest.exception.PostgrestRestException
-import io.github.jan.supabase.functions.functions
 import io.github.jan.supabase.postgrest.from
-import io.ktor.client.statement.bodyAsText
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Count
 import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
@@ -39,14 +34,13 @@ class CommentRepository @Inject constructor(
                     filter {
                         eq("post_id", postId)
                         eq("is_deleted", false)
-                        isExact("parent_comment_id", null)
+                        eq("parent_comment_id", null)
                     }
                     order("created_at", Order.ASCENDING)
                 }
 
             val commentsJson = response.decodeList<JsonObject>()
             val comments = commentsJson.mapNotNull { parseCommentFromJson(it) }
-
 
             val commentsToCache = comments.map {
                 CommentMapper.toEntity(it.toComment(), it.user?.username, it.user?.avatar)
@@ -60,51 +54,63 @@ class CommentRepository @Inject constructor(
         }
     }
 
+    suspend fun fetchComments(postId: String, limit: Int, offset: Int): Result<List<CommentWithUser>> = withContext(Dispatchers.IO) {
+        try {
+            val response = client.from("comments")
+                .select(columns = Columns.raw("*, users(uid, username, display_name, avatar, bio, verify, status, account_type, followers_count, following_count, posts_count, banned)")) {
+                    filter {
+                        eq("post_id", postId)
+                        eq("is_deleted", false)
+                        eq("parent_comment_id", null)
+                    }
+                    order("created_at", Order.ASCENDING)
+                    range(offset.toLong(), (offset + limit - 1).toLong())
+                }
+
+            val commentsJson = response.decodeList<JsonObject>()
+            val comments = commentsJson.mapNotNull { parseCommentFromJson(it) }
+
+            // Note: Caching paged comments might be tricky if we don't clear old ones or handle gaps.
+            // For now, we cache what we fetch.
+            val commentsToCache = comments.map {
+                CommentMapper.toEntity(it.toComment(), it.user?.username, it.user?.avatar)
+            }
+            commentDao.insertAll(commentsToCache)
+
+            Result.success(comments)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to fetch paged comments: ${e.message}", e)
+            Result.failure(Exception(mapSupabaseError(e)))
+        }
+    }
+
     fun getCommentsForPost(postId: String): Flow<List<CommentWithUser>> {
         return commentDao.getCommentsForPost(postId).map { entities ->
             entities.map { entity ->
 
                 val comment = CommentMapper.toModel(entity)
 
-                val user = if (entity.username != null) {
-                    UserProfile(
-                        uid = entity.authorId,
-                        username = entity.username ?: "",
-                        displayName = entity.username ?: "",
-                        email = "",
-                        bio = null,
-                        avatar = entity.avatarUrl,
-                        followersCount = 0,
-                        followingCount = 0,
-                        postsCount = 0,
-                        status = UserStatus.OFFLINE,
-                        account_type = "user",
-                        verify = false,
-                        banned = false
-                    )
-                } else {
-
-                    try {
-                        userRepository.getUserById(entity.authorId).getOrNull()?.let { domainUser ->
-                            UserProfile(
-                                uid = domainUser.uid,
-                                username = domainUser.username ?: "",
-                                displayName = domainUser.displayName ?: "",
-                                email = domainUser.email ?: "",
-                                bio = domainUser.bio,
-                                avatar = domainUser.avatar,
-                                followersCount = domainUser.followersCount,
-                                followingCount = domainUser.followingCount,
-                                postsCount = domainUser.postsCount,
-                                status = domainUser.status,
-                                account_type = domainUser.accountType,
-                                verify = domainUser.verify,
-                                banned = domainUser.banned
-                            )
-                        }
-                    } catch (e: Exception) {
-                        null
+                // Always fetch user from repository cache as SharedComment doesn't store user details
+                val user = try {
+                    userRepository.getUserById(entity.authorId).getOrNull()?.let { domainUser ->
+                        UserProfile(
+                            uid = domainUser.uid,
+                            username = domainUser.username ?: "",
+                            displayName = domainUser.displayName ?: "",
+                            email = domainUser.email ?: "",
+                            bio = domainUser.bio,
+                            avatar = domainUser.avatar,
+                            followersCount = domainUser.followersCount,
+                            followingCount = domainUser.followingCount,
+                            postsCount = domainUser.postsCount,
+                            status = domainUser.status,
+                            account_type = domainUser.accountType,
+                            verify = domainUser.verify,
+                            banned = domainUser.banned
+                        )
                     }
+                } catch (e: Exception) {
+                    null
                 }
 
                 CommentWithUser(
@@ -127,6 +133,10 @@ class CommentRepository @Inject constructor(
                 )
             }
         }
+    }
+
+    suspend fun createComment(postId: String, content: String, mediaUrl: String? = null, parentId: String? = null): Result<CommentWithUser> {
+        return addComment(postId, content, parentId)
     }
 
     suspend fun addComment(postId: String, content: String, parentCommentId: String? = null): Result<CommentWithUser> = withContext(Dispatchers.IO) {
@@ -227,6 +237,10 @@ class CommentRepository @Inject constructor(
             Log.e(TAG, "Failed to delete comment: ${e.message}", e)
             Result.failure(e)
         }
+    }
+
+    suspend fun editComment(commentId: String, content: String): Result<CommentWithUser> {
+        return updateComment(commentId, content)
     }
 
     suspend fun updateComment(commentId: String, newContent: String): Result<CommentWithUser> = withContext(Dispatchers.IO) {
@@ -371,6 +385,35 @@ class CommentRepository @Inject constructor(
         } catch (e: Exception) {
             Log.e(TAG, "Failed to report comment: ${e.message}", e)
             Result.failure(e)
+        }
+    }
+
+    suspend fun getReplies(commentId: String): Result<List<CommentWithUser>> = withContext(Dispatchers.IO) {
+        try {
+            val response = client.from("comments")
+                .select(columns = Columns.raw("*, users(uid, username, display_name, avatar, bio, verify, status, account_type, followers_count, following_count, posts_count, banned)")) {
+                    filter {
+                        eq("parent_comment_id", commentId)
+                        eq("is_deleted", false)
+                    }
+                    order("created_at", Order.ASCENDING)
+                }
+
+            val commentsJson = response.decodeList<JsonObject>()
+            val comments = commentsJson.mapNotNull { parseCommentFromJson(it) }
+
+            // Note: replies are not cached in local db for now as Comment table structure is flat and getCommentsForPost only fetches top level (if filtered by parentId=null there).
+            // But actually we store all comments. CommentDao doesn't enforce hierarchy.
+            // But insertAll is good.
+            val commentsToCache = comments.map {
+                CommentMapper.toEntity(it.toComment(), it.user?.username, it.user?.avatar)
+            }
+            commentDao.insertAll(commentsToCache)
+
+            Result.success(comments)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to fetch replies: ${e.message}", e)
+            Result.failure(Exception(mapSupabaseError(e)))
         }
     }
 

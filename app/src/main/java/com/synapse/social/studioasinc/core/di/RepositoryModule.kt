@@ -2,12 +2,7 @@ package com.synapse.social.studioasinc.core.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
 import com.synapse.social.studioasinc.data.repository.*
-import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
-import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
-import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
-import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
 import com.synapse.social.studioasinc.data.local.database.*
 import com.synapse.social.studioasinc.data.local.AppSettingsManager
 import dagger.Module
@@ -34,6 +29,7 @@ import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
 import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
 import com.synapse.social.studioasinc.shared.data.local.SecureStorage
 import com.synapse.social.studioasinc.shared.data.local.AndroidSecureStorage
+import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.notification.GetNotificationsUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.notification.MarkNotificationAsReadUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.notification.SubscribeToNotificationsUseCase
@@ -60,8 +56,6 @@ object RepositoryModule {
     ): SharedAuthRepository {
         return SharedAuthRepository(client)
     }
-
-    // Removed provideAuthRepository as it was deleted
 
     @Provides
     @Singleton
@@ -134,9 +128,9 @@ object RepositoryModule {
     fun provideCommentRepository(
         client: SupabaseClientType,
         commentDao: CommentDao,
-        reactionRepository: ReactionRepository
+        userRepository: UserRepository
     ): CommentRepository {
-        return CommentRepository(commentDao, client, reactionRepository)
+        return CommentRepository(client, commentDao, userRepository)
     }
 
     @Provides

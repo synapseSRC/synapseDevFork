@@ -54,20 +54,23 @@ object SupabaseClient {
     const val BUCKET_USER_AVATARS = "avatars"
     const val BUCKET_USER_COVERS = "covers"
 
-
-
-    fun constructStorageUrl(bucket: String, path: String): String {
-
-        if (path.startsWith("http://") || path.startsWith("https://")) {
-            return path
-        }
+    private val validatedSupabaseUrl by lazy {
         val supabaseUrl = BuildConfig.SUPABASE_URL
         try {
             URL(supabaseUrl)
         } catch (e: MalformedURLException) {
             throw ConfigurationException("Invalid Supabase URL configured: $supabaseUrl", e)
         }
-        return "$supabaseUrl/storage/v1/object/public/$bucket/$path"
+        supabaseUrl
+    }
+
+    fun constructStorageUrl(bucket: String, path: String): String {
+
+        if (path.startsWith("http://") || path.startsWith("https://")) {
+            return path
+        }
+
+        return "$validatedSupabaseUrl/storage/v1/object/public/$bucket/$path"
     }
 
 

@@ -13,6 +13,7 @@ import io.github.jan.supabase.functions.functions
 import io.github.jan.supabase.postgrest.from
 import io.ktor.client.statement.bodyAsText
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +26,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import app.cash.sqldelight.paging3.QueryPagingSource
 import com.synapse.social.studioasinc.data.paging.PostPagingSource
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
@@ -260,30 +260,8 @@ class PostRepository @Inject constructor(
                 pageSize = 20,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = {
-                QueryPagingSource(
-                    countQuery = storageDatabase.postQueries.countPosts(),
-                    transacter = storageDatabase.postQueries,
-                    context = Dispatchers.IO,
-                    queryProvider = { limit, offset ->
-                        storageDatabase.postQueries.selectAllPaged(limit, offset)
-                    }
-                )
-            }
-        ).flow.map { pagingData ->
-            pagingData.map { entity ->
-                val model = PostMapper.toModel(entity)
-
-                if (model.username == null) {
-                    profileCache[model.authorUid]?.data?.let { profile ->
-                        model.username = profile.username
-                        model.avatarUrl = profile.avatarUrl
-                        model.isVerified = profile.isVerified
-                    }
-                }
-                model
-            }
-        }
+            pagingSourceFactory = { PostPagingSource(client.from("posts")) }
+        ).flow
     }
 
     suspend fun refreshPosts(page: Int, pageSize: Int): Result<Unit> {
@@ -310,8 +288,8 @@ class PostRepository @Inject constructor(
                             profileCache[user.uid] = CacheEntry(
                                 ProfileData(
                                     username = user.username,
-                                    avatarUrl = user.avatar?.let { constructAvatarUrl(it) },
-                                    isVerified = user.verify
+                                    avatarUrl = user.avatarUrl?.let { constructAvatarUrl(it) },
+                                    isVerified = user.isVerified ?: false
                                 )
                             )
                         }
@@ -336,14 +314,6 @@ class PostRepository @Inject constructor(
         }
     }
 
-    // Helper function for refreshPosts since it was truncated in my previous read,
-    // but looking at `getUserPosts` logic in original file it seems similar.
-    // Wait, refreshPosts logic was truncated in my `cat` output.
-    // But `getUserPosts` was mostly visible.
-    // I will assume `getUserPosts` logic can be adapted or I should implement `getUserPosts` as well.
-    // The previous file had `getUserPosts`?
-    // Yes: `suspend fun getUserPosts(userId: String): Result<List<Post>>`
-
     suspend fun getUserPosts(userId: String): Result<List<Post>> = withContext(Dispatchers.IO) {
         try {
             val response = client.from("posts")
@@ -367,8 +337,8 @@ class PostRepository @Inject constructor(
                             profileCache[user.uid] = CacheEntry(
                                 ProfileData(
                                     username = user.username,
-                                    avatarUrl = user.avatar?.let { constructAvatarUrl(it) },
-                                    isVerified = user.verify
+                                    avatarUrl = user.avatarUrl?.let { constructAvatarUrl(it) },
+                                    isVerified = user.isVerified ?: false
                                 )
                             )
                         }

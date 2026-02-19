@@ -2,13 +2,9 @@ package com.synapse.social.studioasinc.core.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
 import com.synapse.social.studioasinc.data.repository.*
 import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
-import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
-import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
-import com.synapse.social.studioasinc.data.local.database.*
 import com.synapse.social.studioasinc.data.local.AppSettingsManager
 import dagger.Module
 import dagger.Provides
@@ -32,6 +28,8 @@ import com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseC
 import com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase
 import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
 import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
+import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
+import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
 import com.synapse.social.studioasinc.shared.data.local.SecureStorage
 import com.synapse.social.studioasinc.shared.data.local.AndroidSecureStorage
 import com.synapse.social.studioasinc.shared.domain.usecase.notification.GetNotificationsUseCase
@@ -61,28 +59,14 @@ object RepositoryModule {
         return SharedAuthRepository(client)
     }
 
-    // Removed provideAuthRepository as it was deleted
-
     @Provides
     @Singleton
     fun provideSettingsRepository(@ApplicationContext context: Context): SettingsRepository {
         return SettingsRepositoryImpl.getInstance(context)
     }
 
-    @Provides
-    @Singleton
-    fun provideUserRepository(userDao: UserDao, client: SupabaseClientType): UserRepository {
-        return UserRepository(userDao, client)
-    }
-
-    @Provides
-    @Singleton
-    fun providePostRepository(
-        postDao: PostDao,
-        client: SupabaseClientType
-    ): PostRepository {
-        return PostRepository(postDao, client)
-    }
+    // provideUserRepository removed (provided via @Inject)
+    // providePostRepository removed (provided via @Inject)
 
     @Provides
     @Singleton
@@ -129,15 +113,7 @@ object RepositoryModule {
         return PostDetailRepository(client, reactionRepository)
     }
 
-    @Provides
-    @Singleton
-    fun provideCommentRepository(
-        client: SupabaseClientType,
-        commentDao: CommentDao,
-        reactionRepository: ReactionRepository
-    ): CommentRepository {
-        return CommentRepository(commentDao, client, reactionRepository)
-    }
+    // provideCommentRepository removed (provided via @Inject)
 
     @Provides
     @Singleton

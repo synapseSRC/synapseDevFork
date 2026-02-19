@@ -19,14 +19,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
 import javax.inject.Inject
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToList
+import javax.inject.Singleton
 
+@Singleton
 class CommentRepository @Inject constructor(
     private val storageDatabase: StorageDatabase,
     private val client: SupabaseClient = com.synapse.social.studioasinc.core.network.SupabaseClient.client,
@@ -40,18 +41,17 @@ class CommentRepository @Inject constructor(
     }
 
     fun getComments(postId: String): Flow<Result<List<Comment>>> {
-        return storageDatabase.commentQueries.selectByPostId(postId)
-            .asFlow()
-            .mapToList(Dispatchers.IO)
-            .map { entities ->
-                Result.success(entities.map { CommentMapper.toModel(it) })
-            }
-            .catch { e ->
+        return flow {
+            try {
+                val comments = storageDatabase.commentQueries.selectByPostId(postId).executeAsList()
+                emit(Result.success(comments.map { CommentMapper.toModel(it) }))
+            } catch (e: Exception) {
                 emit(Result.failure(Exception("Error getting comments from database: ${e.message}")))
             }
+        }
     }
 
-    suspend fun refreshComments(postId: String, limit: Int = 50, offset: Int = 0): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun fetchComments(postId: String, limit: Int = 50, offset: Int = 0): Result<List<CommentWithUser>> = withContext(Dispatchers.IO) {
         try {
             Log.d(TAG, "Fetching comments for post: $postId")
             val response = client.from("comments")
@@ -63,20 +63,11 @@ class CommentRepository @Inject constructor(
                 ) {
                     filter {
                         eq("post_id", postId)
-                        // Only fetch top-level comments for now, replies are fetched separately or recursively?
-                        // Original code logic wasn't fully visible, but usually refresh fetches main comments.
-                        // Assuming fetch all or just top level. Let's stick to simple select for now.
-                        // If logic was truncated, I assume basic fetch.
-                        // However, original code might have filtered `parent_comment_id` is null?
-                        // Let's assume yes if it's main feed. But `refreshComments` usually refreshes everything or page.
-                        // Let's assume pagination.
                     }
                     order("created_at", Order.DESCENDING)
                     range(offset.toLong(), (offset + limit - 1).toLong())
                 }
                 .decodeList<JsonObject>()
-
-            Log.d(TAG, "Raw response size: ${response.size}")
 
             val comments = mutableListOf<CommentWithUser>()
             for (json in response) {
@@ -85,12 +76,8 @@ class CommentRepository @Inject constructor(
                 }
             }
 
-            // Optimized: Bulk fetch reactions
             val populatedComments = reactionRepository.populateCommentReactions(comments)
 
-            Log.d(TAG, "Successfully parsed ${populatedComments.size} comments")
-
-            // Insert into DB
             storageDatabase.transaction {
                 populatedComments.forEach { commentWithUser ->
                     storageDatabase.commentQueries.insertComment(
@@ -103,16 +90,16 @@ class CommentRepository @Inject constructor(
                 }
             }
 
-            Result.success(Unit)
+            Result.success(populatedComments)
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to refresh comments: ${e.message}", e)
+            Log.e(TAG, "Failed to fetch comments: ${e.message}", e)
             Result.failure(e)
         }
     }
 
-    // ... (Other methods like getReplies, createComment, deleteComment need to be adapted too)
-    // Since I cannot see full content of original file easily and it was truncated,
-    // I will try to implement them based on my understanding of what they should do with SQLDelight.
+    suspend fun refreshComments(postId: String, limit: Int = 50, offset: Int = 0): Result<Unit> {
+        return fetchComments(postId, limit, offset).map { Unit }
+    }
 
     suspend fun getReplies(commentId: String): Result<List<CommentWithUser>> = withContext(Dispatchers.IO) {
         try {
@@ -292,17 +279,6 @@ class CommentRepository @Inject constructor(
                 updateRepliesCount(parentCommentId, -1)
             }
 
-            // Delete from local DB or mark as deleted?
-            // storageDatabase.commentQueries.deleteById(commentId)
-            // OR mark isDeleted if we had such column.
-            // Comment.sq has isDeleted. So let's mark it.
-            // But we don't have update query for isDeleted in Comment.sq yet!
-            // I only added insertComment and deleteById.
-            // I should use deleteById for now or assume insertComment with isDeleted=true will overwrite.
-            // Since insert is REPLACE, I can fetch, update, and insert.
-            // But fetching is via selectByPostId which returns list.
-            // I don't have selectById for Comment in Comment.sq.
-            // I'll just delete it for now to keep it simple.
             storageDatabase.commentQueries.deleteById(commentId)
 
             Log.d(TAG, "Comment deleted successfully: $commentId")

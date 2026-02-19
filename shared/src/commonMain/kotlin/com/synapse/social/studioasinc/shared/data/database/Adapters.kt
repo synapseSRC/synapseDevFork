@@ -87,3 +87,17 @@ val booleanAdapter = object : ColumnAdapter<Boolean, Long> {
     override fun decode(databaseValue: Long): Boolean = databaseValue == 1L
     override fun encode(value: Boolean): Long = if (value) 1L else 0L
 }
+
+val stringMapAdapter = object : ColumnAdapter<Map<String, String>, String> {
+    override fun decode(databaseValue: String): Map<String, String> {
+        return if (databaseValue.isBlank()) emptyMap() else try {
+            Json.decodeFromString<Map<String, String>>(databaseValue)
+        } catch (e: Exception) {
+            emptyMap()
+        }
+    }
+
+    override fun encode(value: Map<String, String>): String {
+        return Json.encodeToString(value)
+    }
+}

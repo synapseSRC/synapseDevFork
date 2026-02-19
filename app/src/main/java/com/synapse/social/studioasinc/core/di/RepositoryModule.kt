@@ -33,6 +33,7 @@ import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.notification.GetNotificationsUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.notification.MarkNotificationAsReadUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.notification.SubscribeToNotificationsUseCase
+import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

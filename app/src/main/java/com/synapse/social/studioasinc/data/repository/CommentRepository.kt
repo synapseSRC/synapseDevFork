@@ -11,6 +11,7 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Count
 import io.github.jan.supabase.postgrest.query.Order
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -34,7 +35,7 @@ class CommentRepository @Inject constructor(
                     filter {
                         eq("post_id", postId)
                         eq("is_deleted", false)
-                        eq("parent_comment_id", null)
+                        filter("parent_comment_id", FilterOperator.IS, null)
                     }
                     order("created_at", Order.ASCENDING)
                 }
@@ -61,7 +62,7 @@ class CommentRepository @Inject constructor(
                     filter {
                         eq("post_id", postId)
                         eq("is_deleted", false)
-                        eq("parent_comment_id", null)
+                        filter("parent_comment_id", FilterOperator.IS, null)
                     }
                     order("created_at", Order.ASCENDING)
                     range(offset.toLong(), (offset + limit - 1).toLong())
@@ -70,8 +71,6 @@ class CommentRepository @Inject constructor(
             val commentsJson = response.decodeList<JsonObject>()
             val comments = commentsJson.mapNotNull { parseCommentFromJson(it) }
 
-            // Note: Caching paged comments might be tricky if we don't clear old ones or handle gaps.
-            // For now, we cache what we fetch.
             val commentsToCache = comments.map {
                 CommentMapper.toEntity(it.toComment(), it.user?.username, it.user?.avatar)
             }
@@ -90,7 +89,6 @@ class CommentRepository @Inject constructor(
 
                 val comment = CommentMapper.toModel(entity)
 
-                // Always fetch user from repository cache as SharedComment doesn't store user details
                 val user = try {
                     userRepository.getUserById(entity.authorId).getOrNull()?.let { domainUser ->
                         UserProfile(

@@ -60,7 +60,6 @@ class PostRepository @Inject constructor(
     }
 
 
-    private val postsCache = ConcurrentHashMap<String, CacheEntry<List<Post>>>()
     private val profileCache = ConcurrentHashMap<String, CacheEntry<ProfileData>>()
 
     companion object {
@@ -90,11 +89,6 @@ class PostRepository @Inject constructor(
         val isVerified: Boolean
     )
 
-    fun invalidateCache() {
-        postsCache.clear()
-        profileCache.clear()
-        android.util.Log.d(TAG, "Cache invalidated")
-    }
 
     fun constructMediaUrl(storagePath: String): String {
         return SupabaseClient.constructMediaUrl(storagePath)
@@ -161,7 +155,6 @@ class PostRepository @Inject constructor(
 
             client.from("posts").insert(postDto)
             postDao.insertAll(listOf(PostMapper.toEntity(post)))
-            invalidateCache()
 
 
             processMentions(post.id, post.postText ?: "", post.authorUid)
@@ -407,7 +400,6 @@ class PostRepository @Inject constructor(
             client.from("posts").update(updates) {
                 filter { eq("id", postId) }
             }
-            invalidateCache()
             Result.success(Post(id = postId, authorUid = ""))
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to update post", e)
@@ -425,7 +417,6 @@ class PostRepository @Inject constructor(
 
 
             postDao.insertAll(listOf(PostMapper.toEntity(post)))
-            invalidateCache()
 
             Result.success(post)
         } catch (e: Exception) {
@@ -440,7 +431,6 @@ class PostRepository @Inject constructor(
                 filter { eq("id", postId) }
             }
             postDao.deletePost(postId)
-            invalidateCache()
             Result.success(Unit)
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to delete post", e)

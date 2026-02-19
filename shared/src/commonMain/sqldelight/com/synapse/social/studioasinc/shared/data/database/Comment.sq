@@ -21,6 +21,24 @@ INSERT OR REPLACE INTO Comment(
 selectByPostId:
 SELECT * FROM Comment WHERE postId = ? ORDER BY timestamp ASC;
 
+selectByPostIdWithUser:
+SELECT
+    C.id,
+    C.postId,
+    C.authorId,
+    C.text,
+    C.timestamp,
+    C.likesCount,
+    C.repliesCount,
+    C.isDeleted,
+    C.parentCommentId,
+    U.username,
+    U.avatarUrl
+FROM Comment C
+LEFT JOIN User U ON C.authorId = U.id
+WHERE C.postId = ?
+ORDER BY C.timestamp ASC;
+
 deleteById:
 DELETE FROM Comment WHERE id = ?;
 

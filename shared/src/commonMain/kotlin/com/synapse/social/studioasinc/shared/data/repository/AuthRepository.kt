@@ -224,6 +224,21 @@ class AuthRepository(private val client: SupabaseClientLib = SupabaseClient.clie
         }
     }
 
+    suspend fun updatePhoneNumber(phone: String): Result<Unit> {
+        return try {
+            withContext(Dispatchers.Default) {
+                client.auth.updateUser {
+                    this.phone = phone
+                }
+                Napier.d("Phone number updated", tag = TAG)
+                Result.success(Unit)
+            }
+        } catch (e: Exception) {
+            Napier.e("Phone number update failed", e, tag = TAG)
+            Result.failure(e)
+        }
+    }
+
     suspend fun getOAuthUrl(provider: String, redirectUrl: String): Result<String> {
         return try {
             val supabaseUrl = client.supabaseUrl

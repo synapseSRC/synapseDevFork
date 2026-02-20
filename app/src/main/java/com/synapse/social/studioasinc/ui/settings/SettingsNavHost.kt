@@ -71,6 +71,9 @@ fun SettingsNavHost(
                 },
                 onNavigateToBusinessPlatform = {
                     navController.navigate(SettingsDestination.ROUTE_BUSINESS_PLATFORM)
+                },
+                onNavigateToChangeNumber = {
+                    navController.navigate(SettingsDestination.ROUTE_CHANGE_NUMBER)
                 }
             )
         }
@@ -210,6 +213,16 @@ fun SettingsNavHost(
         composable(route = SettingsDestination.ROUTE_BUSINESS_PLATFORM) {
             val viewModel: BusinessPlatformViewModel = hiltViewModel()
             BusinessPlatformScreen(
+                viewModel = viewModel,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(route = SettingsDestination.ROUTE_CHANGE_NUMBER) {
+            val viewModel: ChangeNumberViewModel = hiltViewModel()
+            ChangeNumberScreen(
                 viewModel = viewModel,
                 onBackClick = {
                     navController.popBackStack()

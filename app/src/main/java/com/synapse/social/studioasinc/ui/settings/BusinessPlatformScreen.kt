@@ -147,7 +147,7 @@ fun AccountTypeSection(
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(SettingsSpacing.itemPadding)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding, vertical = SettingsSpacing.itemVerticalPadding)
             ) {
                 Icon(
                     imageVector = when (state.accountType) {
@@ -178,7 +178,7 @@ fun AccountTypeSection(
             if (!state.isBusinessAccount) {
                 Button(
                     onClick = onSwitchToBusiness,
-                    modifier = Modifier.fillMaxWidth().padding(SettingsSpacing.itemPadding)
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding, vertical = SettingsSpacing.itemVerticalPadding)
                 ) {
                     Text("Switch to Business Account")
                 }

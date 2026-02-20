@@ -23,17 +23,17 @@
 
 <br/>
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │  🎯 One Codebase  •  🌍 Multiple Platforms  •  🔒 Secure   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-[Features](#-features) • [Architecture](#-architecture) • [Quick Start](#-quick-start) • [Structure](#-structure)
+[Features](#-features) • [Architecture](#%EF%B8%8F-architecture) • [Quick Start](#-quick-start) • [Structure](#-structure)
 
 </div>
 
-<br/>
+---
 
 ## ✨ Features
 
@@ -68,7 +68,7 @@ No compromises. Native UI layers ensure buttery-smooth 120fps experiences.
 </tr>
 </table>
 
-<br/>
+---
 
 ## 🏗️ Architecture
 
@@ -113,7 +113,7 @@ graph TB
 
 > **🤖 AI Agents:** Review [AGENTS.md](AGENTS.md) for contribution guidelines and architecture rules.
 
-<br/>
+---
 
 ## 🚀 Quick Start
 
@@ -123,8 +123,8 @@ graph TB
 
 ### 1️⃣ Clone Repository
 ```bash
-git clone https://github.com/your-org/synapse-android.git
-cd synapse-android
+git clone https://github.com/synapseSRC/synapseDevFork.git
+cd synapseDevFork
 ```
 
 </td>
@@ -151,11 +151,11 @@ Open in **Android Studio Ladybug** or newer, then launch the `app` configuration
 </tr>
 </table>
 
-<br/>
+---
 
 ## 📂 Structure
 
-```
+```text
 synapse/
 ├── 📱 app/          # Android UI & ViewModels
 ├── 🧩 shared/       # Kotlin Multiplatform Engine
@@ -165,7 +165,7 @@ synapse/
 └── 🍎 iosApp/       # iOS SwiftUI Application
 ```
 
-<br/>
+---
 
 <div align="center">
 
@@ -184,10 +184,12 @@ synapse/
 <sub>Licensed under [AGPLv3](LICENSE) • Open Source • Community Driven</sub>
 
 <br/>
+<br/>
 
-<img src="https://img.shields.io/github/stars/your-org/synapse-android?style=social" alt="GitHub stars"/>
-<img src="https://img.shields.io/github/forks/your-org/synapse-android?style=social" alt="GitHub forks"/>
+[![GitHub stars](https://img.shields.io/github/stars/synapseSRC/synapseDevFork?style=social)](https://github.com/synapseSRC/synapseDevFork/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/synapseSRC/synapseDevFork?style=social)](https://github.com/synapseSRC/synapseDevFork/network/members)
 
+<br/>
 <br/>
 
 **[⬆ Back to Top](#-synapse-social)**

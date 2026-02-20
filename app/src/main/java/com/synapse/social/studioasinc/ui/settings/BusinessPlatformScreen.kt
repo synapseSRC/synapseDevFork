@@ -340,6 +340,7 @@ fun MonetizationSection(
                     )
                 }
 
+                SettingsDivider()
                 SettingsNavigationItem(
                     title = "Payout Settings",
                     subtitle = "Manage payment methods",

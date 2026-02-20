@@ -144,10 +144,10 @@ fun AccountTypeSection(
     onSwitchToBusiness: () -> Unit
 ) {
     SettingsSection(title = "Account Type") {
-        Column {
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding, vertical = SettingsSpacing.itemVerticalPadding)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding)
             ) {
                 Icon(
                     imageVector = when (state.accountType) {
@@ -160,7 +160,7 @@ fun AccountTypeSection(
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
-                Column {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
                         text = state.accountType.name.lowercase().replaceFirstChar { it.uppercase() } + " Account",
                         style = MaterialTheme.typography.titleMedium
@@ -178,7 +178,7 @@ fun AccountTypeSection(
             if (!state.isBusinessAccount) {
                 Button(
                     onClick = onSwitchToBusiness,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding, vertical = SettingsSpacing.itemVerticalPadding)
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding)
                 ) {
                     Text("Switch to Business Account")
                 }
@@ -237,9 +237,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
                     )
             }
             }
-
-
-            Column {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
                     text = "Top Performing Content",
                     style = MaterialTheme.typography.titleSmall,
@@ -247,7 +245,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
                 )
                 analytics.topPosts.forEachIndexed { index, post ->
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = SettingsSpacing.itemVerticalPadding),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
@@ -306,7 +304,7 @@ fun MonetizationSection(
     onToggleMonetization: (Boolean) -> Unit
 ) {
     SettingsSection(title = "Monetization") {
-        Column {
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             SettingsToggleItem(
                 title = "Enable Monetization",
                 subtitle = "Earn revenue from your content",
@@ -317,11 +315,11 @@ fun MonetizationSection(
             if (state.monetizationEnabled && state.revenue != null) {
                 SettingsDivider()
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding, vertical = SettingsSpacing.itemVerticalPadding),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(
                             text = "Total Earnings",
                             style = MaterialTheme.typography.bodyMedium
@@ -392,7 +390,7 @@ fun VerificationSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = SettingsSpacing.itemHorizontalPadding, vertical = SettingsSpacing.itemVerticalPadding),
+                .padding(horizontal = SettingsSpacing.itemHorizontalPadding),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

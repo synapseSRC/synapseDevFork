@@ -197,7 +197,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
     SettingsSection(title = "Analytics Dashboard") {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.padding(SettingsSpacing.itemHorizontalPadding)
+            modifier = Modifier.padding(horizontal = SettingsSpacing.itemHorizontalPadding)
         ) {
 
             Row(
@@ -394,7 +394,7 @@ fun VerificationSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp).padding(horizontal = SettingsSpacing.itemHorizontalPadding),
+                .padding(horizontal = SettingsSpacing.itemHorizontalPadding, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

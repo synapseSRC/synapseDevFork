@@ -23,9 +23,24 @@ fun ChangeNumberScreen(
     val error by viewModel.error.collectAsState()
     val isSuccess by viewModel.isSuccess.collectAsState()
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
     LaunchedEffect(isSuccess) {
         if (isSuccess) {
             onBackClick()
+        }
+    }
+
+    LaunchedEffect(error) {
+        if (error != null) {
+            val result = snackbarHostState.showSnackbar(
+                message = error!!,
+                actionLabel = "Dismiss",
+                duration = SnackbarDuration.Indefinite
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                viewModel.clearError()
+            }
         }
     }
 
@@ -44,18 +59,7 @@ fun ChangeNumberScreen(
             )
         },
         snackbarHost = {
-             if (error != null) {
-                Snackbar(
-                    modifier = Modifier.padding(16.dp),
-                    action = {
-                        TextButton(onClick = { viewModel.clearError() }) {
-                            Text("Dismiss")
-                        }
-                    }
-                ) {
-                    Text(error ?: "")
-                }
-            }
+            SnackbarHost(hostState = snackbarHostState)
         }
     ) { paddingValues ->
         Column(

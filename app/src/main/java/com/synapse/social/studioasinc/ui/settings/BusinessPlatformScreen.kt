@@ -176,12 +176,12 @@ fun AccountTypeSection(
             }
 
             if (!state.isBusinessAccount) {
-                            Button(
-                onClick = onSwitchToBusiness,
-                modifier = Modifier.fillMaxWidth().padding(SettingsSpacing.itemPadding)
-            ) {
-                Text("Switch to Business Account")
-            }
+                                Button(
+                    onClick = onSwitchToBusiness,
+                    modifier = Modifier.fillMaxWidth().padding(SettingsSpacing.itemPadding)
+                ) {
+                    Text("Switch to Business Account")
+                }
             }
         }
     }
@@ -320,7 +320,8 @@ fun MonetizationSection(
 
             if (state.monetizationEnabled && state.revenue != null) {
                 SettingsDivider()
-                                Row(
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
                     modifier = Modifier.fillMaxWidth().padding(SettingsSpacing.itemPadding),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -343,6 +344,7 @@ fun MonetizationSection(
                         tint = MaterialTheme.colorScheme.tertiary
                     )
                 }
+                Spacer(modifier = Modifier.height(16.dp))
 
                 SettingsNavigationItem(
                     title = "Payout Settings",

@@ -304,7 +304,7 @@ fun MonetizationSection(
     onToggleMonetization: (Boolean) -> Unit
 ) {
     SettingsSection(title = "Monetization") {
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column {
             SettingsToggleItem(
                 title = "Enable Monetization",
                 subtitle = "Earn revenue from your content",
@@ -315,7 +315,7 @@ fun MonetizationSection(
             if (state.monetizationEnabled && state.revenue != null) {
                 SettingsDivider()
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding, vertical = SettingsSpacing.itemVerticalPadding),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {

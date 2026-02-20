@@ -144,9 +144,7 @@ fun AccountTypeSection(
     onSwitchToBusiness: () -> Unit
 ) {
     SettingsSection(title = "Account Type") {
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth().padding(SettingsSpacing.itemPadding)
@@ -178,12 +176,12 @@ fun AccountTypeSection(
             }
 
             if (!state.isBusinessAccount) {
-                                Button(
-                    onClick = onSwitchToBusiness,
-                    modifier = Modifier.fillMaxWidth().padding(SettingsSpacing.itemPadding)
-                ) {
-                    Text("Switch to Business Account")
-                }
+                            Button(
+                onClick = onSwitchToBusiness,
+                modifier = Modifier.fillMaxWidth().padding(SettingsSpacing.itemPadding)
+            ) {
+                Text("Switch to Business Account")
+            }
             }
         }
     }
@@ -242,7 +240,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
 
 
             Column(
-                verticalArrangement = Arrangement.Top
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
                     text = "Top Performing Content",
@@ -368,7 +366,6 @@ fun ProfessionalToolsSection() {
                 onClick = { },
                 position = SettingsItemPosition.Top
             )
-            SettingsDivider()
             SettingsNavigationItem(
                 title = "Content Calendar",
                 subtitle = "Plan your strategy",
@@ -376,7 +373,6 @@ fun ProfessionalToolsSection() {
                 onClick = { },
                 position = SettingsItemPosition.Middle
             )
-            SettingsDivider()
             SettingsNavigationItem(
                 title = "Brand Partnerships",
                 subtitle = "Manage collaborations",

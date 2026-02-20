@@ -317,7 +317,7 @@ fun MonetizationSection(
             if (state.monetizationEnabled && state.revenue != null) {
                 SettingsDivider()
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding, vertical = 8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding, vertical = SettingsSpacing.itemVerticalPadding),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -362,6 +362,7 @@ fun ProfessionalToolsSection() {
                 onClick = { },
                 position = SettingsItemPosition.Top
             )
+            SettingsDivider()
             SettingsNavigationItem(
                 title = "Content Calendar",
                 subtitle = "Plan your strategy",
@@ -369,6 +370,7 @@ fun ProfessionalToolsSection() {
                 onClick = { },
                 position = SettingsItemPosition.Middle
             )
+            SettingsDivider()
             SettingsNavigationItem(
                 title = "Brand Partnerships",
                 subtitle = "Manage collaborations",

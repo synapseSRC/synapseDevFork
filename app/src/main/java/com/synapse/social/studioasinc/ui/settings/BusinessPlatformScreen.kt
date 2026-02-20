@@ -176,7 +176,7 @@ fun AccountTypeSection(
             }
 
             if (!state.isBusinessAccount) {
-                                Button(
+                Button(
                     onClick = onSwitchToBusiness,
                     modifier = Modifier.fillMaxWidth().padding(SettingsSpacing.itemPadding)
                 ) {

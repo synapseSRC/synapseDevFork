@@ -91,7 +91,7 @@ fun BusinessPlatformScreen(
                     .fillMaxSize()
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .padding(paddingValues)
-                    .padding(SettingsSpacing.screenPadding),
+                    .padding(horizontal = SettingsSpacing.screenPadding),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
 
@@ -239,9 +239,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
             }
 
 
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            Column {
                 Text(
                     text = "Top Performing Content",
                     style = MaterialTheme.typography.titleSmall,
@@ -249,9 +247,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
                 )
                 analytics.topPosts.forEachIndexed { index, post ->
                     Row(
-                        modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = SettingsSpacing.itemVerticalPadding),
+                        modifier = Modifier.fillMaxWidth().padding(vertical = SettingsSpacing.itemVerticalPadding),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
@@ -310,7 +306,7 @@ fun MonetizationSection(
     onToggleMonetization: (Boolean) -> Unit
 ) {
     SettingsSection(title = "Monetization") {
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column {
             SettingsToggleItem(
                 title = "Enable Monetization",
                 subtitle = "Earn revenue from your content",
@@ -321,7 +317,7 @@ fun MonetizationSection(
             if (state.monetizationEnabled && state.revenue != null) {
                 SettingsDivider()
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(SettingsSpacing.itemPadding),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding, vertical = 8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {

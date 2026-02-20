@@ -149,7 +149,7 @@ fun AccountTypeSection(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding)
             ) {
                 Icon(
                     imageVector = when (state.accountType) {
@@ -181,7 +181,7 @@ fun AccountTypeSection(
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = onSwitchToBusiness,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding)
                 ) {
                     Text("Switch to Business Account")
                 }
@@ -196,7 +196,8 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
 
     SettingsSection(title = "Analytics Dashboard") {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(SettingsSpacing.itemHorizontalPadding)
         ) {
 
             Row(
@@ -218,7 +219,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
 
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    containerColor = SettingsColors.cardBackgroundElevated
                 )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -265,7 +266,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
                         )
                     }
                     if (index < analytics.topPosts.size - 1) {
-                        Divider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                        SettingsDivider()
                     }
                 }
             }
@@ -282,7 +283,7 @@ fun AnalyticsCard(
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            containerColor = SettingsColors.cardBackgroundElevated
         )
     ) {
         Column(
@@ -319,10 +320,10 @@ fun MonetizationSection(
             )
 
             if (state.monetizationEnabled && state.revenue != null) {
-                Divider()
+                SettingsDivider()
 
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -366,14 +367,14 @@ fun ProfessionalToolsSection() {
                 imageVector = Icons.Default.Schedule,
                 onClick = { }
             )
-            Divider()
+            SettingsDivider()
             SettingsNavigationItem(
                 title = "Content Calendar",
                 subtitle = "Plan your strategy",
                 imageVector = Icons.Default.CalendarToday,
                 onClick = { }
             )
-            Divider()
+            SettingsDivider()
             SettingsNavigationItem(
                 title = "Brand Partnerships",
                 subtitle = "Manage collaborations",
@@ -393,7 +394,7 @@ fun VerificationSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(vertical = 8.dp).padding(horizontal = SettingsSpacing.itemHorizontalPadding),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

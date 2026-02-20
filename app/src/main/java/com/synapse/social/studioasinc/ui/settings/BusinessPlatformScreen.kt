@@ -91,7 +91,7 @@ fun BusinessPlatformScreen(
                     .fillMaxSize()
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .padding(paddingValues)
-                    .padding(horizontal = 16.dp),
+                    .padding(SettingsSpacing.screenPadding),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
 
@@ -145,11 +145,11 @@ fun AccountTypeSection(
 ) {
     SettingsSection(title = "Account Type") {
         Column(
-            modifier = Modifier.padding(vertical = 8.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding)
+                modifier = Modifier.fillMaxWidth().padding(SettingsSpacing.itemPadding)
             ) {
                 Icon(
                     imageVector = when (state.accountType) {
@@ -178,10 +178,9 @@ fun AccountTypeSection(
             }
 
             if (!state.isBusinessAccount) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(
+                                Button(
                     onClick = onSwitchToBusiness,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding)
+                    modifier = Modifier.fillMaxWidth().padding(SettingsSpacing.itemPadding)
                 ) {
                     Text("Switch to Business Account")
                 }
@@ -243,7 +242,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
 
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.Top
             ) {
                 Text(
                     text = "Top Performing Content",
@@ -252,7 +251,9 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
                 )
                 analytics.topPosts.forEachIndexed { index, post ->
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = SettingsSpacing.itemVerticalPadding),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
@@ -311,7 +312,7 @@ fun MonetizationSection(
     onToggleMonetization: (Boolean) -> Unit
 ) {
     SettingsSection(title = "Monetization") {
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column {
             SettingsToggleItem(
                 title = "Enable Monetization",
                 subtitle = "Earn revenue from your content",
@@ -321,9 +322,8 @@ fun MonetizationSection(
 
             if (state.monetizationEnabled && state.revenue != null) {
                 SettingsDivider()
-
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding),
+                                Row(
+                    modifier = Modifier.fillMaxWidth().padding(SettingsSpacing.itemPadding),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -365,21 +365,24 @@ fun ProfessionalToolsSection() {
                 title = "Scheduled Posts",
                 subtitle = "Manage upcoming content",
                 imageVector = Icons.Default.Schedule,
-                onClick = { }
+                onClick = { },
+                position = SettingsItemPosition.Top
             )
             SettingsDivider()
             SettingsNavigationItem(
                 title = "Content Calendar",
                 subtitle = "Plan your strategy",
                 imageVector = Icons.Default.CalendarToday,
-                onClick = { }
+                onClick = { },
+                position = SettingsItemPosition.Middle
             )
             SettingsDivider()
             SettingsNavigationItem(
                 title = "Brand Partnerships",
                 subtitle = "Manage collaborations",
                 imageVector = Icons.Default.Work,
-                onClick = { }
+                onClick = { },
+                position = SettingsItemPosition.Bottom
             )
         }
     }
@@ -394,7 +397,7 @@ fun VerificationSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = SettingsSpacing.itemHorizontalPadding, vertical = 8.dp),
+                .padding(horizontal = SettingsSpacing.itemHorizontalPadding, vertical = SettingsSpacing.itemVerticalPadding),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

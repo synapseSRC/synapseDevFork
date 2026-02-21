@@ -39,7 +39,7 @@ class R2UploadService(private val client: HttpClient) : UploadService {
 
         val amzDate = getAmzDate()
 
-        val headers = S3Signer.signS3(
+        val signedHeaders = S3Signer.signS3(
             method = "PUT",
             canonicalPath = path,
             region = "auto",
@@ -52,8 +52,8 @@ class R2UploadService(private val client: HttpClient) : UploadService {
 
         try {
             val response = client.put(url) {
-                headers.forEach { (k, v) ->
-                    this.headers.append(k, v)
+                signedHeaders.forEach { (k, v) ->
+                    headers.append(k, v)
                 }
                 setBody(fileBytes)
                 onUpload { bytesSentTotal, totalBytes ->

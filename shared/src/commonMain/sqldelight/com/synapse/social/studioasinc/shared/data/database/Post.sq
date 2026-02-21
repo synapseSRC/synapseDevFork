@@ -84,3 +84,6 @@ SELECT count(*) FROM Post;
 
 selectAllPaged:
 SELECT * FROM Post LIMIT :limit OFFSET :offset;
+
+selectIds:
+SELECT id FROM Post;

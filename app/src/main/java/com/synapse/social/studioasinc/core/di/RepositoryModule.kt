@@ -3,7 +3,6 @@ package com.synapse.social.studioasinc.core.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.synapse.social.studioasinc.data.repository.*
-import com.synapse.social.studioasinc.data.local.database.*
 import com.synapse.social.studioasinc.shared.data.local.database.CommentDao
 import com.synapse.social.studioasinc.data.local.AppSettingsManager
 import dagger.Module
@@ -36,6 +35,7 @@ import com.synapse.social.studioasinc.shared.domain.usecase.notification.GetNoti
 import com.synapse.social.studioasinc.shared.domain.usecase.notification.MarkNotificationAsReadUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.notification.SubscribeToNotificationsUseCase
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
+import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -68,8 +68,8 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideUserRepository(userDao: UserDao, client: SupabaseClientType): UserRepository {
-        return UserRepository(userDao, client)
+    fun provideUserRepository(storageDatabase: StorageDatabase, client: SupabaseClientType): UserRepository {
+        return UserRepository(storageDatabase, client)
     }
 
     @Provides
@@ -81,11 +81,10 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun providePostRepository(
-        postDao: PostDao,
-        client: SupabaseClientType,
-        prefs: SharedPreferences
+        storageDatabase: StorageDatabase,
+        client: SupabaseClientType
     ): PostRepository {
-        return PostRepository(postDao, client, prefs)
+        return PostRepository(storageDatabase, client)
     }
 
     @Provides
@@ -136,12 +135,21 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideCommentRepository(
+        storageDatabase: StorageDatabase,
         client: SupabaseClientType,
         commentDao: CommentDao,
+        userRepository: UserRepository,
         reactionRepository: ReactionRepository,
         @Named("ApplicationScope") externalScope: CoroutineScope
     ): CommentRepository {
-        return CommentRepository(commentDao, client, externalScope, reactionRepository)
+        return CommentRepository(
+            storageDatabase = storageDatabase,
+            client = client,
+            commentDao = commentDao,
+            userRepository = userRepository,
+            externalScope = externalScope,
+            reactionRepository = reactionRepository
+        )
     }
 
     @Provides
@@ -207,7 +215,7 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideStorageRepository(
-        db: com.synapse.social.studioasinc.shared.data.database.StorageDatabase,
+        db: StorageDatabase,
         secureStorage: SecureStorage
     ): StorageRepository {
         return StorageRepositoryImpl(db, secureStorage)
@@ -324,13 +332,5 @@ object RepositoryModule {
         authRepository: SharedAuthRepository
     ): SubscribeToNotificationsUseCase {
         return SubscribeToNotificationsUseCase(notificationRepository, authRepository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSharedUserRepository(
-        userRepository: UserRepository
-    ): com.synapse.social.studioasinc.shared.domain.repository.UserRepository {
-        return userRepository
     }
 }

@@ -11,25 +11,16 @@ import com.synapse.social.studioasinc.domain.model.*
 import com.synapse.social.studioasinc.feature.shared.components.post.PostEvent
 import com.synapse.social.studioasinc.feature.shared.components.post.PostEventBus
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
+import com.synapse.social.studioasinc.data.paging.CommentPagingSource
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-data class PostDetailUiState(
-    val post: Post? = null,
-    val isLoading: Boolean = false,
-    val error: String? = null,
-    val replyToComment: CommentWithUser? = null,
-    val editingComment: CommentWithUser? = null,
-    val refreshTrigger: Int = 0,
-    val commentActionsLoading: Set<String> = emptySet(),
-    val replies: Map<String, List<CommentWithUser>> = emptyMap(),
-    val replyLoading: Set<String> = emptySet()
-) {
-    val postDetailItems: List<PostDetailItem>
-        get() = post?.toDetailItems() ?: emptyList()
-}
 
 @HiltViewModel
 class PostDetailViewModel @Inject constructor(
@@ -46,6 +37,19 @@ class PostDetailViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(PostDetailUiState())
     val uiState: StateFlow<PostDetailUiState> = _uiState.asStateFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val commentsPagingFlow: Flow<PagingData<CommentWithUser>> = _uiState
+        .map { it.post?.post?.id }
+        .distinctUntilChanged()
+        .filterNotNull()
+        .flatMapLatest { postId ->
+            Pager(
+                config = PagingConfig(pageSize = 20),
+                pagingSourceFactory = { CommentPagingSource(commentRepository, postId) }
+            ).flow
+        }
+        .cachedIn(viewModelScope)
 
     private var currentPostId: String? = null
 

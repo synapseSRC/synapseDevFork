@@ -16,8 +16,8 @@ import com.synapse.social.studioasinc.shared.core.network.SupabaseClient as Shar
 import com.synapse.social.studioasinc.shared.domain.repository.UserRepository as SharedUserRepository
 
 @Singleton
-class UserRepository @Inject constructor(
-    private val userDao: UserDao,
+class UserRepository constructor(
+    private val storageDatabase: StorageDatabase,
     private val client: SupabaseClient = AppSupabaseClient.client
 ) : SharedUserRepository {
 

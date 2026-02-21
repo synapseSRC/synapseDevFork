@@ -2,24 +2,16 @@ package com.synapse.social.studioasinc.data.repository
 
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.local.database.PostDao
-import com.synapse.social.studioasinc.data.local.database.PostEntity
-import com.synapse.social.studioasinc.data.repository.PostMapper
 import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.PollOption
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.domain.model.UserReaction
-import com.synapse.social.studioasinc.domain.model.MediaItem
-import com.synapse.social.studioasinc.domain.model.MediaType
-import io.github.jan.supabase.functions.functions
 import io.github.jan.supabase.postgrest.from
-import io.ktor.client.statement.bodyAsText
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import java.util.concurrent.ConcurrentHashMap
 import androidx.paging.Pager
@@ -88,7 +80,6 @@ class PostRepository @Inject constructor(
         val avatarUrl: String?,
         val isVerified: Boolean
     )
-
 
     fun constructMediaUrl(storagePath: String): String {
         return SupabaseClient.constructMediaUrl(storagePath)
@@ -196,7 +187,7 @@ class PostRepository @Inject constructor(
         }
     }
 
-        @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     fun getPosts(): Flow<Result<List<Post>>> {
         return postDao.getAllPosts().flatMapLatest { entities ->
             flow {
@@ -316,14 +307,11 @@ class PostRepository @Inject constructor(
             Result.failure(e)
         }
     }
-
     private suspend fun syncDeletedPosts() {
         try {
             val localIds = postDao.getAllPostIds()
             if (localIds.isEmpty()) return
-
             val idsToDelete = mutableListOf<String>()
-
             // Process in chunks of 50 to respect URL length limits (approx 2KB max for safe GET)
             // 50 UUIDs * 36 chars = 1800 chars + overhead
             localIds.chunked(50).forEach { chunk ->
@@ -333,18 +321,14 @@ class PostRepository @Inject constructor(
                             filter { isIn("id", chunk) }
                         }
                         .decodeList<JsonObject>()
-
                     idsToDelete.addAll(findDeletedIds(chunk, response))
-
                 } catch (e: Exception) {
                     android.util.Log.e(TAG, "Failed to check chunk existence", e)
                 }
             }
-
             if (idsToDelete.isNotEmpty()) {
                 val uniqueIdsToDelete = idsToDelete.distinct()
                 android.util.Log.d(TAG, "Syncing deletions: removing ${uniqueIdsToDelete.size} posts")
-
                 uniqueIdsToDelete.chunked(500).forEach { batch ->
                     postDao.deletePosts(batch)
                 }
@@ -353,10 +337,8 @@ class PostRepository @Inject constructor(
             android.util.Log.e(TAG, "Failed to sync deleted posts", e)
         }
     }
-
     suspend fun getUserPosts(userId: String): Result<List<Post>> = withContext(Dispatchers.IO) {
         try {
-
             val response = client.from("posts")
                 .select(
                     columns = Columns.raw("""
@@ -368,7 +350,6 @@ class PostRepository @Inject constructor(
                     filter { eq("author_uid", userId) }
                 }
                 .decodeList<PostSelectDto>()
-
             val posts = response.map { postDto ->
                 postDto.toDomain(::constructMediaUrl, ::constructAvatarUrl).also { post ->
                      postDto.user?.let { user ->
@@ -384,17 +365,14 @@ class PostRepository @Inject constructor(
                     }
                 }
             }
-
             val postsWithReactions = populatePostReactions(posts)
             val postsWithPolls = populatePostPolls(postsWithReactions)
-
             Result.success(postsWithPolls)
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to fetch user posts: ${e.message}", e)
             Result.failure(e)
         }
     }
-
     suspend fun updatePost(postId: String, updates: Map<String, Any?>): Result<Post> = withContext(Dispatchers.IO) {
         try {
             client.from("posts").update(updates) {
@@ -406,25 +384,19 @@ class PostRepository @Inject constructor(
             Result.failure(Exception(mapSupabaseError(e)))
         }
     }
-
     suspend fun updatePost(post: Post): Result<Post> = withContext(Dispatchers.IO) {
         try {
             val updateDto = post.toUpdateDto()
-
             client.from("posts").update(updateDto) {
                 filter { eq("id", post.id) }
             }
-
-
             postDao.insertAll(listOf(PostMapper.toEntity(post)))
-
             Result.success(post)
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to update full post", e)
             Result.failure(Exception(mapSupabaseError(e)))
         }
     }
-
     suspend fun deletePost(postId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             client.from("posts").delete {
@@ -441,7 +413,6 @@ class PostRepository @Inject constructor(
     suspend fun searchPosts(query: String): Result<List<Post>> = Result.success(emptyList())
 
     fun observePosts(): Flow<List<Post>> = flow { emit(emptyList()) }
-
 
     private val reactionRepository = ReactionRepository()
     private val pollRepository = PollRepository()
@@ -462,18 +433,9 @@ class PostRepository @Inject constructor(
         reactionRepository.getReactionSummary(postId, "post")
 
     suspend fun getUserReaction(postId: String, userId: String): Result<ReactionType?> =
-
-
-
-
-
-
         if (userId == client.auth.currentUserOrNull()?.id) {
              reactionRepository.getUserReaction(postId, "post")
         } else {
-
-
-
              withContext(Dispatchers.IO) {
                  try {
                      val reaction = client.from("reactions")

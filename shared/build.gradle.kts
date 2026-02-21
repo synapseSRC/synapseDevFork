@@ -74,6 +74,9 @@ kotlin {
                 // SQLDelight
                 implementation("app.cash.sqldelight:runtime:2.0.2")
                 implementation("app.cash.sqldelight:coroutines-extensions:2.0.2")
+
+                // Paging
+                implementation("androidx.paging:paging-common:3.3.6")
             }
         }
 

@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.data.model.License
+import com.synapse.social.studioasinc.shared.data.model.License
 
 
 

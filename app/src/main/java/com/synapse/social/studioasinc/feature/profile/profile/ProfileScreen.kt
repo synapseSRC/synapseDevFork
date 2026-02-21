@@ -40,7 +40,7 @@ import com.synapse.social.studioasinc.feature.shared.components.post.SharedPostI
 import com.synapse.social.studioasinc.feature.profile.profile.animations.crossfadeContent
 import com.synapse.social.studioasinc.feature.profile.profile.components.*
 import com.synapse.social.studioasinc.feature.profile.profile.components.UserSearchDialog
-import com.synapse.social.studioasinc.domain.model.Post
+import com.synapse.social.studioasinc.shared.domain.model.Post
 import kotlinx.coroutines.delay
 
 

@@ -1,12 +1,12 @@
 package com.synapse.social.studioasinc.ui.search
 
-import com.synapse.social.studioasinc.data.repository.ProfileActionRepository
+import com.synapse.social.studioasinc.shared.data.repository.ProfileActionRepository
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
-import com.synapse.social.studioasinc.domain.usecase.profile.FollowUserUseCase
-import com.synapse.social.studioasinc.domain.usecase.profile.UnfollowUserUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.profile.FollowUserUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.profile.UnfollowUserUseCase
 import com.synapse.social.studioasinc.shared.domain.model.SearchAccount
 import com.synapse.social.studioasinc.shared.domain.model.SearchHashtag
 import com.synapse.social.studioasinc.shared.domain.model.SearchNews

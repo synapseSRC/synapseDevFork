@@ -1,0 +1,411 @@
+package com.synapse.social.studioasinc.shared.data.repository
+
+import io.github.aakira.napier.Napier
+import com.synapse.social.studioasinc.shared.domain.model.CommentReaction
+import com.synapse.social.studioasinc.shared.domain.model.ReactionType
+import com.synapse.social.studioasinc.shared.domain.model.CommentWithUser
+import com.synapse.social.studioasinc.shared.domain.model.Post
+import com.synapse.social.studioasinc.shared.core.network.SupabaseClient
+import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.postgrest.from
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.*
+import kotlinx.serialization.SerialName
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
+import kotlinx.serialization.Serializable
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.rpc
+import kotlinx.datetime.Clock
+
+class ReactionRepository(
+    private val client: io.github.jan.supabase.SupabaseClient = SupabaseClient.client
+) {
+
+    companion object {
+        private const val TAG = "ReactionRepository"
+        private const val MAX_RETRIES = 3
+        private const val RETRY_DELAY_MS = 100L
+    }
+
+    suspend fun toggleReaction(
+        targetId: String,
+        targetType: String,
+        reactionType: ReactionType,
+        oldReaction: ReactionType? = null,
+        skipCheck: Boolean = false
+    ): Result<ReactionToggleResult> = withContext(Dispatchers.IO) {
+        try {
+            val currentUser = client.auth.currentUserOrNull()
+                ?: return@withContext Result.failure(Exception("User must be authenticated to react"))
+
+            val userId = currentUser.id
+            val tableName = getTableName(targetType)
+            val idColumn = getIdColumn(targetType)
+
+            Napier.d("Toggling reaction: ${reactionType.name} for $targetType $targetId by user $userId", tag = TAG)
+
+            // Optimized path if oldReaction is known
+            if (skipCheck) {
+                try {
+                     if (oldReaction == reactionType) {
+                         // Removing - Single Round Trip
+                         client.from(tableName)
+                             .delete { filter { eq(idColumn, targetId); eq("user_id", userId) } }
+                         Napier.d("Reaction removed for $targetType $targetId (Optimized)", tag = TAG)
+                         return@withContext Result.success(ReactionToggleResult.REMOVED)
+                     } else {
+                         // Updating/Inserting - Single Round Trip (Upsert)
+                         client.from(tableName).upsert(buildJsonObject {
+                            put("user_id", userId)
+                            put(idColumn, targetId)
+                            put("reaction_type", reactionType.name.lowercase())
+                            put("updated_at", Clock.System.now().toString())
+                        }) {
+                            onConflict = "user_id, " + idColumn
+                        }
+                         Napier.d("Reaction updated to ${reactionType.name} for $targetType $targetId (Optimized)", tag = TAG)
+                         return@withContext Result.success(ReactionToggleResult.UPDATED)
+                     }
+                } catch (e: Exception) {
+                     Napier.w("Optimized toggle failed, falling back to standard Check-Then-Act: ${e.message}", tag = TAG)
+                     // Fallthrough to standard logic
+                }
+            }
+
+            var lastException: Exception? = null
+            repeat(MAX_RETRIES) { attempt ->
+                try {
+
+                    val existingReaction = client.from(tableName)
+                        .select { filter { eq(idColumn, targetId); eq("user_id", userId) } }
+                        .decodeSingleOrNull<JsonObject>()
+
+                    val result = if (existingReaction != null) {
+                        val existingType = existingReaction["reaction_type"]?.jsonPrimitive?.contentOrNull
+                        if (existingType == reactionType.name.lowercase()) {
+
+                            client.from(tableName)
+                                .delete { filter { eq(idColumn, targetId); eq("user_id", userId) } }
+                            Napier.d("Reaction removed for $targetType $targetId", tag = TAG)
+                            ReactionToggleResult.REMOVED
+                        } else {
+
+                            client.from(tableName)
+                                .update({
+                                    set("reaction_type", reactionType.name.lowercase())
+                                    set("updated_at", Clock.System.now().toString())
+                                }) { filter { eq(idColumn, targetId); eq("user_id", userId) } }
+                            Napier.d("Reaction updated to ${reactionType.name} for $targetType $targetId", tag = TAG)
+                            ReactionToggleResult.UPDATED
+                        }
+                    } else {
+
+                        client.from(tableName).insert(buildJsonObject {
+                            put("user_id", userId)
+                            put(idColumn, targetId)
+                            put("reaction_type", reactionType.name.lowercase())
+                        })
+                        Napier.d("New reaction ${reactionType.name} added for $targetType $targetId", tag = TAG)
+                        ReactionToggleResult.ADDED
+                    }
+
+                    return@withContext Result.success(result)
+                } catch (e: Exception) {
+                    lastException = e
+                    val isRLSError = e.message?.contains("policy", true) == true
+                    if (isRLSError || attempt == MAX_RETRIES - 1) throw e
+                    delay(RETRY_DELAY_MS * (attempt + 1))
+                }
+            }
+            Result.failure(Exception(mapSupabaseError(lastException ?: Exception("Unknown error"))))
+        } catch (e: Exception) {
+            Napier.e("Failed to toggle reaction: ${e.message}", e, tag = TAG)
+            Result.failure(Exception(mapSupabaseError(e)))
+        }
+    }
+
+    suspend fun getReactionSummary(
+        targetId: String,
+        targetType: String
+    ): Result<Map<ReactionType, Int>> = withContext(Dispatchers.IO) {
+        try {
+            // Optimized RPC calls for supported types
+            if (targetType.equals("post", ignoreCase = true)) {
+                 val summaryList = client.postgrest.rpc(
+                    "get_posts_reactions_summary",
+                    mapOf("post_ids" to listOf(targetId))
+                 ).decodeList<PostReactionSummary>()
+
+                 val summary = summaryList.firstOrNull()?.reactionCounts?.entries
+                    ?.groupingBy { ReactionType.fromString(it.key) }
+                    ?.fold(0) { acc, entry -> acc + entry.value }
+                    ?: emptyMap()
+                 return@withContext Result.success(summary)
+
+            } else if (targetType.equals("comment", ignoreCase = true)) {
+                 val summaryList = client.postgrest.rpc(
+                    "get_comments_reactions_summary",
+                    mapOf("comment_ids" to listOf(targetId))
+                 ).decodeList<CommentReactionSummary>()
+
+                 val summary = summaryList.firstOrNull()?.reactionCounts?.entries
+                    ?.groupingBy { ReactionType.fromString(it.key) }
+                    ?.fold(0) { acc, entry -> acc + entry.value }
+                    ?: emptyMap()
+                 return@withContext Result.success(summary)
+            }
+
+            // Fallback for other types
+            val tableName = getTableName(targetType)
+            val idColumn = getIdColumn(targetType)
+
+            val reactions = client.from(tableName)
+                .select { filter { eq(idColumn, targetId) } }
+                .decodeList<JsonObject>()
+
+            val summary = reactions
+                .groupBy { ReactionType.fromString(it["reaction_type"]?.jsonPrimitive?.contentOrNull ?: "LIKE") }
+                .mapValues { it.value.size }
+
+            Result.success(summary)
+        } catch (e: Exception) {
+            Result.failure(Exception(mapSupabaseError(e)))
+        }
+    }
+
+    suspend fun getUserReaction(
+        targetId: String,
+        targetType: String
+    ): Result<ReactionType?> = withContext(Dispatchers.IO) {
+        try {
+            val currentUser = client.auth.currentUserOrNull() ?: return@withContext Result.success(null)
+            val userId = currentUser.id
+            val tableName = getTableName(targetType)
+            val idColumn = getIdColumn(targetType)
+
+            val reaction = client.from(tableName)
+                .select { filter { eq(idColumn, targetId); eq("user_id", userId) } }
+                .decodeSingleOrNull<JsonObject>()
+
+            val reactionType = reaction?.get("reaction_type")?.jsonPrimitive?.contentOrNull?.let {
+                ReactionType.fromString(it)
+            }
+            Result.success(reactionType)
+        } catch (e: Exception) {
+            Result.failure(Exception(mapSupabaseError(e)))
+        }
+    }
+
+    @Serializable
+    internal data class PostReactionSummary(
+        @SerialName("post_id") val postId: String,
+        @SerialName("reaction_counts") val reactionCounts: Map<String, Int> = emptyMap(),
+        @SerialName("user_reaction") val userReaction: String? = null
+    )
+
+    @Serializable
+    internal data class CommentReactionSummary(
+        @SerialName("comment_id") val commentId: String,
+        @SerialName("reaction_counts") val reactionCounts: Map<String, Int> = emptyMap(),
+        @SerialName("user_reaction") val userReaction: String? = null
+    )
+
+    internal fun applyReactionSummaries(
+        posts: List<Post>,
+        summaries: List<PostReactionSummary>
+    ): List<Post> {
+        val summariesByPost = summaries.associateBy { it.postId }
+
+        return posts.map { post ->
+            val summaryData = summariesByPost[post.id]
+
+            val summary = summaryData?.reactionCounts?.entries
+                ?.groupingBy { ReactionType.fromString(it.key) }
+                ?.fold(0) { acc, entry -> acc + entry.value }
+                ?: emptyMap()
+
+            val userReactionType = summaryData?.userReaction?.let { ReactionType.fromString(it) }
+
+            post.copy(
+                reactions = summary,
+                userReaction = userReactionType,
+                likesCount = summary.values.sum()
+            )
+        }
+    }
+
+    internal fun applyCommentReactionSummaries(
+        comments: List<CommentWithUser>,
+        summaries: List<CommentReactionSummary>
+    ): List<CommentWithUser> {
+        val summariesByComment = summaries.associateBy { it.commentId }
+
+        return comments.map { comment ->
+            val summaryData = summariesByComment[comment.id]
+
+            val summary = summaryData?.reactionCounts?.entries
+                ?.groupingBy { ReactionType.fromString(it.key) }
+                ?.fold(0) { acc, entry -> acc + entry.value }
+                ?: emptyMap()
+
+            val userReactionType = summaryData?.userReaction?.let { ReactionType.fromString(it) }
+
+            comment.copy(
+                reactionSummary = summary,
+                userReaction = userReactionType,
+                likesCount = summary.values.sum()
+            )
+        }
+    }
+
+    suspend fun populatePostReactions(posts: List<Post>): List<Post> = withContext(Dispatchers.IO) {
+        if (posts.isEmpty()) return@withContext posts
+
+        try {
+            val allPostIds = posts.map { it.id }
+            val semaphore = Semaphore(5)
+
+            val summaries = supervisorScope {
+                 allPostIds.chunked(20).map { chunkIds ->
+                     async {
+                         semaphore.withPermit {
+                             try {
+                                 client.postgrest.rpc(
+                                    "get_posts_reactions_summary",
+                                    mapOf("post_ids" to chunkIds)
+                                 ).decodeList<PostReactionSummary>()
+                             } catch(e: Exception) {
+                                 Napier.e("Failed to fetch reaction summaries for chunk", e, tag = TAG)
+                                 emptyList<PostReactionSummary>()
+                             }
+                         }
+                     }
+                 }.awaitAll().flatten()
+            }
+
+            applyReactionSummaries(posts, summaries)
+
+        } catch (e: Exception) {
+            Napier.e("Failed to populate reactions", e, tag = TAG)
+            posts
+        }
+    }
+
+    suspend fun populateCommentReactions(comments: List<CommentWithUser>): List<CommentWithUser> = withContext(Dispatchers.IO) {
+        if (comments.isEmpty()) return@withContext comments
+
+        try {
+            val allCommentIds = comments.map { it.id }
+            val semaphore = Semaphore(5)
+
+            val summaries = supervisorScope {
+                 allCommentIds.chunked(20).map { chunkIds ->
+                     async {
+                         semaphore.withPermit {
+                             try {
+                                 client.postgrest.rpc(
+                                    "get_comments_reactions_summary",
+                                    mapOf("comment_ids" to chunkIds)
+                                 ).decodeList<CommentReactionSummary>()
+                             } catch(e: Exception) {
+                                 Napier.e("Failed to fetch reaction summaries for comment chunk", e, tag = TAG)
+                                 emptyList<CommentReactionSummary>()
+                             }
+                         }
+                     }
+                 }.awaitAll().flatten()
+            }
+
+            applyCommentReactionSummaries(comments, summaries)
+
+        } catch (e: Exception) {
+            Napier.e("Failed to populate comment reactions", e, tag = TAG)
+            comments
+        }
+    }
+
+    suspend fun togglePostReaction(postId: String, reactionType: ReactionType, oldReaction: ReactionType? = null, skipCheck: Boolean = false) = toggleReaction(postId, "post", reactionType, oldReaction, skipCheck)
+
+    suspend fun toggleCommentReaction(commentId: String, reactionType: ReactionType, oldReaction: ReactionType? = null, skipCheck: Boolean = false) = toggleReaction(commentId, "comment", reactionType, oldReaction, skipCheck)
+
+    suspend fun getPostReactionSummary(postId: String) =
+        getReactionSummary(postId, "post")
+
+    suspend fun getCommentReactionSummary(commentId: String) =
+        getReactionSummary(commentId, "comment")
+
+    suspend fun getUserPostReaction(postId: String) =
+        getUserReaction(postId, "post")
+
+    suspend fun getUserCommentReaction(commentId: String) =
+        getUserReaction(commentId, "comment")
+
+    private fun getTableName(targetType: String): String {
+        return when (targetType.lowercase()) {
+            "post" -> "reactions"
+            "comment" -> "comment_reactions"
+            else -> "reactions"
+        }
+    }
+
+    private fun getIdColumn(targetType: String): String {
+        return when (targetType.lowercase()) {
+            "post" -> "post_id"
+            "comment" -> "comment_id"
+            else -> "post_id"
+        }
+    }
+
+    private fun mapSupabaseError(exception: Exception): String {
+        val message = exception.message ?: "Unknown error"
+
+        Napier.e("Supabase error: $message", exception, tag = TAG)
+
+        return when {
+            message.contains("PGRST200") -> "Database table not found"
+            message.contains("PGRST100") -> "Database column does not exist"
+            message.contains("PGRST116") -> "Record not found"
+            message.contains("relation", ignoreCase = true) -> "Database table does not exist"
+            message.contains("column", ignoreCase = true) -> "Database column mismatch"
+            message.contains("policy", ignoreCase = true) || message.contains("rls", ignoreCase = true) ->
+                "Permission denied"
+            message.contains("connection", ignoreCase = true) || message.contains("network", ignoreCase = true) ->
+                "Connection failed. Please check your internet connection."
+            message.contains("timeout", ignoreCase = true) -> "Request timed out. Please try again."
+            message.contains("unauthorized", ignoreCase = true) -> "Permission denied."
+            message.contains("54001") -> "Server Configuration Error: Stack depth limit exceeded. Please contact support."
+            else -> "Failed to process reaction: $message"
+        }
+    }
+
+    fun determineToggleResult(
+        existingReactionType: ReactionType?,
+        newReactionType: ReactionType
+    ): ReactionToggleResult {
+        return when {
+            existingReactionType == null -> ReactionToggleResult.ADDED
+            existingReactionType == newReactionType -> ReactionToggleResult.REMOVED
+            else -> ReactionToggleResult.UPDATED
+        }
+    }
+
+    fun calculateReactionSummary(reactions: List<ReactionType>): Map<ReactionType, Int> {
+        return reactions.groupingBy { it }.eachCount()
+    }
+
+    fun isReactionSummaryAccurate(summary: Map<ReactionType, Int>, totalReactions: Int): Boolean {
+        return summary.values.sum() == totalReactions
+    }
+}
+
+enum class ReactionToggleResult {
+    ADDED,
+    REMOVED,
+    UPDATED
+}

@@ -12,7 +12,7 @@ import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.feature.shared.main.MainActivity
 import androidx.lifecycle.ViewModelProvider
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
-import com.synapse.social.studioasinc.data.repository.UsernameRepository
+import com.synapse.social.studioasinc.shared.data.repository.UsernameRepository
 import com.synapse.social.studioasinc.feature.auth.ui.AuthScreen
 import com.synapse.social.studioasinc.feature.auth.presentation.viewmodel.AuthViewModel
 import com.synapse.social.studioasinc.feature.shared.theme.AuthTheme

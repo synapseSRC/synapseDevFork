@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
-import com.synapse.social.studioasinc.data.repository.UserRepository
+import com.synapse.social.studioasinc.shared.data.repository.UserRepository
 import com.synapse.social.studioasinc.ui.navigation.AppDestination
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException

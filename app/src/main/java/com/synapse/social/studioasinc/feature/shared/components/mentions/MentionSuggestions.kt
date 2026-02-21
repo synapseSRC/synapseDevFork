@@ -13,7 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.synapse.social.studioasinc.domain.model.SearchResult
+import com.synapse.social.studioasinc.shared.domain.model.SearchResult
 
 @Composable
 fun MentionSuggestions(

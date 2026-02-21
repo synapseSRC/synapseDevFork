@@ -57,4 +57,26 @@ object SupabaseClient {
                SynapseConfig.SUPABASE_ANON_KEY.isNotBlank()
     }
     const val TABLE_USERS = "users"
+    const val BUCKET_POST_MEDIA = "posts"
+    const val BUCKET_USER_AVATARS = "avatars"
+    const val BUCKET_USER_COVERS = "covers"
+
+    fun constructStorageUrl(bucket: String, path: String): String {
+        if (path.startsWith("http://") || path.startsWith("https://")) {
+            return path
+        }
+        val supabaseUrl = SynapseConfig.SUPABASE_URL
+        val baseUrl = if (supabaseUrl.endsWith("/")) supabaseUrl.dropLast(1) else supabaseUrl
+        val cleanPath = if (path.startsWith("/")) path.drop(1) else path
+
+        return "$baseUrl/storage/v1/object/public/$bucket/$cleanPath"
+    }
+
+    fun constructMediaUrl(storagePath: String): String {
+        return constructStorageUrl(BUCKET_POST_MEDIA, storagePath)
+    }
+
+    fun constructAvatarUrl(storagePath: String): String {
+        return constructStorageUrl(BUCKET_USER_AVATARS, storagePath)
+    }
 }

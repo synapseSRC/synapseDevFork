@@ -2,7 +2,7 @@ package com.synapse.social.studioasinc.core.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.synapse.social.studioasinc.data.repository.*
+import com.synapse.social.studioasinc.shared.data.repository.*
 import com.synapse.social.studioasinc.shared.data.local.database.CommentDao
 import com.synapse.social.studioasinc.data.local.AppSettingsManager
 import dagger.Module
@@ -25,7 +25,7 @@ import com.synapse.social.studioasinc.shared.domain.usecase.ValidateProviderConf
 import com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
 import com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase
-import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
+import com.synapse.social.studioasinc.data.repository.StorageRepositoryImpl
 import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
 import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
 import com.synapse.social.studioasinc.shared.data.local.SecureStorage
@@ -36,6 +36,8 @@ import com.synapse.social.studioasinc.shared.domain.usecase.notification.MarkNot
 import com.synapse.social.studioasinc.shared.domain.usecase.notification.SubscribeToNotificationsUseCase
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
 import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
+import com.synapse.social.studioasinc.data.repository.UserRepositoryImpl
+import com.synapse.social.studioasinc.shared.domain.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -69,12 +71,12 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideUserRepository(storageDatabase: StorageDatabase, client: SupabaseClientType): UserRepository {
-        return UserRepository(storageDatabase, client)
+        return UserRepositoryImpl(storageDatabase, client)
     }
 
     @Provides
     @Singleton
-    fun provideSharedUserRepository(userRepository: UserRepository): com.synapse.social.studioasinc.shared.domain.repository.UserRepository {
+    fun provideSharedUserRepository(userRepository: UserRepository): UserRepository {
         return userRepository
     }
 

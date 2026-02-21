@@ -45,9 +45,9 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.StoryMediaType
-import com.synapse.social.studioasinc.domain.model.StoryPrivacy
+import com.synapse.social.studioasinc.shared.domain.model.Post
+import com.synapse.social.studioasinc.shared.domain.model.StoryMediaType
+import com.synapse.social.studioasinc.shared.domain.model.StoryPrivacy
 import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.camera.core.CameraSelector

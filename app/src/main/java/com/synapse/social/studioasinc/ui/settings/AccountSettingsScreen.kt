@@ -26,7 +26,8 @@ fun AccountSettingsScreen(
     onLogout: () -> Unit,
     onNavigateToRequestAccountInfo: () -> Unit = {},
     onNavigateToAccountInfo: () -> Unit = {},
-    onNavigateToBusinessPlatform: () -> Unit = {}
+    onNavigateToBusinessPlatform: () -> Unit = {},
+    onNavigateToChangeNumber: () -> Unit = {}
 ) {
     val linkedAccounts by viewModel.linkedAccounts.collectAsState()
     val securityNotificationsEnabled by viewModel.securityNotificationsEnabled.collectAsState()
@@ -120,7 +121,7 @@ fun AccountSettingsScreen(
                         title = "Change Number",
                         subtitle = "Update your phone number",
                         icon = R.drawable.ic_phone,
-                        onClick = { }
+                        onClick = onNavigateToChangeNumber
                     )
                     SettingsDivider()
                     SettingsNavigationItem(

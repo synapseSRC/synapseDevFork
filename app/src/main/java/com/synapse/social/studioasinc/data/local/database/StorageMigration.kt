@@ -26,7 +26,7 @@ class StorageMigration @Inject constructor(
         while (currentVersion < CURRENT_VERSION) {
             performMigration(currentVersion)
             currentVersion++
-            prefs.edit().putInt(MIGRATION_VERSION_KEY, currentVersion).apply()
+            prefs.edit().putInt(MIGRATION_VERSION_KEY, currentVersion).commit()
         }
     }
 

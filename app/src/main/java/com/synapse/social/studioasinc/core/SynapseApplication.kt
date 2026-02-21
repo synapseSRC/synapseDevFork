@@ -17,18 +17,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltAndroidApp
 class SynapseApplication : Application() {
 
     @Inject lateinit var notificationRepository: NotificationRepository
     @Inject lateinit var storageMigration: StorageMigration
+    @Inject @Named("ApplicationScope") lateinit var applicationScope: CoroutineScope
     private lateinit var mediaCacheCleanupManager: MediaCacheCleanupManager
 
     override fun onCreate() {
         super.onCreate()
 
-        CoroutineScope(Dispatchers.Default).launch {
+        applicationScope.launch {
             storageMigration.migrateIfNeeded()
         }
 

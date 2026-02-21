@@ -76,7 +76,7 @@ class StorageMigrationTest {
         // Verify version update calls
         verify(editor).putInt("storage_migration_version", 1)
         verify(editor).putInt("storage_migration_version", 2)
-        verify(editor, times(2)).apply()
+        verify(editor, times(2)).commit()
     }
 
     @Test
@@ -102,7 +102,7 @@ class StorageMigrationTest {
 
         // Verify version update
         verify(editor).putInt("storage_migration_version", 2)
-        verify(editor).apply()
+        verify(editor).commit()
     }
 
     @Test
@@ -122,6 +122,6 @@ class StorageMigrationTest {
 
         // Verify version update
         verify(editor).putInt("storage_migration_version", 2)
-        verify(editor).apply()
+        verify(editor).commit()
     }
 }

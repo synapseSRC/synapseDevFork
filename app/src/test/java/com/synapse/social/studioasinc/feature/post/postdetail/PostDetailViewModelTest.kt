@@ -1,6 +1,7 @@
 package com.synapse.social.studioasinc.feature.post.postdetail
 
 import com.synapse.social.studioasinc.data.repository.*
+import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
 import com.synapse.social.studioasinc.domain.model.*
 import com.synapse.social.studioasinc.util.MainCoroutineRule
 import io.github.jan.supabase.SupabaseClient
@@ -38,6 +39,7 @@ class PostDetailViewModelTest {
     private val reshareRepository: ReshareRepository = mock()
     private val reportRepository: ReportRepository = mock()
     private val userRepository: UserRepository = mock()
+    private val authRepository: AuthRepository = mock()
     private val client: SupabaseClient = mock()
     private val auth: Auth = mock()
     private val pluginManager: PluginManager = mock()
@@ -70,7 +72,7 @@ class PostDetailViewModelTest {
             reshareRepository,
             reportRepository,
             userRepository,
-            client
+            authRepository
         )
     }
 

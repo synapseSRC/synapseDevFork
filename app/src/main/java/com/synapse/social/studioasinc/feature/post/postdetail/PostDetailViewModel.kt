@@ -14,9 +14,8 @@ import com.synapse.social.studioasinc.data.repository.*
 import com.synapse.social.studioasinc.domain.model.*
 import com.synapse.social.studioasinc.feature.shared.components.post.PostEvent
 import com.synapse.social.studioasinc.feature.shared.components.post.PostEventBus
+import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,7 +30,7 @@ class PostDetailViewModel @Inject constructor(
     private val reshareRepository: ReshareRepository,
     private val reportRepository: ReportRepository,
     private val userRepository: UserRepository,
-    private val client: SupabaseClient
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PostDetailUiState())
@@ -43,8 +42,10 @@ class PostDetailViewModel @Inject constructor(
     private var currentPostId: String? = null
 
     init {
-        val currentUser = client.auth.currentUserOrNull()
-        _uiState.update { it.copy(currentUserId = currentUser?.id) }
+        viewModelScope.launch {
+            val currentUserId = authRepository.getCurrentUserId()
+            _uiState.update { it.copy(currentUserId = currentUserId) }
+        }
     }
 
     fun loadPost(postId: String) {
@@ -139,9 +140,6 @@ class PostDetailViewModel @Inject constructor(
     }
 
     fun toggleCommentReaction(commentId: String, reactionType: ReactionType) {
-        val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
-
         viewModelScope.launch {
             _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
 
@@ -161,7 +159,6 @@ class PostDetailViewModel @Inject constructor(
     fun addComment(content: String) {
         if (isSubmittingComment) return
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         val parentId = _uiState.value.replyToComment?.id
 
         isSubmittingComment = true
@@ -184,8 +181,6 @@ class PostDetailViewModel @Inject constructor(
     }
 
     fun deleteComment(commentId: String) {
-        val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
              _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
             commentRepository.deleteComment(commentId).onSuccess {
@@ -197,8 +192,6 @@ class PostDetailViewModel @Inject constructor(
     }
 
     fun editComment(commentId: String, content: String) {
-        val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
             _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
             commentRepository.editComment(commentId, content).onSuccess {
@@ -212,7 +205,6 @@ class PostDetailViewModel @Inject constructor(
 
     fun votePoll(optionIndex: Int) {
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
             pollRepository.submitVote(postId, optionIndex).onSuccess {
                 postDetailRepository.getPostWithDetails(postId).onSuccess { updatedPost ->
@@ -224,7 +216,6 @@ class PostDetailViewModel @Inject constructor(
 
     fun revokeVote() {
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
             pollRepository.revokeVote(postId).onSuccess {
                 postDetailRepository.getPostWithDetails(postId).onSuccess { updatedPost ->
@@ -236,7 +227,6 @@ class PostDetailViewModel @Inject constructor(
 
     fun toggleBookmark() {
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
             bookmarkRepository.toggleBookmark(postId, null).onSuccess {
                 postDetailRepository.getPostWithDetails(postId).onSuccess { updatedPost ->
@@ -248,7 +238,6 @@ class PostDetailViewModel @Inject constructor(
 
     fun createReshare(commentary: String?) {
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
             reshareRepository.createReshare(postId, commentary).onSuccess {
                 postDetailRepository.getPostWithDetails(postId).onSuccess { updatedPost ->
@@ -260,7 +249,6 @@ class PostDetailViewModel @Inject constructor(
 
     fun reportPost(reason: String) {
         val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch { reportRepository.createReport(postId, reason, null) }
     }
 
@@ -281,8 +269,6 @@ class PostDetailViewModel @Inject constructor(
     }
 
     fun hideComment(commentId: String) {
-        val postId = currentPostId ?: return
-        val currentReaction = _uiState.value.post?.userReaction
         viewModelScope.launch {
             _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
             commentRepository.hideComment(commentId).onSuccess {

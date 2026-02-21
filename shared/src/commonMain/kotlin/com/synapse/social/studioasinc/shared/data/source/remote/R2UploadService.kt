@@ -27,7 +27,7 @@ class R2UploadService(private val client: HttpClient) : UploadService {
         val targetBucket = bucketName ?: config.r2BucketName
 
         if (accountId.isBlank() || accessKeyId.isBlank() || secretAccessKey.isBlank() || targetBucket.isBlank()) {
-            throw Exception("R2 configuration is incomplete")
+            throw UploadError.R2Error("R2 configuration is incomplete")
         }
 
 
@@ -64,12 +64,13 @@ class R2UploadService(private val client: HttpClient) : UploadService {
             }
 
             if (!response.status.isSuccess()) {
-                throw Exception("Upload failed with status: ${response.status}")
+                throw UploadError.R2Error("Upload failed with status: ${response.status}")
             }
 
             return url
         } catch (e: Exception) {
-            throw Exception("R2 upload failed: ${e.message}")
+            if (e is UploadError) throw e
+            throw UploadError.R2Error("R2 upload failed: ${e.message}")
         }
     }
 

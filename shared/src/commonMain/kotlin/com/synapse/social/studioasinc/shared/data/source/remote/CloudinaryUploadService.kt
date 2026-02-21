@@ -2,6 +2,7 @@ package com.synapse.social.studioasinc.shared.data.source.remote
 
 import com.synapse.social.studioasinc.shared.data.PlatformUtils
 import com.synapse.social.studioasinc.shared.domain.model.StorageConfig
+import com.synapse.social.studioasinc.shared.domain.model.UploadError
 import com.synapse.social.studioasinc.shared.util.TimeProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

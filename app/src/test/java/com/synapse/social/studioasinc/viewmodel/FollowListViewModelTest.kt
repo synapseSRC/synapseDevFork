@@ -1,7 +1,7 @@
 package com.synapse.social.studioasinc.viewmodel
 
 import com.synapse.social.studioasinc.data.remote.services.SupabaseFollowService
-import com.synapse.social.studioasinc.domain.model.User
+import com.synapse.social.studioasinc.shared.domain.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*

@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
 import com.synapse.social.studioasinc.data.repository.StoryRepository
 import com.synapse.social.studioasinc.data.repository.UserRepository
-import com.synapse.social.studioasinc.domain.model.Story
-import com.synapse.social.studioasinc.domain.model.StoryMediaType
-import com.synapse.social.studioasinc.domain.model.User
+import com.synapse.social.studioasinc.shared.domain.model.Story
+import com.synapse.social.studioasinc.shared.domain.model.StoryMediaType
+import com.synapse.social.studioasinc.shared.domain.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

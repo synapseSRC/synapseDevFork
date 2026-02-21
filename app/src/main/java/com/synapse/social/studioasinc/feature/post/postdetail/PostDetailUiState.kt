@@ -1,7 +1,7 @@
 package com.synapse.social.studioasinc.feature.post.postdetail
 
-import com.synapse.social.studioasinc.domain.model.CommentWithUser
-import com.synapse.social.studioasinc.domain.model.PostDetail
+import com.synapse.social.studioasinc.shared.domain.model.CommentWithUser
+import com.synapse.social.studioasinc.shared.domain.model.PostDetail
 
 data class PostDetailUiState(
     val isLoading: Boolean = false,

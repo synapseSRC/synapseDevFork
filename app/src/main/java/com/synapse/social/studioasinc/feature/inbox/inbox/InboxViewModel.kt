@@ -2,7 +2,7 @@ package com.synapse.social.studioasinc.ui.inbox
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.domain.model.User
+import com.synapse.social.studioasinc.shared.domain.model.User
 import com.synapse.social.studioasinc.UserProfileManager
 import com.synapse.social.studioasinc.shared.data.auth.SupabaseAuthenticationService
 import kotlinx.coroutines.flow.*

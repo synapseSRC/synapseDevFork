@@ -1,4 +1,5 @@
 package com.synapse.social.studioasinc.shared.domain.usecase
+import com.synapse.social.studioasinc.shared.domain.model.*
 
 import com.synapse.social.studioasinc.shared.data.FileUploader
 import com.synapse.social.studioasinc.shared.data.source.remote.CloudinaryUploadService

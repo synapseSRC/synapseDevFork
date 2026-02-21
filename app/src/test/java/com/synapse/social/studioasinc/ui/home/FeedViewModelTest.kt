@@ -5,7 +5,7 @@ import androidx.paging.PagingData
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
 import com.synapse.social.studioasinc.data.repository.PostRepository
 import com.synapse.social.studioasinc.data.repository.SettingsRepository
-import com.synapse.social.studioasinc.domain.model.Post
+import com.synapse.social.studioasinc.shared.domain.model.Post
 import com.synapse.social.studioasinc.domain.usecase.post.BookmarkPostUseCase
 import com.synapse.social.studioasinc.domain.usecase.post.ReactToPostUseCase
 import com.synapse.social.studioasinc.domain.usecase.post.RevokeVoteUseCase

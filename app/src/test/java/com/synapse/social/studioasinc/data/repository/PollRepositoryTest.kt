@@ -5,7 +5,7 @@ package com.synapse.social.studioasinc.data.repository
 
  // Disabled due to multiple compilation errors
 
-import com.synapse.social.studioasinc.domain.model.PollOptionResult
+import com.synapse.social.studioasinc.shared.domain.model.PollOptionResult
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.user.UserInfo

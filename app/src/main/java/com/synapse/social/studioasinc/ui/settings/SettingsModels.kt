@@ -1,8 +1,8 @@
 package com.synapse.social.studioasinc.ui.settings
 
 import androidx.annotation.DrawableRes
-import com.synapse.social.studioasinc.domain.model.ChatThemePreset
-import com.synapse.social.studioasinc.domain.model.ChatWallpaper
+import com.synapse.social.studioasinc.shared.domain.model.ChatThemePreset
+import com.synapse.social.studioasinc.shared.domain.model.ChatWallpaper
 
 
 

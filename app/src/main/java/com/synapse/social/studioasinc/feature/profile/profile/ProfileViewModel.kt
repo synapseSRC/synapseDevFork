@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.data.model.UserProfile
 import com.synapse.social.studioasinc.shared.domain.usecase.auth.GetCurrentUserIdUseCase
-import com.synapse.social.studioasinc.domain.model.MediaItem
-import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.ReactionType
+import com.synapse.social.studioasinc.shared.domain.model.MediaItem
+import com.synapse.social.studioasinc.shared.domain.model.Post
+import com.synapse.social.studioasinc.shared.domain.model.ReactionType
 import com.synapse.social.studioasinc.domain.usecase.post.BookmarkPostUseCase
 import com.synapse.social.studioasinc.domain.usecase.post.DeletePostUseCase
 import com.synapse.social.studioasinc.domain.usecase.post.ReactToPostUseCase
@@ -67,7 +67,7 @@ data class ProfileScreenState(
     val viewAsUserName: String? = null,
     val hasStory: Boolean = false,
     val isFollowLoading: Boolean = false,
-    val searchResults: List<com.synapse.social.studioasinc.domain.model.User> = emptyList(),
+    val searchResults: List<com.synapse.social.studioasinc.shared.domain.model.User> = emptyList(),
     val isSearching: Boolean = false,
     val isRefreshing: Boolean = false
 )

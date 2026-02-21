@@ -1,4 +1,5 @@
 package com.synapse.social.studioasinc.shared.domain.usecase.search
+import com.synapse.social.studioasinc.shared.domain.model.*
 
 import com.synapse.social.studioasinc.shared.domain.model.SearchAccount
 import com.synapse.social.studioasinc.shared.domain.model.SearchHashtag

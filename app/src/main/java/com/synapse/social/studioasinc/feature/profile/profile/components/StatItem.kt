@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.core.util.NumberFormatter
+import com.synapse.social.studioasinc.shared.core.util.NumberFormatter
 import com.synapse.social.studioasinc.feature.shared.theme.Spacing
 
 @Composable

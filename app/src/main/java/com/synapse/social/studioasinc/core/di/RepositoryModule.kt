@@ -26,7 +26,6 @@ import com.synapse.social.studioasinc.shared.domain.usecase.ValidateProviderConf
 import com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
 import com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase
-import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
 import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
 import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
 import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
@@ -83,9 +82,10 @@ object RepositoryModule {
     @Singleton
     fun providePostRepository(
         postDao: PostDao,
-        client: SupabaseClientType
+        client: SupabaseClientType,
+        prefs: SharedPreferences
     ): PostRepository {
-        return PostRepository(postDao, client)
+        return PostRepository(postDao, client, prefs)
     }
 
     @Provides
@@ -207,7 +207,7 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideStorageRepository(
-        db: StorageDatabase,
+        db: com.synapse.social.studioasinc.shared.data.database.StorageDatabase,
         secureStorage: SecureStorage
     ): StorageRepository {
         return StorageRepositoryImpl(db, secureStorage)

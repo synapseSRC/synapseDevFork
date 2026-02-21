@@ -1,5 +1,9 @@
 package com.synapse.social.studioasinc.data.repository
 
+import android.content.SharedPreferences
+import kotlinx.datetime.Instant
+
+
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.local.database.PostDao
 import com.synapse.social.studioasinc.domain.model.Post
@@ -58,6 +62,7 @@ class PostRepository @Inject constructor(
     private val userProfileCache = ConcurrentHashMap<String, Result<ProfileData>>()
 
     companion object {
+        private const val PREF_LAST_SYNC_TIME = "last_post_sync_time"
         private const val CACHE_EXPIRATION_MS = 5 * 60 * 1000L
         private const val TAG = "PostRepository"
         private val PGRST_REGEX = Regex("PGRST\\d+")

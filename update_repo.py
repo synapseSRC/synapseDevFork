@@ -86,7 +86,7 @@ new_method = """    @androidx.annotation.VisibleForTesting
                      }
                      .decodeList<JsonObject>()
 
-                 val deletedIds = response.mapNotNull { it[\"id\"]?.jsonPrimitive?.contentOrNull }
+                 val deletedIds = response.mapNotNull { it["id"]?.jsonPrimitive?.contentOrNull }
 
                  if (deletedIds.isNotEmpty()) {
                       android.util.Log.d(TAG, "Found ${deletedIds.size} deleted posts via timestamp sync")

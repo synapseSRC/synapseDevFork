@@ -1,18 +1,29 @@
 package com.synapse.social.studioasinc.data.repository
 
 import android.content.SharedPreferences
+import kotlinx.datetime.Instant
+
+
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.data.local.database.PostDao
+import com.synapse.social.studioasinc.data.local.database.PostEntity
+import com.synapse.social.studioasinc.data.repository.PostMapper
 import com.synapse.social.studioasinc.domain.model.Post
+import com.synapse.social.studioasinc.domain.model.PollOption
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.domain.model.UserReaction
+import com.synapse.social.studioasinc.domain.model.MediaItem
+import com.synapse.social.studioasinc.domain.model.MediaType
+import io.github.jan.supabase.functions.functions
 import io.github.jan.supabase.postgrest.from
+import io.ktor.client.statement.bodyAsText
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import java.util.concurrent.ConcurrentHashMap
 import androidx.paging.Pager
@@ -25,7 +36,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.datetime.Instant
 
 import io.github.jan.supabase.SupabaseClient as JanSupabaseClient
 
@@ -54,6 +64,7 @@ class PostRepository @Inject constructor(
             System.currentTimeMillis() - timestamp > expirationMs
     }
 
+
     private val postsCache = ConcurrentHashMap<String, CacheEntry<List<Post>>>()
     private val profileCache = ConcurrentHashMap<String, CacheEntry<ProfileData>>()
 
@@ -66,10 +77,15 @@ class PostRepository @Inject constructor(
 
         internal fun findDeletedIds(localChunk: List<String>, serverResponse: List<JsonObject>): List<String> {
             val serverIds = serverResponse.mapNotNull { it["id"]?.jsonPrimitive?.contentOrNull }.toSet()
+
+            // Hard deleted: in localChunk but not in serverIds
             val missingIds = localChunk.filter { !serverIds.contains(it) }
+
+            // Soft deleted: in serverResponse with is_deleted=true
             val softDeletedIds = serverResponse.filter {
                 it["is_deleted"]?.jsonPrimitive?.booleanOrNull == true
             }.mapNotNull { it["id"]?.jsonPrimitive?.contentOrNull }
+
             return (missingIds + softDeletedIds).distinct()
         }
     }
@@ -101,6 +117,8 @@ class PostRepository @Inject constructor(
             android.util.Log.e(TAG, "Supabase PostgREST error code: ${pgrstMatch.value}")
         }
         android.util.Log.e(TAG, "Supabase error: $message", exception)
+
+
         return when {
             message.contains("PGRST200") -> "Relation/table not found in schema"
             message.contains("PGRST100") -> "Database column mismatch: ${extractColumnInfo(message)}"
@@ -120,6 +138,7 @@ class PostRepository @Inject constructor(
     }
 
     private fun extractColumnInfo(message: String): String {
+
         val columnMatch = COLUMN_REGEX.find(message)
         return columnMatch?.groupValues?.get(1) ?: "unknown column"
     }
@@ -129,6 +148,8 @@ class PostRepository @Inject constructor(
             if (!SupabaseClient.isConfigured()) {
                 return@withContext Result.failure(Exception("Supabase not configured."))
             }
+
+
             if (post.username == null) {
                 val profile = fetchUserProfile(post.authorUid)
                 if (profile != null) {
@@ -137,12 +158,21 @@ class PostRepository @Inject constructor(
                     post.isVerified = profile.isVerified
                 }
             }
+
             val postDto = post.toInsertDto()
+
             android.util.Log.d(TAG, "Creating post with DTO fields: ${getFieldNames(postDto)}")
+            android.util.Log.d(TAG, "Post author_uid: ${postDto.authorUid}")
+            android.util.Log.d(TAG, "Current auth user: ${client.auth.currentUserOrNull()?.id}")
+
             client.from("posts").insert(postDto)
             postDao.insertAll(listOf(PostMapper.toEntity(post)))
             invalidateCache()
+
+
             processMentions(post.id, post.postText ?: "", post.authorUid)
+
+            android.util.Log.d(TAG, "Post created successfully: ${post.id}")
             Result.success(post)
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to create post", e)
@@ -163,6 +193,7 @@ class PostRepository @Inject constructor(
         try {
             val post = postDao.getPostById(postId)?.let { entity ->
                 val model = PostMapper.toModel(entity)
+
                 if (model.username == null) {
                     fetchUserProfile(model.authorUid)?.let { profile ->
                         model.username = profile.username
@@ -178,11 +209,14 @@ class PostRepository @Inject constructor(
         }
     }
 
-    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+        @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     fun getPosts(): Flow<Result<List<Post>>> {
         return postDao.getAllPosts().flatMapLatest { entities ->
             flow {
                 val posts = entities.map { PostMapper.toModel(it) }
+
+
+                // Apply cache immediately
                 posts.forEach { post ->
                     if (post.username == null) {
                         profileCache[post.authorUid]?.data?.let { profile ->
@@ -192,15 +226,21 @@ class PostRepository @Inject constructor(
                         }
                     }
                 }
+
                 emit(Result.success(posts))
+
                 val missingUserIds = posts.filter { it.username == null }
                     .map { it.authorUid }
                     .distinct()
                     .filter { userId ->
                         profileCache[userId]?.let { !it.isExpired() } != true
                     }
+
+
                 if (missingUserIds.isNotEmpty()) {
                     fetchUserProfilesBatch(missingUserIds)
+
+                    // Re-apply profiles
                     posts.forEach { post ->
                         if (post.username == null) {
                             profileCache[post.authorUid]?.data?.let { profile ->
@@ -228,6 +268,7 @@ class PostRepository @Inject constructor(
         ).flow.map { pagingData ->
             pagingData.map { entity ->
                 val model = PostMapper.toModel(entity)
+
                 if (model.username == null) {
                     profileCache[model.authorUid]?.data?.let { profile ->
                         model.username = profile.username
@@ -243,6 +284,7 @@ class PostRepository @Inject constructor(
     suspend fun refreshPosts(page: Int, pageSize: Int): Result<Unit> {
         return try {
             val offset = page * pageSize
+
             val response = client.from("posts")
                 .select(
                     columns = Columns.raw("""
@@ -257,6 +299,7 @@ class PostRepository @Inject constructor(
 
             val posts = response.map { postDto ->
                 postDto.toDomain(::constructMediaUrl, ::constructAvatarUrl).also { post ->
+
                     postDto.user?.let { user ->
                         if (user.uid.isNotEmpty()) {
                             profileCache[user.uid] = CacheEntry(
@@ -275,9 +318,11 @@ class PostRepository @Inject constructor(
             val postsWithPolls = populatePostPolls(postsWithReactions)
             postDao.insertAll(postsWithPolls.map { PostMapper.toEntity(it) })
 
+
             if (page == 0) {
                 syncDeletedPosts()
             }
+
             Result.success(Unit)
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to fetch posts page: ${e.message}", e)
@@ -285,7 +330,7 @@ class PostRepository @Inject constructor(
         }
     }
 
-    @androidx.annotation.VisibleForTesting
+        @androidx.annotation.VisibleForTesting
     internal suspend fun syncDeletedPosts() {
         try {
             val localIds = postDao.getAllPostIds()
@@ -294,8 +339,10 @@ class PostRepository @Inject constructor(
             val lastSync = prefs.getLong(PREF_LAST_SYNC_TIME, 0L)
 
             if (lastSync == 0L) {
-                 android.util.Log.d(TAG, "First sync: Checking local posts existence")
+                 android.util.Log.d(TAG, "First sync or migration: Checking all local posts for deletion (O(N))")
                  val idsToDelete = mutableListOf<String>()
+
+                 // Process in chunks of 50 to respect URL length limits
                  localIds.chunked(50).forEach { chunk ->
                      try {
                          val response = client.from("posts")
@@ -303,14 +350,25 @@ class PostRepository @Inject constructor(
                                  filter { isIn("id", chunk) }
                              }
                              .decodeList<JsonObject>()
+
                          idsToDelete.addAll(findDeletedIds(chunk, response))
-                     } catch (e: Exception) { }
+
+                     } catch (e: Exception) {
+                         android.util.Log.e(TAG, "Failed to check chunk existence", e)
+                     }
                  }
+
                  if (idsToDelete.isNotEmpty()) {
-                     idsToDelete.distinct().chunked(500).forEach { postDao.deletePosts(it) }
+                     val uniqueIdsToDelete = idsToDelete.distinct()
+                     android.util.Log.d(TAG, "Syncing deletions: removing ${uniqueIdsToDelete.size} posts")
+                     uniqueIdsToDelete.chunked(500).forEach { batch ->
+                         postDao.deletePosts(batch)
+                     }
                  }
             } else {
                  val isoTime = Instant.fromEpochMilliseconds(lastSync).toString()
+                 android.util.Log.d(TAG, "Syncing deleted posts since $isoTime")
+
                  val response = client.from("posts")
                      .select(columns = Columns.raw("id")) {
                          filter {
@@ -319,12 +377,17 @@ class PostRepository @Inject constructor(
                          }
                      }
                      .decodeList<JsonObject>()
+
                  val deletedIds = response.mapNotNull { it["id"]?.jsonPrimitive?.contentOrNull }
+
                  if (deletedIds.isNotEmpty()) {
+                      android.util.Log.d(TAG, "Found ${deletedIds.size} deleted posts via timestamp sync")
                       postDao.deletePosts(deletedIds)
                  }
             }
+
             prefs.edit().putLong(PREF_LAST_SYNC_TIME, System.currentTimeMillis()).apply()
+
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to sync deleted posts", e)
         }
@@ -332,6 +395,7 @@ class PostRepository @Inject constructor(
 
     suspend fun getUserPosts(userId: String): Result<List<Post>> = withContext(Dispatchers.IO) {
         try {
+
             val response = client.from("posts")
                 .select(
                     columns = Columns.raw("""
@@ -343,6 +407,7 @@ class PostRepository @Inject constructor(
                     filter { eq("author_uid", userId) }
                 }
                 .decodeList<PostSelectDto>()
+
             val posts = response.map { postDto ->
                 postDto.toDomain(::constructMediaUrl, ::constructAvatarUrl).also { post ->
                      postDto.user?.let { user ->
@@ -358,8 +423,10 @@ class PostRepository @Inject constructor(
                     }
                 }
             }
+
             val postsWithReactions = populatePostReactions(posts)
             val postsWithPolls = populatePostPolls(postsWithReactions)
+
             Result.success(postsWithPolls)
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to fetch user posts: ${e.message}", e)
@@ -369,10 +436,13 @@ class PostRepository @Inject constructor(
 
     suspend fun updatePost(postId: String, updates: Map<String, Any?>): Result<Post> = withContext(Dispatchers.IO) {
         try {
-            client.from("posts").update(updates) { filter { eq("id", postId) } }
+            client.from("posts").update(updates) {
+                filter { eq("id", postId) }
+            }
             invalidateCache()
             Result.success(Post(id = postId, authorUid = ""))
         } catch (e: Exception) {
+            android.util.Log.e(TAG, "Failed to update post", e)
             Result.failure(Exception(mapSupabaseError(e)))
         }
     }
@@ -380,28 +450,40 @@ class PostRepository @Inject constructor(
     suspend fun updatePost(post: Post): Result<Post> = withContext(Dispatchers.IO) {
         try {
             val updateDto = post.toUpdateDto()
-            client.from("posts").update(updateDto) { filter { eq("id", post.id) } }
+
+            client.from("posts").update(updateDto) {
+                filter { eq("id", post.id) }
+            }
+
+
             postDao.insertAll(listOf(PostMapper.toEntity(post)))
             invalidateCache()
+
             Result.success(post)
         } catch (e: Exception) {
+            android.util.Log.e(TAG, "Failed to update full post", e)
             Result.failure(Exception(mapSupabaseError(e)))
         }
     }
 
     suspend fun deletePost(postId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            client.from("posts").delete { filter { eq("id", postId) } }
+            client.from("posts").delete {
+                filter { eq("id", postId) }
+            }
             postDao.deletePost(postId)
             invalidateCache()
             Result.success(Unit)
         } catch (e: Exception) {
+            android.util.Log.e(TAG, "Failed to delete post", e)
             Result.failure(Exception(mapSupabaseError(e)))
         }
     }
 
     suspend fun searchPosts(query: String): Result<List<Post>> = Result.success(emptyList())
+
     fun observePosts(): Flow<List<Post>> = flow { emit(emptyList()) }
+
 
     private val reactionRepository = ReactionRepository()
     private val pollRepository = PollRepository()
@@ -413,16 +495,27 @@ class PostRepository @Inject constructor(
         oldReaction: ReactionType? = null,
         skipCheck: Boolean = false
     ): Result<Unit> = withContext(Dispatchers.IO) {
-        reactionRepository.toggleReaction(postId, "post", reactionType, oldReaction, skipCheck).map { Unit }
+
+        reactionRepository.toggleReaction(postId, "post", reactionType, oldReaction, skipCheck)
+            .map { Unit }
     }
 
     suspend fun getReactionSummary(postId: String): Result<Map<ReactionType, Int>> =
         reactionRepository.getReactionSummary(postId, "post")
 
     suspend fun getUserReaction(postId: String, userId: String): Result<ReactionType?> =
+
+
+
+
+
+
         if (userId == client.auth.currentUserOrNull()?.id) {
              reactionRepository.getUserReaction(postId, "post")
         } else {
+
+
+
              withContext(Dispatchers.IO) {
                  try {
                      val reaction = client.from("reactions")
@@ -436,8 +529,12 @@ class PostRepository @Inject constructor(
              }
         }
 
-    suspend fun getUsersWhoReacted(postId: String, reactionType: ReactionType? = null): Result<List<UserReaction>> = withContext(Dispatchers.IO) {
+    suspend fun getUsersWhoReacted(
+        postId: String,
+        reactionType: ReactionType? = null
+    ): Result<List<UserReaction>> = withContext(Dispatchers.IO) {
         try {
+
             val reactions = client.from("reactions")
                 .select(Columns.raw("*, users!inner(uid, username, avatar, verify)")) {
                     filter {
@@ -446,6 +543,7 @@ class PostRepository @Inject constructor(
                     }
                 }
                 .decodeList<JsonObject>()
+
             val userReactions = reactions.mapNotNull { reaction ->
                 val userId = reaction["user_id"]?.jsonPrimitive?.contentOrNull ?: return@mapNotNull null
                 val user = reaction["users"]?.jsonObject
@@ -464,6 +562,7 @@ class PostRepository @Inject constructor(
         }
     }
 
+
     private suspend fun populatePostReactions(posts: List<Post>): List<Post> {
         return reactionRepository.populatePostReactions(posts)
     }
@@ -471,66 +570,122 @@ class PostRepository @Inject constructor(
     private suspend fun populatePostPolls(posts: List<Post>): List<Post> {
         val pollPosts = posts.filter { it.hasPoll == true }
         if (pollPosts.isEmpty()) return posts
+
         val postIds = pollPosts.map { it.id }
-        val userVotes = pollRepository.getBatchUserVotes(postIds).getOrNull() ?: emptyMap()
-        val pollCounts = pollRepository.getBatchPollVotes(postIds).getOrNull() ?: emptyMap()
+
+
+        val userVotesResult = pollRepository.getBatchUserVotes(postIds)
+        val userVotes = userVotesResult.getOrNull() ?: emptyMap()
+
+
+        val pollCountsResult = pollRepository.getBatchPollVotes(postIds)
+        val pollCounts = pollCountsResult.getOrNull() ?: emptyMap()
+
         return posts.map { post ->
             if (post.hasPoll == true) {
+                val userVote = userVotes[post.id]
                 val counts = pollCounts[post.id] ?: emptyMap()
+
+
                 val updatedOptions = post.pollOptions?.mapIndexed { index, option ->
                     option.copy(votes = counts[index] ?: 0)
                 }
-                val updatedPost = post.copy(pollOptions = updatedOptions)
-                updatedPost.userPollVote = userVotes[post.id]
+
+                val updatedPost = post.copy(
+                    pollOptions = updatedOptions
+                )
+                updatedPost.userPollVote = userVote
                 updatedPost
-            } else post
+            } else {
+                post
+            }
         }
     }
 
     private suspend fun fetchUserProfilesBatch(userIds: List<String>) {
         try {
-            val users = client.from("users").select { filter { isIn("uid", userIds) } }.decodeList<JsonObject>()
+            val users = client.from("users").select {
+                filter { isIn("uid", userIds) }
+            }.decodeList<JsonObject>()
+
             users.forEach { user ->
                 val uid = user["uid"]?.jsonPrimitive?.contentOrNull ?: return@forEach
-                profileCache[uid] = CacheEntry(ProfileData(
+                val profile = ProfileData(
                     username = user["username"]?.jsonPrimitive?.contentOrNull,
                     avatarUrl = user["avatar"]?.jsonPrimitive?.contentOrNull?.let { constructAvatarUrl(it) },
                     isVerified = user["verify"]?.jsonPrimitive?.booleanOrNull ?: false
-                ))
+                )
+                profileCache[uid] = CacheEntry(profile)
             }
-        } catch (e: Exception) { }
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "Failed to batch fetch user profiles", e)
+        }
     }
 
     private suspend fun fetchUserProfile(userId: String): ProfileData? {
-        profileCache[userId]?.let { if (!it.isExpired()) return it.data }
+
+        profileCache[userId]?.let { entry ->
+            if (!entry.isExpired()) return entry.data
+        }
+
         return try {
-            val user = client.from("users").select { filter { eq("uid", userId) } }.decodeSingleOrNull<JsonObject>()
-            user?.let {
+            val user = client.from("users").select {
+                filter { eq("uid", userId) }
+            }.decodeSingleOrNull<JsonObject>()
+
+            if (user != null) {
                 val profile = ProfileData(
-                    username = it["username"]?.jsonPrimitive?.contentOrNull,
-                    avatarUrl = it["avatar"]?.jsonPrimitive?.contentOrNull?.let { constructAvatarUrl(it) },
-                    isVerified = it["verify"]?.jsonPrimitive?.booleanOrNull ?: false
+                    username = user["username"]?.jsonPrimitive?.contentOrNull,
+                    avatarUrl = user["avatar"]?.jsonPrimitive?.contentOrNull?.let { constructAvatarUrl(it) },
+                    isVerified = user["verify"]?.jsonPrimitive?.booleanOrNull ?: false
                 )
                 profileCache[userId] = CacheEntry(profile)
                 profile
+            } else {
+                null
             }
-        } catch (e: Exception) { null }
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "Failed to fetch user profile for $userId", e)
+            null
+        }
     }
 
-    private suspend fun processMentions(postId: String, content: String, senderId: String) {
+    private suspend fun processMentions(
+        postId: String,
+        content: String,
+        senderId: String
+    ) {
         try {
+
             val mentionedUsers = com.synapse.social.studioasinc.core.domain.parser.MentionParser.extractMentions(content)
-            if (mentionedUsers.isNotEmpty()) android.util.Log.d(TAG, "Processing mentions: $mentionedUsers")
-        } catch (e: Exception) { }
+
+
+            if (mentionedUsers.isNotEmpty()) {
+                android.util.Log.d(TAG, "Processing mentions: $mentionedUsers")
+
+            }
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "Failed to process mentions: ${e.message}", e)
+        }
     }
 
     suspend fun toggleComments(postId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            val post = client.from("posts").select(Columns.list("post_disable_comments")) { filter { eq("id", postId) } }.decodeSingleOrNull<JsonObject>()
-            val currentBool = post?.get("post_disable_comments")?.jsonPrimitive?.contentOrNull == "true"
+            val post = client.from("posts").select(Columns.list("post_disable_comments")) {
+                filter { eq("id", postId) }
+            }.decodeSingleOrNull<JsonObject>()
+
+            val currentStr = post?.get("post_disable_comments")?.jsonPrimitive?.contentOrNull
+            val currentBool = currentStr == "true"
             val newStr = if (currentBool) "false" else "true"
-            client.from("posts").update(mapOf("post_disable_comments" to newStr)) { filter { eq("id", postId) } }
+
+            client.from("posts").update(mapOf("post_disable_comments" to newStr)) {
+                filter { eq("id", postId) }
+            }
             Result.success(Unit)
-        } catch (e: Exception) { Result.failure(e) }
+        } catch (e: Exception) {
+             android.util.Log.e(TAG, "Failed to toggle comments", e)
+             Result.failure(e)
+        }
     }
 }

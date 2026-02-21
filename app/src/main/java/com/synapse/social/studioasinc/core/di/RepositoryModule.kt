@@ -8,8 +8,10 @@ import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
 import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
 import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
-import com.synapse.social.studioasinc.data.local.database.*
-import com.synapse.social.studioasinc.shared.data.local.database.CommentDao
+import com.synapse.social.studioasinc.data.local.database.PostDao
+import com.synapse.social.studioasinc.data.local.database.UserDao
+import com.synapse.social.studioasinc.data.local.database.CommentDao
+import com.synapse.social.studioasinc.data.local.database.StorageDatabase
 import com.synapse.social.studioasinc.data.local.AppSettingsManager
 import dagger.Module
 import dagger.Provides
@@ -31,7 +33,6 @@ import com.synapse.social.studioasinc.shared.domain.usecase.ValidateProviderConf
 import com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
 import com.synapse.social.studioasinc.shared.domain.usecase.GetStorageConfigUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProviderUseCase
-import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
 import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
 import com.synapse.social.studioasinc.shared.data.local.SecureStorage
 import com.synapse.social.studioasinc.shared.data.local.AndroidSecureStorage
@@ -204,7 +205,7 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideStorageRepository(
-        db: StorageDatabase,
+        db: com.synapse.social.studioasinc.shared.data.database.StorageDatabase,
         secureStorage: SecureStorage
     ): StorageRepository {
         return StorageRepositoryImpl(db, secureStorage)

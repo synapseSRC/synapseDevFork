@@ -19,7 +19,7 @@ This document outlines the comprehensive 35-task plan for implementing End-to-En
 ### Initial E2EE Setup (Signal Protocol)
 - [ ] **Task 11:** Integrate Signal Protocol library (libsignal-client).
 - [ ] **Task 12:** Implement `SignalProtocolManager` wrapper.
-- [ ] **Task 13:** generate/Store device-specific identity keys.
+- [ ] **Task 13:** Generate/Store device-specific identity keys.
 - [ ] **Task 14:** Implement PreKey generation and upload logic.
 - [ ] **Task 15:** Implement basic Session Management (Signal Store).
 - [ ] **Task 16:** Implement basic Message Encryption (sender side).
@@ -37,24 +37,24 @@ This document outlines the comprehensive 35-task plan for implementing End-to-En
   - Create `ChatListViewModel.kt`, `ChatDetailViewModel.kt`, `MessageInputViewModel.kt`
   - Handle state management with StateFlow
   - Integrate with shared use cases
-  - Add TODO comments for UI state handling
+  - Add detailed TODO comments for UI state handling scenarios and edge cases
 
 ### Composable Components
 - [ ] **Task 22: Chat UI - Composables**
   - Create `ChatListScreen.kt`, `ChatDetailScreen.kt`, `MessageBubble.kt`, `EncryptionIndicator.kt`
   - Add accessibility support
-  - Add TODO comments for UI interactions
+  - Add detailed TODO comments for various UI interaction flows and accessibility considerations
 
 ### Navigation & Routing
 - [ ] **Task 23: Chat UI - Navigation**
   - Create `ChatNavigation.kt` with encrypted chat routes
   - Add deep linking support for encrypted chats
-  - Add TODO comments for navigation flows
+  - Add detailed TODO comments for navigation paths, error handling during navigation, and dynamic route generation
 
 ### Input & Interactions
 - [ ] **Task 24: Chat UI - Input Components**
   - Create `MessageInputField.kt`, `MediaPicker.kt`, `EncryptionToggle.kt`
-  - Add TODO comments for input validation and encryption status
+  - Add detailed TODO comments for input validation rules, real-time encryption status feedback, and handling of unencrypted inputs
 
 ---
 
@@ -96,23 +96,23 @@ This document outlines the comprehensive 35-task plan for implementing End-to-En
 ### Database & Migration
 - [ ] **Task 31: Database Migrations**
   - Create SQLDelight migration files for encryption schema updates
-  - Add TODO comments for safe migration strategies
+  - Add detailed TODO comments for backward compatibility, data integrity checks during migration, and rollback procedures
 
 ### Observability
 - [ ] **Task 32: Monitoring & Logging**
   - Create `EncryptionMetrics.kt`, `SecurityAuditLogger.kt`
-  - Add TODO comments for privacy-safe logging
+  - Add detailed TODO comments for anonymization techniques, data retention policies, and preventing sensitive information leakage in logs
 
 ### Security & Compliance
 - [ ] **Task 33: Key Backup & Recovery**
   - Create `KeyBackupManager.kt`, `RecoveryPhraseGenerator.kt`
-  - Add TODO comments for secure backup mechanisms
+  - Add detailed TODO comments for key escrow solutions, user-controlled backups, and secure storage of recovery phrases
 
 - [ ] **Task 34: Compliance & Security**
   - Create `ComplianceValidator.kt`, `SecurityPolicyEnforcer.kt`
-  - Add TODO comments for GDPR and security compliance
+  - Add detailed TODO comments for data protection impact assessments, adherence to relevant security standards (e.g., ISO 27001), and privacy by design principles
 
 ### Documentation
 - [ ] **Task 35: Documentation & Guides**
   - Create `ENCRYPTION_GUIDE.md`, `SECURITY_BEST_PRACTICES.md`
-  - Add user guides and developer documentation
+  - Add detailed TODO comments for user-facing guides on E2EE features, developer documentation for integration, and troubleshooting guides

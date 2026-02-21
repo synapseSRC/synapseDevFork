@@ -6,16 +6,18 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.synapse.social.studioasinc.data.repository.*
 import com.synapse.social.studioasinc.domain.model.*
 import com.synapse.social.studioasinc.feature.shared.components.post.PostEvent
 import com.synapse.social.studioasinc.feature.shared.components.post.PostEventBus
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
+import com.synapse.social.studioasinc.data.paging.CommentPagingSource
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,8 +38,18 @@ class PostDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PostDetailUiState())
     val uiState: StateFlow<PostDetailUiState> = _uiState.asStateFlow()
 
-    private val _commentsPagingFlow = MutableStateFlow<Flow<PagingData<CommentWithUser>>>(emptyFlow())
-    val commentsPagingFlow: StateFlow<Flow<PagingData<CommentWithUser>>> = _commentsPagingFlow.asStateFlow()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val commentsPagingFlow: Flow<PagingData<CommentWithUser>> = _uiState
+        .map { it.post?.post?.id }
+        .distinctUntilChanged()
+        .filterNotNull()
+        .flatMapLatest { postId ->
+            Pager(
+                config = PagingConfig(pageSize = 20),
+                pagingSourceFactory = { CommentPagingSource(commentRepository, postId) }
+            ).flow
+        }
+        .cachedIn(viewModelScope)
 
     private var currentPostId: String? = null
 
@@ -49,27 +61,14 @@ class PostDetailViewModel @Inject constructor(
     }
 
     fun loadPost(postId: String) {
-
-        if (currentPostId != postId) {
-            currentPostId = postId
-            val flow = Pager(
-                PagingConfig(pageSize = 20)
-            ) {
-                 CommentPagingSource(commentRepository, postId)
-            }.flow.cachedIn(viewModelScope)
-
-            _commentsPagingFlow.value = flow
-        }
+        if (currentPostId == postId) return
+        currentPostId = postId
 
         viewModelScope.launch {
-
-            if (_uiState.value.post == null) {
-                _uiState.update { it.copy(isLoading = true, error = null) }
-            }
-
+            _uiState.update { it.copy(isLoading = true, error = null) }
             postDetailRepository.getPostWithDetails(postId).fold(
-                onSuccess = { postDetail ->
-                    _uiState.update { it.copy(isLoading = false, post = postDetail) }
+                onSuccess = { post ->
+                    _uiState.update { it.copy(post = post, isLoading = false) }
                 },
                 onFailure = { error ->
                     _uiState.update { it.copy(isLoading = false, error = error.message ?: "Failed to load post") }
@@ -151,9 +150,6 @@ class PostDetailViewModel @Inject constructor(
         }
     }
 
-
-
-
     private var isSubmittingComment = false
 
     fun addComment(content: String) {
@@ -163,7 +159,7 @@ class PostDetailViewModel @Inject constructor(
 
         isSubmittingComment = true
         viewModelScope.launch {
-            commentRepository.createComment(postId, content, null, parentId).onSuccess {
+            commentRepository.addComment(postId, content, parentId).onSuccess {
                 refreshComments()
                 setReplyTo(null)
             }.also {
@@ -194,7 +190,7 @@ class PostDetailViewModel @Inject constructor(
     fun editComment(commentId: String, content: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
-            commentRepository.editComment(commentId, content).onSuccess {
+            commentRepository.updateComment(commentId, content).onSuccess {
                 invalidateComments()
                 setEditingComment(null)
             }.also {
@@ -279,10 +275,10 @@ class PostDetailViewModel @Inject constructor(
         }
     }
 
-    fun pinComment(commentId: String, postId: String) {
+    fun pinComment(commentId: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading + commentId) }
-            commentRepository.pinComment(commentId, postId).onSuccess {
+            commentRepository.pinComment(commentId).onSuccess {
                 invalidateComments()
             }.also {
                 _uiState.update { it.copy(commentActionsLoading = it.commentActionsLoading - commentId) }

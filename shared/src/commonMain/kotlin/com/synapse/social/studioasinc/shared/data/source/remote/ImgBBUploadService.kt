@@ -1,6 +1,7 @@
 package com.synapse.social.studioasinc.shared.data.source.remote
 
 import com.synapse.social.studioasinc.shared.domain.model.StorageConfig
+import com.synapse.social.studioasinc.shared.domain.model.UploadError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.MultiPartFormDataContent
@@ -43,7 +44,7 @@ class ImgBBUploadService(private val client: HttpClient) : UploadService {
             }
         }.body()
 
-        val data = response["data"]?.jsonObject ?: throw Exception("ImgBB upload failed")
-        return data["url"]?.jsonPrimitive?.content ?: throw Exception("ImgBB URL missing")
+        val data = response["data"]?.jsonObject ?: throw UploadError.ImgBBError("ImgBB upload failed")
+        return data["url"]?.jsonPrimitive?.content ?: throw UploadError.ImgBBError("ImgBB URL missing")
     }
 }

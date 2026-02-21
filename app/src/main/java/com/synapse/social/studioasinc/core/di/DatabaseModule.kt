@@ -1,10 +1,6 @@
 package com.synapse.social.studioasinc.core.di
 
 import android.content.Context
-import androidx.room.Room
-import com.synapse.social.studioasinc.data.local.database.AppDatabase
-import com.synapse.social.studioasinc.data.local.database.UserDao
-import com.synapse.social.studioasinc.data.local.database.PostDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,28 +19,6 @@ import com.synapse.social.studioasinc.shared.data.local.database.SqlDelightComme
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
-    @Provides
-    @Singleton
-    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "app_database"
-        )
-        .fallbackToDestructiveMigration()
-        .build()
-    }
-
-    @Provides
-    fun provideUserDao(db: AppDatabase): UserDao {
-        return db.userDao()
-    }
-
-    @Provides
-    fun providePostDao(db: AppDatabase): PostDao {
-        return db.postDao()
-    }
 
     @Provides
     fun provideCommentDao(db: StorageDatabase): CommentDao {
@@ -67,7 +41,8 @@ object DatabaseModule {
                 commentsCountAdapter = intAdapter,
                 viewsCountAdapter = intAdapter,
                 resharesCountAdapter = intAdapter,
-                userPollVoteAdapter = intAdapter
+                userPollVoteAdapter = intAdapter,
+                encryptedContentAdapter = stringMapAdapter
             ),
             CommentAdapter = Comment.Adapter(
                 likesCountAdapter = intAdapter,

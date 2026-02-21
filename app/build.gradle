@@ -256,6 +256,7 @@ dependencies {
 
     // SQLDelight Driver
     implementation "app.cash.sqldelight:android-driver:2.0.2"
+    implementation "app.cash.sqldelight:coroutines-extensions:2.0.2"
 
     // Room Database
     def room_version = "2.7.1"

@@ -1,6 +1,6 @@
 package com.synapse.social.studioasinc.data.repository
 
-import com.synapse.social.studioasinc.data.local.database.UserDao
+import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
 import com.synapse.social.studioasinc.domain.model.User
 import com.synapse.social.studioasinc.domain.model.UserProfile
 import io.github.jan.supabase.SupabaseClient
@@ -9,19 +9,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Singleton
 import com.synapse.social.studioasinc.core.network.SupabaseErrorHandler
 import com.synapse.social.studioasinc.core.network.SupabaseClient as AppSupabaseClient
 import com.synapse.social.studioasinc.shared.core.network.SupabaseClient as SharedSupabaseClient
 import com.synapse.social.studioasinc.shared.domain.repository.UserRepository as SharedUserRepository
 
-class UserRepository @Inject constructor(
-    private val userDao: UserDao,
+@Singleton
+class UserRepository constructor(
+    private val storageDatabase: StorageDatabase,
     private val client: SupabaseClient = AppSupabaseClient.client
 ) : SharedUserRepository {
 
     suspend fun getUserById(userId: String): Result<User?> {
         return try {
-            var user = userDao.getUserById(userId)?.let { UserMapper.toModel(it) }
+            var user = storageDatabase.userQueries.selectById(userId).executeAsOneOrNull()?.let { UserMapper.toModel(it) }
             if (user == null) {
                 val userProfile = client.from(SharedSupabaseClient.TABLE_USERS)
                     .select() {
@@ -39,7 +41,7 @@ class UserRepository @Inject constructor(
                         avatar = it.avatar,
                         verify = it.verify
                     )
-                    userDao.insertAll(listOf(UserMapper.toEntity(user!!)))
+                    storageDatabase.userQueries.insertUser(UserMapper.toEntity(user!!))
                 }
             }
             Result.success(user)

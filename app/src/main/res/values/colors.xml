@@ -34,4 +34,12 @@
     <color name="waveform_color">#2196F3</color>
     <color name="waveform_progress_color">#1976D2</color>
     <color name="waveform_background">#E0E0E0</color>
+
+    <!-- Theme Compatibility Aliases -->
+    <color name="primary">@color/primary_color</color>
+    <color name="accent">@color/accent_color</color>
+    <color name="background">@color/background_light</color>
+    <color name="surface">@color/surface_light</color>
+    <color name="text_primary">@color/text_primary_light</color>
+    <color name="text_secondary">@color/text_secondary_light</color>
 </resources>

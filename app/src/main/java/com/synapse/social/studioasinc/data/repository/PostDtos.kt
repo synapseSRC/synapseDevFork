@@ -106,8 +106,6 @@ data class PostSelectDto(
     @SerialName("latest_comments") val comments: List<CommentSelectDto>? = null
 )
 
-
-
 fun Post.toInsertDto(): PostInsertDto {
     return PostInsertDto(
         id = this.id,
@@ -123,10 +121,10 @@ fun Post.toInsertDto(): PostInsertDto {
         postDisableComments = this.postDisableComments,
         publishDate = this.publishDate,
         timestamp = this.timestamp,
-        likesCount = 0,
-        commentsCount = 0,
-        viewsCount = 0,
-        resharesCount = 0,
+        likesCount = this.likesCount,
+        commentsCount = this.commentsCount,
+        viewsCount = this.viewsCount,
+        resharesCount = this.resharesCount,
         mediaItems = this.mediaItems,
         hasPoll = this.hasPoll,
         pollQuestion = this.pollQuestion,
@@ -187,7 +185,7 @@ fun PostSelectDto.toDomain(constructMediaUrl: (String) -> String, constructAvata
         key = this.key,
         authorUid = this.authorUid,
         postText = this.postText,
-        postImage = this.postImage?.let { constructMediaUrl(it) },
+        postImage = this.postImage?.let { if (it.startsWith("http")) it else constructMediaUrl(it) },
         postType = this.postType,
         postHideViewsCount = this.postHideViewsCount,
         postHideLikeCount = this.postHideLikeCount,
@@ -202,8 +200,8 @@ fun PostSelectDto.toDomain(constructMediaUrl: (String) -> String, constructAvata
         resharesCount = this.resharesCount,
         mediaItems = this.mediaItems?.map {
             it.copy(
-                url = constructMediaUrl(it.url),
-                thumbnailUrl = it.thumbnailUrl?.let { thumb -> constructMediaUrl(thumb) }
+                url = if (it.url.startsWith("http")) it.url else constructMediaUrl(it.url),
+                thumbnailUrl = it.thumbnailUrl?.let { thumb -> if (thumb.startsWith("http")) thumb else constructMediaUrl(thumb) }
             )
         }?.toMutableList(),
         hasPoll = this.hasPoll,
@@ -224,7 +222,7 @@ fun PostSelectDto.toDomain(constructMediaUrl: (String) -> String, constructAvata
 
     this.user?.let { u ->
         post.username = u.username
-        post.avatarUrl = u.avatarUrl?.let { constructAvatarUrl(it) }
+        post.avatarUrl = u.avatarUrl?.let { if (it.startsWith("http")) it else constructAvatarUrl(it) }
         post.isVerified = u.isVerified ?: false
     }
 

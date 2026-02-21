@@ -1,12 +1,17 @@
 package com.synapse.social.studioasinc.data.repository
 
+import android.content.SharedPreferences
+import kotlinx.datetime.Instant
+
+
 import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.data.local.database.PostDao
+import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.domain.model.UserReaction
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -28,8 +33,8 @@ import javax.inject.Singleton
 import io.github.jan.supabase.SupabaseClient as JanSupabaseClient
 
 @Singleton
-class PostRepository @Inject constructor(
-    private val postDao: PostDao,
+class PostRepository constructor(
+    private val storageDatabase: StorageDatabase,
     private val client: JanSupabaseClient
 ) {
 
@@ -43,19 +48,21 @@ class PostRepository @Inject constructor(
         ).flow
     }
 
-    private data class CacheEntry<T>(
-        val data: T,
-        val timestamp: Long = System.currentTimeMillis()
-    ) {
-        fun isExpired(expirationMs: Long = CACHE_EXPIRATION_MS): Boolean =
-            System.currentTimeMillis() - timestamp > expirationMs
-    }
-
-
-    private val postsCache = ConcurrentHashMap<String, CacheEntry<List<Post>>>()
+    // Cache for user profiles to avoid repeated network calls
     private val profileCache = ConcurrentHashMap<String, CacheEntry<ProfileData>>()
 
+    // Cache for posts to avoid repeated db calls (not used with SQLDelight directly, but kept for compatibility if needed)
+    private val postsCache = ConcurrentHashMap<String, CacheEntry<Post>>()
+
+    private data class CacheEntry<T>(val data: T, val timestamp: Long = System.currentTimeMillis()) {
+        fun isExpired() = System.currentTimeMillis() - timestamp > CACHE_EXPIRATION_MS
+    }
+
+    // Using a simple cache for user profiles to reduce N+1 queries
+    private val userProfileCache = ConcurrentHashMap<String, Result<ProfileData>>()
+
     companion object {
+        private const val PREF_LAST_SYNC_TIME = "last_post_sync_time"
         private const val CACHE_EXPIRATION_MS = 5 * 60 * 1000L
         private const val TAG = "PostRepository"
         private val PGRST_REGEX = Regex("PGRST\\d+")
@@ -81,12 +88,6 @@ class PostRepository @Inject constructor(
         val avatarUrl: String?,
         val isVerified: Boolean
     )
-
-    fun invalidateCache() {
-        postsCache.clear()
-        profileCache.clear()
-        android.util.Log.d(TAG, "Cache invalidated")
-    }
 
     fun constructMediaUrl(storagePath: String): String {
         return SupabaseClient.constructMediaUrl(storagePath)
@@ -124,9 +125,12 @@ class PostRepository @Inject constructor(
     }
 
     private fun extractColumnInfo(message: String): String {
-
         val columnMatch = COLUMN_REGEX.find(message)
         return columnMatch?.groupValues?.get(1) ?: "unknown column"
+    }
+
+    private fun invalidateCache() {
+        postsCache.clear()
     }
 
     suspend fun createPost(post: Post): Result<Post> = withContext(Dispatchers.IO) {
@@ -152,7 +156,7 @@ class PostRepository @Inject constructor(
             android.util.Log.d(TAG, "Current auth user: ${client.auth.currentUserOrNull()?.id}")
 
             client.from("posts").insert(postDto)
-            postDao.insertAll(listOf(PostMapper.toEntity(post)))
+            storageDatabase.postQueries.insertPost(PostMapper.toEntity(post))
             invalidateCache()
 
 
@@ -177,7 +181,7 @@ class PostRepository @Inject constructor(
 
     suspend fun getPost(postId: String): Result<Post?> = withContext(Dispatchers.IO) {
         try {
-            val post = postDao.getPostById(postId)?.let { entity ->
+            val post = storageDatabase.postQueries.selectById(postId).executeAsOneOrNull()?.let { entity ->
                 val model = PostMapper.toModel(entity)
 
                 if (model.username == null) {
@@ -195,12 +199,14 @@ class PostRepository @Inject constructor(
         }
     }
 
-        @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    // Renamed to avoid confusion with paged version, but original was just getPosts() returning Flow<Result<List<Post>>>
     fun getPosts(): Flow<Result<List<Post>>> {
-        return postDao.getAllPosts().flatMapLatest { entities ->
+        return flow {
+             val posts = storageDatabase.postQueries.selectAll().executeAsList().map { PostMapper.toModel(it) }
+             emit(Result.success(posts))
+        }.flatMapLatest { result ->
             flow {
-                val posts = entities.map { PostMapper.toModel(it) }
-
+                val posts = result.getOrNull() ?: emptyList()
 
                 // Apply cache immediately
                 posts.forEach { post ->
@@ -250,21 +256,8 @@ class PostRepository @Inject constructor(
                 pageSize = 20,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { postDao.getVideoPostsPaged() }
-        ).flow.map { pagingData ->
-            pagingData.map { entity ->
-                val model = PostMapper.toModel(entity)
-
-                if (model.username == null) {
-                    profileCache[model.authorUid]?.data?.let { profile ->
-                        model.username = profile.username
-                        model.avatarUrl = profile.avatarUrl
-                        model.isVerified = profile.isVerified
-                    }
-                }
-                model
-            }
-        }
+            pagingSourceFactory = { PostPagingSource(client.from("posts")) }
+        ).flow
     }
 
     suspend fun refreshPosts(page: Int, pageSize: Int): Result<Unit> {
@@ -290,34 +283,35 @@ class PostRepository @Inject constructor(
                         if (user.uid.isNotEmpty()) {
                             profileCache[user.uid] = CacheEntry(
                                 ProfileData(
-                                    user.username,
-                                    user.avatarUrl?.let { constructAvatarUrl(it) },
-                                    user.isVerified ?: false
+                                    username = user.username,
+                                    avatarUrl = user.avatarUrl?.let { constructAvatarUrl(it) },
+                                    isVerified = user.isVerified ?: false
                                 )
                             )
                         }
                     }
                 }
-            }.sortedByDescending { it.timestamp }
+            }
 
             val postsWithReactions = populatePostReactions(posts)
             val postsWithPolls = populatePostPolls(postsWithReactions)
-            postDao.insertAll(postsWithPolls.map { PostMapper.toEntity(it) })
 
-
-            if (page == 0) {
-                syncDeletedPosts()
+            // Insert into DB
+            storageDatabase.transaction {
+                postsWithPolls.forEach { post ->
+                     storageDatabase.postQueries.insertPost(PostMapper.toEntity(post))
+                }
             }
 
             Result.success(Unit)
         } catch (e: Exception) {
-            android.util.Log.e(TAG, "Failed to fetch posts page: ${e.message}", e)
+            android.util.Log.e(TAG, "Failed to fetch user posts: ${e.message}", e)
             Result.failure(e)
         }
     }
     private suspend fun syncDeletedPosts() {
         try {
-            val localIds = postDao.getAllPostIds()
+            val localIds = storageDatabase.postQueries.selectIds().executeAsList()
             if (localIds.isEmpty()) return
             val idsToDelete = mutableListOf<String>()
             // Process in chunks of 50 to respect URL length limits (approx 2KB max for safe GET)
@@ -337,8 +331,10 @@ class PostRepository @Inject constructor(
             if (idsToDelete.isNotEmpty()) {
                 val uniqueIdsToDelete = idsToDelete.distinct()
                 android.util.Log.d(TAG, "Syncing deletions: removing ${uniqueIdsToDelete.size} posts")
-                uniqueIdsToDelete.chunked(500).forEach { batch ->
-                    postDao.deletePosts(batch)
+                storageDatabase.transaction {
+                    uniqueIdsToDelete.forEach { id ->
+                        storageDatabase.postQueries.deleteById(id)
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -356,17 +352,19 @@ class PostRepository @Inject constructor(
                     """.trimIndent())
                 ) {
                     filter { eq("author_uid", userId) }
+                    order("timestamp", order = Order.DESCENDING)
                 }
                 .decodeList<PostSelectDto>()
             val posts = response.map { postDto ->
                 postDto.toDomain(::constructMediaUrl, ::constructAvatarUrl).also { post ->
+                    // Cache user profile
                      postDto.user?.let { user ->
                         if (user.uid.isNotEmpty()) {
                             profileCache[user.uid] = CacheEntry(
                                 ProfileData(
-                                    user.username,
-                                    user.avatarUrl?.let { constructAvatarUrl(it) },
-                                    user.isVerified ?: false
+                                    username = user.username,
+                                    avatarUrl = user.avatarUrl?.let { constructAvatarUrl(it) },
+                                    isVerified = user.isVerified ?: false
                                 )
                             )
                         }
@@ -386,7 +384,6 @@ class PostRepository @Inject constructor(
             client.from("posts").update(updates) {
                 filter { eq("id", postId) }
             }
-            invalidateCache()
             Result.success(Post(id = postId, authorUid = ""))
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to update post", e)
@@ -399,7 +396,7 @@ class PostRepository @Inject constructor(
             client.from("posts").update(updateDto) {
                 filter { eq("id", post.id) }
             }
-            postDao.insertAll(listOf(PostMapper.toEntity(post)))
+            storageDatabase.postQueries.insertPost(PostMapper.toEntity(post))
             invalidateCache()
             Result.success(post)
         } catch (e: Exception) {
@@ -412,7 +409,7 @@ class PostRepository @Inject constructor(
             client.from("posts").delete {
                 filter { eq("id", postId) }
             }
-            postDao.deletePost(postId)
+            storageDatabase.postQueries.deleteById(postId)
             invalidateCache()
             Result.success(Unit)
         } catch (e: Exception) {
@@ -422,7 +419,7 @@ class PostRepository @Inject constructor(
     }
 
     private val reactionRepository = ReactionRepository()
-    private val pollRepository = PollRepository()
+    private val pollRepository = com.synapse.social.studioasinc.data.repository.PollRepository()
 
     suspend fun toggleReaction(
         postId: String,
@@ -440,18 +437,9 @@ class PostRepository @Inject constructor(
         reactionRepository.getReactionSummary(postId, "post")
 
     suspend fun getUserReaction(postId: String, userId: String): Result<ReactionType?> =
-
-
-
-
-
-
         if (userId == client.auth.currentUserOrNull()?.id) {
              reactionRepository.getUserReaction(postId, "post")
         } else {
-
-
-
              withContext(Dispatchers.IO) {
                  try {
                      val reaction = client.from("reactions")

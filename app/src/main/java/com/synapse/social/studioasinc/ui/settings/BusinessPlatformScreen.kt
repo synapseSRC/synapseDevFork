@@ -91,7 +91,7 @@ fun BusinessPlatformScreen(
                     .fillMaxSize()
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .padding(paddingValues)
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = SettingsSpacing.screenPadding),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
 
@@ -144,12 +144,10 @@ fun AccountTypeSection(
     onSwitchToBusiness: () -> Unit
 ) {
     SettingsSection(title = "Account Type") {
-        Column(
-            modifier = Modifier.padding(vertical = 8.dp)
-        ) {
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding)
             ) {
                 Icon(
                     imageVector = when (state.accountType) {
@@ -162,7 +160,7 @@ fun AccountTypeSection(
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
-                Column {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
                         text = state.accountType.name.lowercase().replaceFirstChar { it.uppercase() } + " Account",
                         style = MaterialTheme.typography.titleMedium
@@ -178,10 +176,9 @@ fun AccountTypeSection(
             }
 
             if (!state.isBusinessAccount) {
-                Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = onSwitchToBusiness,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding)
                 ) {
                     Text("Switch to Business Account")
                 }
@@ -196,7 +193,8 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
 
     SettingsSection(title = "Analytics Dashboard") {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(horizontal = SettingsSpacing.itemHorizontalPadding)
         ) {
 
             Row(
@@ -218,7 +216,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
 
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    containerColor = SettingsColors.cardBackgroundElevated
                 )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -239,11 +237,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
                     )
             }
             }
-
-
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
                     text = "Top Performing Content",
                     style = MaterialTheme.typography.titleSmall,
@@ -265,7 +259,7 @@ fun AnalyticsDashboardSection(analytics: AnalyticsData?) {
                         )
                     }
                     if (index < analytics.topPosts.size - 1) {
-                        Divider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                        SettingsDivider()
                     }
                 }
             }
@@ -282,7 +276,7 @@ fun AnalyticsCard(
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            containerColor = SettingsColors.cardBackgroundElevated
         )
     ) {
         Column(
@@ -310,7 +304,7 @@ fun MonetizationSection(
     onToggleMonetization: (Boolean) -> Unit
 ) {
     SettingsSection(title = "Monetization") {
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column {
             SettingsToggleItem(
                 title = "Enable Monetization",
                 subtitle = "Earn revenue from your content",
@@ -319,14 +313,13 @@ fun MonetizationSection(
             )
 
             if (state.monetizationEnabled && state.revenue != null) {
-                Divider()
-
+                SettingsDivider()
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = SettingsSpacing.itemHorizontalPadding, vertical = SettingsSpacing.itemVerticalPadding),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(
                             text = "Total Earnings",
                             style = MaterialTheme.typography.bodyMedium
@@ -345,6 +338,7 @@ fun MonetizationSection(
                     )
                 }
 
+                SettingsDivider()
                 SettingsNavigationItem(
                     title = "Payout Settings",
                     subtitle = "Manage payment methods",
@@ -364,21 +358,24 @@ fun ProfessionalToolsSection() {
                 title = "Scheduled Posts",
                 subtitle = "Manage upcoming content",
                 imageVector = Icons.Default.Schedule,
-                onClick = { }
+                onClick = { },
+                position = SettingsItemPosition.Top
             )
-            Divider()
+            SettingsDivider()
             SettingsNavigationItem(
                 title = "Content Calendar",
                 subtitle = "Plan your strategy",
                 imageVector = Icons.Default.CalendarToday,
-                onClick = { }
+                onClick = { },
+                position = SettingsItemPosition.Middle
             )
-            Divider()
+            SettingsDivider()
             SettingsNavigationItem(
                 title = "Brand Partnerships",
                 subtitle = "Manage collaborations",
                 imageVector = Icons.Default.Work,
-                onClick = { }
+                onClick = { },
+                position = SettingsItemPosition.Bottom
             )
         }
     }
@@ -393,7 +390,7 @@ fun VerificationSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(horizontal = SettingsSpacing.itemHorizontalPadding),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

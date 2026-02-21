@@ -1,8 +1,6 @@
 package com.synapse.social.studioasinc.core.di
 
 import android.content.Context
-import androidx.room.Room
-import com.synapse.social.studioasinc.data.local.database.AppDatabase
 import com.synapse.social.studioasinc.data.local.database.UserDao
 import com.synapse.social.studioasinc.data.local.database.PostDao
 import dagger.Module
@@ -80,5 +78,20 @@ object DatabaseModule {
                 postsCountAdapter = intAdapter
             )
         )
+    }
+
+    @Provides
+    fun provideUserDao(db: StorageDatabase): UserDao {
+        return UserDaoImpl(db)
+    }
+
+    @Provides
+    fun providePostDao(db: StorageDatabase): PostDao {
+        return PostDaoImpl(db)
+    }
+
+    @Provides
+    fun provideCommentDao(db: StorageDatabase): CommentDao {
+        return CommentDaoImpl(db)
     }
 }

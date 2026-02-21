@@ -3,10 +3,6 @@ package com.synapse.social.studioasinc.core.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.synapse.social.studioasinc.data.repository.*
-import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
-import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
-import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
-import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
 import com.synapse.social.studioasinc.data.local.database.*
 import com.synapse.social.studioasinc.shared.data.local.database.CommentDao
 import com.synapse.social.studioasinc.data.local.AppSettingsManager
@@ -36,9 +32,11 @@ import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
 import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
 import com.synapse.social.studioasinc.shared.data.local.SecureStorage
 import com.synapse.social.studioasinc.shared.data.local.AndroidSecureStorage
+import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.notification.GetNotificationsUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.notification.MarkNotificationAsReadUseCase
 import com.synapse.social.studioasinc.shared.domain.usecase.notification.SubscribeToNotificationsUseCase
+import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

@@ -87,7 +87,7 @@ object PostMapper {
             resharesCount = entity.resharesCount,
             mediaItems = entity.mediaItems?.map { toAppMediaItem(it) }?.toMutableList(),
             isEncrypted = entity.isEncrypted,
-            encryptedContent = entity.encryptedContent,
+            encryptedContent = null,
             nonce = entity.nonce,
             encryptionKeyId = entity.encryptionKeyId,
             isDeleted = entity.isDeleted,

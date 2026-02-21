@@ -29,7 +29,7 @@ object UserMapper {
             displayName = entity.fullName,
             email = null,
             avatar = entity.avatarUrl?.let { url ->
-                SupabaseClient.constructAvatarUrl(url)
+                if (url.startsWith("http")) url else SupabaseClient.constructAvatarUrl(url)
             },
             verify = entity.isVerified,
             bio = entity.bio,

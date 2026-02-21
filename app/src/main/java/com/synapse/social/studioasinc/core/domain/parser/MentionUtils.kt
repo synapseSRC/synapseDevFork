@@ -8,10 +8,8 @@ import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.synapse.social.studioasinc.ProfileActivity
 import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.data.remote.services.SupabaseDatabaseService
 import com.synapse.social.studioasinc.core.util.NotificationHelper
 import com.synapse.social.studioasinc.core.config.NotificationConfig
 import com.synapse.social.studioasinc.core.di.DatabaseEntryPoint
@@ -19,7 +17,6 @@ import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 object MentionUtils {
@@ -37,7 +34,6 @@ object MentionUtils {
 
                 val clickableSpan = object : ClickableSpan() {
                     override fun onClick(widget: View) {
-
                         CoroutineScope(Dispatchers.IO).launch {
                             try {
                                 val entryPoint = EntryPointAccessors.fromApplication(context.applicationContext, DatabaseEntryPoint::class.java)
@@ -102,7 +98,6 @@ object MentionUtils {
         }
 
         if (mentionedUsernames.isEmpty()) return
-
 
         coroutineScope.launch(Dispatchers.IO) {
             try {

@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 class ProfileActionRepository : com.synapse.social.studioasinc.shared.domain.repository.ProfileActionRepository {
     private val supabase = SupabaseClient.client
 
-    suspend fun lockProfile(userId: String, isLocked: Boolean): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun lockProfile(userId: String, isLocked: Boolean): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             supabase.from("profiles")
                 .update(mapOf("is_private" to isLocked)) {
@@ -20,7 +20,7 @@ class ProfileActionRepository : com.synapse.social.studioasinc.shared.domain.rep
         }
     }
 
-    suspend fun archiveProfile(userId: String, isArchived: Boolean): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun archiveProfile(userId: String, isArchived: Boolean): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             supabase.from("profiles")
                 .update(mapOf("is_archived" to isArchived)) {
@@ -32,7 +32,7 @@ class ProfileActionRepository : com.synapse.social.studioasinc.shared.domain.rep
         }
     }
 
-    suspend fun blockUser(userId: String, blockedUserId: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun blockUser(userId: String, blockedUserId: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             supabase.from("blocked_users")
                 .insert(mapOf(
@@ -45,7 +45,7 @@ class ProfileActionRepository : com.synapse.social.studioasinc.shared.domain.rep
         }
     }
 
-    suspend fun reportUser(userId: String, reportedUserId: String, reason: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun reportUser(userId: String, reportedUserId: String, reason: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             supabase.from("user_reports")
                 .insert(mapOf(
@@ -59,7 +59,7 @@ class ProfileActionRepository : com.synapse.social.studioasinc.shared.domain.rep
         }
     }
 
-    suspend fun muteUser(userId: String, mutedUserId: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun muteUser(userId: String, mutedUserId: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             supabase.from("muted_users")
                 .insert(mapOf(

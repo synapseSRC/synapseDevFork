@@ -17,7 +17,7 @@ object SupabaseErrorHandler {
     }
 
     fun <T> toResult(e: Exception, logTag: String, logMessage: String): Result<T> {
-        Napier.e(logTag, logMessage, e)
+        Napier.e(logMessage, e, tag = logTag)
         val userFriendlyMessage = mapExceptionToMessage(e)
         return Result.failure(Exception(userFriendlyMessage, e))
     }

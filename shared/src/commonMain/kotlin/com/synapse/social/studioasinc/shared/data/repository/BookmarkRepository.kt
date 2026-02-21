@@ -68,13 +68,22 @@ class BookmarkRepository(
         if (existing != null) {
             client.from("favorites")
                 .delete { filter { eq("id", existing.id!!) } }
-            Napier.d(TAG, "Bookmark removed: $postId")
+            Napier.d("Bookmark removed: $postId")
             false
         } else {
             client.from("favorites")
                 .insert(Favorite(postId = postId, userId = userId, collectionId = collectionId))
-            Napier.d(TAG, "Bookmark added: $postId")
+            Napier.d("Bookmark added: $postId")
             true
+        }
+    }
+
+    override suspend fun unsavePost(postId: String, userId: String): Result<Unit> = runCatching {
+        client.from("favorites").delete {
+            filter {
+                eq("post_id", postId)
+                eq("user_id", userId)
+            }
         }
     }
 

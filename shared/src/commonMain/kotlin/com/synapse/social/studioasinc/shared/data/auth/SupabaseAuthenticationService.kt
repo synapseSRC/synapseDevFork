@@ -140,6 +140,19 @@ class SupabaseAuthenticationService(
         }
     }
 
+    override suspend fun signInWithOAuth(provider: io.github.jan.supabase.auth.providers.OAuthProvider, redirectUrl: String): Result<Unit> {
+        return try {
+            withContext(Dispatchers.Default) {
+                client.auth.signInWith(provider)
+                Napier.d("OAuth sign-in initiated")
+                Result.success(Unit)
+            }
+        } catch (e: Exception) {
+            Napier.e("OAuth sign-in failed", e)
+            Result.failure(e)
+        }
+    }
+
     override suspend fun signOut(): Result<Unit> {
         return try {
             withContext(Dispatchers.Default) {

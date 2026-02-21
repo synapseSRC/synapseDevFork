@@ -9,17 +9,16 @@ import kotlinx.coroutines.flow.flow
 class BookmarkPostUseCase (
     private val repository: PostInteractionRepository
 ) {
-    operator fun invoke(postId: String, userId: String, isBookmarked: Boolean): Flow<Result<Boolean>> = flow {
+    suspend operator fun invoke(postId: String, userId: String, isBookmarked: Boolean): Flow<Result<Boolean>> = flow {
         val result = if (isBookmarked) {
             repository.unsavePost(postId, userId)
         } else {
             repository.savePost(postId, userId)
         }
 
-        if (result.isSuccess) {
-            emit(Result.success(!isBookmarked))
-        } else {
-            emit(Result.failure(result.exceptionOrNull() ?: Exception("Unknown error")))
-        }
+        result.fold(
+            onSuccess = { _: Unit -> emit(Result.success(!isBookmarked)) },
+            onFailure = { e: Throwable -> emit(Result.failure(e)) }
+        )
     }
 }

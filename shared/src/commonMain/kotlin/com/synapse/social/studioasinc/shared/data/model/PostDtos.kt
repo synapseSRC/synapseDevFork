@@ -234,3 +234,4 @@ fun PostSelectDto.toDomain(constructMediaUrl: (String) -> String, constructAvata
 
     return post
 }
+typealias PostDto = PostInsertDto

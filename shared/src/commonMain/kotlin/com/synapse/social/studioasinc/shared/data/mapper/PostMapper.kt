@@ -6,7 +6,19 @@ import com.synapse.social.studioasinc.shared.domain.model.MediaItem
 import com.synapse.social.studioasinc.shared.domain.model.PollOption
 import com.synapse.social.studioasinc.shared.domain.model.PostMetadata
 import com.synapse.social.studioasinc.shared.domain.model.ReactionType
+import com.synapse.social.studioasinc.shared.domain.model.MediaType
 import com.synapse.social.studioasinc.shared.data.model.PostDto
+
+typealias AppMediaItem = MediaItem
+typealias SharedMediaItem = MediaItem
+typealias AppPollOption = PollOption
+typealias SharedPollOption = PollOption
+typealias AppMediaType = MediaType
+typealias SharedMediaType = MediaType
+typealias AppReactionType = ReactionType
+typealias SharedReactionType = ReactionType
+typealias AppPostMetadata = PostMetadata
+typealias SharedPostMetadata = PostMetadata
 
 object PostMapper {
     
@@ -117,7 +129,7 @@ object PostMapper {
             commentsCount = entity.commentsCount,
             viewsCount = entity.viewsCount,
             resharesCount = entity.resharesCount,
-            mediaItems = entity.mediaItems?.map { toAppMediaItem(it) }?.toMutableList(),
+            mediaItems = entity.mediaItems?.map { item: SharedMediaItem -> toAppMediaItem(item) }?.toMutableList(),
             isEncrypted = entity.isEncrypted,
             encryptedContent = null,
             nonce = entity.nonce,

@@ -1,5 +1,6 @@
 package com.synapse.social.studioasinc.shared.domain.model
 
+import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 
@@ -11,7 +12,7 @@ data class PendingAction(
     val actionType: ActionType,
     val messageId: String,
     val parameters: Map<String, JsonElement>,
-    val timestamp: Long = System.currentTimeMillis(),
+    val timestamp: Long = Clock.System.now().toEpochMilliseconds(),
     val retryCount: Int = 0
 ) {
     @Serializable

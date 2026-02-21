@@ -8,6 +8,7 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.rpc
+import kotlinx.datetime.Clock
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -27,9 +28,9 @@ class PostDetailRepository (
         private const val TAG = "PostDetailRepository"
     }
 
-    suspend fun getPostWithDetails(postId: String): Result<PostDetail> = withContext(Dispatchers.IO) {
+    suspend fun getPostWithDetails(postId: String): Result<PostDetail> = withContext(Dispatchers.Default) {
         try {
-            Napier.d(TAG, "Fetching post details for: $postId")
+            Napier.d("Fetching post details for: $postId")
 
             val response = client.from("posts")
                 .select(
@@ -43,7 +44,7 @@ class PostDetailRepository (
                 .decodeSingleOrNull<JsonObject>()
 
             if (response == null) {
-                Napier.w(TAG, "Post not found: $postId")
+                Napier.w("Post not found: $postId")
                 return@withContext Result.failure(Exception("Post not found"))
             }
 
@@ -83,21 +84,21 @@ class PostDetailRepository (
                 userPollVote = userPollVote
             )
 
-            Napier.d(TAG, "Successfully fetched post details for: $postId")
+            Napier.d("Successfully fetched post details for: $postId")
             Result.success(postDetail)
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to fetch post details: ${e.message}", e)
+            Napier.e("Failed to fetch post details: ${e.message}", e)
             Result.failure(Exception(mapSupabaseError(e)))
         }
     }
 
-    suspend fun incrementViewCount(postId: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun incrementViewCount(postId: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             client.postgrest.rpc("increment_post_views", mapOf("post_id" to postId))
-            Napier.d(TAG, "Incremented view count for post: $postId")
+            Napier.d("Incremented view count for post: $postId")
             Result.success(Unit)
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to increment view count: ${e.message}", e)
+            Napier.e("Failed to increment view count: ${e.message}", e)
             Result.success(Unit)
         }
     }
@@ -109,7 +110,7 @@ class PostDetailRepository (
         }
     }
 
-    suspend fun deletePost(postId: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun deletePost(postId: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             val currentUser = client.auth.currentUserOrNull()
                 ?: return@withContext Result.failure(Exception("User must be authenticated"))
@@ -122,10 +123,10 @@ class PostDetailRepository (
                     }
                 }
 
-            Napier.d(TAG, "Post deleted successfully: $postId")
+            Napier.d("Post deleted successfully: $postId")
             Result.success(Unit)
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to delete post: ${e.message}", e)
+            Napier.e("Failed to delete post: ${e.message}", e)
             Result.failure(Exception(mapSupabaseError(e)))
         }
     }
@@ -146,7 +147,7 @@ class PostDetailRepository (
             postDisableComments = data["post_disable_comments"]?.jsonPrimitive?.contentOrNull,
             postVisibility = data["post_visibility"]?.jsonPrimitive?.contentOrNull,
             publishDate = data["publish_date"]?.jsonPrimitive?.contentOrNull,
-            timestamp = data["timestamp"]?.jsonPrimitive?.longOrNull ?: System.currentTimeMillis(),
+            timestamp = data["timestamp"]?.jsonPrimitive?.longOrNull ?: Clock.System.now().toEpochMilliseconds(),
             likesCount = data["likes_count"]?.jsonPrimitive?.intOrNull ?: 0,
             commentsCount = data["comments_count"]?.jsonPrimitive?.intOrNull ?: 0,
             viewsCount = data["views_count"]?.jsonPrimitive?.intOrNull ?: 0,
@@ -201,7 +202,7 @@ class PostDetailRepository (
                     mimeType = mediaMap["mimeType"]?.jsonPrimitive?.contentOrNull
                 )
             } catch (e: Exception) {
-                Napier.e(TAG, "Failed to parse media item: ${e.message}")
+                Napier.e("Failed to parse media item: ${e.message}")
                 null
             }
         }.toMutableList()
@@ -227,7 +228,7 @@ class PostDetailRepository (
                 banned = userData["banned"]?.jsonPrimitive?.booleanOrNull ?: false
             )
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to parse user profile: ${e.message}")
+            Napier.e("Failed to parse user profile: ${e.message}")
             null
         }
     }
@@ -241,7 +242,7 @@ class PostDetailRepository (
                 .decodeSingleOrNull<JsonObject>()
             bookmark != null
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to check bookmark status: ${e.message}")
+            Napier.e("Failed to check bookmark status: ${e.message}")
             false
         }
     }
@@ -253,7 +254,7 @@ class PostDetailRepository (
                 .decodeSingleOrNull<JsonObject>()
             reshare != null
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to check reshare status: ${e.message}")
+            Napier.e("Failed to check reshare status: ${e.message}")
             false
         }
     }
@@ -289,7 +290,7 @@ class PostDetailRepository (
 
             Pair(pollResults, userVote)
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to get poll data: ${e.message}")
+            Napier.e("Failed to get poll data: ${e.message}")
             Pair(null, null)
         }
     }
@@ -297,7 +298,7 @@ class PostDetailRepository (
     private fun mapSupabaseError(exception: Exception): String {
         val message = exception.message ?: "Unknown error"
 
-        Napier.e(TAG, "Supabase error: $message", exception)
+        Napier.e("Supabase error: $message", exception)
 
         return when {
             message.contains("PGRST200") -> "Database table not found"

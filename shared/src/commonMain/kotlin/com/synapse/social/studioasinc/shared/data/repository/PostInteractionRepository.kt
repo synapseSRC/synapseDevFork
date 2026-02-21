@@ -10,7 +10,7 @@ import kotlinx.serialization.json.put
 class PostInteractionRepository {
     private val client = SupabaseClient.client
 
-    suspend fun likePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun likePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             client.from("post_likes").insert(
                 buildJsonObject {
@@ -24,7 +24,7 @@ class PostInteractionRepository {
         }
     }
 
-    suspend fun unlikePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun unlikePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             client.from("post_likes").delete {
                 filter {
@@ -38,7 +38,7 @@ class PostInteractionRepository {
         }
     }
 
-    suspend fun savePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun savePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             client.from("saved_posts").insert(
                 buildJsonObject {
@@ -52,7 +52,7 @@ class PostInteractionRepository {
         }
     }
 
-    suspend fun unsavePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun unsavePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             client.from("saved_posts").delete {
                 filter {
@@ -66,7 +66,7 @@ class PostInteractionRepository {
         }
     }
 
-    suspend fun deletePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun deletePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             client.from("posts").delete {
                 filter {
@@ -80,7 +80,7 @@ class PostInteractionRepository {
         }
     }
 
-    suspend fun reportPost(postId: String, userId: String, reason: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun reportPost(postId: String, userId: String, reason: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             client.from("post_reports").insert(
                 buildJsonObject {

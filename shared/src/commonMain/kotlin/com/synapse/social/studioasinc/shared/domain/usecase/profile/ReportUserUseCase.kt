@@ -1,15 +1,15 @@
 package com.synapse.social.studioasinc.shared.domain.usecase.profile
 import com.synapse.social.studioasinc.shared.domain.model.*
 
-import com.synapse.social.studioasinc.shared.domain.repository.ProfileActionRepository
+import com.synapse.social.studioasinc.shared.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 
 class ReportUserUseCase (
-    private val repository: ProfileActionRepository
+    private val repository: ProfileRepository
 ) {
-    operator fun invoke(userId: String, reportedUserId: String, reason: String): Flow<Result<Unit>> = flow {
-        emit(repository.reportUser(userId, reportedUserId, reason))
+    operator fun invoke(reportedUserId: String, reason: String): Flow<Result<Unit>> = flow {
+        emit(repository.reportUser(reportedUserId, reason))
     }
 }

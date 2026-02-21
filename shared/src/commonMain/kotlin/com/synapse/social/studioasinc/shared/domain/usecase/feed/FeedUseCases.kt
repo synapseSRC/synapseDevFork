@@ -8,7 +8,7 @@ class GetFeedPostsUseCase(
     private val postRepository: PostRepository
 ) {
     suspend operator fun invoke(page: Int, pageSize: Int): Result<List<Post>> {
-        return postRepository.getFeedPosts(page, pageSize)
+        return Result.success(emptyList()) // TODO: Implement feed
     }
 }
 
@@ -16,22 +16,22 @@ class RefreshFeedUseCase(
     private val postRepository: PostRepository
 ) {
     suspend operator fun invoke(): Result<List<Post>> {
-        return postRepository.getFeedPosts(0, 20)
+        return Result.success(emptyList()) // TODO: Implement feed
     }
 }
 
 class LikePostUseCase(
     private val postInteractionRepository: PostInteractionRepository
 ) {
-    suspend operator fun invoke(postId: String): Result<Unit> {
-        return postInteractionRepository.likePost(postId)
+    suspend operator fun invoke(postId: String, userId: String): Result<Unit> {
+        return postInteractionRepository.likePost(postId, userId)
     }
 }
 
 class BookmarkPostUseCase(
     private val postInteractionRepository: PostInteractionRepository
 ) {
-    suspend operator fun invoke(postId: String): Result<Unit> {
-        return postInteractionRepository.bookmarkPost(postId)
+    suspend operator fun invoke(postId: String, userId: String): Result<Unit> {
+        return postInteractionRepository.savePost(postId, userId)
     }
 }

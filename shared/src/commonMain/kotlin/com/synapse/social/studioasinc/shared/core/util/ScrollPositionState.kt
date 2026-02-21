@@ -7,7 +7,7 @@ data class ScrollPositionState(
     val offset: Int = 0,
     val timestamp: Long = Clock.System.now().toEpochMilliseconds()
 ) {
-    fun isExpired(maxAgeMs: Long = 300_000): Boolean { // 5 minutes default
+    fun isExpired(maxAgeMs: Long = 300_000L): Boolean { // 5 minutes default
         return Clock.System.now().toEpochMilliseconds() - timestamp > maxAgeMs
     }
 }

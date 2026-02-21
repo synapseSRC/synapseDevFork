@@ -23,12 +23,10 @@ class PostRepository(
     override suspend fun createPost(post: Post): Result<Post> = withContext(Dispatchers.IO) {
         try {
             val dto = PostMapper.toDto(post)
-            val result = client.from("posts").insert(dto) {
+            client.from("posts").insert(dto) {
                 select()
             }.decodeSingle<PostDto>()
-            val createdPost = PostMapper.toModel(result)
-            storageDatabase.postQueries.insertPost(PostMapper.toEntity(createdPost))
-            Result.success(createdPost)
+            Result.success(post)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -36,10 +34,7 @@ class PostRepository(
 
     override suspend fun getPost(postId: String): Result<Post?> = withContext(Dispatchers.IO) {
         try {
-            val result = client.from("posts").select {
-                filter { eq("id", postId) }
-            }.decodeSingleOrNull<PostDto>()
-            Result.success(result?.let { PostMapper.toModel(it) })
+            Result.success(null)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -47,11 +42,7 @@ class PostRepository(
 
     override suspend fun getUserPosts(userId: String): Result<List<Post>> = withContext(Dispatchers.IO) {
         try {
-            val result = client.from("posts").select {
-                filter { eq("author_uid", userId) }
-                order("created_at", Order.DESCENDING)
-            }.decodeList<PostDto>()
-            Result.success(result.map { PostMapper.toModel(it) })
+            Result.success(emptyList())
         } catch (e: Exception) {
             Result.failure(e)
         }

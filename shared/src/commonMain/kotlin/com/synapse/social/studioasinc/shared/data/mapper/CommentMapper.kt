@@ -3,6 +3,7 @@ package com.synapse.social.studioasinc.shared.data.mapper
 import com.synapse.social.studioasinc.shared.data.local.entity.CommentEntity
 import com.synapse.social.studioasinc.shared.domain.model.Comment
 import com.synapse.social.studioasinc.shared.data.database.Comment as DbComment
+import kotlinx.datetime.Clock
 
 object CommentMapper {
 
@@ -64,9 +65,9 @@ object CommentMapper {
 
     private fun parsePushTime(pushTime: String): Long {
         return try {
-            pushTime.toLongOrNull() ?: System.currentTimeMillis()
+            pushTime.toLongOrNull() ?: Clock.System.now().toEpochMilliseconds()
         } catch (e: Exception) {
-            System.currentTimeMillis()
+            Clock.System.now().toEpochMilliseconds()
         }
     }
 }

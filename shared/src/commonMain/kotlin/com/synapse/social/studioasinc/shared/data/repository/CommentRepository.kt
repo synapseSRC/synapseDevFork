@@ -14,7 +14,7 @@ import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.rpc
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.CoroutineScope
-import org.koin.core.annotation.Named
+import kotlinx.datetime.Clock
 import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.exceptions.RestException
 import kotlinx.coroutines.Dispatchers
@@ -24,9 +24,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.*
-import org.koin.core.annotation.Named
 
 
 
@@ -35,7 +33,7 @@ class CommentRepository(
     private val client: SupabaseClient,
     private val commentDao: CommentDao,
     private val userRepository: UserRepository,
-    @Named("ApplicationScope") private val externalScope: CoroutineScope,
+    private val externalScope: CoroutineScope,
     private val reactionRepository: ReactionRepository
 ) : com.synapse.social.studioasinc.shared.domain.repository.CommentRepository {
     private val TAG = "CommentRepository"
@@ -57,9 +55,9 @@ class CommentRepository(
         }
     }
 
-    suspend fun fetchComments(postId: String, limit: Int = 50, offset: Int = 0): Result<List<CommentWithUser>> = withContext(Dispatchers.IO) {
+    override suspend fun fetchComments(postId: String, limit: Int, offset: Int): Result<List<CommentWithUser>> = withContext(Dispatchers.Default) {
         try {
-            Napier.d(TAG, "Fetching comments for post: $postId")
+            Napier.d("Fetching comments for post: $postId")
             val response = client.from("comments")
                 .select(columns = Columns.raw("*, users(uid, username, display_name, avatar, bio, verify, status, account_type, followers_count, following_count, posts_count, banned)")) {
                     filter {
@@ -86,7 +84,7 @@ class CommentRepository(
 
             Result.success(populatedComments)
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to fetch comments: ${e.message}", e)
+            Napier.e("Failed to fetch comments: ${e.message}", e)
             Result.failure(Exception(mapSupabaseError(e)))
         }
     }
@@ -95,9 +93,9 @@ class CommentRepository(
         return fetchComments(postId, limit, offset).map { Unit }
     }
 
-    suspend fun getReplies(commentId: String): Result<List<CommentWithUser>> = withContext(Dispatchers.IO) {
+    suspend fun getReplies(commentId: String): Result<List<CommentWithUser>> = withContext(Dispatchers.Default) {
         try {
-            Napier.d(TAG, "Fetching replies for comment: $commentId")
+            Napier.d("Fetching replies for comment: $commentId")
             val response = client.from("comments")
                 .select(
                     columns = Columns.raw("""
@@ -110,7 +108,7 @@ class CommentRepository(
                 }
                 .decodeList<JsonObject>()
 
-            Napier.d(TAG, "Raw response size: ${response.size}")
+            Napier.d("Raw response size: ${response.size}")
 
             val replies = mutableListOf<CommentWithUser>()
             for (json in response) {
@@ -122,7 +120,7 @@ class CommentRepository(
             // Optimized: Bulk fetch reactions
             val populatedReplies = reactionRepository.populateCommentReactions(replies)
 
-            Napier.d(TAG, "Successfully parsed ${populatedReplies.size} replies")
+            Napier.d("Successfully parsed ${populatedReplies.size} replies")
 
             val commentsToCache = populatedReplies.map {
                 CommentMapper.toSharedEntity(it.toComment(), it.user?.username, it.user?.avatar)
@@ -131,7 +129,7 @@ class CommentRepository(
 
             Result.success(populatedReplies)
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to fetch paged comments: ${e.message}", e)
+            Napier.e("Failed to fetch paged comments: ${e.message}", e)
             Result.failure(Exception(mapSupabaseError(e)))
         }
     }
@@ -171,7 +169,7 @@ class CommentRepository(
                     parentCommentId = comment.replyCommentKey,
                     content = comment.comment,
                     mediaUrl = null,
-                    createdAt = comment.push_time,
+                    createdAt = comment.createdAt.orEmpty(),
                     updatedAt = null,
                     likesCount = 0,
                     repliesCount = 0,
@@ -190,7 +188,7 @@ class CommentRepository(
         return addComment(postId, content, parentId)
     }
 
-    suspend fun addComment(postId: String, content: String, parentCommentId: String? = null): Result<CommentWithUser> = withContext(Dispatchers.IO) {
+    override suspend fun addComment(postId: String, content: String, parentCommentId: String?): Result<CommentWithUser> = withContext(Dispatchers.Default) {
         try {
             val currentUser = client.auth.currentUserOrNull()
                 ?: return@withContext Result.failure(Exception("User must be authenticated"))
@@ -200,8 +198,8 @@ class CommentRepository(
             }
 
             val userId = currentUser.id
-            val clientGeneratedId = java.util.UUID.randomUUID().toString()
-            Napier.d(TAG, "Creating comment for post: $postId by user: $userId with client-generated ID: $clientGeneratedId")
+            val clientGeneratedId = "comment_${Clock.System.now().toEpochMilliseconds()}_${(0..9999).random()}"
+            Napier.d("Creating comment for post: $postId by user: $userId with client-generated ID: $clientGeneratedId")
 
             var lastException: Exception? = null
             var resultComment: CommentWithUser? = null
@@ -216,8 +214,8 @@ class CommentRepository(
                         put("user_id", userId)
                         put("content", content)
                         if (parentCommentId != null) put("parent_comment_id", parentCommentId)
-                        put("created_at", java.time.Instant.now().toString())
-                        put("updated_at", java.time.Instant.now().toString())
+                        put("created_at", Clock.System.now().toString())
+                        put("updated_at", Clock.System.now().toString())
                     }
 
                     val response = try {
@@ -260,7 +258,7 @@ class CommentRepository(
                          updatePostCommentsCount(postId, 1)
                     }
 
-                    Napier.d(TAG, "Comment created successfully: ${comment.id}")
+                    Napier.d("Comment created successfully: ${comment.id}")
                 } catch (e: Exception) {
                     lastException = e
                     val isRLSError = e.message?.contains("policy", true) == true
@@ -276,12 +274,12 @@ class CommentRepository(
             }
 
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to add comment: ${e.message}", e)
+            Napier.e("Failed to add comment: ${e.message}", e)
             Result.failure(Exception(mapSupabaseError(e)))
         }
     }
 
-    suspend fun deleteComment(commentId: String): Result<Unit> = withContext(Dispatchers.IO) {
+    override suspend fun deleteComment(commentId: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             val currentUser = client.auth.currentUserOrNull()
                 ?: return@withContext Result.failure(Exception("User must be authenticated"))
@@ -328,10 +326,10 @@ class CommentRepository(
 
             storageDatabase.commentQueries.deleteById(commentId)
 
-            Napier.d(TAG, "Comment deleted successfully: $commentId")
+            Napier.d("Comment deleted successfully: $commentId")
             Result.success(Unit)
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to delete comment: ${e.message}", e)
+            Napier.e("Failed to delete comment: ${e.message}", e)
             Result.failure(e)
         }
     }
@@ -340,7 +338,7 @@ class CommentRepository(
         return updateComment(commentId, content)
     }
 
-    suspend fun updateComment(commentId: String, newContent: String): Result<CommentWithUser> = withContext(Dispatchers.IO) {
+    override suspend fun updateComment(commentId: String, newContent: String): Result<CommentWithUser> = withContext(Dispatchers.Default) {
         try {
             val currentUser = client.auth.currentUserOrNull()
                 ?: return@withContext Result.failure(Exception("User must be authenticated"))
@@ -363,7 +361,7 @@ class CommentRepository(
                 .update({
                     set("content", newContent)
                     set("is_edited", true)
-                    set("edited_at", java.time.Instant.now().toString())
+                    set("edited_at", Clock.System.now().toString())
                 }) {
                     filter { eq("id", commentId) }
                     select(Columns.raw("*, users(uid, username, display_name, avatar, verify)"))
@@ -379,12 +377,12 @@ class CommentRepository(
 
             Result.success(updatedComment)
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to update comment: ${e.message}", e)
+            Napier.e("Failed to update comment: ${e.message}", e)
             Result.failure(e)
         }
     }
 
-    suspend fun pinComment(commentId: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun pinComment(commentId: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
              val currentUser = client.auth.currentUserOrNull()
                 ?: return@withContext Result.failure(Exception("User must be authenticated"))
@@ -414,12 +412,12 @@ class CommentRepository(
 
             Result.success(Unit)
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to pin comment: ${e.message}", e)
+            Napier.e("Failed to pin comment: ${e.message}", e)
             Result.failure(e)
         }
     }
 
-    suspend fun hideComment(commentId: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun hideComment(commentId: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             val currentUser = client.auth.currentUserOrNull()
                 ?: return@withContext Result.failure(Exception("User must be authenticated"))
@@ -460,12 +458,12 @@ class CommentRepository(
 
             Result.success(Unit)
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to hide comment: ${e.message}", e)
+            Napier.e("Failed to hide comment: ${e.message}", e)
             Result.failure(e)
         }
     }
 
-    suspend fun reportComment(commentId: String, reason: String): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun reportComment(commentId: String, reason: String): Result<Unit> = withContext(Dispatchers.Default) {
         try {
             val currentUser = client.auth.currentUserOrNull()
                 ?: return@withContext Result.failure(Exception("User must be authenticated"))
@@ -475,12 +473,12 @@ class CommentRepository(
                     put("comment_id", commentId)
                     put("reporter_id", currentUser.id)
                     put("reason", reason)
-                    put("created_at", java.time.Instant.now().toString())
+                    put("created_at", Clock.System.now().toString())
                 })
 
             Result.success(Unit)
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to report comment: ${e.message}", e)
+            Napier.e("Failed to report comment: ${e.message}", e)
             Result.failure(e)
         }
     }
@@ -512,7 +510,7 @@ class CommentRepository(
                 userReaction = userReaction
             )
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to parse comment: ${e.message}")
+            Napier.e("Failed to parse comment: ${e.message}")
             null
         }
     }
@@ -537,7 +535,7 @@ class CommentRepository(
                 banned = userData["banned"]?.jsonPrimitive?.booleanOrNull ?: false
             )
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to parse user profile: ${e.message}")
+            Napier.e("Failed to parse user profile: ${e.message}")
             null
         }
     }
@@ -549,7 +547,7 @@ class CommentRepository(
                 mapOf("comment_id" to commentId, "delta" to delta)
             )
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to update replies count: ${e.message}")
+            Napier.e("Failed to update replies count: ${e.message}")
         }
     }
 
@@ -567,14 +565,14 @@ class CommentRepository(
                     filter { eq("id", postId) }
                 }
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to update post comments count: ${e.message}")
+            Napier.e("Failed to update post comments count: ${e.message}")
         }
     }
 
     private fun mapSupabaseError(exception: Exception): String {
         val message = exception.message ?: "Unknown error"
 
-        Napier.e(TAG, "Supabase error: $message", exception)
+        Napier.e("Supabase error: $message", exception)
 
         return when {
             message.contains("PGRST200") -> "Database table not found"
@@ -604,10 +602,10 @@ class CommentRepository(
             val mentionedUsers = com.synapse.social.studioasinc.shared.core.util.MentionParser.extractMentions(content)
 
             if (mentionedUsers.isNotEmpty()) {
-                Napier.d(TAG, "Processing mentions: $mentionedUsers")
+                Napier.d("Processing mentions: $mentionedUsers")
             }
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to process mentions: ${e.message}", e)
+            Napier.e("Failed to process mentions: ${e.message}", e)
         }
     }
 }

@@ -11,7 +11,7 @@ import io.github.jan.supabase.postgrest.rpc
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.time.Instant
+import kotlinx.datetime.Clock
 
 
 
@@ -75,63 +75,10 @@ class PollRepository(
 
 
 
-    suspend fun submitVote(postId: String, optionIndex: Int): Result<Unit> = runCatching {
-        val userId = client.auth.currentUserOrNull()?.id
-            ?: return Result.failure(Exception("Not authenticated"))
-
-
-        val post = client.from("posts")
-            .select(Columns.list("id", "poll_options", "poll_end_time")) {
-                filter { eq("id", postId) }
-            }
-            .decodeSingle<PostPollData>()
-
-        post.pollEndTime?.let { endTime ->
-            if (Instant.parse(endTime).isBefore(Instant.now())) {
-                return Result.failure(Exception("Poll has ended"))
-            }
-        }
-
-
-        if (optionIndex < 0 || optionIndex >= post.pollOptions.size) {
-            return Result.failure(Exception("Invalid option index"))
-        }
-
-
-        val existingVote = client.from("poll_votes")
-            .select(Columns.list("id")) {
-                filter {
-                    eq("post_id", postId)
-                    eq("user_id", userId)
-                }
-            }
-            .decodeList<PollVote>()
-            .firstOrNull()
-
-        if (existingVote != null) {
-
-            client.from("poll_votes")
-                .update({
-                    set("option_index", optionIndex)
-                }) {
-                    filter { eq("id", existingVote.id!!) }
-                }
-        } else {
-
-            client.from("poll_votes")
-                .insert(PollVote(
-                    postId = postId,
-                    userId = userId,
-                    optionIndex = optionIndex
-                ))
-        }
-
-        Napier.d(TAG, "Vote submitted: post=$postId, option=$optionIndex")
-    }
 
 
 
-    suspend fun revokeVote(postId: String): Result<Unit> = runCatching {
+    override suspend fun revokeVote(postId: String): Result<Unit> = runCatching {
         val userId = client.auth.currentUserOrNull()?.id
             ?: return Result.failure(Exception("Not authenticated"))
 
@@ -143,7 +90,7 @@ class PollRepository(
             }
         }
 
-        Napier.d(TAG, "Vote revoked: post=$postId")
+        Napier.d("Vote revoked: post=$postId")
     }
 
 

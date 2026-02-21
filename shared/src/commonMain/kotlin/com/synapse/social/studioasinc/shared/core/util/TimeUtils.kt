@@ -4,7 +4,6 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlin.math.abs
 
 object TimeUtils {
     fun getTimeAgo(timestamp: Long): String {
@@ -12,10 +11,10 @@ object TimeUtils {
         val diff = now - timestamp
         
         return when {
-            diff < 60_000 -> "now"
-            diff < 3600_000 -> "${diff / 60_000}m"
-            diff < 86400_000 -> "${diff / 3600_000}h"
-            diff < 604800_000 -> "${diff / 86400_000}d"
+            diff < 60_000L -> "now"
+            diff < 3600_000L -> "${diff / 60_000}m"
+            diff < 86400_000L -> "${diff / 3600_000}h"
+            diff < 604800_000L -> "${diff / 86400_000}d"
             else -> "${diff / 604800_000}w"
         }
     }

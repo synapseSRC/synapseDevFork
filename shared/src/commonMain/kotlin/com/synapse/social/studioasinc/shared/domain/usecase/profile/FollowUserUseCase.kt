@@ -5,10 +5,8 @@ import com.synapse.social.studioasinc.shared.domain.repository.ProfileRepository
 
 
 class FollowUserUseCase (private val repository: ProfileRepository) {
-    suspend operator fun invoke(userId: String, targetUserId: String): Result<Unit> {
-        require(userId.isNotBlank()) { "User ID cannot be blank" }
+    suspend operator fun invoke(targetUserId: String): Result<Unit> {
         require(targetUserId.isNotBlank()) { "Target user ID cannot be blank" }
-        require(userId != targetUserId) { "Cannot follow yourself" }
-        return repository.followUser(userId, targetUserId)
+        return repository.followUser(targetUserId)
     }
 }

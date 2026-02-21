@@ -66,7 +66,7 @@ class ReshareRepository (
             .insert(Reshare(postId = postId, userId = userId, reshareText = commentary))
 
 
-        Napier.d(TAG, "Reshare created: $postId")
+        Napier.d("Reshare created: $postId")
     }
 
     companion object {

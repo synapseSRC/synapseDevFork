@@ -22,7 +22,3 @@ data class MediaItem(
     @Transient
     val userHasLiked: Boolean = false
 )
-
-
-
-@Serializable

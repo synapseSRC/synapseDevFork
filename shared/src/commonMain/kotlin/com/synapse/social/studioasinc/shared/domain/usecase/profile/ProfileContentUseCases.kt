@@ -1,8 +1,10 @@
 package com.synapse.social.studioasinc.shared.domain.usecase.profile
 
-import com.synapse.social.studioasinc.shared.data.repository.ProfileRepository
+import com.synapse.social.studioasinc.shared.domain.repository.ProfileRepository
 import com.synapse.social.studioasinc.shared.domain.model.Post
-import com.synapse.social.studioasinc.shared.domain.model.User
+import com.synapse.social.studioasinc.shared.domain.model.UserProfile
+import com.synapse.social.studioasinc.shared.domain.model.MediaItem
+import com.synapse.social.studioasinc.shared.domain.model.Reel
 
 class GetProfilePostsUseCase(
     private val profileRepository: ProfileRepository
@@ -15,7 +17,7 @@ class GetProfilePostsUseCase(
 class GetProfilePhotosUseCase(
     private val profileRepository: ProfileRepository
 ) {
-    suspend operator fun invoke(userId: String): Result<List<Post>> {
+    suspend operator fun invoke(userId: String): Result<List<MediaItem>> {
         return profileRepository.getProfilePhotos(userId)
     }
 }
@@ -23,7 +25,7 @@ class GetProfilePhotosUseCase(
 class GetProfileReelsUseCase(
     private val profileRepository: ProfileRepository
 ) {
-    suspend operator fun invoke(userId: String): Result<List<Post>> {
+    suspend operator fun invoke(userId: String): Result<List<Reel>> {
         return profileRepository.getProfileReels(userId)
     }
 }
@@ -31,7 +33,7 @@ class GetProfileReelsUseCase(
 class UpdateProfileUseCase(
     private val profileRepository: ProfileRepository
 ) {
-    suspend operator fun invoke(user: User): Result<Unit> {
-        return profileRepository.updateProfile(user)
+    suspend operator fun invoke(userId: String, profile: UserProfile): Result<UserProfile> {
+        return profileRepository.updateProfile(userId, profile)
     }
 }

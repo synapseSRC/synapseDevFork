@@ -20,13 +20,14 @@ import kotlinx.coroutines.sync.withPermit
 import kotlinx.serialization.Serializable
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.rpc
+import kotlinx.datetime.Clock
 
 
 
 
-class ReactionRepository : com.synapse.social.studioasinc.shared.domain.repository.ReactionRepository (
+class ReactionRepository(
     private val client: SupabaseClient = com.synapse.social.studioasinc.shared.core.network.SupabaseClient.client
-) {
+) : com.synapse.social.studioasinc.shared.domain.repository.ReactionRepository {
 
     companion object {
         private const val TAG = "ReactionRepository"
@@ -44,7 +45,7 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
         reactionType: ReactionType,
         oldReaction: ReactionType? = null,
         skipCheck: Boolean = false
-    ): Result<ReactionToggleResult> = withContext(Dispatchers.IO) {
+    ): Result<ReactionToggleResult> = withContext(Dispatchers.Default) {
         try {
             val currentUser = client.auth.currentUserOrNull()
                 ?: return@withContext Result.failure(Exception("User must be authenticated to react"))
@@ -53,7 +54,7 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
             val tableName = getTableName(targetType)
             val idColumn = getIdColumn(targetType)
 
-            Napier.d(TAG, "Toggling reaction: ${reactionType.name} for $targetType $targetId by user $userId")
+            Napier.d("Toggling reaction: ${reactionType.name} for $targetType $targetId by user $userId")
 
             // Optimized path if oldReaction is known
             if (skipCheck) {
@@ -62,7 +63,7 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
                          // Removing - Single Round Trip
                          client.from(tableName)
                              .delete { filter { eq(idColumn, targetId); eq("user_id", userId) } }
-                         Napier.d(TAG, "Reaction removed for $targetType $targetId (Optimized)")
+                         Napier.d("Reaction removed for $targetType $targetId (Optimized)")
                          return@withContext Result.success(ReactionToggleResult.REMOVED)
                      } else {
                          // Updating/Inserting - Single Round Trip (Upsert)
@@ -70,15 +71,15 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
                             put("user_id", userId)
                             put(idColumn, targetId)
                             put("reaction_type", reactionType.name.lowercase())
-                            put("updated_at", java.time.Instant.now().toString())
+                            put("updated_at", Clock.System.now().toString())
                         }) {
                             onConflict = "user_id, " + idColumn
                         }
-                         Napier.d(TAG, "Reaction updated to ${reactionType.name} for $targetType $targetId (Optimized)")
+                         Napier.d("Reaction updated to ${reactionType.name} for $targetType $targetId (Optimized)")
                          return@withContext Result.success(ReactionToggleResult.UPDATED)
                      }
                 } catch (e: Exception) {
-                     Napier.w(TAG, "Optimized toggle failed, falling back to standard Check-Then-Act: ${e.message}")
+                     Napier.w("Optimized toggle failed, falling back to standard Check-Then-Act: ${e.message}")
                      // Fallthrough to standard logic
                 }
             }
@@ -97,16 +98,16 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
 
                             client.from(tableName)
                                 .delete { filter { eq(idColumn, targetId); eq("user_id", userId) } }
-                            Napier.d(TAG, "Reaction removed for $targetType $targetId")
+                            Napier.d("Reaction removed for $targetType $targetId")
                             ReactionToggleResult.REMOVED
                         } else {
 
                             client.from(tableName)
                                 .update({
                                     set("reaction_type", reactionType.name.lowercase())
-                                    set("updated_at", java.time.Instant.now().toString())
+                                    set("updated_at", Clock.System.now().toString())
                                 }) { filter { eq(idColumn, targetId); eq("user_id", userId) } }
-                            Napier.d(TAG, "Reaction updated to ${reactionType.name} for $targetType $targetId")
+                            Napier.d("Reaction updated to ${reactionType.name} for $targetType $targetId")
                             ReactionToggleResult.UPDATED
                         }
                     } else {
@@ -116,7 +117,7 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
                             put(idColumn, targetId)
                             put("reaction_type", reactionType.name.lowercase())
                         })
-                        Napier.d(TAG, "New reaction ${reactionType.name} added for $targetType $targetId")
+                        Napier.d("New reaction ${reactionType.name} added for $targetType $targetId")
                         ReactionToggleResult.ADDED
                     }
 
@@ -130,7 +131,7 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
             }
             Result.failure(Exception(mapSupabaseError(lastException ?: Exception("Unknown error"))))
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to toggle reaction: ${e.message}", e)
+            Napier.e("Failed to toggle reaction: ${e.message}", e)
             Result.failure(Exception(mapSupabaseError(e)))
         }
     }
@@ -140,7 +141,7 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
     suspend fun getReactionSummary(
         targetId: String,
         targetType: String
-    ): Result<Map<ReactionType, Int>> = withContext(Dispatchers.IO) {
+    ): Result<Map<ReactionType, Int>> = withContext(Dispatchers.Default) {
         try {
             // Optimized RPC calls for supported types
             if (targetType.equals("post", ignoreCase = true)) {
@@ -191,7 +192,7 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
     suspend fun getUserReaction(
         targetId: String,
         targetType: String
-    ): Result<ReactionType?> = withContext(Dispatchers.IO) {
+    ): Result<ReactionType?> = withContext(Dispatchers.Default) {
         try {
             val currentUser = client.auth.currentUserOrNull() ?: return@withContext Result.success(null)
             val userId = currentUser.id
@@ -275,7 +276,7 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
         }
     }
 
-    suspend fun populatePostReactions(posts: List<com.synapse.social.studioasinc.shared.domain.model.Post>): List<com.synapse.social.studioasinc.shared.domain.model.Post> = withContext(Dispatchers.IO) {
+    suspend fun populatePostReactions(posts: List<com.synapse.social.studioasinc.shared.domain.model.Post>): List<com.synapse.social.studioasinc.shared.domain.model.Post> = withContext(Dispatchers.Default) {
         if (posts.isEmpty()) return@withContext posts
 
         try {
@@ -292,7 +293,7 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
                                     mapOf("post_ids" to chunkIds)
                                  ).decodeList<PostReactionSummary>()
                              } catch(e: Exception) {
-                                 Napier.e(TAG, "Failed to fetch reaction summaries for chunk", e)
+                                 Napier.e("Failed to fetch reaction summaries for chunk", e)
                                  emptyList<PostReactionSummary>()
                              }
                          }
@@ -303,12 +304,12 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
             applyReactionSummaries(posts, summaries)
 
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to populate reactions", e)
+            Napier.e("Failed to populate reactions", e)
             posts
         }
     }
 
-    suspend fun populateCommentReactions(comments: List<CommentWithUser>): List<CommentWithUser> = withContext(Dispatchers.IO) {
+    suspend fun populateCommentReactions(comments: List<CommentWithUser>): List<CommentWithUser> = withContext(Dispatchers.Default) {
         if (comments.isEmpty()) return@withContext comments
 
         try {
@@ -325,7 +326,7 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
                                     mapOf("comment_ids" to chunkIds)
                                  ).decodeList<CommentReactionSummary>()
                              } catch(e: Exception) {
-                                 Napier.e(TAG, "Failed to fetch reaction summaries for comment chunk", e)
+                                 Napier.e("Failed to fetch reaction summaries for comment chunk", e)
                                  emptyList<CommentReactionSummary>()
                              }
                          }
@@ -336,7 +337,7 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
             applyCommentReactionSummaries(comments, summaries)
 
         } catch (e: Exception) {
-            Napier.e(TAG, "Failed to populate comment reactions", e)
+            Napier.e("Failed to populate comment reactions", e)
             comments
         }
     }
@@ -385,7 +386,7 @@ class ReactionRepository : com.synapse.social.studioasinc.shared.domain.reposito
     private fun mapSupabaseError(exception: Exception): String {
         val message = exception.message ?: "Unknown error"
 
-        Napier.e(TAG, "Supabase error: $message", exception)
+        Napier.e("Supabase error: $message", exception)
 
         return when {
             message.contains("PGRST200") -> "Database table not found"

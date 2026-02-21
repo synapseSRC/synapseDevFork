@@ -42,4 +42,32 @@ class AuthDataSource(
     override suspend fun refreshSession(): Result<Unit> {
         return authService.refreshSession()
     }
+
+    override suspend fun getOAuthUrl(provider: String, redirectUrl: String): Result<String> {
+        return authService.getOAuthUrl(provider, redirectUrl)
+    }
+
+    override suspend fun handleOAuthCallback(code: String?, accessToken: String?, refreshToken: String?): Result<Unit> {
+        return authService.handleOAuthCallback(code, accessToken, refreshToken)
+    }
+
+    override suspend fun getCurrentUserEmail(): String? {
+        return authService.getCurrentUserEmail()
+    }
+
+    override suspend fun isEmailVerified(): Boolean {
+        return authService.isEmailVerified()
+    }
+
+    override suspend fun sendPasswordResetEmail(email: String): Result<Unit> {
+        return authService.sendPasswordResetEmail(email)
+    }
+
+    override suspend fun resendVerificationEmail(email: String): Result<Unit> {
+        return authService.resendVerificationEmail(email)
+    }
+
+    override suspend fun updatePassword(password: String): Result<Unit> {
+        return authService.updatePassword(password)
+    }
 }

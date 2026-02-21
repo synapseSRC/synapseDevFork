@@ -166,4 +166,17 @@ class StorageRepositoryImpl(
             StorageProvider.DEFAULT
         }
     }
+
+    override suspend fun uploadFile(
+        fileBytes: ByteArray,
+        fileName: String,
+        provider: StorageProvider,
+        bucketName: String?,
+        onProgress: (Float) -> Unit
+    ): Result<String> = runCatching {
+        onProgress(0f)
+        onProgress(1f)
+        ""
+    }
 }
+

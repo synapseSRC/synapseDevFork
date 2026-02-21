@@ -1,7 +1,7 @@
 package com.synapse.social.studioasinc.shared.domain.usecase.post
 import com.synapse.social.studioasinc.shared.domain.model.*
 
-import com.synapse.social.studioasinc.shared.domain.repository.ReactionRepository
+import com.synapse.social.studioasinc.shared.data.repository.ReactionRepository
 import com.synapse.social.studioasinc.shared.domain.model.Post
 import com.synapse.social.studioasinc.shared.domain.model.ReactionType
 import kotlinx.coroutines.flow.Flow

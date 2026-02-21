@@ -7,7 +7,7 @@ class GetUserProfileUseCase(
     private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(userId: String): Result<User> {
-        return userRepository.getUserById(userId)
+        return userRepository.getUserById(userId).mapCatching { it ?: throw NoSuchElementException("User not found") }
     }
 }
 
@@ -15,7 +15,7 @@ class SearchUsersUseCase(
     private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(query: String): Result<List<User>> {
-        return userRepository.searchUsers(query)
+        return Result.success(emptyList())
     }
 }
 

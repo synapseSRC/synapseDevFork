@@ -3,7 +3,6 @@ package com.synapse.social.studioasinc.shared.data.datasource
 import com.synapse.social.studioasinc.shared.core.network.SupabaseClient
 import com.synapse.social.studioasinc.shared.domain.model.StorageConfig
 import io.github.jan.supabase.storage.storage
-import io.github.jan.supabase.storage.upload
 
 class SupabaseDataSource : ISupabaseDataSource {
     

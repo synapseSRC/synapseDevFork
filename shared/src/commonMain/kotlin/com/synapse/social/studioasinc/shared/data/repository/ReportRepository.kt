@@ -10,9 +10,9 @@ import kotlinx.serialization.Serializable
 
 
 
-class ReportRepository : com.synapse.social.studioasinc.shared.domain.repository.ReportRepository (
+class ReportRepository(
     private val client: SupabaseClient = com.synapse.social.studioasinc.shared.core.network.SupabaseClient.client
-) {
+) : com.synapse.social.studioasinc.shared.domain.repository.ReportRepository {
 
     @Serializable
     private data class PostReport(
@@ -25,23 +25,20 @@ class ReportRepository : com.synapse.social.studioasinc.shared.domain.repository
 
 
 
-    suspend fun createReport(
+    override suspend fun createReport(
         postId: String,
-        reason: String,
-        description: String? = null
+        reporterId: String,
+        reason: String
     ): Result<Unit> = runCatching {
-        val userId = client.auth.currentUserOrNull()?.id
-            ?: return Result.failure(Exception("Not authenticated"))
-
         client.from("post_reports")
             .insert(PostReport(
                 postId = postId,
-                reporterId = userId,
+                reporterId = reporterId,
                 reason = reason,
-                description = description
+                description = null
             ))
 
-        Napier.d(TAG, "Report created: post=$postId, reason=$reason")
+        Napier.d("Report created: post=$postId, reason=$reason")
     }
 
     companion object {

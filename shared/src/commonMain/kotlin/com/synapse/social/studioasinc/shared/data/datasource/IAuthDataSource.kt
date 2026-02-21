@@ -9,4 +9,11 @@ interface IAuthDataSource {
     suspend fun signOut(): Result<Unit>
     suspend fun getCurrentUserId(): String?
     suspend fun refreshSession(): Result<Unit>
+    suspend fun getOAuthUrl(provider: String, redirectUrl: String): Result<String>
+    suspend fun handleOAuthCallback(code: String?, accessToken: String?, refreshToken: String?): Result<Unit>
+    suspend fun getCurrentUserEmail(): String?
+    suspend fun isEmailVerified(): Boolean
+    suspend fun sendPasswordResetEmail(email: String): Result<Unit>
+    suspend fun resendVerificationEmail(email: String): Result<Unit>
+    suspend fun updatePassword(password: String): Result<Unit>
 }

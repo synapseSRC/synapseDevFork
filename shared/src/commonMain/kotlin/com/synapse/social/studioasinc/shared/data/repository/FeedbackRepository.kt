@@ -44,7 +44,7 @@ class FeedbackRepository {
                 deviceInfo = deviceInfo
             ))
 
-        Napier.d(TAG, "Feedback submitted: category=$category")
+        Napier.d("Feedback submitted: category=$category")
         Unit
     }
 

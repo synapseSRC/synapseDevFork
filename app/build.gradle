@@ -197,6 +197,13 @@ ksp {
 }
 
 dependencies {
+    // Force kotlinx-datetime version
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1") {
+        version {
+            strictly("0.6.1")
+        }
+    }
+    
     // Shared Module
     implementation(project(':shared')) {
         exclude group: 'com.google.protobuf', module: 'protobuf-java'

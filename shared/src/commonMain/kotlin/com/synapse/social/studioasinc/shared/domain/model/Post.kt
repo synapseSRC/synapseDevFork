@@ -2,8 +2,8 @@ package com.synapse.social.studioasinc.shared.domain.model
 
 import com.synapse.social.studioasinc.shared.core.util.json
 import com.synapse.social.studioasinc.shared.core.util.toJsonElement
-import com.synapse.social.studioasinc.shared.core.util.toJsonElement
 import kotlinx.serialization.KSerializer
+import kotlinx.datetime.Clock
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -14,30 +14,6 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.decodeFromJsonElement
-
-@Serializable
-    @SerialName("tagged_people") val taggedPeople: List<User>? = null,
-    @SerialName("feeling") val feeling: FeelingActivity? = null,
-    @SerialName("background_color") val backgroundColor: Long? = null
-)
-
-@Serializable(with = FeelingTypeSerializer::class)
-
-
-    override fun deserialize(decoder: Decoder): FeelingType {
-        return try {
-            FeelingType.valueOf(decoder.decodeString())
-        } catch (e: IllegalArgumentException) {
-            FeelingType.MOOD
-        } catch (e: SerializationException) {
-            FeelingType.MOOD
-        }
-    }
-}
-
-@Serializable
-
-
 
 @Serializable
 data class Post(
@@ -63,7 +39,7 @@ data class Post(
     val postVisibility: String? = null,
     @SerialName("publish_date")
     val publishDate: String? = null,
-    val timestamp: Long = System.currentTimeMillis(),
+    val timestamp: Long = Clock.System.now().toEpochMilliseconds(),
     @SerialName("created_at")
     val createdAt: String? = null,
     @SerialName("updated_at")
@@ -203,6 +179,7 @@ data class Post(
             when (media.type) {
                 MediaType.IMAGE -> items.add(PostDetailItem.Image(media, id))
                 MediaType.VIDEO -> items.add(PostDetailItem.Video(media, id))
+                MediaType.PHOTO, MediaType.AUDIO, MediaType.OTHER -> {}
             }
         }
 

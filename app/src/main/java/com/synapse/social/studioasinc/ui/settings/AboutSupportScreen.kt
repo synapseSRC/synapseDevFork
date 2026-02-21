@@ -126,6 +126,16 @@ fun AboutSupportScreen(
                             context.startActivity(intent)
                         }
                     )
+                    SettingsDivider()
+                    SettingsNavigationItem(
+                        title = "Open Source Licenses",
+                        subtitle = "View third-party library attributions",
+                        icon = R.drawable.ic_bug_report_48px,
+                        onClick = {
+                            viewModel.navigateToLicenses()
+                            onNavigateToLicenses()
+                        }
+                    )
                 }
             }
 
@@ -165,21 +175,6 @@ fun AboutSupportScreen(
                         onClick = {
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AboutSupportConstants.URL_APP_WEBSITE))
                             context.startActivity(intent)
-                        }
-                    )
-                }
-            }
-
-
-            item {
-                SettingsSection(title = "Licenses") {
-                    SettingsNavigationItem(
-                        title = "Open Source Licenses",
-                        subtitle = "View third-party library attributions",
-                        icon = R.drawable.ic_bug_report_48px,
-                        onClick = {
-                            viewModel.navigateToLicenses()
-                            onNavigateToLicenses()
                         }
                     )
                 }

@@ -6,16 +6,11 @@ import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
 import javax.inject.Inject
 import dagger.hilt.android.qualifiers.ApplicationContext
 import com.synapse.social.studioasinc.shared.domain.model.MediaType
-import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.core.network.SupabaseErrorHandler
 
 import com.synapse.social.studioasinc.shared.domain.model.UserProfile
 import com.synapse.social.studioasinc.shared.domain.model.UserStatus
 import com.synapse.social.studioasinc.shared.domain.model.Gender
 import com.synapse.social.studioasinc.presentation.editprofile.photohistory.HistoryItem
-import io.github.jan.supabase.auth.auth
-import io.github.jan.supabase.postgrest.from
-import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

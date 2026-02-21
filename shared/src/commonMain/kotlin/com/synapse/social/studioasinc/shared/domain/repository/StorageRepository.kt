@@ -7,6 +7,13 @@ import kotlinx.coroutines.flow.Flow
 interface StorageRepository {
     fun getStorageConfig(): Flow<StorageConfig>
     suspend fun saveStorageConfig(config: StorageConfig)
+    suspend fun uploadFile(
+        fileBytes: ByteArray, 
+        fileName: String, 
+        provider: StorageProvider, 
+        bucketName: String?, 
+        onProgress: (Float) -> Unit
+    ): Result<String>
 
     suspend fun updatePhotoProvider(provider: StorageProvider)
     suspend fun updateVideoProvider(provider: StorageProvider)

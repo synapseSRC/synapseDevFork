@@ -1,53 +1,39 @@
 package com.synapse.social.studioasinc.shared.data.repository
 
-import com.synapse.social.studioasinc.shared.core.network.SupabaseClient
-import com.synapse.social.studioasinc.shared.data.model.UserProfileInsert
-import com.synapse.social.studioasinc.shared.data.model.UserSettingsInsert
-import com.synapse.social.studioasinc.shared.data.model.UserPresenceInsert
-import io.github.jan.supabase.auth.auth
+import com.synapse.social.studioasinc.shared.data.datasource.IAuthDataSource
+import com.synapse.social.studioasinc.shared.domain.model.OAuthProvider
 import io.github.jan.supabase.auth.status.SessionStatus
 import kotlinx.coroutines.flow.Flow
-import io.github.jan.supabase.auth.OtpType
-import io.github.jan.supabase.auth.providers.builtin.Email
-import io.github.jan.supabase.auth.providers.OAuthProvider
-import io.github.jan.supabase.postgrest.from
-import io.github.jan.supabase.postgrest.query.Columns
-import io.github.jan.supabase.postgrest.query.Count
-import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.contentOrNull
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.Dispatchers
-import io.github.aakira.napier.Napier
-import kotlin.time.ExperimentalTime
-import io.github.jan.supabase.SupabaseClient as SupabaseClientLib
+import kotlinx.coroutines.flow.flowOf
 
-class AuthRepository(private val client: SupabaseClientLib = SupabaseClient.client) {
-    val sessionStatus: Flow<SessionStatus> get() = client.auth.sessionStatus
+class AuthRepository(private val authDataSource: IAuthDataSource) {
+    val sessionStatus: Flow<SessionStatus> get() = flowOf() // Placeholder
     private val TAG = "AuthRepository"
 
     suspend fun signUp(email: String, password: String): Result<String> {
-        return try {
-            withContext(Dispatchers.Default) {
-                client.auth.signUpWith(Email) {
-                    this.email = email
-                    this.password = password
-                }
-                val userId = client.auth.currentUserOrNull()?.id
-                    ?: throw Exception("User ID not found")
-                Napier.d("User signed up: $userId", tag = TAG)
-                Result.success(userId)
-            }
-        } catch (e: Exception) {
-            Napier.e("Sign up failed", e, tag = TAG)
-            Result.failure(e)
-        }
+        return authDataSource.signUp(email, password)
     }
 
-    suspend fun signUpWithProfile(email: String, password: String, username: String): Result<String> {
-        return try {
-            val signUpResult = signUp(email, password)
-            if (signUpResult.isSuccess) {
-                val userId = signUpResult.getOrThrow()
+    suspend fun signIn(email: String, password: String): Result<String> {
+        return authDataSource.signIn(email, password)
+    }
+
+    suspend fun signInWithOAuth(provider: OAuthProvider, redirectUrl: String): Result<Unit> {
+        return authDataSource.signInWithOAuth(provider, redirectUrl)
+    }
+
+    suspend fun signOut(): Result<Unit> {
+        return authDataSource.signOut()
+    }
+
+    suspend fun getCurrentUserId(): String? {
+        return authDataSource.getCurrentUserId()
+    }
+
+    suspend fun refreshSession(): Result<Unit> {
+        return authDataSource.refreshSession()
+    }
+}
                 ensureProfileExists(userId, email, username).map { userId }
             } else {
                 signUpResult

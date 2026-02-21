@@ -18,8 +18,6 @@ import com.synapse.social.studioasinc.shared.domain.model.LocationData
 import com.synapse.social.studioasinc.core.util.FileManager
 import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
-import com.synapse.social.studioasinc.core.network.SupabaseClient
-import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

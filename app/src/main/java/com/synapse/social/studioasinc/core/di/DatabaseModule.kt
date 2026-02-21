@@ -35,8 +35,8 @@ object DatabaseModule {
     }
 
     @Provides
-    fun provideUserDao(db: AppDatabase): UserDao {
-        return db.userDao()
+    fun provideUserDao(db: StorageDatabase): UserDao {
+        return UserDaoImpl(db)
     }
 
     @Provides
@@ -94,4 +94,10 @@ object DatabaseModule {
     fun provideCommentDao(db: StorageDatabase): CommentDao {
         return CommentDaoImpl(db)
     }
+}
+
+@dagger.hilt.EntryPoint
+@dagger.hilt.InstallIn(dagger.hilt.components.SingletonComponent::class)
+interface DatabaseEntryPoint {
+    fun userDao(): UserDao
 }

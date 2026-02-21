@@ -38,6 +38,8 @@ Build a high-performance, memory-safe "Engine" in Kotlin (LLVM) that handles bus
 ---
 
 ## E2EE Strategy (Signal-Inspired)
+> **Detailed Plan:** See [E2E_IMPLEMENTATION_PLAN.md](../../../../../E2E_IMPLEMENTATION_PLAN.md) for the complete 35-task execution strategy.
+
 - **Protocol:** Signal-style Double Ratchet.
 - **Keys:** X25519 for handshakes, AES-GCM for payloads.
 - **Group Logic:** Server-side fan-out of encrypted keys (Sender Keys).

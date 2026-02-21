@@ -51,7 +51,10 @@ class ProfileRepositoryImpl(private val client: SupabaseClientType) : ProfileRep
 
         val users = result.mapNotNull { it["users"]?.jsonObject?.let { userJson ->
             // Simple mapping for now
-            UserProfile(uid = userJson["uid"]?.jsonPrimitive?.content ?: "")
+            UserProfile(
+                uid = userJson["uid"]?.jsonPrimitive?.content ?: "",
+                username = userJson["username"]?.jsonPrimitive?.content ?: ""
+            )
         }}
         Result.success(users)
     } catch (e: Exception) {

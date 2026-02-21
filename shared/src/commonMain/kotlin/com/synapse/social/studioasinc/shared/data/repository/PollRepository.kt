@@ -16,9 +16,9 @@ import java.time.Instant
 
 
 
-class PollRepository : com.synapse.social.studioasinc.shared.domain.repository.PollRepository (
+class PollRepository(
     private val client: SupabaseClient = com.synapse.social.studioasinc.shared.core.network.SupabaseClient.client
-) {
+) : com.synapse.social.studioasinc.shared.domain.repository.PollRepository {
 
     @Serializable
     private data class PollVote(
@@ -43,7 +43,19 @@ class PollRepository : com.synapse.social.studioasinc.shared.domain.repository.P
         @SerialName("poll_end_time") val pollEndTime: String?
     )
 
+    override suspend fun submitVote(postId: String, optionIndex: Int): Result<Unit> = runCatching {
+        val userId = client.auth.currentUserOrNull()?.id
+            ?: return Result.failure(Exception("Not authenticated"))
 
+        val vote = PollVote(
+            postId = postId,
+            userId = userId,
+            optionIndex = optionIndex
+        )
+        
+        client.from("poll_votes")
+            .insert(vote)
+    }
 
     suspend fun getUserVote(postId: String): Result<Int?> = runCatching {
         val userId = client.auth.currentUserOrNull()?.id

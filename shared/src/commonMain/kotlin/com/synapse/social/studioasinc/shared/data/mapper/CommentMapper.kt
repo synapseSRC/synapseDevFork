@@ -12,7 +12,7 @@ object CommentMapper {
             postId = comment.postKey,
             authorId = comment.uid,
             text = comment.comment,
-            timestamp = parsePushTime(comment.push_time),
+            timestamp = parsePushTime(comment.pushTime),
             likesCount = 0,
             repliesCount = 0,
             isDeleted = false,
@@ -28,7 +28,7 @@ object CommentMapper {
             postId = comment.postKey,
             authorUid = comment.uid,
             text = comment.comment,
-            timestamp = parsePushTime(comment.push_time),
+            timestamp = parsePushTime(comment.pushTime),
             parentCommentId = comment.replyCommentKey,
             username = username,
             avatarUrl = avatarUrl
@@ -46,7 +46,7 @@ object CommentMapper {
             postKey = entity.postId,
             uid = entity.authorUid,
             comment = entity.text,
-            push_time = entity.timestamp.toString(),
+            pushTime = entity.timestamp.toString(),
             replyCommentKey = entity.parentCommentId
         )
     }
@@ -57,7 +57,7 @@ object CommentMapper {
             postKey = entity.postId,
             uid = entity.authorId,
             comment = entity.text,
-            push_time = entity.timestamp.toString(),
+            pushTime = entity.timestamp.toString(),
             replyCommentKey = entity.parentCommentId
         )
     }

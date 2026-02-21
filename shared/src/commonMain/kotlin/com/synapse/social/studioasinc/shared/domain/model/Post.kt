@@ -1,8 +1,7 @@
-import com.synapse.social.studioasinc.shared.core.util.json
-import com.synapse.social.studioasinc.shared.core.util.toJsonElement
 package com.synapse.social.studioasinc.shared.domain.model
 
 import com.synapse.social.studioasinc.shared.core.util.json
+import com.synapse.social.studioasinc.shared.core.util.toJsonElement
 import com.synapse.social.studioasinc.shared.core.util.toJsonElement
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName

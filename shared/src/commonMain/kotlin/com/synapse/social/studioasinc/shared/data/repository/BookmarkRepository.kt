@@ -11,9 +11,9 @@ import kotlinx.serialization.Serializable
 
 
 
-class BookmarkRepository : com.synapse.social.studioasinc.shared.domain.repository.BookmarkRepository (
+class BookmarkRepository(
     private val client: SupabaseClient = com.synapse.social.studioasinc.shared.core.network.SupabaseClient.client
-) {
+) : com.synapse.social.studioasinc.shared.domain.repository.BookmarkRepository {
 
     @Serializable
     private data class Favorite(
@@ -23,7 +23,15 @@ class BookmarkRepository : com.synapse.social.studioasinc.shared.domain.reposito
         @SerialName("collection_id") val collectionId: String? = null
     )
 
-
+    override suspend fun savePost(postId: String, userId: String): Result<Unit> = runCatching {
+        val favorite = Favorite(
+            postId = postId,
+            userId = userId
+        )
+        
+        client.from("favorites")
+            .insert(favorite)
+    }
 
     suspend fun isBookmarked(postId: String): Result<Boolean> = runCatching {
         val userId = client.auth.currentUserOrNull()?.id

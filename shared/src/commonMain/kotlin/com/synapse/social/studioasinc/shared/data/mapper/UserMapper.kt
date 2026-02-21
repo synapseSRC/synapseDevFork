@@ -1,6 +1,6 @@
 package com.synapse.social.studioasinc.shared.data.mapper
 
-import com.synapse.social.studioasinc.core.network.SupabaseClient
+import io.github.jan.supabase.SupabaseClient
 import com.synapse.social.studioasinc.shared.data.database.User as DbUser
 import com.synapse.social.studioasinc.shared.domain.model.User as DomainUser
 

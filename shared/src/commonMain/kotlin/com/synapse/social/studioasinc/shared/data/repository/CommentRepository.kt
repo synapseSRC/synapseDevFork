@@ -4,7 +4,7 @@ import io.github.aakira.napier.Napier
 import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
 import com.synapse.social.studioasinc.shared.data.local.database.CommentDao
 import com.synapse.social.studioasinc.shared.data.local.entity.CommentEntity
-import com.synapse.social.studioasinc.shared.data.repository.CommentMapper
+import com.synapse.social.studioasinc.shared.data.mapper.CommentMapper
 import com.synapse.social.studioasinc.shared.domain.model.*
 import com.synapse.social.studioasinc.shared.domain.model.UserStatus
 import io.github.jan.supabase.SupabaseClient
@@ -13,6 +13,8 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.rpc
 import io.github.jan.supabase.postgrest.query.Columns
+import kotlinx.coroutines.CoroutineScope
+import org.koin.core.annotation.Named
 import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.exceptions.RestException
 import kotlinx.coroutines.Dispatchers
@@ -24,19 +26,18 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.*
-
-import javax.inject.Named
-
+import org.koin.core.annotation.Named
 
 
-class CommentRepository : com.synapse.social.studioasinc.shared.domain.repository.CommentRepository constructor(
+
+class CommentRepository(
     private val storageDatabase: StorageDatabase,
     private val client: SupabaseClient,
     private val commentDao: CommentDao,
     private val userRepository: UserRepository,
     @Named("ApplicationScope") private val externalScope: CoroutineScope,
     private val reactionRepository: ReactionRepository
-) {
+) : com.synapse.social.studioasinc.shared.domain.repository.CommentRepository {
     private val TAG = "CommentRepository"
 
     companion object {
@@ -617,7 +618,51 @@ private fun CommentWithUser.toComment(): Comment {
         postKey = this.postId,
         uid = this.userId,
         comment = this.content,
-        push_time = this.createdAt.toString(),
+        pushTime = this.createdAt.toString(),
         replyCommentKey = this.parentCommentId
     )
+}
+
+private fun parseCommentFromJson(json: JsonObject): Comment? {
+    return try {
+        json.let { Json.decodeFromJsonElement<Comment>(it) }
+    } catch (e: Exception) {
+        Napier.e("Failed to parse comment from JSON", e)
+        null
+    }
+}
+
+private fun mapSupabaseError(error: Throwable): String {
+    return error.message ?: "Unknown error occurred"
+}
+
+private suspend fun updateRepliesCount(commentId: String, increment: Boolean = true) {
+    try {
+        val delta = if (increment) 1 else -1
+        // TODO: Implement replies count update
+    } catch (e: Exception) {
+        Napier.e("Failed to update replies count", e)
+    }
+}
+
+private suspend fun updatePostCommentsCount(postId: String, increment: Boolean = true) {
+    try {
+        val delta = if (increment) 1 else -1
+        // TODO: Implement post comments count update
+    } catch (e: Exception) {
+        Napier.e("Failed to update post comments count", e)
+    }
+}
+
+private suspend fun processMentions(content: String, commentId: String) {
+    // TODO: Implement mention processing
+}
+
+private fun parseUserProfileFromJson(json: JsonObject): User? {
+    return try {
+        json.let { Json.decodeFromJsonElement<User>(it) }
+    } catch (e: Exception) {
+        Napier.e("Failed to parse user profile from JSON", e)
+        null
+    }
 }

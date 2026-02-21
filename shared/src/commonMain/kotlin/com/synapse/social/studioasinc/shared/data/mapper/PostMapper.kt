@@ -2,18 +2,50 @@ package com.synapse.social.studioasinc.shared.data.mapper
 
 import com.synapse.social.studioasinc.shared.data.database.Post as DbPost
 import com.synapse.social.studioasinc.shared.domain.model.Post
-import com.synapse.social.studioasinc.shared.domain.model.MediaItem as AppMediaItem
-import com.synapse.social.studioasinc.shared.domain.model.MediaItem as SharedMediaItem
-import com.synapse.social.studioasinc.shared.domain.model.PollOption as AppPollOption
-import com.synapse.social.studioasinc.shared.domain.model.PollOption as SharedPollOption
-import com.synapse.social.studioasinc.shared.domain.model.PostMetadata as AppPostMetadata
-import com.synapse.social.studioasinc.shared.domain.model.PostMetadata as SharedPostMetadata
-import com.synapse.social.studioasinc.shared.domain.model.ReactionType as AppReactionType
-import com.synapse.social.studioasinc.shared.domain.model.ReactionType as SharedReactionType
-import com.synapse.social.studioasinc.shared.domain.model.MediaType as AppMediaType
-import com.synapse.social.studioasinc.shared.domain.model.MediaType as SharedMediaType
+import com.synapse.social.studioasinc.shared.domain.model.MediaItem
+import com.synapse.social.studioasinc.shared.domain.model.PollOption
+import com.synapse.social.studioasinc.shared.domain.model.PostMetadata
+import com.synapse.social.studioasinc.shared.domain.model.ReactionType
+import com.synapse.social.studioasinc.shared.data.model.PostDto
 
 object PostMapper {
+    
+    fun toDto(post: Post): PostDto {
+        return PostDto(
+            id = post.id,
+            key = post.key,
+            authorUid = post.authorUid,
+            postText = post.postText,
+            postImage = post.postImage,
+            postType = post.postType,
+            postVisibility = post.postVisibility,
+            postHideViewsCount = post.postHideViewsCount,
+            postHideLikeCount = post.postHideLikeCount,
+            postHideCommentsCount = post.postHideCommentsCount,
+            postDisableComments = post.postDisableComments,
+            publishDate = post.publishDate,
+            timestamp = post.timestamp,
+            likesCount = post.likesCount,
+            commentsCount = post.commentsCount,
+            viewsCount = post.viewsCount,
+            resharesCount = post.resharesCount,
+            mediaItems = post.mediaItems,
+            hasPoll = post.hasPoll,
+            pollQuestion = post.pollQuestion,
+            pollOptions = post.pollOptions,
+            pollEndTime = post.pollEndTime,
+            pollAllowMultiple = post.pollAllowMultiple,
+            hasLocation = post.hasLocation,
+            locationName = post.locationName,
+            locationAddress = post.locationAddress,
+            locationLatitude = post.locationLatitude,
+            locationLongitude = post.locationLongitude,
+            locationPlaceId = post.locationPlaceId,
+            youtubeUrl = post.youtubeUrl,
+            metadata = post.metadata
+        )
+    }
+    
     fun toEntity(post: Post): DbPost {
         return DbPost(
             id = post.id,

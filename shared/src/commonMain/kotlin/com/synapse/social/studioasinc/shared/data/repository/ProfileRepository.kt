@@ -1,7 +1,7 @@
 package com.synapse.social.studioasinc.shared.data.repository
 
-import com.synapse.social.studioasinc.data.model.UserProfile
-import com.synapse.social.studioasinc.feature.profile.profile.components.MediaItem
+import com.synapse.social.studioasinc.shared.domain.model.UserProfile
+import com.synapse.social.studioasinc.shared.domain.model.MediaItem
 import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {

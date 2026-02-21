@@ -92,7 +92,7 @@ class UploadMediaUseCase(
                 StorageProvider.CLOUDFLARE_R2
             )
 
-            MediaType.VIDEO, MediaType.OTHER -> listOf(
+            MediaType.VIDEO, MediaType.AUDIO, MediaType.OTHER -> listOf(
                 StorageProvider.CLOUDINARY,
                 StorageProvider.SUPABASE,
                 StorageProvider.CLOUDFLARE_R2,

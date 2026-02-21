@@ -2,6 +2,7 @@ package com.synapse.social.studioasinc.shared.data.local.database
 
 import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
 import com.synapse.social.studioasinc.shared.data.database.Comment
+import com.synapse.social.studioasinc.shared.data.local.entity.CommentEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import app.cash.sqldelight.coroutines.asFlow

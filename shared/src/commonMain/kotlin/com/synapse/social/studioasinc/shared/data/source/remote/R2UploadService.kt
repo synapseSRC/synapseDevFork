@@ -1,6 +1,7 @@
 package com.synapse.social.studioasinc.shared.data.source.remote
 
 import com.synapse.social.studioasinc.shared.domain.model.StorageConfig
+import com.synapse.social.studioasinc.shared.domain.model.UploadError
 import com.synapse.social.studioasinc.shared.util.DateFormatterUtil
 import com.synapse.social.studioasinc.shared.util.TimeProvider
 import io.ktor.client.HttpClient

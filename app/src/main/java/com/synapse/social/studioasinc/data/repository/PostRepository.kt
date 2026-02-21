@@ -84,12 +84,6 @@ class PostRepository @Inject constructor(
         val isVerified: Boolean
     )
 
-    fun invalidateCache() {
-        postsCache.clear()
-        profileCache.clear()
-        android.util.Log.d(TAG, "Cache invalidated")
-    }
-
     fun constructMediaUrl(storagePath: String): String {
         return SupabaseClient.constructMediaUrl(storagePath)
     }
@@ -379,7 +373,6 @@ class PostRepository @Inject constructor(
             client.from("posts").update(updates) {
                 filter { eq("id", postId) }
             }
-            invalidateCache()
             Result.success(Post(id = postId, authorUid = ""))
         } catch (e: Exception) {
             android.util.Log.e(TAG, "Failed to update post", e)

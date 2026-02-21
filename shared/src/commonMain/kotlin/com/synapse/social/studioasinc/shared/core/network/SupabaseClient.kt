@@ -28,9 +28,7 @@ object SupabaseClient {
                 supabaseUrl = SynapseConfig.SUPABASE_URL,
                 supabaseKey = SynapseConfig.SUPABASE_ANON_KEY
             ) {
-                install(Auth) {
-
-                }
+                install(Auth)
                 install(Postgrest)
                 install(Realtime)
                 install(Functions)

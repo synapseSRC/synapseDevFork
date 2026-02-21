@@ -67,7 +67,8 @@ object DatabaseModule {
                 commentsCountAdapter = intAdapter,
                 viewsCountAdapter = intAdapter,
                 resharesCountAdapter = intAdapter,
-                userPollVoteAdapter = intAdapter
+                userPollVoteAdapter = intAdapter,
+                encryptedContentAdapter = stringMapAdapter
             ),
             CommentAdapter = Comment.Adapter(
                 likesCountAdapter = intAdapter,

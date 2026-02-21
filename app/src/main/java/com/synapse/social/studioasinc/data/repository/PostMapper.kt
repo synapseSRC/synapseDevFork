@@ -1,11 +1,21 @@
 package com.synapse.social.studioasinc.data.repository
 
-import com.synapse.social.studioasinc.data.local.database.PostEntity
+import com.synapse.social.studioasinc.shared.data.database.Post as DbPost
 import com.synapse.social.studioasinc.domain.model.Post
+import com.synapse.social.studioasinc.domain.model.MediaItem as AppMediaItem
+import com.synapse.social.studioasinc.shared.domain.model.MediaItem as SharedMediaItem
+import com.synapse.social.studioasinc.domain.model.PollOption as AppPollOption
+import com.synapse.social.studioasinc.shared.domain.model.PollOption as SharedPollOption
+import com.synapse.social.studioasinc.domain.model.PostMetadata as AppPostMetadata
+import com.synapse.social.studioasinc.shared.domain.model.PostMetadata as SharedPostMetadata
+import com.synapse.social.studioasinc.domain.model.ReactionType as AppReactionType
+import com.synapse.social.studioasinc.shared.domain.model.ReactionType as SharedReactionType
+import com.synapse.social.studioasinc.domain.model.MediaType as AppMediaType
+import com.synapse.social.studioasinc.shared.domain.model.MediaType as SharedMediaType
 
 object PostMapper {
-    fun toEntity(post: Post): PostEntity {
-        return PostEntity(
+    fun toEntity(post: Post): DbPost {
+        return DbPost(
             id = post.id,
             key = post.key,
             authorUid = post.authorUid,
@@ -19,24 +29,22 @@ object PostMapper {
             postVisibility = post.postVisibility,
             publishDate = post.publishDate,
             timestamp = post.timestamp,
-            createdAt = post.createdAt,
-            updatedAt = post.updatedAt,
             likesCount = post.likesCount,
             commentsCount = post.commentsCount,
             viewsCount = post.viewsCount,
             resharesCount = post.resharesCount,
-            mediaItems = post.mediaItems,
+            mediaItems = post.mediaItems?.map { toSharedMediaItem(it) },
             isEncrypted = post.isEncrypted,
-            encryptedContent = post.encryptedContent,
             nonce = post.nonce,
             encryptionKeyId = post.encryptionKeyId,
+            encryptedContent = post.encryptedContent,
             isDeleted = post.isDeleted,
             isEdited = post.isEdited,
             editedAt = post.editedAt,
             deletedAt = post.deletedAt,
             hasPoll = post.hasPoll,
             pollQuestion = post.pollQuestion,
-            pollOptions = post.pollOptions,
+            pollOptions = post.pollOptions?.map { toSharedPollOption(it) },
             pollEndTime = post.pollEndTime,
             pollAllowMultiple = post.pollAllowMultiple,
             hasLocation = post.hasLocation,
@@ -46,16 +54,17 @@ object PostMapper {
             locationLongitude = post.locationLongitude,
             locationPlaceId = post.locationPlaceId,
             youtubeUrl = post.youtubeUrl,
-            reactions = post.reactions,
-            userReaction = post.userReaction,
+            reactions = post.reactions?.mapKeys { toSharedReactionType(it.key) },
+            userReaction = post.userReaction?.let { toSharedReactionType(it) },
             username = post.username,
             avatarUrl = post.avatarUrl,
             isVerified = post.isVerified,
-            metadata = post.metadata
+            userPollVote = post.userPollVote,
+            metadata = post.metadata?.let { toSharedPostMetadata(it) }
         )
     }
 
-    fun toModel(entity: PostEntity): Post {
+    fun toModel(entity: DbPost): Post {
         return Post(
             id = entity.id,
             key = entity.key,
@@ -70,13 +79,13 @@ object PostMapper {
             postVisibility = entity.postVisibility,
             publishDate = entity.publishDate,
             timestamp = entity.timestamp,
-            createdAt = entity.createdAt,
-            updatedAt = entity.updatedAt,
+            createdAt = null,
+            updatedAt = null,
             likesCount = entity.likesCount,
             commentsCount = entity.commentsCount,
             viewsCount = entity.viewsCount,
             resharesCount = entity.resharesCount,
-            mediaItems = entity.mediaItems?.toMutableList(),
+            mediaItems = entity.mediaItems?.map { toAppMediaItem(it) }?.toMutableList(),
             isEncrypted = entity.isEncrypted,
             encryptedContent = entity.encryptedContent,
             nonce = entity.nonce,
@@ -87,7 +96,7 @@ object PostMapper {
             deletedAt = entity.deletedAt,
             hasPoll = entity.hasPoll,
             pollQuestion = entity.pollQuestion,
-            pollOptions = entity.pollOptions,
+            pollOptions = entity.pollOptions?.map { toAppPollOption(it) },
             pollEndTime = entity.pollEndTime,
             pollAllowMultiple = entity.pollAllowMultiple,
             hasLocation = entity.hasLocation,
@@ -97,12 +106,75 @@ object PostMapper {
             locationLongitude = entity.locationLongitude,
             locationPlaceId = entity.locationPlaceId,
             youtubeUrl = entity.youtubeUrl,
-            reactions = entity.reactions,
-            userReaction = entity.userReaction,
+            reactions = entity.reactions?.mapKeys { toAppReactionType(it.key) },
+            userReaction = entity.userReaction?.let { toAppReactionType(it) },
             username = entity.username,
             avatarUrl = entity.avatarUrl,
             isVerified = entity.isVerified,
-            metadata = entity.metadata
+            userPollVote = entity.userPollVote,
+            metadata = entity.metadata?.let { toAppPostMetadata(it) }
+        )
+    }
+
+    private fun toSharedMediaItem(item: AppMediaItem): SharedMediaItem {
+        return SharedMediaItem(
+            id = item.id,
+            url = item.url,
+            type = SharedMediaType.valueOf(item.type.name),
+            thumbnailUrl = item.thumbnailUrl
+        )
+    }
+
+    private fun toAppMediaItem(item: SharedMediaItem): AppMediaItem {
+        return AppMediaItem(
+            id = item.id,
+            url = item.url,
+            type = AppMediaType.valueOf(item.type.name),
+            thumbnailUrl = item.thumbnailUrl
+        )
+    }
+
+    private fun toSharedPollOption(item: AppPollOption): SharedPollOption {
+        return SharedPollOption(
+            text = item.text,
+            votes = item.votes
+        )
+    }
+
+    private fun toAppPollOption(item: SharedPollOption): AppPollOption {
+        return AppPollOption(
+            text = item.text,
+            votes = item.votes
+        )
+    }
+
+    private fun toSharedReactionType(type: AppReactionType): SharedReactionType {
+        return try {
+            SharedReactionType.valueOf(type.name)
+        } catch (e: Exception) {
+            SharedReactionType.LIKE
+        }
+    }
+
+    private fun toAppReactionType(type: SharedReactionType): AppReactionType {
+        return try {
+            AppReactionType.valueOf(type.name)
+        } catch (e: Exception) {
+            AppReactionType.LIKE
+        }
+    }
+
+    private fun toSharedPostMetadata(item: AppPostMetadata): SharedPostMetadata {
+        return SharedPostMetadata(
+            layoutType = item.layoutType,
+            backgroundColor = item.backgroundColor
+        )
+    }
+
+    private fun toAppPostMetadata(item: SharedPostMetadata): AppPostMetadata {
+        return AppPostMetadata(
+            layoutType = item.layoutType,
+            backgroundColor = item.backgroundColor
         )
     }
 }

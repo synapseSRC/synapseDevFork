@@ -9,6 +9,7 @@ import com.synapse.social.studioasinc.shared.data.database.mediaItemListAdapter
 import com.synapse.social.studioasinc.shared.data.database.pollOptionListAdapter
 import com.synapse.social.studioasinc.shared.data.database.reactionMapAdapter
 import com.synapse.social.studioasinc.shared.data.database.reactionTypeAdapter
+import com.synapse.social.studioasinc.shared.data.database.stringMapAdapter
 import com.synapse.social.studioasinc.shared.data.database.postMetadataAdapter
 import com.synapse.social.studioasinc.shared.data.database.intAdapter
 import com.synapse.social.studioasinc.shared.data.database.booleanAdapter
@@ -57,7 +58,8 @@ val storageModule = module {
                 commentsCountAdapter = intAdapter,
                 viewsCountAdapter = intAdapter,
                 resharesCountAdapter = intAdapter,
-                userPollVoteAdapter = intAdapter
+                userPollVoteAdapter = intAdapter,
+                encryptedContentAdapter = stringMapAdapter
             ),
             CommentAdapter = Comment.Adapter(
                 likesCountAdapter = intAdapter,

@@ -10,6 +10,7 @@ object UserMapper {
         return DbUser(
             id = user.uid,
             username = user.username ?: "",
+            email = user.email,
             fullName = user.displayName,
             avatarUrl = user.avatar,
             bio = user.bio,
@@ -27,7 +28,7 @@ object UserMapper {
             uid = entity.id,
             username = entity.username,
             displayName = entity.fullName,
-            email = null,
+            email = entity.email,
             avatar = entity.avatarUrl?.let { url ->
                 if (url.startsWith("http")) url else SupabaseClient.constructAvatarUrl(url)
             },

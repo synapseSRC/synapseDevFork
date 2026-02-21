@@ -1,8 +1,6 @@
 package com.synapse.social.studioasinc.core.di
 
 import android.content.Context
-import com.synapse.social.studioasinc.data.local.database.UserDao
-import com.synapse.social.studioasinc.data.local.database.PostDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,28 +19,6 @@ import com.synapse.social.studioasinc.shared.data.local.database.SqlDelightComme
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
-    @Provides
-    @Singleton
-    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "app_database"
-        )
-        .fallbackToDestructiveMigration()
-        .build()
-    }
-
-    @Provides
-    fun provideUserDao(db: StorageDatabase): UserDao {
-        return UserDaoImpl(db)
-    }
-
-    @Provides
-    fun providePostDao(db: AppDatabase): PostDao {
-        return db.postDao()
-    }
 
     @Provides
     fun provideCommentDao(db: StorageDatabase): CommentDao {
@@ -79,25 +55,4 @@ object DatabaseModule {
             )
         )
     }
-
-    @Provides
-    fun provideUserDao(db: StorageDatabase): UserDao {
-        return UserDaoImpl(db)
-    }
-
-    @Provides
-    fun providePostDao(db: StorageDatabase): PostDao {
-        return PostDaoImpl(db)
-    }
-
-    @Provides
-    fun provideCommentDao(db: StorageDatabase): CommentDao {
-        return CommentDaoImpl(db)
-    }
-}
-
-@dagger.hilt.EntryPoint
-@dagger.hilt.InstallIn(dagger.hilt.components.SingletonComponent::class)
-interface DatabaseEntryPoint {
-    fun userDao(): UserDao
 }

@@ -5,7 +5,7 @@ import kotlinx.datetime.Instant
 
 
 import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.data.local.database.PostDao
+import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
 import com.synapse.social.studioasinc.domain.model.Post
 import com.synapse.social.studioasinc.domain.model.ReactionType
 import com.synapse.social.studioasinc.domain.model.UserReaction
@@ -33,7 +33,7 @@ import javax.inject.Singleton
 import io.github.jan.supabase.SupabaseClient as JanSupabaseClient
 
 @Singleton
-class PostRepository @Inject constructor(
+class PostRepository constructor(
     private val storageDatabase: StorageDatabase,
     private val client: JanSupabaseClient
 ) {
@@ -127,6 +127,10 @@ class PostRepository @Inject constructor(
     private fun extractColumnInfo(message: String): String {
         val columnMatch = COLUMN_REGEX.find(message)
         return columnMatch?.groupValues?.get(1) ?: "unknown column"
+    }
+
+    private fun invalidateCache() {
+        postsCache.clear()
     }
 
     suspend fun createPost(post: Post): Result<Post> = withContext(Dispatchers.IO) {
@@ -307,7 +311,7 @@ class PostRepository @Inject constructor(
     }
     private suspend fun syncDeletedPosts() {
         try {
-            val localIds = postDao.getAllPostIds()
+            val localIds = storageDatabase.postQueries.selectIds().executeAsList()
             if (localIds.isEmpty()) return
             val idsToDelete = mutableListOf<String>()
             // Process in chunks of 50 to respect URL length limits (approx 2KB max for safe GET)
@@ -327,8 +331,10 @@ class PostRepository @Inject constructor(
             if (idsToDelete.isNotEmpty()) {
                 val uniqueIdsToDelete = idsToDelete.distinct()
                 android.util.Log.d(TAG, "Syncing deletions: removing ${uniqueIdsToDelete.size} posts")
-                uniqueIdsToDelete.chunked(500).forEach { batch ->
-                    postDao.deletePosts(batch)
+                storageDatabase.transaction {
+                    uniqueIdsToDelete.forEach { id ->
+                        storageDatabase.postQueries.deleteById(id)
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -390,7 +396,7 @@ class PostRepository @Inject constructor(
             client.from("posts").update(updateDto) {
                 filter { eq("id", post.id) }
             }
-            postDao.insertAll(listOf(PostMapper.toEntity(post)))
+            storageDatabase.postQueries.insertPost(PostMapper.toEntity(post))
             invalidateCache()
             Result.success(post)
         } catch (e: Exception) {

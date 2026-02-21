@@ -44,8 +44,7 @@ fun PostDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val commentsFlow by viewModel.commentsPagingFlow.collectAsStateWithLifecycle()
-    val pagingItems = commentsFlow.collectAsLazyPagingItems()
+    val pagingItems = viewModel.commentsPagingFlow.collectAsLazyPagingItems()
 
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
@@ -167,7 +166,7 @@ fun PostDetailScreen(
                         context.startActivity(Intent.createChooser(shareIntent, "Share Comment"))
                     }
                     is CommentAction.Hide -> viewModel.hideComment(action.commentId)
-                    is CommentAction.Pin -> viewModel.pinComment(action.commentId, action.postId)
+                    is CommentAction.Pin -> viewModel.pinComment(action.commentId)
                 }
                 showCommentOptions = null
             }

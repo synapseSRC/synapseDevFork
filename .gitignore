@@ -96,3 +96,4 @@ build-and-push.sh
 
 .gemini/
 gha-creds-*.json
+.kiro/

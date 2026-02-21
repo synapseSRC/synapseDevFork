@@ -9,6 +9,7 @@ import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as S
 import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
 import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
 import com.synapse.social.studioasinc.data.local.database.*
+import com.synapse.social.studioasinc.shared.data.local.database.CommentDao
 import com.synapse.social.studioasinc.data.local.AppSettingsManager
 import dagger.Module
 import dagger.Provides

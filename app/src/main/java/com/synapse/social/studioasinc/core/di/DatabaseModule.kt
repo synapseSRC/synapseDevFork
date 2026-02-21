@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.synapse.social.studioasinc.data.local.database.AppDatabase
 import com.synapse.social.studioasinc.data.local.database.UserDao
 import com.synapse.social.studioasinc.data.local.database.PostDao
-import com.synapse.social.studioasinc.data.local.database.CommentDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,6 +17,8 @@ import com.synapse.social.studioasinc.shared.data.database.Post
 import com.synapse.social.studioasinc.shared.data.database.Comment
 import com.synapse.social.studioasinc.shared.data.database.User
 import com.synapse.social.studioasinc.shared.data.database.*
+import com.synapse.social.studioasinc.shared.data.local.database.CommentDao
+import com.synapse.social.studioasinc.shared.data.local.database.SqlDelightCommentDao
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -46,8 +47,8 @@ object DatabaseModule {
     }
 
     @Provides
-    fun provideCommentDao(db: AppDatabase): CommentDao {
-        return db.commentDao()
+    fun provideCommentDao(db: StorageDatabase): CommentDao {
+        return SqlDelightCommentDao(db)
     }
 
     @Provides
@@ -70,7 +71,7 @@ object DatabaseModule {
             ),
             CommentAdapter = Comment.Adapter(
                 likesCountAdapter = intAdapter,
-                repliesCountAdapter = intAdapter
+                repliesCountAdapter = intAdapter,
             ),
             UserAdapter = User.Adapter(
                 followersCountAdapter = intAdapter,

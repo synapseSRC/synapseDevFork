@@ -1,11 +1,7 @@
-package com.synapse.social.studioasinc.data.local.database
+package com.synapse.social.studioasinc.shared.data.local.database
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "comments")
 data class CommentEntity(
-    @PrimaryKey val id: String,
+    val id: String,
     val postId: String,
     val authorUid: String,
     val text: String,

@@ -333,4 +333,11 @@ object RepositoryModule {
     ): SubscribeToNotificationsUseCase {
         return SubscribeToNotificationsUseCase(notificationRepository, authRepository)
     }
+
+    @Provides
+    @Singleton
+    @Named("ImgBBApiKey")
+    fun provideImgBBApiKey(): String {
+        return com.synapse.social.studioasinc.BuildConfig.IMGBB_API_KEY
+    }
 }

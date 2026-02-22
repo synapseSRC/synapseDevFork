@@ -1,7 +1,7 @@
 package com.synapse.social.studioasinc.shared.domain.repository
 
 import com.synapse.social.studioasinc.shared.data.model.UserProfile
-import com.synapse.social.studioasinc.shared.domain.model.MediaItem
+import com.synapse.social.studioasinc.shared.domain.model.*
 import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
@@ -11,7 +11,7 @@ interface ProfileRepository {
     suspend fun unfollowUser(userId: String, targetUserId: String): Result<Unit>
     suspend fun getFollowers(userId: String, limit: Int = 20, offset: Int = 0): Result<List<UserProfile>>
     suspend fun getFollowing(userId: String, limit: Int = 20, offset: Int = 0): Result<List<UserProfile>>
-    suspend fun getProfilePosts(userId: String, limit: Int = 10, offset: Int = 0): Result<List<com.synapse.social.studioasinc.domain.model.Post>>
+    suspend fun getProfilePosts(userId: String, limit: Int = 10, offset: Int = 0): Result<List<Post>>
     suspend fun getProfilePhotos(userId: String, limit: Int = 20, offset: Int = 0): Result<List<MediaItem>>
     suspend fun getProfileReels(userId: String, limit: Int = 20, offset: Int = 0): Result<List<MediaItem>>
     suspend fun isFollowing(userId: String, targetUserId: String): Result<Boolean>

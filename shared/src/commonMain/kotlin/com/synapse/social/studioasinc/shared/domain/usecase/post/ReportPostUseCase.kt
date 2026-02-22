@@ -1,12 +1,11 @@
 package com.synapse.social.studioasinc.shared.domain.usecase.post
 
-import com.synapse.social.studioasinc.shared.domain.repository.ReportRepository
+import com.synapse.social.studioasinc.shared.domain.repository.PostInteractionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-
-class ReportPostUseCase constructor(private val repository: ReportRepository) {
-    operator fun invoke(postId: String, reason: String, description: String?): Flow<Result<Unit>> = flow {
-        emit(repository.createReport(postId, reason, description))
+class ReportPostUseCase constructor(private val repository: PostInteractionRepository) {
+    operator fun invoke(postId: String, userId: String, reason: String): Flow<Result<Unit>> = flow {
+        emit(repository.reportPost(postId, userId, reason))
     }
 }

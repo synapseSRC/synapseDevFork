@@ -28,6 +28,7 @@ import com.synapse.social.studioasinc.shared.domain.usecase.UpdateStorageProvide
 import com.synapse.social.studioasinc.shared.data.repository.StorageRepositoryImpl
 import com.synapse.social.studioasinc.shared.data.repository.ReelRepository
 import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
+import com.synapse.social.studioasinc.shared.data.repository.UserRepositoryImpl
 import com.synapse.social.studioasinc.shared.data.local.SecureStorage
 import com.synapse.social.studioasinc.shared.data.local.AndroidSecureStorage
 import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
@@ -74,8 +75,11 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideSharedUserRepository(userRepository: UserRepository): com.synapse.social.studioasinc.shared.domain.repository.UserRepository {
-        return userRepository
+    fun provideSharedUserRepository(
+        storageDatabase: StorageDatabase,
+        client: SupabaseClientType
+    ): com.synapse.social.studioasinc.shared.domain.repository.UserRepository {
+        return UserRepositoryImpl(storageDatabase, client)
     }
 
     @Provides

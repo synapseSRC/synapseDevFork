@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.data.repository
+package com.synapse.social.studioasinc.shared.data.repository
 
 /* // Disabled due to compilation errors
 

@@ -3,21 +3,12 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id("com.android.library")
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "2.2.0"
+    kotlin("plugin.serialization") version "2.1.0"
     id("com.google.devtools.ksp")
     id("app.cash.sqldelight")
 }
 
 version = project.findProperty("projectVersion") as String
-
-configurations.all {
-    resolutionStrategy {
-        force("org.jetbrains.kotlin:kotlin-stdlib:2.2.0")
-        force("org.jetbrains.kotlin:kotlin-stdlib-common:2.2.0")
-        force("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.2.0")
-        force("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.0")
-    }
-}
 
 kotlin {
     applyDefaultHierarchyTemplate()
@@ -43,8 +34,8 @@ kotlin {
     sourceSets {
         all {
             languageSettings.apply {
-                apiVersion = "2.2"
-                languageVersion = "2.2"
+                apiVersion = "2.1"
+                languageVersion = "2.1"
                 optIn("kotlin.ExperimentalStdlibApi")
             }
         }
@@ -68,12 +59,8 @@ kotlin {
                 // Coroutines
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
-                // DateTime - force version to avoid API changes
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1") {
-                    version {
-                        strictly("0.6.1")
-                    }
-                }
+                // DateTime
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
 
                 // Logging
                 implementation("io.github.aakira:napier:2.7.1")
@@ -83,6 +70,7 @@ kotlin {
 
                 // Settings
                 implementation("com.russhwolf:multiplatform-settings-no-arg:1.2.0")
+                implementation("com.russhwolf:multiplatform-settings-coroutines:1.2.0")
 
                 // SQLDelight
                 implementation("app.cash.sqldelight:runtime:2.0.2")

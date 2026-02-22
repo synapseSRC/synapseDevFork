@@ -6,7 +6,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.data.repository.*
+import com.synapse.social.studioasinc.shared.data.repository.*
 import com.synapse.social.studioasinc.shared.domain.model.*
 import com.synapse.social.studioasinc.feature.shared.components.post.PostEvent
 import com.synapse.social.studioasinc.feature.shared.components.post.PostEventBus

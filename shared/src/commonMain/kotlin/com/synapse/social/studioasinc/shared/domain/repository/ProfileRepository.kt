@@ -1,6 +1,7 @@
 package com.synapse.social.studioasinc.shared.domain.repository
 
 import com.synapse.social.studioasinc.shared.domain.model.*
+import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
     suspend fun archiveProfile(userId: String): Result<Unit>

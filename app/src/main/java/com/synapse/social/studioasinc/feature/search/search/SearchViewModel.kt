@@ -1,12 +1,12 @@
 package com.synapse.social.studioasinc.ui.search
 
-import com.synapse.social.studioasinc.data.repository.ProfileActionRepository
+import com.synapse.social.studioasinc.shared.data.repository.ProfileActionRepository
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
-import com.synapse.social.studioasinc.domain.usecase.profile.FollowUserUseCase
-import com.synapse.social.studioasinc.domain.usecase.profile.UnfollowUserUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.profile.FollowUserUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.profile.UnfollowUserUseCase
 import com.synapse.social.studioasinc.shared.domain.model.SearchAccount
 import com.synapse.social.studioasinc.shared.domain.model.SearchHashtag
 import com.synapse.social.studioasinc.shared.domain.model.SearchNews
@@ -55,10 +55,10 @@ class SearchViewModel @Inject constructor(
     private val unfollowUserUseCase: UnfollowUserUseCase,
     private val authRepository: AuthRepository,
     private val sharedPreferences: SharedPreferences,
-    private val postRepository: com.synapse.social.studioasinc.data.repository.PostRepository,
-    private val bookmarkRepository: com.synapse.social.studioasinc.data.repository.BookmarkRepository,
-    private val pollRepository: com.synapse.social.studioasinc.data.repository.PollRepository,
-    private val profileActionRepository: com.synapse.social.studioasinc.data.repository.ProfileActionRepository
+    private val postRepository: com.synapse.social.studioasinc.shared.data.repository.PostRepository,
+    private val bookmarkRepository: com.synapse.social.studioasinc.shared.data.repository.BookmarkRepository,
+    private val pollRepository: com.synapse.social.studioasinc.shared.data.repository.PollRepository,
+    private val profileActionRepository: com.synapse.social.studioasinc.shared.data.repository.ProfileActionRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUiState())

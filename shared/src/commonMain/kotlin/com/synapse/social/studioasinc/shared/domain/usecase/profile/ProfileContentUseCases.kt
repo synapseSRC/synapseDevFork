@@ -1,39 +1,30 @@
 package com.synapse.social.studioasinc.shared.domain.usecase.profile
 
-import com.synapse.social.studioasinc.shared.domain.repository.ProfileRepository
-import com.synapse.social.studioasinc.shared.domain.model.Post
-import com.synapse.social.studioasinc.shared.domain.model.UserProfile
-import com.synapse.social.studioasinc.shared.domain.model.MediaItem
-import com.synapse.social.studioasinc.shared.domain.model.Reel
+import com.synapse.social.studioasinc.shared.domain.model.*
+import com.synapse.social.studioasinc.shared.domain.repository.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-class GetProfilePostsUseCase(
-    private val profileRepository: ProfileRepository
-) {
-    suspend operator fun invoke(userId: String): Result<List<Post>> {
-        return profileRepository.getProfilePosts(userId)
+class GetProfilePostsUseCase(private val repository: ProfileRepository) {
+    operator fun invoke(userId: String): Flow<Result<List<Post>>> = flow {
+        emit(repository.getProfilePosts(userId))
     }
 }
 
-class GetProfilePhotosUseCase(
-    private val profileRepository: ProfileRepository
-) {
-    suspend operator fun invoke(userId: String): Result<List<MediaItem>> {
-        return profileRepository.getProfilePhotos(userId)
+class GetProfilePhotosUseCase(private val repository: ProfileRepository) {
+    operator fun invoke(userId: String): Flow<Result<List<MediaItem>>> = flow {
+        emit(repository.getProfilePhotos(userId))
     }
 }
 
-class GetProfileReelsUseCase(
-    private val profileRepository: ProfileRepository
-) {
-    suspend operator fun invoke(userId: String): Result<List<Reel>> {
-        return profileRepository.getProfileReels(userId)
+class GetProfileReelsUseCase(private val repository: ProfileRepository) {
+    operator fun invoke(userId: String): Flow<Result<List<Reel>>> = flow {
+        emit(repository.getProfileReels(userId))
     }
 }
 
-class UpdateProfileUseCase(
-    private val profileRepository: ProfileRepository
-) {
+class UpdateProfileUseCase(private val repository: ProfileRepository) {
     suspend operator fun invoke(userId: String, profile: UserProfile): Result<UserProfile> {
-        return profileRepository.updateProfile(userId, profile)
+        return repository.updateProfile(userId, profile)
     }
 }

@@ -8,7 +8,7 @@ internal object DateFormatterUtil {
     val amzDateFormatter = LocalDateTime.Format {
         year()
         monthNumber(Padding.ZERO)
-        dayOfMonth(Padding.ZERO)
+        day(Padding.ZERO)
         char('T')
         hour(Padding.ZERO)
         minute(Padding.ZERO)

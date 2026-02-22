@@ -13,6 +13,7 @@ object NumberFormatter {
             return number.toLong().toString()
         }
 
+        val formatted = (number / unit * 10).toInt() / 10.0
         return when {
             number < 1_000_000 -> ((number / 1000 * 10).toInt() / 10.0).toString() + "K"
             number < 1_000_000_000 -> ((number / 1000000 * 10).toInt() / 10.0).toString() + "M"

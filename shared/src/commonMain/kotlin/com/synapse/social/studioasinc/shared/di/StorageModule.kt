@@ -97,7 +97,7 @@ val storageModule = module {
     single { GetStorageConfigUseCase(get()) }
     single { UpdateStorageProviderUseCase(get()) }
     single { ValidateProviderConfigUseCase() }
-    single { UploadMediaUseCase(get(), get()) }
+    single { UploadMediaUseCase(get(), get(), get(), get(), get(), get()) }
 
 
 }

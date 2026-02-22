@@ -14,7 +14,7 @@ class SubscribeToNotificationsUseCase(
     private val notificationRepository: NotificationRepository,
     private val authRepository: AuthRepository
 ) {
-    suspend operator fun invoke(): Flow<Notification> {
+    operator fun invoke(): Flow<Notification> {
         val userId = authRepository.getCurrentUserId()
         if (userId == null) {
             Napier.w("Cannot subscribe to notifications: User not logged in")

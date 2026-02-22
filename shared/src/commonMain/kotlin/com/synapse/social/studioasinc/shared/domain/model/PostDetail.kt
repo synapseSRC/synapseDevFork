@@ -1,57 +1,18 @@
 package com.synapse.social.studioasinc.shared.domain.model
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
-
-
 
 @Serializable
 data class PostDetail(
     val post: Post,
-    val author: UserProfile,
-    @Transient
-    val reactionSummary: Map<ReactionType, Int> = emptyMap(),
-    @Transient
-    val userReaction: ReactionType? = null,
-    val isBookmarked: Boolean = false,
-    val hasReshared: Boolean = false,
-    val pollResults: List<PollOptionResult>? = null,
-    val userPollVote: Int? = null
+    val comments: List<CommentWithUser> = emptyList(),
+    val isLoading: Boolean = false,
+    val error: String? = null
 ) {
-
-
-    fun hasMedia(): Boolean = !post.mediaItems.isNullOrEmpty()
-
-
-
-    fun hasPoll(): Boolean = post.hasPoll == true
-
-
-
-    fun hasLocation(): Boolean = post.hasLocation == true
-
-
-
-    fun hasYouTubeEmbed(): Boolean = !post.youtubeUrl.isNullOrEmpty()
-
-
-
-    fun isEncrypted(): Boolean = post.isEncrypted == true
-
-
-
-    fun isEdited(): Boolean = post.isEdited == true
-
-
-
-    fun getTotalReactions(): Int = reactionSummary.values.sum()
-
-
-
-    fun isAuthorVerified(): Boolean = author.verify
-
-
-
-    fun isAuthorPremium(): Boolean = author.account_type == "premium"
+    val canShowMedia: Boolean get() = post.mediaItems?.isNotEmpty() ?: false
+    val hasPoll: Boolean get() = post.hasPoll ?: false
+    val hasLocation: Boolean get() = post.hasLocation ?: false
+    val hasYoutubeUrl: Boolean get() = !post.youtubeUrl.isNullOrEmpty()
+    val isEncrypted: Boolean get() = post.isEncrypted ?: false
+    val isEdited: Boolean get() = post.isEdited ?: false
 }

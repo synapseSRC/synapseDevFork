@@ -35,7 +35,7 @@ class HomeActivity : AppCompatActivity() {
         applyThemeFromSettings()
 
         setContent {
-            val settingsRepository = com.synapse.social.studioasinc.data.repository.SettingsRepositoryImpl.getInstance(this@HomeActivity)
+            val settingsRepository = com.synapse.social.studioasinc.shared.data.repository.SettingsRepositoryImpl.getInstance(this@HomeActivity)
             val appearanceSettings by settingsRepository.appearanceSettings.collectAsState(
                 initial = com.synapse.social.studioasinc.ui.settings.AppearanceSettings()
             )
@@ -105,7 +105,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun applyThemeFromSettings() {
-        val settingsRepository = com.synapse.social.studioasinc.data.repository.SettingsRepositoryImpl.getInstance(this)
+        val settingsRepository = com.synapse.social.studioasinc.shared.data.repository.SettingsRepositoryImpl.getInstance(this)
         lifecycleScope.launch {
             try {
                 settingsRepository.appearanceSettings.collect { settings ->

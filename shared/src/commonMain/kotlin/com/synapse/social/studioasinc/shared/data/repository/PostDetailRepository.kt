@@ -8,7 +8,6 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.rpc
-import kotlinx.datetime.Clock
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -28,7 +27,7 @@ class PostDetailRepository (
         private const val TAG = "PostDetailRepository"
     }
 
-    suspend fun getPostWithDetails(postId: String): Result<PostDetail> = withContext(Dispatchers.Default) {
+    suspend fun getPostWithDetails(postId: String): Result<PostDetail> = withContext(Dispatchers.IO) {
         try {
             Napier.d("Fetching post details for: $postId")
 
@@ -92,7 +91,7 @@ class PostDetailRepository (
         }
     }
 
-    suspend fun incrementViewCount(postId: String): Result<Unit> = withContext(Dispatchers.Default) {
+    suspend fun incrementViewCount(postId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             client.postgrest.rpc("increment_post_views", mapOf("post_id" to postId))
             Napier.d("Incremented view count for post: $postId")
@@ -110,7 +109,7 @@ class PostDetailRepository (
         }
     }
 
-    suspend fun deletePost(postId: String): Result<Unit> = withContext(Dispatchers.Default) {
+    suspend fun deletePost(postId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             val currentUser = client.auth.currentUserOrNull()
                 ?: return@withContext Result.failure(Exception("User must be authenticated"))
@@ -147,7 +146,7 @@ class PostDetailRepository (
             postDisableComments = data["post_disable_comments"]?.jsonPrimitive?.contentOrNull,
             postVisibility = data["post_visibility"]?.jsonPrimitive?.contentOrNull,
             publishDate = data["publish_date"]?.jsonPrimitive?.contentOrNull,
-            timestamp = data["timestamp"]?.jsonPrimitive?.longOrNull ?: Clock.System.now().toEpochMilliseconds(),
+            timestamp = data["timestamp"]?.jsonPrimitive?.longOrNull ?: System.currentTimeMillis(),
             likesCount = data["likes_count"]?.jsonPrimitive?.intOrNull ?: 0,
             commentsCount = data["comments_count"]?.jsonPrimitive?.intOrNull ?: 0,
             viewsCount = data["views_count"]?.jsonPrimitive?.intOrNull ?: 0,

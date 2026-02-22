@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.biometric.BiometricManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.data.repository.SettingsRepositoryImpl
+import com.synapse.social.studioasinc.shared.data.repository.SettingsRepositoryImpl
 import com.synapse.social.studioasinc.core.util.BiometricChecker
 import com.synapse.social.studioasinc.core.util.BiometricCheckerImpl
 import io.github.jan.supabase.auth.auth

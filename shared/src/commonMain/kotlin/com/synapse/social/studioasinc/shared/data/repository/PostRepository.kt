@@ -7,13 +7,10 @@ import com.synapse.social.studioasinc.shared.data.model.*
 import com.synapse.social.studioasinc.shared.core.network.SupabaseErrorHandler
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
-import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.*
 
 class PostRepository(
     private val storageDatabase: StorageDatabase,
@@ -23,10 +20,12 @@ class PostRepository(
     override suspend fun createPost(post: Post): Result<Post> = withContext(Dispatchers.IO) {
         try {
             val dto = PostMapper.toDto(post)
-            client.from("posts").insert(dto) {
+            val result = client.from("posts").insert(dto) {
                 select()
             }.decodeSingle<PostDto>()
-            Result.success(post)
+            val createdPost = PostMapper.toModel(result)
+            storageDatabase.postQueries.insertPost(PostMapper.toEntity(createdPost))
+            Result.success(createdPost)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -34,7 +33,10 @@ class PostRepository(
 
     override suspend fun getPost(postId: String): Result<Post?> = withContext(Dispatchers.IO) {
         try {
-            Result.success(null)
+            val result = client.from("posts").select {
+                filter { eq("id", postId) }
+            }.decodeSingleOrNull<PostDto>()
+            Result.success(result?.let { PostMapper.toModel(it) })
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -42,7 +44,24 @@ class PostRepository(
 
     override suspend fun getUserPosts(userId: String): Result<List<Post>> = withContext(Dispatchers.IO) {
         try {
-            Result.success(emptyList())
+            val result = client.from("posts").select {
+                filter { eq("author_uid", userId) }
+                order("created_at", Order.DESCENDING)
+            }.decodeList<PostDto>()
+            Result.success(result.map { PostMapper.toModel(it) })
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getFeedPosts(userId: String, page: Int, pageSize: Int): Result<List<Post>> = withContext(Dispatchers.IO) {
+        try {
+            val result = client.from("posts").select {
+                order("created_at", Order.DESCENDING)
+                limit(pageSize.toLong())
+                range(((page - 1) * pageSize).toLong(), (page * pageSize - 1).toLong())
+            }.decodeList<PostDto>()
+            Result.success(result.map { PostMapper.toModel(it) })
         } catch (e: Exception) {
             Result.failure(e)
         }

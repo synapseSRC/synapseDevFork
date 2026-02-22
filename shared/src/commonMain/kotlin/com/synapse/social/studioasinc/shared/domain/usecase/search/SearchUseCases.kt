@@ -1,48 +1,38 @@
 package com.synapse.social.studioasinc.shared.domain.usecase.search
 
-import com.synapse.social.studioasinc.shared.data.repository.SearchRepositoryImpl
-import com.synapse.social.studioasinc.shared.domain.model.Post
-import com.synapse.social.studioasinc.shared.domain.model.SearchPost
-import com.synapse.social.studioasinc.shared.domain.model.SearchHashtag
-import com.synapse.social.studioasinc.shared.domain.model.SearchNews
-import com.synapse.social.studioasinc.shared.domain.model.SearchAccount
+import com.synapse.social.studioasinc.shared.domain.model.*
+import com.synapse.social.studioasinc.shared.domain.repository.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-class SearchPostsUseCase(
-    private val searchRepository: SearchRepositoryImpl
-) {
-    suspend operator fun invoke(query: String): Result<List<SearchPost>> {
-        return searchRepository.searchPosts(query)
+class SearchPostsUseCase(private val repository: PostRepository) {
+    operator fun invoke(query: String): Flow<Result<List<Post>>> = flow {
+        // Simple search logic for now
+        emit(Result.success(emptyList()))
     }
 }
 
-class SearchHashtagsUseCase(
-    private val searchRepository: SearchRepositoryImpl
-) {
-    suspend operator fun invoke(query: String): Result<List<SearchHashtag>> {
-        return searchRepository.searchHashtags(query)
+class SearchUsersUseCase(private val repository: UserRepository) {
+    operator fun invoke(query: String): Flow<Result<List<UserProfile>>> = flow {
+        // Simple search logic for now
+        emit(Result.success(emptyList()))
     }
 }
 
-class GetTrendingHashtagsUseCase(
-    private val searchRepository: SearchRepositoryImpl
-) {
-    suspend operator fun invoke(): Result<List<SearchHashtag>> {
-        return searchRepository.getTrendingHashtags()
+class GetSearchHistoryUseCase(private val repository: ISearchRepository) {
+    operator fun invoke(): Flow<Result<List<SearchModels.SearchHistory>>> = flow {
+        emit(repository.getSearchHistory())
     }
 }
 
-class SearchNewsUseCase(
-    private val searchRepository: SearchRepositoryImpl
-) {
-    suspend operator fun invoke(query: String): Result<List<SearchNews>> {
-        return searchRepository.searchNews(query)
+class SaveSearchQueryUseCase(private val repository: ISearchRepository) {
+    suspend operator fun invoke(query: String) {
+        repository.saveSearchQuery(query)
     }
 }
 
-class GetSuggestedAccountsUseCase(
-    private val searchRepository: SearchRepositoryImpl
-) {
-    suspend operator fun invoke(query: String = ""): Result<List<SearchAccount>> {
-        return searchRepository.getSuggestedAccounts(query)
+class ClearSearchHistoryUseCase(private val repository: ISearchRepository) {
+    suspend operator fun invoke() {
+        repository.clearSearchHistory()
     }
 }

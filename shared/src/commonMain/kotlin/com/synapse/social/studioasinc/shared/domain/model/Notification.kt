@@ -3,9 +3,9 @@ package com.synapse.social.studioasinc.shared.domain.model
 import kotlinx.serialization.Serializable
 
 sealed class NotificationError : Exception() {
-    object NetworkError : NotificationError()
-    object Unauthorized : NotificationError()
-    object Unknown : NotificationError()
+    data object NetworkError : NotificationError()
+    data object Unauthorized : NotificationError()
+    data object Unknown : NotificationError()
 }
 
 @Serializable

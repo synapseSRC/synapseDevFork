@@ -6,8 +6,8 @@ import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.data.remote.services.SupabaseAuthenticationService
-import com.synapse.social.studioasinc.data.repository.PostRepository
-import com.synapse.social.studioasinc.data.repository.LocationRepository
+import com.synapse.social.studioasinc.shared.data.repository.PostRepository
+import com.synapse.social.studioasinc.shared.data.repository.LocationRepository
 import com.synapse.social.studioasinc.shared.domain.model.MediaItem
 import com.synapse.social.studioasinc.shared.domain.model.MediaType
 import com.synapse.social.studioasinc.shared.domain.model.PollOption
@@ -18,6 +18,8 @@ import com.synapse.social.studioasinc.shared.domain.model.LocationData
 import com.synapse.social.studioasinc.core.util.FileManager
 import com.synapse.social.studioasinc.shared.domain.usecase.UploadMediaUseCase
 import com.synapse.social.studioasinc.core.media.processing.ImageCompressor
+import com.synapse.social.studioasinc.core.network.SupabaseClient
+import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -93,7 +95,7 @@ class CreatePostViewModel @Inject constructor(
     application: Application,
     private val postRepository: PostRepository,
     private val reelRepository: ReelRepository,
-    private val userRepository: com.synapse.social.studioasinc.data.repository.UserRepository,
+    private val userRepository: com.synapse.social.studioasinc.shared.data.repository.UserRepository,
     private val locationRepository: LocationRepository,
     private val imageCompressor: ImageCompressor,
     private val uploadMediaUseCase: UploadMediaUseCase

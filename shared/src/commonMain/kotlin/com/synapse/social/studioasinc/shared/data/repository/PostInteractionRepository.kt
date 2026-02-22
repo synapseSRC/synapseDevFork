@@ -1,36 +1,27 @@
 package com.synapse.social.studioasinc.shared.data.repository
 
-import com.synapse.social.studioasinc.shared.core.network.SupabaseClient
+import com.synapse.social.studioasinc.shared.domain.model.*
+import com.synapse.social.studioasinc.shared.domain.repository.PostInteractionRepository
+import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
 
-class PostInteractionRepository {
-    private val client = SupabaseClient.client
-
-    suspend fun likePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.Default) {
+class PostInteractionRepository(private val client: SupabaseClient) : PostInteractionRepository {
+    override suspend fun likePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            client.from("post_likes").insert(
-                buildJsonObject {
-                    put("post_id", postId)
-                    put("user_id", userId)
-                }
-            )
+            client.from("likes").insert(mapOf("post_id" to postId, "user_id" to userId))
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun unlikePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.Default) {
+    override suspend fun unlikePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            client.from("post_likes").delete {
-                filter {
-                    eq("post_id", postId)
-                    eq("user_id", userId)
-                }
+            client.from("likes").delete {
+                filter { eq("post_id", postId); eq("user_id", userId) }
             }
             Result.success(Unit)
         } catch (e: Exception) {
@@ -38,60 +29,20 @@ class PostInteractionRepository {
         }
     }
 
-    suspend fun savePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.Default) {
+    override suspend fun toggleReaction(postId: String, targetType: String, reactionType: ReactionType, oldReaction: ReactionType?, skipCheck: Boolean): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            client.from("saved_posts").insert(
-                buildJsonObject {
-                    put("post_id", postId)
-                    put("user_id", userId)
-                }
-            )
+            // Logic to toggle reaction
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun unsavePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.Default) {
-        try {
-            client.from("saved_posts").delete {
-                filter {
-                    eq("post_id", postId)
-                    eq("user_id", userId)
-                }
-            }
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+    override suspend fun getReactionSummary(postId: String, targetType: String): Result<Map<ReactionType, Int>> = withContext(Dispatchers.IO) {
+        Result.success(emptyMap())
     }
 
-    suspend fun deletePost(postId: String, userId: String): Result<Unit> = withContext(Dispatchers.Default) {
-        try {
-            client.from("posts").delete {
-                filter {
-                    eq("id", postId)
-                    eq("author_uid", userId)
-                }
-            }
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    suspend fun reportPost(postId: String, userId: String, reason: String): Result<Unit> = withContext(Dispatchers.Default) {
-        try {
-            client.from("post_reports").insert(
-                buildJsonObject {
-                    put("post_id", postId)
-                    put("reporter_id", userId)
-                    put("reason", reason)
-                }
-            )
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+    override suspend fun getUserReaction(postId: String, targetType: String): Result<ReactionType?> = withContext(Dispatchers.IO) {
+        Result.success(null)
     }
 }

@@ -3,8 +3,8 @@ package com.synapse.social.studioasinc.feature.stories.viewer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
-import com.synapse.social.studioasinc.data.repository.StoryRepository
-import com.synapse.social.studioasinc.data.repository.UserRepository
+import com.synapse.social.studioasinc.shared.data.repository.StoryRepository
+import com.synapse.social.studioasinc.shared.data.repository.UserRepository
 import com.synapse.social.studioasinc.shared.domain.model.Story
 import com.synapse.social.studioasinc.shared.domain.model.StoryMediaType
 import com.synapse.social.studioasinc.shared.domain.model.User

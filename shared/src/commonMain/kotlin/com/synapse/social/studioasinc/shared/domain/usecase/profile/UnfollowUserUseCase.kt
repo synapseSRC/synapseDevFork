@@ -1,12 +1,12 @@
 package com.synapse.social.studioasinc.shared.domain.usecase.profile
+
 import com.synapse.social.studioasinc.shared.domain.model.*
+import com.synapse.social.studioasinc.shared.domain.repository.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-import com.synapse.social.studioasinc.shared.domain.repository.ProfileRepository
-
-
-class UnfollowUserUseCase (private val repository: ProfileRepository) {
-    suspend operator fun invoke(targetUserId: String): Result<Unit> {
-        require(targetUserId.isNotBlank()) { "Target user ID cannot be blank" }
-        return repository.unfollowUser(targetUserId)
+class UnfollowUserUseCase(private val repository: ProfileRepository) {
+    operator fun invoke(userId: String): Flow<Result<Unit>> = flow {
+        emit(repository.unfollowUser(userId))
     }
 }

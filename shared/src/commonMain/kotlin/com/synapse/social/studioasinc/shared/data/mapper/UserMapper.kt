@@ -1,6 +1,6 @@
 package com.synapse.social.studioasinc.shared.data.mapper
 
-import io.github.jan.supabase.SupabaseClient
+import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.shared.data.database.User as DbUser
 import com.synapse.social.studioasinc.shared.domain.model.User as DomainUser
 
@@ -29,7 +29,9 @@ object UserMapper {
             username = entity.username,
             displayName = entity.fullName,
             email = entity.email,
-            avatar = entity.avatarUrl,
+            avatar = entity.avatarUrl?.let { url ->
+                if (url.startsWith("http")) url else SupabaseClient.constructAvatarUrl(url)
+            },
             verify = entity.isVerified,
             bio = entity.bio,
             followersCount = entity.followersCount,

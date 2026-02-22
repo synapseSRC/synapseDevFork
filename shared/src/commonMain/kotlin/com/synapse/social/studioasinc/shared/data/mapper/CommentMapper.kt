@@ -3,7 +3,6 @@ package com.synapse.social.studioasinc.shared.data.mapper
 import com.synapse.social.studioasinc.shared.data.local.entity.CommentEntity
 import com.synapse.social.studioasinc.shared.domain.model.Comment
 import com.synapse.social.studioasinc.shared.data.database.Comment as DbComment
-import kotlinx.datetime.Clock
 
 object CommentMapper {
 
@@ -13,7 +12,7 @@ object CommentMapper {
             postId = comment.postKey,
             authorId = comment.uid,
             text = comment.comment,
-            timestamp = parsePushTime(comment.pushTime),
+            timestamp = parsePushTime(comment.push_time),
             likesCount = 0,
             repliesCount = 0,
             isDeleted = false,
@@ -29,7 +28,7 @@ object CommentMapper {
             postId = comment.postKey,
             authorUid = comment.uid,
             text = comment.comment,
-            timestamp = parsePushTime(comment.pushTime),
+            timestamp = parsePushTime(comment.push_time),
             parentCommentId = comment.replyCommentKey,
             username = username,
             avatarUrl = avatarUrl
@@ -47,7 +46,7 @@ object CommentMapper {
             postKey = entity.postId,
             uid = entity.authorUid,
             comment = entity.text,
-            pushTime = entity.timestamp.toString(),
+            push_time = entity.timestamp.toString(),
             replyCommentKey = entity.parentCommentId
         )
     }
@@ -58,16 +57,16 @@ object CommentMapper {
             postKey = entity.postId,
             uid = entity.authorId,
             comment = entity.text,
-            pushTime = entity.timestamp.toString(),
+            push_time = entity.timestamp.toString(),
             replyCommentKey = entity.parentCommentId
         )
     }
 
     private fun parsePushTime(pushTime: String): Long {
         return try {
-            pushTime.toLongOrNull() ?: Clock.System.now().toEpochMilliseconds()
+            pushTime.toLongOrNull() ?: System.currentTimeMillis()
         } catch (e: Exception) {
-            Clock.System.now().toEpochMilliseconds()
+            System.currentTimeMillis()
         }
     }
 }

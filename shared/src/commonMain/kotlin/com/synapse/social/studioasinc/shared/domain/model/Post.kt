@@ -3,7 +3,6 @@ package com.synapse.social.studioasinc.shared.domain.model
 import com.synapse.social.studioasinc.shared.core.util.json
 import com.synapse.social.studioasinc.shared.core.util.toJsonElement
 import kotlinx.serialization.KSerializer
-import kotlinx.datetime.Clock
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -14,6 +13,46 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.JsonObject
+
+@Serializable
+data class PostMetadata(
+    @SerialName("layout_type") val layoutType: String? = null,
+    @SerialName("tagged_people") val taggedPeople: List<User>? = null,
+    @SerialName("feeling") val feeling: FeelingActivity? = null,
+    @SerialName("background_color") val backgroundColor: Long? = null
+)
+
+@Serializable(with = FeelingTypeSerializer::class)
+enum class FeelingType {
+    MOOD,
+    ACTIVITY
+}
+
+object FeelingTypeSerializer : KSerializer<FeelingType> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("FeelingType", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: FeelingType) {
+        encoder.encodeString(value.name)
+    }
+
+    override fun deserialize(decoder: Decoder): FeelingType {
+        return try {
+            FeelingType.valueOf(decoder.decodeString())
+        } catch (e: IllegalArgumentException) {
+            FeelingType.MOOD
+        } catch (e: SerializationException) {
+            FeelingType.MOOD
+        }
+    }
+}
+
+@Serializable
+data class FeelingActivity(
+    val emoji: String,
+    val text: String,
+    val type: FeelingType = FeelingType.MOOD
+)
 
 @Serializable
 data class Post(
@@ -30,16 +69,16 @@ data class Post(
     @SerialName("post_hide_views_count")
     val postHideViewsCount: String? = null,
     @SerialName("post_hide_like_count")
-    val postHideLikeCount: String? = null,
+    val postHideLike_count: String? = null,
     @SerialName("post_hide_comments_count")
-    val postHideCommentsCount: String? = null,
+    val postHideComments_count: String? = null,
     @SerialName("post_disable_comments")
     val postDisableComments: String? = null,
     @SerialName("post_visibility")
     val postVisibility: String? = null,
     @SerialName("publish_date")
     val publishDate: String? = null,
-    val timestamp: Long = Clock.System.now().toEpochMilliseconds(),
+    val timestamp: Long = 0,
     @SerialName("created_at")
     val createdAt: String? = null,
     @SerialName("updated_at")
@@ -157,34 +196,6 @@ data class Post(
     }
 
     fun hasMultipleMedia(): Boolean = (mediaItems?.size ?: 0) > 1
-
-    fun toDetailItems(): List<PostDetailItem> {
-        val items = mutableListOf<PostDetailItem>()
-
-
-        if (!postText.isNullOrEmpty()) {
-            items.add(
-                PostDetailItem.Caption(
-                    postId = id,
-                    text = postText,
-                    likesCount = captionLikesCount,
-                    commentsCount = captionCommentsCount,
-                    userHasLiked = userHasLikedCaption
-                )
-            )
-        }
-
-
-        mediaItems?.forEach { media ->
-            when (media.type) {
-                MediaType.IMAGE -> items.add(PostDetailItem.Image(media, id))
-                MediaType.VIDEO -> items.add(PostDetailItem.Video(media, id))
-                MediaType.PHOTO, MediaType.AUDIO, MediaType.OTHER -> {}
-            }
-        }
-
-        return items
-    }
 }
 
-fun HashMap<String, Any>.toPost(): Post = json.decodeFromJsonElement(this.toJsonElement())
+fun JsonObject.toPost(): Post = json.decodeFromJsonElement(this)

@@ -8,4 +8,5 @@ interface PostRepository {
     suspend fun getPost(postId: String): Result<Post?>
     suspend fun createPost(post: Post): Result<Post>
     suspend fun getUserPosts(userId: String): Result<List<Post>>
+    suspend fun getFeedPosts(userId: String, page: Int, pageSize: Int): Result<List<Post>>
 }

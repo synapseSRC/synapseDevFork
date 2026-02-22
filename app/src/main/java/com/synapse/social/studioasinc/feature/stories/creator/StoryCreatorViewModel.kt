@@ -6,8 +6,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.data.repository.PostRepository
-import com.synapse.social.studioasinc.data.repository.StoryRepository
+import com.synapse.social.studioasinc.shared.data.repository.PostRepository
+import com.synapse.social.studioasinc.shared.data.repository.StoryRepository
 import com.synapse.social.studioasinc.shared.domain.model.Post
 import com.synapse.social.studioasinc.shared.domain.model.StoryMediaType
 import com.synapse.social.studioasinc.shared.domain.model.StoryPrivacy

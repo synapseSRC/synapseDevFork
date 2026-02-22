@@ -17,7 +17,6 @@ import com.synapse.social.studioasinc.shared.domain.model.User
 import com.synapse.social.studioasinc.core.util.FileManager
 
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.github.aakira.napier.Napier
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
@@ -71,7 +70,7 @@ interface StoryRepository {
     suspend fun hasSeenStory(storyId: String, viewerId: String): Result<Boolean>
 }
 
-class StoryRepositoryImpl(
+class StoryRepositoryImpl : com.synapse.social.studioasinc.shared.domain.repository.StoryRepositoryImpl (
     @ApplicationContext private val context: android.content.Context,
     private val uploadMediaUseCase: UploadMediaUseCase
 ) : com.synapse.social.studioasinc.shared.domain.repository.StoryRepository {
@@ -230,7 +229,7 @@ class StoryRepositoryImpl(
 
             emit(result)
         } catch (e: Exception) {
-            Napier.e("StoryRepository", "Error fetching active stories", e)
+            android.util.Napier.e("StoryRepository", "Error fetching active stories", e)
             emit(emptyList())
         }
     }

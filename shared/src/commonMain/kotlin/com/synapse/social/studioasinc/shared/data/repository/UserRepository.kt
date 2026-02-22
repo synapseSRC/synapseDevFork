@@ -7,11 +7,7 @@ import com.synapse.social.studioasinc.shared.data.mapper.UserMapper
 import io.github.aakira.napier.Napier
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
 import com.synapse.social.studioasinc.shared.core.network.SupabaseErrorHandler
-import com.synapse.social.studioasinc.shared.core.network.SupabaseClient as SharedSupabaseClient
 import com.synapse.social.studioasinc.shared.domain.repository.UserRepository as SharedUserRepository
 
 class UserRepository(
@@ -23,7 +19,7 @@ class UserRepository(
         return try {
             var user = storageDatabase.userQueries.selectById(userId).executeAsOneOrNull()?.let { UserMapper.toModel(it) }
             if (user == null) {
-                val userProfile = client.from(SharedSupabaseClient.TABLE_USERS)
+                val userProfile = client.from("users")
                     .select() {
                         filter {
                             eq("uid", userId)
@@ -44,7 +40,7 @@ class UserRepository(
             }
             Result.success(user)
         } catch (e: Exception) {
-            return SupabaseErrorHandler.toResult(e, "UserRepository", "Failed to fetch user by ID: ")
+            Result.failure(e)
         }
     }
 
@@ -54,7 +50,7 @@ class UserRepository(
                 return Result.failure(Exception("Username cannot be empty"))
             }
 
-            val user = client.from(SharedSupabaseClient.TABLE_USERS)
+            val user = client.from("users")
                 .select() {
                     filter {
                         eq("username", username)
@@ -64,13 +60,13 @@ class UserRepository(
 
             Result.success(user)
         } catch (e: Exception) {
-            return SupabaseErrorHandler.toResult(e, "UserRepository", "Failed to fetch user by username: ")
+            Result.failure(e)
         }
     }
 
     override suspend fun isUsernameAvailable(username: String): Result<Boolean> {
         return try {
-            val existingUser = client.from(SharedSupabaseClient.TABLE_USERS)
+            val existingUser = client.from("users")
                 .select() {
                     filter {
                         eq("username", username)
@@ -80,7 +76,7 @@ class UserRepository(
 
             Result.success(existingUser == null)
         } catch (e: Exception) {
-            return SupabaseErrorHandler.toResult(e, "UserRepository", "Failed to check username availability: ")
+            Result.failure(e)
         }
     }
 }

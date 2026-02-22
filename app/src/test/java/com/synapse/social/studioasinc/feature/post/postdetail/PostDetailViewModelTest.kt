@@ -1,6 +1,6 @@
 package com.synapse.social.studioasinc.feature.post.postdetail
 
-import com.synapse.social.studioasinc.data.repository.*
+import com.synapse.social.studioasinc.shared.data.repository.*
 import com.synapse.social.studioasinc.shared.domain.model.*
 import com.synapse.social.studioasinc.util.MainCoroutineRule
 import io.github.jan.supabase.SupabaseClient

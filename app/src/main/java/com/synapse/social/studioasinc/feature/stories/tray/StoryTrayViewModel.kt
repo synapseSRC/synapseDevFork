@@ -3,7 +3,7 @@ package com.synapse.social.studioasinc.feature.stories.tray
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.core.network.SupabaseClient
-import com.synapse.social.studioasinc.data.repository.StoryRepository
+import com.synapse.social.studioasinc.shared.data.repository.StoryRepository
 import com.synapse.social.studioasinc.shared.domain.model.StoryTrayState
 import com.synapse.social.studioasinc.shared.domain.model.StoryWithUser
 import com.synapse.social.studioasinc.shared.domain.model.User

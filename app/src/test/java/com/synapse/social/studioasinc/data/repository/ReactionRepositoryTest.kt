@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.data.repository
+package com.synapse.social.studioasinc.shared.data.repository
 
 import com.synapse.social.studioasinc.shared.domain.model.Post
 import com.synapse.social.studioasinc.shared.domain.model.ReactionType

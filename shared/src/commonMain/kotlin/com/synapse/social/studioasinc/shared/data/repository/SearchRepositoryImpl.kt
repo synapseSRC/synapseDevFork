@@ -36,7 +36,7 @@ private data class AuthorDto(
 
 class SearchRepositoryImpl(
     private val client: io.github.jan.supabase.SupabaseClient = SupabaseClient.client
-) : ISearchRepository {
+) : com.synapse.social.studioasinc.shared.domain.repository.ISearchRepository {
 
     override suspend fun searchPosts(query: String): Result<List<SearchPost>> = runCatching {
 

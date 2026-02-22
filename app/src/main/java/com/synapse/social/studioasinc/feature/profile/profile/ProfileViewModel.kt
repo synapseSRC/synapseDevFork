@@ -18,6 +18,7 @@ import com.synapse.social.studioasinc.domain.usecase.profile.FollowUserUseCase
 import com.synapse.social.studioasinc.domain.usecase.profile.GetFollowingUseCase
 import com.synapse.social.studioasinc.domain.usecase.profile.GetProfileContentUseCase
 import com.synapse.social.studioasinc.domain.usecase.profile.GetProfileUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.user.SearchUsersUseCase
 import com.synapse.social.studioasinc.domain.usecase.profile.IsFollowingUseCase
 import com.synapse.social.studioasinc.domain.usecase.profile.LockProfileUseCase
 import com.synapse.social.studioasinc.domain.usecase.profile.MuteUserUseCase
@@ -67,7 +68,7 @@ data class ProfileScreenState(
     val viewAsUserName: String? = null,
     val hasStory: Boolean = false,
     val isFollowLoading: Boolean = false,
-    val searchResults: List<com.synapse.social.studioasinc.domain.model.User> = emptyList(),
+    val searchResults: List<com.synapse.social.studioasinc.shared.domain.model.User> = emptyList(),
     val isSearching: Boolean = false,
     val isRefreshing: Boolean = false
 )
@@ -75,6 +76,7 @@ data class ProfileScreenState(
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
+    private val searchUsersUseCase: SearchUsersUseCase,
     private val getProfileUseCase: GetProfileUseCase,
     private val getProfileContentUseCase: GetProfileContentUseCase,
     private val getFollowingUseCase: GetFollowingUseCase,
@@ -293,12 +295,9 @@ class ProfileViewModel @Inject constructor(
 
             _state.update { it.copy(isSearching = true) }
 
-            try {
-                val results = withContext(Dispatchers.IO) {
-                    com.synapse.social.studioasinc.UserProfileManager.searchUsers(query)
-                }
+            searchUsersUseCase(query).onSuccess { results ->
                 _state.update { it.copy(searchResults = results, isSearching = false) }
-            } catch (e: Exception) {
+            }.onFailure {
                 _state.update { it.copy(isSearching = false) }
             }
         }

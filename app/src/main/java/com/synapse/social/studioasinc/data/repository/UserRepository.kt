@@ -13,13 +13,12 @@ import javax.inject.Singleton
 import com.synapse.social.studioasinc.core.network.SupabaseErrorHandler
 import com.synapse.social.studioasinc.core.network.SupabaseClient as AppSupabaseClient
 import com.synapse.social.studioasinc.shared.core.network.SupabaseClient as SharedSupabaseClient
-import com.synapse.social.studioasinc.shared.domain.repository.UserRepository as SharedUserRepository
 
 @Singleton
 class UserRepository constructor(
     private val storageDatabase: StorageDatabase,
     private val client: SupabaseClient = AppSupabaseClient.client
-) : SharedUserRepository {
+) {
 
     suspend fun getUserById(userId: String): Result<User?> {
         return try {
@@ -146,7 +145,7 @@ class UserRepository constructor(
         }
     }
 
-    override suspend fun isUsernameAvailable(username: String): Result<Boolean> {
+    suspend fun isUsernameAvailable(username: String): Result<Boolean> {
         return checkUsernameAvailability(username)
     }
 }

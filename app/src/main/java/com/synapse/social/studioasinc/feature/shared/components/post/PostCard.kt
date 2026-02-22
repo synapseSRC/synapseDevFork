@@ -15,9 +15,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.domain.model.ReactionType
+import com.synapse.social.studioasinc.shared.domain.model.Post
+import com.synapse.social.studioasinc.shared.domain.model.User
+import com.synapse.social.studioasinc.shared.domain.model.ReactionType
 import com.synapse.social.studioasinc.ui.settings.PostViewStyle
 
 

@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.feature.shared.components.ButtonVariant
 import com.synapse.social.studioasinc.feature.shared.components.ExpressiveButton
 import com.synapse.social.studioasinc.feature.shared.theme.Spacing
-import com.synapse.social.studioasinc.domain.model.UserStatus
+import com.synapse.social.studioasinc.shared.domain.model.UserStatus
 
 @Composable
 fun ProfileHeader(

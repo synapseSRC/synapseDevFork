@@ -1,6 +1,6 @@
 package com.synapse.social.studioasinc.core.di
 
-import com.synapse.social.studioasinc.data.repository.UserRepository
+import com.synapse.social.studioasinc.shared.domain.repository.UserRepository
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent

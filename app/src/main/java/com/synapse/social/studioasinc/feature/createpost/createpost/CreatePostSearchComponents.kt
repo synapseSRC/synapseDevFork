@@ -31,9 +31,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.domain.model.LocationData
-import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.domain.model.FeelingActivity
+import com.synapse.social.studioasinc.shared.domain.model.LocationData
+import com.synapse.social.studioasinc.shared.domain.model.User
+import com.synapse.social.studioasinc.shared.domain.model.FeelingActivity
 
 private const val SEARCH_BAR_BACKGROUND_ALPHA = 0.3f
 
@@ -221,7 +221,7 @@ fun FeelingSelectScreen(
     val tabs = listOf("Moods", "Activities")
 
 
-    val currentTabType = if (selectedTab == 0) com.synapse.social.studioasinc.domain.model.FeelingType.MOOD else com.synapse.social.studioasinc.domain.model.FeelingType.ACTIVITY
+    val currentTabType = if (selectedTab == 0) com.synapse.social.studioasinc.shared.domain.model.FeelingType.MOOD else com.synapse.social.studioasinc.shared.domain.model.FeelingType.ACTIVITY
     val filteredFeelings = remember(feelings, selectedTab, searchQuery) {
         feelings.filter {
             it.type == currentTabType &&

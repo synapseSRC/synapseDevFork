@@ -1,10 +1,10 @@
 package com.synapse.social.studioasinc.feature.shared.components.post
 
 import androidx.compose.runtime.Stable
-import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.ReactionType
-import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.data.model.UserProfile
+import com.synapse.social.studioasinc.shared.domain.model.Post
+import com.synapse.social.studioasinc.shared.domain.model.ReactionType
+import com.synapse.social.studioasinc.shared.domain.model.User
+import com.synapse.social.studioasinc.shared.data.model.UserProfile
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
@@ -73,7 +73,7 @@ object PostUiMapper {
 
 sealed class PostEvent {
     data class Liked(val postId: String, val isLiked: Boolean, val newLikeCount: Int) : PostEvent()
-    data class PollVoted(val postId: String, val optionIndex: Int, val pollOptions: List<com.synapse.social.studioasinc.domain.model.PollOption>, val userVote: Int?) : PostEvent()
+    data class PollVoted(val postId: String, val optionIndex: Int, val pollOptions: List<com.synapse.social.studioasinc.shared.domain.model.PollOption>, val userVote: Int?) : PostEvent()
     data class Deleted(val postId: String) : PostEvent()
     data class Updated(val post: Post) : PostEvent()
     data class Error(val message: String) : PostEvent()

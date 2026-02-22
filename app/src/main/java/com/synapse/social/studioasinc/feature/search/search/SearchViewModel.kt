@@ -1,12 +1,12 @@
 package com.synapse.social.studioasinc.ui.search
 
-import com.synapse.social.studioasinc.data.repository.ProfileActionRepository
+import com.synapse.social.studioasinc.shared.domain.repository.ProfileActionRepository
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
-import com.synapse.social.studioasinc.domain.usecase.profile.FollowUserUseCase
-import com.synapse.social.studioasinc.domain.usecase.profile.UnfollowUserUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.profile.FollowUserUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.profile.UnfollowUserUseCase
 import com.synapse.social.studioasinc.shared.domain.model.SearchAccount
 import com.synapse.social.studioasinc.shared.domain.model.SearchHashtag
 import com.synapse.social.studioasinc.shared.domain.model.SearchNews
@@ -55,10 +55,10 @@ class SearchViewModel @Inject constructor(
     private val unfollowUserUseCase: UnfollowUserUseCase,
     private val authRepository: AuthRepository,
     private val sharedPreferences: SharedPreferences,
-    private val postRepository: com.synapse.social.studioasinc.data.repository.PostRepository,
-    private val bookmarkRepository: com.synapse.social.studioasinc.data.repository.BookmarkRepository,
-    private val pollRepository: com.synapse.social.studioasinc.data.repository.PollRepository,
-    private val profileActionRepository: com.synapse.social.studioasinc.data.repository.ProfileActionRepository
+    private val postRepository: com.synapse.social.studioasinc.shared.data.repository.PostRepositoryImpl,
+    private val bookmarkRepository: com.synapse.social.studioasinc.shared.data.repository.BookmarkRepositoryImpl,
+    private val pollRepository: com.synapse.social.studioasinc.shared.data.repository.PollRepositoryImpl,
+    private val profileActionRepository: com.synapse.social.studioasinc.shared.data.repository.ProfileActionRepositoryImpl
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUiState())
@@ -209,7 +209,7 @@ class SearchViewModel @Inject constructor(
     }
 
 
-    fun reactToPost(post: com.synapse.social.studioasinc.domain.model.Post, reactionType: com.synapse.social.studioasinc.domain.model.ReactionType) {
+    fun reactToPost(post: com.synapse.social.studioasinc.shared.domain.model.Post, reactionType: com.synapse.social.studioasinc.shared.domain.model.ReactionType) {
         viewModelScope.launch {
             val userId = authRepository.getCurrentUserId() ?: return@launch
             postRepository.toggleReaction(post.id, userId, reactionType, post.userReaction, skipCheck = true)
@@ -217,51 +217,51 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun likePost(post: com.synapse.social.studioasinc.domain.model.Post) {
+    fun likePost(post: com.synapse.social.studioasinc.shared.domain.model.Post) {
         viewModelScope.launch {
             val userId = authRepository.getCurrentUserId() ?: return@launch
-            postRepository.toggleReaction(post.id, userId, com.synapse.social.studioasinc.domain.model.ReactionType.LIKE, post.userReaction, skipCheck = true)
+            postRepository.toggleReaction(post.id, userId, com.synapse.social.studioasinc.shared.domain.model.ReactionType.LIKE, post.userReaction, skipCheck = true)
                 .onFailure { err -> _uiState.update { it.copy(error = err.message) } }
         }
     }
 
-    fun bookmarkPost(post: com.synapse.social.studioasinc.domain.model.Post) {
+    fun bookmarkPost(post: com.synapse.social.studioasinc.shared.domain.model.Post) {
         viewModelScope.launch {
             bookmarkRepository.toggleBookmark(post.id)
                 .onFailure { err -> _uiState.update { it.copy(error = err.message) } }
         }
     }
 
-    fun sharePost(post: com.synapse.social.studioasinc.domain.model.Post) {
+    fun sharePost(post: com.synapse.social.studioasinc.shared.domain.model.Post) {
 
     }
 
-    fun votePoll(post: com.synapse.social.studioasinc.domain.model.Post, optionIndex: Int) {
+    fun votePoll(post: com.synapse.social.studioasinc.shared.domain.model.Post, optionIndex: Int) {
         viewModelScope.launch {
             pollRepository.submitVote(post.id, optionIndex)
                 .onFailure { err -> _uiState.update { it.copy(error = err.message) } }
         }
     }
 
-    fun deletePost(post: com.synapse.social.studioasinc.domain.model.Post) {
+    fun deletePost(post: com.synapse.social.studioasinc.shared.domain.model.Post) {
         viewModelScope.launch {
             postRepository.deletePost(post.id)
                 .onFailure { err -> _uiState.update { it.copy(error = err.message) } }
         }
     }
 
-    fun copyPostLink(post: com.synapse.social.studioasinc.domain.model.Post) {
+    fun copyPostLink(post: com.synapse.social.studioasinc.shared.domain.model.Post) {
 
     }
 
-    fun toggleComments(post: com.synapse.social.studioasinc.domain.model.Post) {
+    fun toggleComments(post: com.synapse.social.studioasinc.shared.domain.model.Post) {
         viewModelScope.launch {
             postRepository.toggleComments(post.id)
                 .onFailure { err -> _uiState.update { it.copy(error = err.message) } }
         }
     }
 
-    fun reportPost(post: com.synapse.social.studioasinc.domain.model.Post) {
+    fun reportPost(post: com.synapse.social.studioasinc.shared.domain.model.Post) {
 
     }
 
@@ -276,18 +276,18 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun revokeVote(post: com.synapse.social.studioasinc.domain.model.Post) {
+    fun revokeVote(post: com.synapse.social.studioasinc.shared.domain.model.Post) {
         viewModelScope.launch {
             pollRepository.revokeVote(post.id)
                 .onFailure { err -> _uiState.update { it.copy(error = err.message) } }
         }
     }
 
-    fun isPostOwner(post: com.synapse.social.studioasinc.domain.model.Post): Boolean {
+    fun isPostOwner(post: com.synapse.social.studioasinc.shared.domain.model.Post): Boolean {
         return authRepository.getCurrentUserId() == post.authorUid
     }
 
-    fun areCommentsDisabled(post: com.synapse.social.studioasinc.domain.model.Post): Boolean {
+    fun areCommentsDisabled(post: com.synapse.social.studioasinc.shared.domain.model.Post): Boolean {
         return post.postDisableComments == "true"
     }
 }

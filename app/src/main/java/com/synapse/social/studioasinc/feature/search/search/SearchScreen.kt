@@ -33,9 +33,9 @@ import com.synapse.social.studioasinc.feature.shared.components.post.PostOptions
 import com.synapse.social.studioasinc.feature.shared.components.post.SharedPostItem
 import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
 import com.synapse.social.studioasinc.shared.domain.model.SearchPost
-import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.MediaItem
-import com.synapse.social.studioasinc.domain.model.MediaType
+import com.synapse.social.studioasinc.shared.domain.model.Post
+import com.synapse.social.studioasinc.shared.domain.model.MediaItem
+import com.synapse.social.studioasinc.shared.domain.model.MediaType
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)

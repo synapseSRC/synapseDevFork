@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.synapse.social.studioasinc.domain.model.CommentAction
-import com.synapse.social.studioasinc.domain.model.CommentWithUser
-import com.synapse.social.studioasinc.domain.model.ReactionType
+import com.synapse.social.studioasinc.shared.domain.model.CommentAction
+import com.synapse.social.studioasinc.shared.domain.model.CommentWithUser
+import com.synapse.social.studioasinc.shared.domain.model.ReactionType
 import com.synapse.social.studioasinc.feature.post.postdetail.components.*
 import com.synapse.social.studioasinc.feature.shared.components.MediaViewer
 import com.synapse.social.studioasinc.feature.shared.components.post.PostOptionsBottomSheet

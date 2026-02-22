@@ -1,7 +1,7 @@
 package com.synapse.social.studioasinc.feature.shared.components.post
 
-import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.ReactionType
+import com.synapse.social.studioasinc.shared.domain.model.Post
+import com.synapse.social.studioasinc.shared.domain.model.ReactionType
 import com.synapse.social.studioasinc.feature.home.home.FeedViewModel
 import com.synapse.social.studioasinc.feature.profile.profile.ProfileViewModel
 import com.synapse.social.studioasinc.feature.post.postdetail.PostDetailViewModel

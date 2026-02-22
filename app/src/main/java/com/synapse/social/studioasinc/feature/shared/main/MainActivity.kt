@@ -40,7 +40,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository
-import com.synapse.social.studioasinc.data.repository.UserRepository
+import com.synapse.social.studioasinc.shared.domain.repository.UserRepository
 import com.synapse.social.studioasinc.feature.shared.theme.SynapseTheme
 import com.synapse.social.studioasinc.ui.navigation.AppNavigation
 import com.synapse.social.studioasinc.ui.navigation.AppDestination
@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val settingsRepository = com.synapse.social.studioasinc.data.repository.SettingsRepositoryImpl.getInstance(this@MainActivity)
+            val settingsRepository = com.synapse.social.studioasinc.shared.data.repository.SettingsRepositoryImplImpl.getInstance(this@MainActivity)
             val appearanceSettings by settingsRepository.appearanceSettings.collectAsState(
                 initial = com.synapse.social.studioasinc.ui.settings.AppearanceSettings()
             )

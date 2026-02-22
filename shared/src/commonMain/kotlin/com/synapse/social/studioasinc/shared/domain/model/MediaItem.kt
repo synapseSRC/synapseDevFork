@@ -5,9 +5,9 @@ import kotlinx.serialization.Transient
 
 @Serializable
 data class MediaItem(
-    val id: String,
-    val url: String,
-    val type: MediaType,
+    val id: String = "",
+    val url: String = "",
+    val type: MediaType = MediaType.IMAGE,
     val thumbnailUrl: String? = null,
     val duration: Long? = null,
     val size: Long? = null,

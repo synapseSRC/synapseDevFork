@@ -9,9 +9,9 @@ import com.synapse.social.studioasinc.shared.domain.model.MediaType
 import com.synapse.social.studioasinc.core.network.SupabaseClient
 import com.synapse.social.studioasinc.core.network.SupabaseErrorHandler
 
-import com.synapse.social.studioasinc.domain.model.UserProfile
-import com.synapse.social.studioasinc.domain.model.UserStatus
-import com.synapse.social.studioasinc.domain.model.Gender
+import com.synapse.social.studioasinc.shared.domain.model.UserProfile
+import com.synapse.social.studioasinc.shared.domain.model.UserStatus
+import com.synapse.social.studioasinc.shared.domain.model.Gender
 import com.synapse.social.studioasinc.presentation.editprofile.photohistory.HistoryItem
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from

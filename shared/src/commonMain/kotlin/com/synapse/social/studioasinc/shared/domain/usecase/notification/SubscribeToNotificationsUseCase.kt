@@ -1,4 +1,5 @@
 package com.synapse.social.studioasinc.shared.domain.usecase.notification
+import com.synapse.social.studioasinc.shared.domain.model.*
 
 import com.synapse.social.studioasinc.shared.data.mapper.toDomain
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository

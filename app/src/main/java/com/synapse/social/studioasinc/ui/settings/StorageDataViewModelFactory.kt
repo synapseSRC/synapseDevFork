@@ -2,7 +2,7 @@ package com.synapse.social.studioasinc.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.synapse.social.studioasinc.data.repository.SettingsRepository
+import com.synapse.social.studioasinc.shared.data.repository.SettingsRepository
 
 class StorageDataViewModelFactory(
     private val settingsRepository: SettingsRepository

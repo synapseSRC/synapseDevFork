@@ -1,5 +1,6 @@
 
 package com.synapse.social.studioasinc.shared.domain.usecase
+import com.synapse.social.studioasinc.shared.domain.model.*
 
 import com.synapse.social.studioasinc.shared.domain.repository.StorageRepository
 

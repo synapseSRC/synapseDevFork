@@ -1,4 +1,5 @@
 package com.synapse.social.studioasinc.shared.domain.usecase.auth
+import com.synapse.social.studioasinc.shared.domain.model.*
 
 import com.synapse.social.studioasinc.shared.domain.repository.UserRepository
 

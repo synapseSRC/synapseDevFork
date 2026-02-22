@@ -1,7 +1,7 @@
-package com.synapse.social.studioasinc.data.repository
+package com.synapse.social.studioasinc.shared.data.repository
 
-import com.synapse.social.studioasinc.domain.model.Post
-import com.synapse.social.studioasinc.domain.model.ReactionType
+import com.synapse.social.studioasinc.shared.domain.model.Post
+import com.synapse.social.studioasinc.shared.domain.model.ReactionType
 import io.github.jan.supabase.SupabaseClient
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

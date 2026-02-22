@@ -1,4 +1,4 @@
-package com.synapse.social.studioasinc.domain.model
+package com.synapse.social.studioasinc.shared.domain.model
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

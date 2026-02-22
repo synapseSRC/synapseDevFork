@@ -16,7 +16,11 @@ enum class ReactionType(
 
     companion object {
         fun fromString(value: String?): ReactionType {
-            return values().find { it.name.equals(value, ignoreCase = true) } ?: LIKE
+            return entries.find { it.name.equals(value, ignoreCase = true) } ?: LIKE
+        }
+
+        fun getAllReactions(): List<ReactionType> {
+            return entries.toList()
         }
     }
 }

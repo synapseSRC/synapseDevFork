@@ -1,6 +1,6 @@
-package com.synapse.social.studioasinc.domain.usecase.post
+package com.synapse.social.studioasinc.shared.domain.usecase.post
 
-import com.synapse.social.studioasinc.data.repository.ReportRepository
+import com.synapse.social.studioasinc.shared.data.repository.ReportRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest

@@ -444,7 +444,7 @@ class SupabaseDatabaseService : IDatabaseService {
 
     suspend fun searchMedia(
         query: String,
-        mediaType: com.synapse.social.studioasinc.domain.model.SearchResult.MediaType? = null,
+        mediaType: com.synapse.social.studioasinc.shared.domain.model.SearchResult.MediaType? = null,
         limit: Int = 20
     ): Result<List<Map<String, Any?>>> {
         return withContext(Dispatchers.IO) {
@@ -462,7 +462,7 @@ class SupabaseDatabaseService : IDatabaseService {
 
 
                         when (mediaType) {
-                            com.synapse.social.studioasinc.domain.model.SearchResult.MediaType.PHOTO -> {
+                            com.synapse.social.studioasinc.shared.domain.model.SearchResult.MediaType.PHOTO -> {
 
                                 or {
 
@@ -473,7 +473,7 @@ class SupabaseDatabaseService : IDatabaseService {
 
                                 }
                             }
-                            com.synapse.social.studioasinc.domain.model.SearchResult.MediaType.VIDEO -> {
+                            com.synapse.social.studioasinc.shared.domain.model.SearchResult.MediaType.VIDEO -> {
 
 
                                 eq("post_type", "VIDEO")

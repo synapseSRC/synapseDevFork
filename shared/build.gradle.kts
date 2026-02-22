@@ -70,6 +70,7 @@ kotlin {
 
                 // Settings
                 implementation("com.russhwolf:multiplatform-settings-no-arg:1.2.0")
+                implementation("com.russhwolf:multiplatform-settings-coroutines:1.2.0")
 
                 // SQLDelight
                 implementation("app.cash.sqldelight:runtime:2.0.2")

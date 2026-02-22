@@ -22,8 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.domain.model.FeelingActivity
+import com.synapse.social.studioasinc.shared.domain.model.User
+import com.synapse.social.studioasinc.shared.domain.model.FeelingActivity
 import com.synapse.social.studioasinc.ui.components.CircularAvatar
 import com.synapse.social.studioasinc.ui.components.GenderBadge
 import com.synapse.social.studioasinc.ui.components.VerifiedBadge

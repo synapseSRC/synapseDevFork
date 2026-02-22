@@ -37,6 +37,9 @@ import com.synapse.social.studioasinc.shared.domain.usecase.notification.MarkNot
 import com.synapse.social.studioasinc.shared.domain.usecase.notification.SubscribeToNotificationsUseCase
 import com.synapse.social.studioasinc.shared.data.repository.AuthRepository as SharedAuthRepository
 import com.synapse.social.studioasinc.shared.data.database.StorageDatabase
+import com.synapse.social.studioasinc.shared.domain.usecase.user.GetUserProfileUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.user.SearchUsersUseCase
+import com.synapse.social.studioasinc.shared.domain.usecase.user.UpdateProfileUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -336,5 +339,29 @@ object RepositoryModule {
         authRepository: SharedAuthRepository
     ): SubscribeToNotificationsUseCase {
         return SubscribeToNotificationsUseCase(notificationRepository, authRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetUserProfileUseCase(
+        userRepository: com.synapse.social.studioasinc.shared.domain.repository.UserRepository
+    ): GetUserProfileUseCase {
+        return GetUserProfileUseCase(userRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchUsersUseCase(
+        userRepository: com.synapse.social.studioasinc.shared.domain.repository.UserRepository
+    ): SearchUsersUseCase {
+        return SearchUsersUseCase(userRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateProfileUseCase(
+        userRepository: com.synapse.social.studioasinc.shared.domain.repository.UserRepository
+    ): UpdateProfileUseCase {
+        return UpdateProfileUseCase(userRepository)
     }
 }

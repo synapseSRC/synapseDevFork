@@ -28,7 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.domain.model.Gender
+import com.synapse.social.studioasinc.shared.domain.model.Gender
 import com.synapse.social.studioasinc.ui.settings.SettingsColors
 import com.synapse.social.studioasinc.ui.settings.SettingsShapes
 

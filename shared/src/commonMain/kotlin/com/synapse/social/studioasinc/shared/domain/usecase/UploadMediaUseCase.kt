@@ -85,14 +85,14 @@ class UploadMediaUseCase(
         }
 
         val preferredOrder = when (mediaType) {
-            MediaType.PHOTO, MediaType.IMAGE -> listOf(
+            MediaType.IMAGE, MediaType.IMAGE -> listOf(
                 StorageProvider.IMGBB,
                 StorageProvider.CLOUDINARY,
                 StorageProvider.SUPABASE,
                 StorageProvider.CLOUDFLARE_R2
             )
 
-            MediaType.VIDEO, MediaType.AUDIO, MediaType.OTHER -> listOf(
+            MediaType.VIDEO, MediaType.VIDEO, MediaType.IMAGE -> listOf(
                 StorageProvider.CLOUDINARY,
                 StorageProvider.SUPABASE,
                 StorageProvider.CLOUDFLARE_R2,
@@ -105,9 +105,9 @@ class UploadMediaUseCase(
 
     private fun getProviderForMediaType(config: StorageConfig, mediaType: MediaType): StorageProvider {
         return when (mediaType) {
-            MediaType.PHOTO, MediaType.IMAGE -> config.photoProvider
+            MediaType.IMAGE, MediaType.IMAGE -> config.photoProvider
             MediaType.VIDEO -> config.videoProvider
-            MediaType.OTHER -> config.otherProvider
+            MediaType.IMAGE -> config.otherProvider
             else -> config.otherProvider
         }
     }

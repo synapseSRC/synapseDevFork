@@ -2,7 +2,7 @@ package com.synapse.social.studioasinc.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.synapse.social.studioasinc.data.repository.SettingsRepository
+import com.synapse.social.studioasinc.shared.domain.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

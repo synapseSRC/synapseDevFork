@@ -2,10 +2,13 @@ package com.synapse.social.studioasinc.shared.domain.model
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import java.util.UUID
+
+
 
 @Serializable
 data class MediaItem(
-    val id: String,
+    val id: String = UUID.randomUUID().toString(),
     val url: String,
     val type: MediaType,
     val thumbnailUrl: String? = null,
@@ -19,3 +22,11 @@ data class MediaItem(
     @Transient
     val userHasLiked: Boolean = false
 )
+
+
+
+@Serializable
+enum class MediaType {
+    IMAGE,
+    VIDEO
+}

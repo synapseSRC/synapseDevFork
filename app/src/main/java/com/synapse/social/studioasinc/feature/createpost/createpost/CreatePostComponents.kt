@@ -34,11 +34,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.synapse.social.studioasinc.R
-import com.synapse.social.studioasinc.domain.model.MediaItem
-import com.synapse.social.studioasinc.domain.model.MediaType
-import com.synapse.social.studioasinc.domain.model.User
-import com.synapse.social.studioasinc.domain.model.FeelingActivity
-import com.synapse.social.studioasinc.domain.model.LocationData
+import com.synapse.social.studioasinc.shared.domain.model.MediaItem
+import com.synapse.social.studioasinc.shared.domain.model.MediaType
+import com.synapse.social.studioasinc.shared.domain.model.User
+import com.synapse.social.studioasinc.shared.domain.model.FeelingActivity
+import com.synapse.social.studioasinc.shared.domain.model.LocationData
 
 @Composable
 fun UserHeader(

@@ -35,7 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.synapse.social.studioasinc.domain.model.LocationData
+import com.synapse.social.studioasinc.shared.domain.model.LocationData
 import com.synapse.social.studioasinc.ui.components.ExpressiveLoadingIndicator
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions

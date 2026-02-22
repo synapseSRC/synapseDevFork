@@ -40,7 +40,7 @@ import com.synapse.social.studioasinc.feature.shared.components.post.SharedPostI
 import com.synapse.social.studioasinc.feature.profile.profile.animations.crossfadeContent
 import com.synapse.social.studioasinc.feature.profile.profile.components.*
 import com.synapse.social.studioasinc.feature.profile.profile.components.UserSearchDialog
-import com.synapse.social.studioasinc.domain.model.Post
+import com.synapse.social.studioasinc.shared.domain.model.Post
 import kotlinx.coroutines.delay
 
 
@@ -372,7 +372,7 @@ fun ProfileScreen(
 @Composable
 private fun ProfileContent(
     state: ProfileScreenState,
-    profile: com.synapse.social.studioasinc.data.model.UserProfile,
+    profile: com.synapse.social.studioasinc.shared.data.model.UserProfile,
     listState: androidx.compose.foundation.lazy.LazyListState,
     scrollProgress: Float,
     viewModel: ProfileViewModel,
@@ -636,7 +636,7 @@ private fun ProfileContent(
 
 
         if (state.contentFilter == ProfileContentFilter.POSTS && state.posts.isNotEmpty()) {
-            val posts = state.posts.filterIsInstance<com.synapse.social.studioasinc.domain.model.Post>()
+            val posts = state.posts.filterIsInstance<com.synapse.social.studioasinc.shared.domain.model.Post>()
             items(posts, key = { it.id }) { post ->
 
                 val currentProfile = (state.profileState as? ProfileUiState.Success)?.profile
@@ -672,8 +672,8 @@ private fun ProfileContent(
 
 @Composable
 private fun AnimatedPostCard(
-    post: com.synapse.social.studioasinc.domain.model.Post,
-    currentProfile: com.synapse.social.studioasinc.data.model.UserProfile?,
+    post: com.synapse.social.studioasinc.shared.domain.model.Post,
+    currentProfile: com.synapse.social.studioasinc.shared.data.model.UserProfile?,
     actions: PostActions
 ) {
     var visible by remember { mutableStateOf(false) }

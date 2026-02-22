@@ -14,7 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.synapse.social.studioasinc.data.repository.SettingsRepositoryImpl
+import com.synapse.social.studioasinc.shared.domain.repository.SettingsRepositoryImpl
 import androidx.hilt.navigation.compose.hiltViewModel
 
 

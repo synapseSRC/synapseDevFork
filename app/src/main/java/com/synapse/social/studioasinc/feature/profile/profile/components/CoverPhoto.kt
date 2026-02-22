@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.synapse.social.studioasinc.feature.shared.theme.Spacing
 import com.synapse.social.studioasinc.feature.shared.theme.StatusOnline
-import com.synapse.social.studioasinc.domain.model.UserStatus
+import com.synapse.social.studioasinc.shared.domain.model.UserStatus
 
 
 

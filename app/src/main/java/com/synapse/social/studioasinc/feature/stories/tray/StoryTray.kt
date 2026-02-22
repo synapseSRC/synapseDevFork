@@ -22,8 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.synapse.social.studioasinc.domain.model.StoryWithUser
-import com.synapse.social.studioasinc.domain.model.User
+import com.synapse.social.studioasinc.shared.domain.model.StoryWithUser
+import com.synapse.social.studioasinc.shared.domain.model.User
 
 
 

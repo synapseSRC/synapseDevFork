@@ -3,7 +3,7 @@ package com.synapse.social.studioasinc.data.local.database
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.synapse.social.studioasinc.data.repository.PostRepository
+import com.synapse.social.studioasinc.shared.domain.repository.PostRepository
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

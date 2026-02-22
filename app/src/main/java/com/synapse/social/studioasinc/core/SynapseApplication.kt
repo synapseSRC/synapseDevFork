@@ -8,7 +8,7 @@ import com.onesignal.OneSignal
 import com.onesignal.debug.LogLevel
 import com.synapse.social.studioasinc.core.config.NotificationConfig
 import com.synapse.social.studioasinc.core.util.MediaCacheCleanupManager
-import com.synapse.social.studioasinc.data.repository.SettingsRepositoryImpl
+import com.synapse.social.studioasinc.shared.domain.repository.SettingsRepositoryImpl
 import com.synapse.social.studioasinc.feature.shared.theme.ThemeManager
 import com.synapse.social.studioasinc.shared.data.repository.NotificationRepository
 import kotlinx.coroutines.CoroutineScope
